@@ -1,6 +1,6 @@
 Qt Installer Framework test
 
-Commands for Windows ():
+Commands for Windows:
 
 1. Translations:
 > cd /d D:\nextgis\installer\test\packages\com.nextgis\meta
