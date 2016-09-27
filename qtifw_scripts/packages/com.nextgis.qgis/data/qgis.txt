@@ -1,0 +1,2 @@
+NextGIS QGIS binaries here
+

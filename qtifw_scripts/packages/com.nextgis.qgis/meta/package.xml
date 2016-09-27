@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.qgis</Name>
+    <DisplayName>QGIS</DisplayName>
+    <Description>Desktop GIS</Description>
+    <Version>0.0.1</Version>
+    <ReleaseDate>2016-01-01</ReleaseDate>
+    <Default>true</Default>
+</Package>

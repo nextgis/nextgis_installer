@@ -10,6 +10,8 @@
 *.dll
 *.dylib
 
+*.exe
+
 # Qt-es
 
 /.qmake.cache
@@ -24,6 +26,8 @@ qrc_*.cpp
 ui_*.h
 Makefile*
 *build-*
+
+*.qm
 
 # QtCreator
 
