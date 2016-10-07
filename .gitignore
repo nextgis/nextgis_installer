@@ -27,8 +27,6 @@ ui_*.h
 Makefile*
 *build-*
 
-*.qm
-
 # QtCreator
 
 *.autosave
@@ -39,4 +37,13 @@ Makefile*
 
 # QtCtreator CMake
 CMakeLists.txt.user
+
+# Qt Lingust
+*.qm
+
+# Other temp files
+*.lock
+
+# Built and generated files in case of building repository and installer in the source code directory
+repository-free/
 
