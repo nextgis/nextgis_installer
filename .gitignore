@@ -46,4 +46,4 @@ CMakeLists.txt.user
 
 # Built and generated files in case of building repository and installer in the source code directory
 repository-free/
-
+com.nextgis.formbuilder/data

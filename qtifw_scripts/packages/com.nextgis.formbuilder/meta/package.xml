@@ -13,4 +13,5 @@
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>     
+    <RequiresAdminRights>true</RequiresAdminRights>
 </Package>

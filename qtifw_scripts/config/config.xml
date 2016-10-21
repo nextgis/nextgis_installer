@@ -12,8 +12,10 @@
     <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
     <RemoteRepositories>
         <Repository>
+            <!-- <Url>http://176.9.38.120/practice/api/resource/174/feature/</Url> -->
+            <Url>https://my.nextgis.com/software/installer/repository-free</Url>
             <!-- <Url>http://176.9.38.120/installer/repository-free</Url> -->
-            <Url>file:///D:/github/nextgis_installer/qtifw_scripts/repository-free</Url>
+            <!-- <Url>file:///D:/github/nextgis_installer/qtifw_scripts/repository-free</Url> -->
             <DisplayName>Free plan software</DisplayName>
             <Enabled>1</Enabled>
         </Repository>
