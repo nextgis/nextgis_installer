@@ -23,7 +23,7 @@ authentication:
 Example of configure string:
 
 ```bash
-> configure -prefix %CD%\qtbase -debug-and-release -static -static-runtime -opensource -platform win32-msvc2013 -target xp -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtsensors -skip qtxmlpatterns -skip qtquickcontrols -skip qtquickcontrols2 -skip qt3d -openssl -openssl-linked -I D:\libs\openssl-1.0.1-x86-build\include -L D:\libs\openssl-1.0.1-x86-build\lib -L "C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib" -l Gdi32 -l User32
+> configure -prefix %CD%\qtbase -debug-and-release -static -static-runtime -opensource -platform win32-msvc2013 -target xp -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtsensors -skip qtxmlpatterns -skip qtquickcontrols -skip qtquickcontrols2 -skip qt3d -openssl -openssl-linked -I <path to lib_openssl>\include -L <path to lib_openssl>\lib -L "C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib" -l Gdi32 -l User32
 ```
 
 ### Mac OS X
@@ -31,7 +31,7 @@ Example of configure string:
 Example of configure string:
 
 ```bash
-> OPENSSL_LIBS='-L/Users/Bishop/work/projects/borsch/lib_openssl/build/ssl -L/Users/Bishop/work/projects/borsch/lib_openssl/build/crypto -lsslstatic -lcryptostatic' ./configure -prefix $PWD/qtbase -release -static -opensource -confirm-license -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtsensors -skip qtxmlpatterns -skip qtquickcontrols -skip qtquickcontrols2 -skip qt3d -openssl-linked -I /Users/Bishop/work/projects/borsch/lib_openssl/build/include -L/Users/Bishop/work/projects/borsch/lib_openssl/build/ssl -L/Users/Bishop/work/projects/borsch/lib_openssl/build/crypto
+> OPENSSL_LIBS='-L<path to lib_openssl>/build/ssl -L<path to lib_openssl>/lib_openssl/build/crypto -lsslstatic -lcryptostatic' ./configure -prefix $PWD/qtbase -release -static -opensource -confirm-license -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtsensors -skip qtxmlpatterns -skip qtquickcontrols -skip qtquickcontrols2 -skip qt3d -openssl-linked -I <path to lib_openssl>/lib_openssl/build/include -L<path to lib_openssl>/lib_openssl/build/ssl -L<path to lib_openssl>/lib_openssl/build/crypto
 ```
 
 ## 3. Go to installer framework folder
@@ -41,6 +41,8 @@ Example of configure string:
 ```
 
 ## 4. Build InstallerFramework
+
+Note: To build installer framework via build_installer script python required.
 
 ```bash
 > cd tools
