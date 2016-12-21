@@ -1,0 +1,139 @@
+include($QT_INSTALL_DOCS/global/macros.qdocconf)
+include($QT_INSTALL_DOCS/global/qt-cpp-defines.qdocconf)
+include($QT_INSTALL_DOCS/global/compat.qdocconf)
+include($QT_INSTALL_DOCS/global/fileextensions.qdocconf)
+
+language    = Cpp
+project     = "Qt Installer Framework"
+description = "Qt Installer Framework Manual"
+url         = http://qt-project.org/doc/qtinstallerframework/
+
+sourcedirs += ../../src/libs/installer ../../src/libs/kdtools ../includes
+headerdirs += ../../src/libs/installer ../../src/libs/kdtools
+
+imagedirs = $SRCDIR/images $SRCDIR/templates/images
+outputdir = $OUTDIR
+exampledirs = $SRCDIR ../../examples
+
+headers.fileextensions         = "*.h"
+sources.fileextensions         = "*.qdoc *.qdocinc *.cpp"
+examples.fileextensions        = "*.js *.qs *.txt *.xml *.ui *.ts"
+examples.imageextensions       = "*.png"
+
+indexes += $QT_INSTALL_DOCS/qtcore/qtcore.index \
+           $QT_INSTALL_DOCS/qtwidgets/qtwidgets.index \
+           $QT_INSTALL_DOCS/qtqml/qtqml.index \
+           $QT_INSTALL_DOCS/qtxml/qtxml.index \
+           $QT_INSTALL_DOCS/qtconcurrent/qtconcurrent.index \
+           $QT_INSTALL_DOCS/qtnetwork/qtnetwork.index \
+           $QT_INSTALL_DOCS/qtdoc/qtdoc.index
+
+qhp.projects            = InstallerFramework
+qhp.InstallerFramework.file             = ifw.qhp
+qhp.InstallerFramework.namespace        = org.qt-project.ifw.$IFW_VERSION_TAG
+qhp.InstallerFramework.virtualFolder    = doc
+qhp.InstallerFramework.indexTitle       = Qt Installer Framework Manual
+qhp.InstallerFramework.filterAttributes = ifw
+qhp.InstallerFramework.customFilters.InstallerFramework.name = Installer Framework
+qhp.InstallerFramework.customFilters.InstallerFramework.filterAttributes = ifw
+qhp.InstallerFramework.indexRoot        =
+
+qhp.InstallerFramework.subprojects = manual
+qhp.InstallerFramework.subprojects.manual.title = Qt Installer Framework Manual
+qhp.InstallerFramework.subprojects.manual.indexTitle = Qt Installer Framework Manual
+qhp.InstallerFramework.subprojects.manual.type = manual
+
+macro.ifwversion = $IFW_VERSION
+
+# Doxygen compatibility commands
+
+macro.see                       = "\\sa"
+macro.function                  = "\\fn"
+
+
+# We 'misuse' QML doc commands to generate JS documentation
+# (only works with qdoc from Qt 5)
+
+outputprefixes = QML
+outputprefixes.QML =
+
+navigation.homepage = "Qt Installer Framework Manual"
+
+defines                 += ABSTRACTTASK_H \
+                           ADMINAUTHORIZATION_H \
+                           COMPONENT_P_H \
+                           COMPONENTCHECKER_H \
+                           CONSTANTS_H \
+                           CONSUMEOUTPUTOPERATION_H \
+                           COPYDIRECTORYOPERATION_H \
+                           COPYFILETASK_H \
+                           CREATEDESKTOPENTRYOPERATION_H \
+                           CREATELINKOPERATION_H \
+                           CREATELOCALREPOSITORYOPERATION_H \
+                           CREATESHORTCUTOPERATION_H \
+                           DOWNLOADARCHIVESJOB_H \
+                           DOWNLOADFILETASK_H \
+                           DOWNLOADFILETASK_P_H \
+                           ELEVATEDEXECUTEOPERATION_H \
+                           ENVIRONMENTVARIABLESOPERATION_H \
+                           ERRORS_H \
+                           EXTRACTARCHIVEOPERATION_H \
+                           EXTRACTARCHIVEOPERATION_P_H \
+                           FAKESTOPPROCESSFORUPDATEOPERATION_H \
+                           FILEIO_H \
+                           FILEUTILS_H \
+                           GLOBALS_H \
+                           GLOBALSETTINGSOPERATION_H \
+                           GRAPH_H \
+                           INSTALLERCALCULATOR_H \
+                           INSTALLICONSOPERATION_H \
+                           KD_UPDATER_H \
+                           KD_UPDATER_UPDATE_INFO_DATA_H \
+                           KD_UPDATER_UPDATE_INFO_H \
+                           KD_UPDATER_UPDATE_OPERATIONS_H \
+                           KDSYSINFO_H \
+                           KEEPALIVEOBJECT_H \
+                           LIBINSTALLER_ENVIRONMENT_H \
+                           LICENSEOPERATION_H \
+                           LINEREPLACEOPERATION_H \
+                           METADATAJOB_H \
+                           METADATAJOB_P_H \
+                           MINIMUMPROGRESSOPERATION_H \
+                           OBSERVER_H \
+                           PACKAGEMANAGERCORE_P_H \
+                           PACKAGEMANAGERCOREDATA_H \
+                           PACKAGEMANAGERPAGEFACTORY_H \
+                           PACKAGEMANAGERPROXYFACTORY_H \
+                           PERMISSIONSETTINGS_H \
+                           PROGRESSCOORDINATOR_H \
+                           PROTOCOL_H \
+                           PROXYCREDENTIALSDIALOG_H \
+                           Q_OS_.* \
+                           QINSTALLER_FILEUTILS_H \
+                           QINSTALLER_GLOBAL_H \
+                           QINSTALLER_INIT_H \
+                           QINSTALLER_UTILS_H \
+                           QPROCESSWRAPPER_H \
+                           QSETTINGSWRAPPER_H \
+                           QT_VERSION \
+                           REGISTERFILETYPEOPERATION_H \
+                           REMOTECLIENT_H \
+                           REMOTECLIENT_P_H \
+                           REMOTEFILEENGINE_H \
+                           REMOTEOBJECT_H \
+                           REMOTESERVER_H \
+                           REMOTESERVER_P_H \
+                           REMOTESERVERCONNECTION_H \
+                           REPLACEOPERATION_H \
+                           REPOSITORY_H \
+                           SCRIPTENGINE_P_H \
+                           SELFRESTARTOPERATION_H \
+                           SERVERAUTHENTICATIONDIALOG_H \
+                           SETTINGS_H \
+                           SETTINGSOPERATION_H \
+                           SIMPLEMOVEFILEOPERATION_H \
+                           TESTREPOSITORY_H \
+                           UI_PROXYCREDENTIALSDIALOG_H \
+                           UI_SERVERAUTHENTICATIONDIALOG_H \
+                           UNINSTALLERCALCULATOR_H \
+                           UNZIPTASK_H

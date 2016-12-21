@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<Installer>
+    <Name>Some Application</Name>
+    <Version>1.0.0</Version>
+    <Title>Some Application Setup</Title>
+    <Publisher>Your Company</Publisher>
+    <ProductUrl>http://www.your-fantastic-company.com</ProductUrl>
+    <InstallerWindowIcon>installericon</InstallerWindowIcon>
+    <InstallerApplicationIcon>installericon</InstallerApplicationIcon>
+    <Logo>logo.png</Logo>
+    <Watermark>watermark.png</Watermark>
+    <RunProgram>@TargetDir@/YourAppToRun</RunProgram>
+    <RunProgramArguments>
+        <Argument>Argument 1</Argument>
+        <Argument>Argument 2</Argument>
+    </RunProgramArguments>
+    <RunProgramDescription>My nice application</RunProgramDescription>
+    <StartMenuDir>Some Application Entry Dir</StartMenuDir>
+    <MaintenanceToolName>SDKMaintenanceTool</MaintenanceToolName>
+    <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
+    <Background>background.png</Background>
+
+    <!-- @HomeDir@ and @RootDir@ are some of the supported vars -->
+    <TargetDir>@HomeDir@/testinstall</TargetDir>
+    <AdminTargetDir>@RootDir@/testinstall</AdminTargetDir>
+    <RemoteRepositories>
+        <Repository>
+            <Url>http://www.your-repo-location/packages/</Url>
+        </Repository>
+    </RemoteRepositories>
+</Installer>
