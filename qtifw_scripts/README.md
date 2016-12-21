@@ -46,10 +46,12 @@ For online installer should be: http://176.9.38.120/installer/repository-free
 For offline installer something like: file:///D:/github/repository-free
 
 * Generating installer:
-    > cd <path-to-this-repo>
-    > <path-to-framework>\repogen.exe --remove -v -p packages repository-free
-    > <path-to-framework>\binarycreator.exe -v --online-only -c config\config.xml -p packages nextgis-setup
+
+    > cd <path to this repo>
+    > <path to framework>\repogen.exe --remove -v -p packages repository-free
+    > <path to framework>\binarycreator.exe -v --online-only -c config\config.xml -p packages nextgis-setup
 
 * Updating existing packages:
-    > cd <path-to-this-repo>
-    > <path-to-framework>\repogen.exe --update-new-components -p packages repository-free
+
+    > cd <path to this repo>
+    > <path to framework>\repogen.exe --update-new-components -p packages repository-free
