@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.qgis.providers</Name>
+    <DisplayName>QGIS providers</DisplayName>
+    <DisplayName xml:lang="ru_RU">QGIS providers</DisplayName>
+    <Description>QGIS providers</Description>
+    <Description xml:lang="ru_RU">QGIS providers</Description>
+    <Version>16.1.52-0</Version>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <Virtual>true</Virtual>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

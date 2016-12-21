@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.python</Name>
+    <DisplayName>Python</DisplayName>
+    <DisplayName xml:lang="ru_RU">Python</DisplayName>
+    <Description>Python framework</Description>
+    <Description xml:lang="ru_RU">Python фреймворк</Description>
+    <Version>2.7.4</Version>
+    <Virtual>true</Virtual>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

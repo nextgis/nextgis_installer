@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.docs.ruqgis</Name>
+    <DisplayName>QGIS documentation (russian)</DisplayName>
+    <DisplayName xml:lang="ru_RU">Документация QGIS</DisplayName>
+    <Description>QGIS documentation (russian)</Description>
+    <Description xml:lang="ru_RU">Документация QGIS</Description>
+    <Version>16.0</Version>
+    <Default>true</Default>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <Script>afterinstall.qs</Script> 
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

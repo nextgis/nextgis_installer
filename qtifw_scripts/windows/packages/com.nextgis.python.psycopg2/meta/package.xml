@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.python.psycopg2</Name>
+    <DisplayName>Psycopg package</DisplayName>
+    <DisplayName xml:lang="ru_RU">Psycopg package</DisplayName>
+    <Description>Psycopg package</Description>
+    <Description xml:lang="ru_RU">Psycopg package</Description>
+    <Version>2.6.1</Version>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

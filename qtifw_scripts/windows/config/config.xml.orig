@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>NextGIS programs</Name>
+    <Version>1.0</Version>
+    <Title>NextGIS</Title>
+    <Publisher>NextGIS company</Publisher>
+    <ProductUrl>http://nextgis.com/software/</ProductUrl>
+    <Banner>logo6.png</Banner>
+    <WizardStyle>Modern</WizardStyle>
+    <StartMenuDir>NextGIS</StartMenuDir>
+    <TargetDir>@ApplicationsDir@/NextGIS</TargetDir>
+    <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
+    <RemoteRepositories>
+        <Repository>
+            <Url>https://my.nextgis.com/downloads/software/installer/repository-test</Url>
+            <!-- <Url>http://176.9.38.120/installer/repository-free</Url> -->
+            <!-- <Url>file:///D:/github/nextgis_installer/qtifw/repository-test</Url> -->
+            <DisplayName>Free plan software</DisplayName>
+            <Enabled>1</Enabled>
+        </Repository>
+    </RemoteRepositories>
+    <ControlScript>initscript.qs</ControlScript>         
+</Installer>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis</Name>
+    <DisplayName>All</DisplayName>
+    <DisplayName xml:lang="ru_RU">Все</DisplayName>
+    <Description>All NextGIS desktop software</Description>
+    <Description xml:lang="ru_RU">Все программы NextGIS</Description>
+    <Version>1.0</Version>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <Default>true</Default>
+    <Script>rootscript.qs</Script>
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

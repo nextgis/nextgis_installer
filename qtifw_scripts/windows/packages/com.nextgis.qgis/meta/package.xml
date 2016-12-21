@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.qgis</Name>
+    <Dependencies>com.nextgis.qgis.common,com.nextgis.qgis.libanalysis,com.nextgis.qgis.libapp,com.nextgis.qgis.libcore,com.nextgis.qgis.libgui,com.nextgis.qgis.libnetworkanalysis,com.nextgis.qgis.libpython,com.nextgis.qgis.main,com.nextgis.qgis.providers,com.nextgis.qgis.providerscommon,com.nextgis.qgis.python,com.nextgis.python.main,com.nextgis.python.numpy,com.nextgis.python.psycopg2,com.nextgis.python.pyqt4,com.nextgis.python.sip,com.nextgis.spatial.gdal,com.nextgis.common.qt4,com.nextgis.common.vc,com.nextgis.common.other</Dependencies>
+    <DisplayName>QGIS</DisplayName>
+    <DisplayName xml:lang="ru_RU">QGIS</DisplayName>
+    <Description>QGIS</Description>
+    <Description xml:lang="ru_RU">QGIS</Description>
+    <Version>16.1.52</Version>
+    <Default>true</Default>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <Script>afterinstall.qs</Script> 
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

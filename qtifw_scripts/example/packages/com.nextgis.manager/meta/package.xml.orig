@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.manager</Name>
+    <DisplayName>Manager</DisplayName>
+    <Description>GIS data manager</Description>
+    <Version>0.0.1</Version>
+    <ReleaseDate>2016-01-01</ReleaseDate>
+    <Default>true</Default>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

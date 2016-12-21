@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.docs.enqgis</Name>
+    <DisplayName>QGIS documentation</DisplayName>
+    <DisplayName xml:lang="ru_RU">Документация QGIS (английский)</DisplayName>
+    <Description>QGIS documentation</Description>
+    <Description xml:lang="ru_RU">Документация QGIS (английский)</Description>
+    <Version>2.14</Version>
+    <Default>true</Default>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <Script>afterinstall.qs</Script> 
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>
