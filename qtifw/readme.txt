@@ -21,3 +21,9 @@ For offline installer something like: file:///D:/github/repository-free
 > <path-to-framework>\repogen.exe --remove -v -p packages repository-free
 > <path-to-framework>\binarycreator.exe -v --online-only -c config\config.xml -p packages nextgis-setup
 
+* Updating existing packages:
+> cd <path-to-this-repo>
+> <path-to-framework>\repogen.exe --update-new-components -p packages repository-free
+
+* Updating structure of packages:
+...
