@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.formbuilder</Name>
+    <Dependencies>com.nextgis.common.qt5,com.nextgis.common.other,com.nextgis.common.vc,com.nextgis.spatial.gdal,com.nextgis.formbuilder.main</Dependencies>
+    <DisplayName>Formbuilder</DisplayName>
+    <DisplayName xml:lang="ru_RU">Formbuilder</DisplayName>
+    <Description>Formbuilder</Description>
+    <Description xml:lang="ru_RU">Formbuilder</Description>
+    <Version>2.1.1</Version>
+    <Default>true</Default>
+    <Script>afterinstall.qs</Script>   
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.spatial.gdal</Name>
+    <DisplayName>GDAL</DisplayName>
+    <DisplayName xml:lang="ru_RU">GDAL</DisplayName>
+    <Description>GDAL</Description>
+    <Description xml:lang="ru_RU">GDAL</Description>
+    <Version>2.1.2</Version>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

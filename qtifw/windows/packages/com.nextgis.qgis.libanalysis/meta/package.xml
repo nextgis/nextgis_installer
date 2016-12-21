@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.qgis.libanalysis</Name>
+    <DisplayName>Analysis library</DisplayName>
+    <DisplayName xml:lang="ru_RU">Analysis library</DisplayName>
+    <Description>Analysis library</Description>
+    <Description xml:lang="ru_RU">Analysis library</Description>
+    <Version>16.1.52-0</Version>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <Virtual>true</Virtual>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

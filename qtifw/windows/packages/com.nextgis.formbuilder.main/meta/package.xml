@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.formbuilder.main</Name>
+    <DisplayName>Formbuilder main files</DisplayName>
+    <DisplayName xml:lang="ru_RU">Formbuilder main files</DisplayName>
+    <Description>Formbuilder main files</Description>
+    <Description xml:lang="ru_RU">Formbuilder main files</Description>
+    <Version>2.1.1</Version>
+    <Virtual>true</Virtual>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

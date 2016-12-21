@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.docs</Name>
+    <DisplayName>Documentation</DisplayName>
+    <DisplayName xml:lang="ru_RU">Документация</DisplayName>
+    <Description>Documentation</Description>
+    <Description xml:lang="ru_RU">Документация</Description>
+    <Version>1.0</Version>
+    <Default>true</Default>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

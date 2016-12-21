@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.common</Name>
+    <DisplayName>Common libraries</DisplayName>
+    <DisplayName xml:lang="ru_RU">Общие библиотеки</DisplayName>
+    <Description>Common libraries</Description>
+    <Description xml:lang="ru_RU">Общие библиотеки</Description>
+    <Version>1.0</Version>
+    <Virtual>true</Virtual>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

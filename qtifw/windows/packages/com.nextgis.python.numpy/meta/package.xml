@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.python.numpy</Name> 
+    <DisplayName>Numpy package</DisplayName>
+    <DisplayName xml:lang="ru_RU">Numpy package</DisplayName>
+    <Description>Numpy package</Description>
+    <Description xml:lang="ru_RU">Numpy package</Description>
+    <Version>1.11.1</Version>
+    <ReleaseDate>2016-11-10</ReleaseDate>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

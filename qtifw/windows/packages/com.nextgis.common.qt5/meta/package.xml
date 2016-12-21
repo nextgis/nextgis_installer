@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>com.nextgis.common.qt5</Name>
+    <DisplayName>Qt5</DisplayName>
+    <DisplayName xml:lang="ru_RU">Qt5</DisplayName>
+    <Description>Qt5</Description>
+    <Description xml:lang="ru_RU">Qt5</Description>
+    <Version>5.7.0</Version>
+    <ReleaseDate>2016-01-01</ReleaseDate>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>
