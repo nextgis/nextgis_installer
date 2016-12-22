@@ -66,6 +66,13 @@ Note: To build installer framework via build_installer script python required.
 > <path to framework>\binarycreator.exe -v --online-only -c config\config.xml -p packages nextgis-setup
 ```
 
+### Mac OS X
+
+```bash
+> ./repogen --remove -v -p <path to repo structure>/mac/packages <output path>/repository-mac
+> ./binarycreator -v --offline-only -c <path to repo structure>/mac/config/config.xml -p <path to repo structure>/mac/packages <output path>/nextgis-setup
+```
+
 ### 5.3 Updating existing packages:
 
 ### Windows
