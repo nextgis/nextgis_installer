@@ -86,9 +86,9 @@ In data folder the package.xml should looks like:
 ```
 
 The description of package.xml in meta folder see in [this link](http://doc.qt.io/qtinstallerframework/ifw-component-description.html#package-directory-structure)
-The <Version> tag will be overwritten by value from package.xml of data folder.
-The <ReleaseDate> will be set on current date. Both tags can be skipped in package.xml
+The \<Version\> tag will be overwritten by value from package.xml of data folder.
+The \<ReleaseDate\> will be set on current date. Both tags can be skipped in package.xml
 in meta folder.
 
 According to this structure create_installer script will form needed folders and
-files in target directory and generate installer.
+files in target directory and generate installer (nextgis-setup).
