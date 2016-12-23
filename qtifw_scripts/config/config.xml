@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>NextGIS programs</Name>
+    <Version>1.0</Version>
+    <Title>NextGIS</Title>
+    <Publisher>NextGIS</Publisher>
+    <ProductUrl>http://nextgis.com/software/</ProductUrl>
+    <Banner>logo_x.png</Banner>
+    <InstallerApplicationIcon>NGInstaller_logo</InstallerApplicationIcon>
+    <InstallerWindowIcon>NGInstaller_logo.png</InstallerWindowIcon>
+    <WizardStyle>Mac</WizardStyle>
+    <StartMenuDir>NextGIS</StartMenuDir>
+    <TargetDir>@RootDir@</TargetDir>
+    <MaintenanceToolName>nextgisupdater</MaintenanceToolName>
+    <MaintenanceToolIniFile>nextgisupdater.ini</MaintenanceToolIniFile>
+    <Translations>
+    </Translations>
+    <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
+    <RemoteRepositories>
+        <Repository>
+            <!-- <Url>https://my.nextgis.com/downloads/software/installer/repository-mac</Url> -->
+            <Url>file:///Users/Bishop/work/projects/infrastructure/nextgis_installer/build/repository-mac</Url>
+            <DisplayName>Free plan software</DisplayName>
+            <Enabled>1</Enabled>
+        </Repository>
+    </RemoteRepositories>
+    <ControlScript>initscript.qs</ControlScript>
+</Installer>
