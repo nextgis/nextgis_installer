@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Version>2.1.2-0</Version>
+    <mac>
+        <path src="lib_gdal/inst/Library/Frameworks/gdal.framework" dst="Library/Frameworks/gdal.framework"/>
+    </mac>
+</Package>

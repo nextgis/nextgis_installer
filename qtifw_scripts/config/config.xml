@@ -6,11 +6,11 @@
     <Publisher>NextGIS</Publisher>
     <ProductUrl>http://nextgis.com/software/</ProductUrl>
     <Banner>logo_x.png</Banner>
-    <InstallerApplicationIcon>NGInstaller_logo</InstallerApplicationIcon>
-    <InstallerWindowIcon>NGInstaller_logo.png</InstallerWindowIcon>
+    <InstallerApplicationIcon>nextgis-setup</InstallerApplicationIcon>
+    <InstallerWindowIcon>nextgis-setup.png</InstallerWindowIcon>
     <WizardStyle>Mac</WizardStyle>
     <StartMenuDir>NextGIS</StartMenuDir>
-    <TargetDir>@RootDir@</TargetDir>
+    <TargetDir>@ApplicationsDir@/NextGIS</TargetDir>
     <MaintenanceToolName>nextgisupdater</MaintenanceToolName>
     <MaintenanceToolIniFile>nextgisupdater.ini</MaintenanceToolIniFile>
     <Translations>

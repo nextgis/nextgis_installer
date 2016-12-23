@@ -34,49 +34,61 @@ Example of configure string:
 > OPENSSL_LIBS='-L<path to lib_openssl>/build/ssl -L<path to lib_openssl>/lib_openssl/build/crypto -lsslstatic -lcryptostatic' ./configure -prefix $PWD/qtbase -release -static -opensource -confirm-license -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtsensors -skip qtxmlpatterns -skip qtquickcontrols -skip qtquickcontrols2 -skip qt3d -openssl-linked -I <path to lib_openssl>/lib_openssl/build/include -L<path to lib_openssl>/lib_openssl/build/ssl -L<path to lib_openssl>/lib_openssl/build/crypto
 ```
 
-## 3. Go to installer framework folder
-
-```bash
-> cd ../qtifw
-```
-
-## 4. Build InstallerFramework
+## 3. Build InstallerFramework
 
 Note: To build installer framework via build_installer script python required.
 
 ```bash
-> cd tools
-> ./build_installer.py --static-qmake <path to static QT>/qtbase/bin/qmake --make make --targetdir <path to build directory>/ --qt_menu_nib <path to static QT>/qtbase/src/plugins/platforms/cocoa
+> cd <path to this repo>/qtifw/tools
+> python build_installer.py --static-qmake <path to Qt bin files>/qmake --make make --targetdir <path to build directory> --qt_menu_nib <path to static QT>/qtbase/src/plugins/platforms/cocoa
 ```
 
-## 5. Create NextGIS installer.
+## 4. Create NextGIS installer.
 
-### 5.1 Before generating installer check the main config.xml file for the repository url.
+### 4.1 Generating installer:
 
-* For online installer should be: http://176.9.38.120/installer/repository-free
-* For offline installer something like: file:///D:/github/repository-free
-
-### 5.2 Generating installer:
-
-### Windows
+Note: To create installer via create_installer script python required.
 
 ```bash
-> cd <path to this repo>
-> <path to framework>\repogen.exe --remove -v -p packages repository-free
-> <path to framework>\binarycreator.exe -v --online-only -c config\config.xml -p packages nextgis-setup
+> cd <path to this repo>/opt
+> python create_installer.py -t <output path> -q <path to Qt bin files> -s <path to packages sources root (borsch root)>
 ```
 
-### Mac OS X
-
-```bash
-> ./repogen --remove -v -p <path to repo structure>/mac/packages <output path>/repository-mac
-> ./binarycreator -v --offline-only -c <path to repo structure>/mac/config/config.xml -p <path to repo structure>/mac/packages <output path>/nextgis-setup
-```
-
-### 5.3 Updating existing packages:
+### 4.2 Updating existing packages:
 
 ### Windows
 ```bash
 > cd <path to this repo>
 > <path to framework>\repogen.exe --update-new-components -p packages repository-free
 ```
+
+# Packages structure
+
+All package metadata stored in qtifw_scripts/packages directory. All packages must
+have own directory started with 'com.nextgis'. In each directory must be two
+folders:
+* data
+* meta
+
+In each folder must be 'package.xml' file. Also scripts (\*.qs), translations
+(\*.ts) files may be present.
+
+In data folder the package.xml should looks like:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Version>1.0</Version> <!-- **required** Package version. For virtual package usually 1.0. For real package in form of major.minor.patch-build -->
+    <UpdateText></UpdateText> <!-- **optional** Some text for next version or build -->
+    <win src="" dst=""/> <!-- **optional** src - Path from borsch root directory for install files. dst - path in package folder to copy install files -->
+    <mac src="" dst=""/> <!-- **optional** -->
+</Package>
+```
+
+The description of package.xml in meta folder see in [this link](http://doc.qt.io/qtinstallerframework/ifw-component-description.html#package-directory-structure)
+The <Version> tag will be overwritten by value from package.xml of data folder.
+The <ReleaseDate> will be set on current date. Both tags can be skipped in package.xml
+in meta folder.
+
+According to this structure create_installer script will form needed folders and
+files in target directory and generate installer.
