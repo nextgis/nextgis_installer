@@ -16,7 +16,7 @@ authentication:
 > cmake -build . -- -j 4
 ```
 
-## 2. Build Qt (5.6.0 strictly required on Windows due the UAC bug) statically with OpenSSL linked.
+## 2. Build Qt (5.6.0 strictly required on Windows due the UAC bug) statically with OpenSSL linked
 
 ### Windows
 
@@ -43,7 +43,7 @@ Note: To build installer framework via build_installer script python required.
 > python build_installer.py --static-qmake <path to Qt bin files>/qmake --make make --targetdir <path to build directory> --qt_menu_nib <path to static QT>/qtbase/src/plugins/platforms/cocoa
 ```
 
-## 4. Create NextGIS installer.
+## 4. Create NextGIS installer
 
 ### 4.1 Generating installer:
 
@@ -92,3 +92,11 @@ in meta folder.
 
 According to this structure create_installer script will form needed folders and
 files in target directory and generate installer (nextgis-setup).
+
+# Links
+
+* [Tutorial: Creating an Installer](http://doc.qt.io/qtinstallerframework/ifw-tutorial.html)
+* [Package Directory](http://doc.qt.io/qtinstallerframework/ifw-component-description.html#package-directory-structure)
+* [Configuration File](http://doc.qt.io/qtinstallerframework/ifw-globalconfig.html)
+* [Component Scripting](http://doc.qt.io/qtinstallerframework/scripting.html)
+* [Qt for macOS - Deployment](http://doc.qt.io/qt-5/osx-deployment.html)
