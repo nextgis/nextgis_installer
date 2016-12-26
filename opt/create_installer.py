@@ -93,7 +93,7 @@ def get_repository_path():
     out_path = os.path.join(repo_target_path, 'repository')
     if sys.platform == 'darwin':
         out_path += '-mac'
-    elif sys.platform == 'windows':
+    elif sys.platform == 'win32':
         out_path += '-win'
     else: # This should never happened
         out_path += '-nix'
@@ -113,7 +113,7 @@ def prepare_config():
     if sys.platform == 'darwin':
         inst_app_icon_tag.text += '.icns'
         inst_app_icon_path += '.icns'
-    elif sys.platform == 'windows':
+    elif sys.platform == 'win32':
         inst_app_icon_tag.text += '.ico'
         inst_app_icon_path += '.ico'
     else:
@@ -177,7 +177,7 @@ def process_directory(dir_name):
         mac_tag = root.find('mac')
         if mac_tag is not None:
             copyFiles(mac_tag, new_data_path)
-    elif sys.platform == 'windows':
+    elif sys.platform == 'win32':
         win_tag = root.find('win')
         if win_tag is not None:
             copyFiles(win_tag, new_data_path)
@@ -187,25 +187,21 @@ def process_directory(dir_name):
     root = tree.getroot()
     releasedate_tag = root.find('ReleaseDate')
     if releasedate_tag is None:
-        root.set('ReleaseDate', time.strftime("%Y-%m-%d"))
-    else:
-        releasedate_tag.text = time.strftime("%Y-%m-%d")
+        releasedate_tag = ET.SubElement(root, 'ReleaseDate')
+    releasedate_tag.text = time.strftime("%Y-%m-%d")
     name_tag = root.find('Name')
     if name_tag is None:
-        root.set('Name', dir_name)
-    else:
-        name_tag.text = dir_name
+        name_tag = ET.SubElement(root, 'Name')
+    name_tag.text = dir_name
     version_tag = root.find('Version')
     if version_tag is None:
-        root.set('Version', version_text)
-    else:
-        version_tag.text = version_text
+        version_tag = ET.SubElement(root, 'Version')
+    version_tag.text = version_text
     if updatetext_text is not None:
         updatetext_tag = root.find('UpdateText')
         if updatetext_tag is None:
-            root.set('UpdateText', version_text)
-        else:
-            updatetext_tag.text = updatetext_text
+            updatetext_tag = ET.SubElement(root, 'UpdateText')
+        updatetext_tag.text = updatetext_text
 
     # TODO: Additional change to xml
     new_meta_path = os.path.join(repo_new_package_path, 'meta')
