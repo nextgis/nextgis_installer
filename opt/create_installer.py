@@ -9,6 +9,10 @@
 ##
 ################################################################################
 
+## Example use.
+## Stanalone: python create_installer.py -t /Users/Bishop/work/projects/infrastructure/nextgis_installer/build -q /Users/Bishop/work/projects/infrastructure/qt-everywhere-opensource-src-5.7.1/qtbase/bin -s /Users/Bishop/work/projects/borsch/
+## Network: python create_installer.py -t /Users/Bishop/work/projects/infrastructure/nextgis_installer/build -q /Users/Bishop/work/projects/infrastructure/qt-everywhere-opensource-src-5.7.1/qtbase/bin -s /Users/Bishop/work/projects/borsch/ -n -r https://my.nextgis.com/downloads/software/installer/repository-mac
+
 import argparse
 import os
 import shutil
@@ -18,6 +22,7 @@ import sys
 import xml.etree.ElementTree as ET
 import time
 import pickle
+import dmgbuild
 
 args = {}
 
@@ -178,6 +183,7 @@ def prepare_config():
     if sys.platform == 'darwin':
         inst_app_icon_tag.text += '.icns'
         inst_app_icon_path += '.icns'
+        shutil.copy(os.path.join(repo_root_dir, 'art', 'bk.png'), repo_new_config_path)
     elif sys.platform == 'win32':
         inst_app_icon_tag.text += '.ico'
         inst_app_icon_path += '.ico'
@@ -355,6 +361,16 @@ def create_installer():
         icns_path = os.path.join(repo_target_path, 'nextgis-setup.app', 'Contents', 'Resources', 'nextgis-setup.icns' )
         os.unlink(icns_path)
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
+        # Build dgm image file
+        color_print('Create DMG file ...', True, 'LMAGENTA')
+        dmgbuild.build_dmg(
+            os.path.join(repo_target_path, 'nextgis-setup.dmg'),
+            'NextGIS Setup',
+            os.path.join(repo_root_dir, 'opt', 'dmg_settings.py'),
+            defines=dict(badge_icon=os.path.join(repo_new_config_path, 'nextgis-setup.icns'),
+                 background=os.path.join(repo_new_config_path, 'bk.png'),
+                 files=[os.path.join(repo_target_path, 'nextgis-setup.app')]),
+            lookForHiDPI=False)
 
     print 'DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup')
 
