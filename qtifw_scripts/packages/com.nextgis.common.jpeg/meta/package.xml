@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>JPEG</DisplayName>
+    <DisplayName xml:lang="ru_RU">JPEG</DisplayName>
+    <Description>JPEG Library</Description>
+    <Description xml:lang="ru_RU">Библиотека JPEG</Description>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_lzma">
+    <mac>
+        <path src="inst/Library/Frameworks/lzma.framework" dst="Library/Frameworks/lzma.framework"/>
+    </mac>
+</Package>

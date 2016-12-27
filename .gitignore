@@ -52,3 +52,7 @@ com.nextgis.formbuilder/data
 *_build
 *_pkg
 build
+ints
+
+# create installer python script temp file
+versions.pkl

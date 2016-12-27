@@ -17,8 +17,12 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 import time
+import pickle
 
 args = {}
+
+# ['lib_jsonc' = ['date': '1900-01-01 00:00:00', 'count': 1]]
+libraries_version_dict = {}
 
 repogen_file = ''
 binarycreator_file = ''
@@ -32,6 +36,55 @@ repo_new_packages_path = ''
 repo_new_config_path = ''
 translate_tool = ''
 packages_data_source_path = ''
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    OKGRAY = '\033[0;37m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    DGRAY='\033[1;30m'
+    LRED='\033[1;31m'
+    LGREEN='\033[1;32m'
+    LYELLOW='\033[1;33m'
+    LBLUE='\033[1;34m'
+    LMAGENTA='\033[1;35m'
+    LCYAN='\033[1;36m'
+    WHITE='\033[1;37m'
+
+def color_print(text, bold, color):
+    if sys.platform == 'win32':
+        print text
+    else:
+        out_text = ''
+        if bold:
+            out_text += bcolors.BOLD
+        if color == 'GREEN':
+            out_text += bcolors.OKGREEN
+        elif color == 'LGREEN':
+            out_text += bcolors.LGREEN
+        elif color == 'LYELLOW':
+            out_text += bcolors.LYELLOW
+        elif color == 'LMAGENTA':
+            out_text += bcolors.LMAGENTA
+        elif color == 'LCYAN':
+            out_text += bcolors.LCYAN
+        elif color == 'LRED':
+            out_text += bcolors.LRED
+        elif color == 'LBLUE':
+            out_text += bcolors.LBLUE
+        elif color == 'DGRAY':
+            out_text += bcolors.DGRAY
+        elif color == 'OKGRAY':
+            out_text += bcolors.OKGRAY
+        else:
+            out_text += bcolors.OKGRAY
+        out_text += text + bcolors.ENDC
+        print out_text
 
 def parse_arguments():
     global args
@@ -48,6 +101,16 @@ def run(args):
     print 'calling ' + string.join(args)
     subprocess.check_call(args)
 
+def load_versions():
+    if os.path.exists('versions.pkl'):
+        global libraries_version_dict
+        with open('versions.pkl', 'rb') as f:
+            libraries_version_dict = pickle.load(f)
+
+def save_versions():
+    with open('versions.pkl', 'wb') as f:
+        pickle.dump(libraries_version_dict, f, pickle.HIGHEST_PROTOCOL)
+
 def init():
     print 'Initializing ...'
     global repogen_file
@@ -60,6 +123,8 @@ def init():
     global repo_new_config_path
     global translate_tool
     global packages_data_source_path
+
+    load_versions()
 
     repo_root_dir = os.path.dirname(os.path.abspath(os.path.dirname(sys.argv[0])))
 
@@ -142,14 +207,42 @@ def prepare_config():
     tree.write(os.path.join(repo_new_config_path, 'config.xml'))
     shutil.copy(os.path.join(repo_config_path, 'initscript.qs'), repo_new_config_path)
 
-def copyFiles(tag, data_path):
+def copyFiles(tag, sources_root_dir, data_path):
     for path in tag.iter('path'):
         src_path = path.attrib['src']
         dst_path = path.attrib['dst']
-        shutil.copytree(os.path.join(packages_data_source_path, src_path), os.path.join(data_path, dst_path))
+        shutil.copytree(os.path.join(sources_root_dir, src_path), os.path.join(data_path, dst_path))
     return
 
+def get_version_text(sources_root_dir):
+    version_file_path = os.path.join(packages_data_source_path, sources_root_dir, 'build', 'version.str')
+    with open(version_file_path) as f:
+        content = f.readlines()
+        version_str = content[0].rstrip()
+        version_file_date = content[1].rstrip()
+
+    if sources_root_dir in libraries_version_dict:
+        if libraries_version_dict[sources_root_dir]['version'] == version_str:
+            if libraries_version_dict[sources_root_dir]['date'] == version_file_date:
+                version_str += '-' + str(libraries_version_dict[sources_root_dir]['count'])
+            else:
+                count = libraries_version_dict[sources_root_dir]['count'] + 1
+                version_str += '-' + str(count)
+                libraries_version_dict[sources_root_dir]['count'] = count
+                libraries_version_dict[sources_root_dir]['date'] = version_file_date
+        else:
+            libraries_version_dict[sources_root_dir]['count'] = 0
+            libraries_version_dict[sources_root_dir]['date'] = version_file_date
+            libraries_version_dict[sources_root_dir]['version'] = version_str
+            version_str += '-0'
+    else:
+        libraries_version_dict[sources_root_dir] = dict(count = 0, date = version_file_date, version = version_str)
+        version_str += '-0'
+
+    return version_str
+
 def process_directory(dir_name):
+    color_print('Process ' + dir_name, True, 'LBLUE')
     path = os.path.join(repo_source_path, dir_name)
     path_meta = os.path.join(path, 'meta')
     path_data = os.path.join(path, 'data')
@@ -163,7 +256,13 @@ def process_directory(dir_name):
 
     tree = ET.parse(os.path.join(path_data, 'package.xml'))
     root = tree.getroot()
-    version_text = root.find('Version').text
+
+    if 'root' in root.attrib:
+        sources_root_dir = root.attrib['root']
+        version_text = get_version_text(sources_root_dir)
+    else:
+        version_text = root.find('Version').text
+
     updatetext_tag = root.find('UpdateText')
     updatetext_text = None
     if updatetext_tag is not None:
@@ -176,11 +275,11 @@ def process_directory(dir_name):
     if sys.platform == 'darwin':
         mac_tag = root.find('mac')
         if mac_tag is not None:
-            copyFiles(mac_tag, new_data_path)
+            copyFiles(mac_tag, os.path.join(packages_data_source_path, sources_root_dir), new_data_path)
     elif sys.platform == 'win32':
         win_tag = root.find('win')
         if win_tag is not None:
-            copyFiles(win_tag, new_data_path)
+            copyFiles(win_tag, os.path.join(packages_data_source_path, sources_root_dir), new_data_path)
 
     # Process package.xml
     tree = ET.parse(os.path.join(path_meta, 'package.xml'))
@@ -264,3 +363,4 @@ parse_arguments()
 init()
 prepare()
 create_installer()
+save_versions()
