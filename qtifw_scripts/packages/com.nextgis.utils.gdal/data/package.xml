@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_gdal">
+    <mac>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdaladdo" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdalbuildvrt" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdaldem" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdalenhance" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdalinfo" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdallocationinfo" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdalmanage" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdalserver" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdalsrsinfo" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdaltindex" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdaltransform" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdalwarp" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal_contour" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal_grid" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal_rasterize" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal_translate" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/nearblack" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/ogr*" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/gnm*" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Applications/gdal.app/Contents/MacOS/testepsg" dst="Applications/gdal.app/Contents/MacOS/"/>
+    </mac>
+</Package>

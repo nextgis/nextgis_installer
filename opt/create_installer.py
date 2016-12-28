@@ -19,6 +19,7 @@ import xml.etree.ElementTree as ET
 import time
 import pickle
 import dmgbuild
+import glob
 
 args = {}
 libraries_version_dict = {}
@@ -215,7 +216,22 @@ def copyFiles(tag, sources_root_dir, data_path):
     for path in tag.iter('path'):
         src_path = path.attrib['src']
         dst_path = path.attrib['dst']
-        shutil.copytree(os.path.join(sources_root_dir, src_path), os.path.join(data_path, dst_path))
+        src_path_full = os.path.join(sources_root_dir, src_path)
+        dst_path_full = os.path.join(data_path, dst_path)
+
+        if os.path.isdir(src_path_full):
+            shutil.copytree(src_path_full, dst_path_full)
+        else:
+            if not os.path.exists(dst_path_full):
+                os.makedirs(dst_path_full)
+
+            if src_path_full.find('*'):
+                # Copy by wildcard.
+                for copy_file in glob.glob(src_path_full):
+                    shutil.copy(copy_file, dst_path_full)
+            else:
+                if os.path.exists(src_path_full):
+                    shutil.copy(src_path_full, dst_path_full)
     return
 
 def get_version_text(sources_root_dir, component_name):
@@ -235,19 +251,16 @@ def get_version_text(sources_root_dir, component_name):
                 version_str += '-' + str(count)
                 libraries_version_dict[component_name]['count'] = count
                 libraries_version_dict[component_name]['date'] = version_file_date
-                print 'diff date'
                 has_changes = True
         else:
             libraries_version_dict[component_name]['count'] = 0
             libraries_version_dict[component_name]['date'] = version_file_date
             libraries_version_dict[component_name]['version'] = version_str
             version_str += '-0'
-            print 'diff ver'
             has_changes = True
     else:
         libraries_version_dict[component_name] = dict(count = 0, date = version_file_date, version = version_str)
         version_str += '-0'
-        print 'no entry'
         has_changes = True
 
     return version_str, has_changes
@@ -321,6 +334,7 @@ def process_directory(dir_name):
     tree = ET.parse(os.path.join(path_data, 'package.xml'))
     root = tree.getroot()
 
+    sources_root_dir = ''
     if 'root' in root.attrib:
         sources_root_dir = root.attrib['root']
         version_text, has_changes = get_version_text(sources_root_dir, dir_name)
@@ -378,6 +392,7 @@ def update_directory(dir_name):
     tree = ET.parse(os.path.join(path_data, 'package.xml'))
     root = tree.getroot()
 
+    sources_root_dir = ''
     if 'root' in root.attrib:
         sources_root_dir = root.attrib['root']
         version_text, has_changes = get_version_text(sources_root_dir, dir_name)

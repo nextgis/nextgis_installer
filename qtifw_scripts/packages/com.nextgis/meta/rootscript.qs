@@ -1,7 +1,7 @@
 
-var Dir = new function () 
+var Dir = new function ()
 {
-    this.toNativeSparator = function (path) 
+    this.toNativeSparator = function (path)
     {
         if (systemInfo.productType === "windows")
             return path.replace(/\//g, '\\');
@@ -10,9 +10,9 @@ var Dir = new function ()
 };
 
 
-function Component() 
+function Component()
 {
-    if (installer.isInstaller()) 
+    if (installer.isInstaller())
     {
         component.loaded.connect(this, Component.prototype.componentLoaded);
     }
@@ -20,17 +20,30 @@ function Component()
 
 
 Component.prototype.componentLoaded = function ()
-{  
-    component.setValue("Description",qsTranslate("rootscript","All NextGIS programs"));   
+{
+    component.setValue("Description",qsTranslate("rootscript","All NextGIS programs"));
 }
 
 Component.prototype.createOperations = function()
 {
     component.createOperations();
 
-    if (systemInfo.productType === "windows") 
+    // Create uninstall link only for windows
+    if (installer.value("os") == "win")
     {
-        component.addOperation("CreateShortcut", 
-            "@TargetDir@/maintenancetool.exe", "@StartMenuDir@/NextGIS Updater.lnk", "workingDirectory=@TargetDir@");            
+        // shortcut to uninstaller
+        component.addOperation( "CreateShortcut",
+                                "@TargetDir@/nextgisupdater.exe",
+                                "@StartMenuDir@/Uninstall NextGIS.lnk",
+                                " --uninstall");
+    }
+    // only for windows online installer
+    if ( installer.value("os") == "win" && !installer.isOfflineOnly() )
+    {
+        // create shortcut
+        component.addOperation( "CreateShortcut",
+                                "@TargetDir@/nextgisupdater.exe",
+                                "@StartMenuDir@/NextGIS Maintenance Tool.lnk",
+                                "workingDirectory=@TargetDir@" );
     }
 }

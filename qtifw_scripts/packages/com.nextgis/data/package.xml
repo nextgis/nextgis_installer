@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Version>1.0</Version>
+    <Version>1.0.1</Version>
+    <UpdateText>Add GDAL command line utilities</UpdateText>
     <!--
-        <UpdateText></UpdateText>
         <win></win>
         <mac></mac>
     -->
