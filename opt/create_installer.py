@@ -9,10 +9,6 @@
 ##
 ################################################################################
 
-## Example use.
-## Stanalone: python create_installer.py -t /Users/Bishop/work/projects/infrastructure/nextgis_installer/build -q /Users/Bishop/work/projects/infrastructure/qt-everywhere-opensource-src-5.7.1/qtbase/bin -s /Users/Bishop/work/projects/borsch/
-## Network: python create_installer.py -t /Users/Bishop/work/projects/infrastructure/nextgis_installer/build -q /Users/Bishop/work/projects/infrastructure/qt-everywhere-opensource-src-5.7.1/qtbase/bin -s /Users/Bishop/work/projects/borsch/ -n -r https://my.nextgis.com/downloads/software/installer/repository-mac
-
 import argparse
 import os
 import shutil
@@ -25,8 +21,6 @@ import pickle
 import dmgbuild
 
 args = {}
-
-# ['lib_jsonc' = ['date': '1900-01-01 00:00:00', 'count': 1]]
 libraries_version_dict = {}
 
 repogen_file = ''
@@ -94,12 +88,16 @@ def color_print(text, bold, color):
 def parse_arguments():
     global args
 
-    parser = argparse.ArgumentParser(description='Create NextGIS desktop software installer.', usage='%(prog)s [options]')
-    parser.add_argument('-q', dest='qt_bin', required=True, help='QT bin path (path to lrelease)')
+    parser = argparse.ArgumentParser(description='Create NextGIS desktop software installer.')
+    parser.add_argument('-q', dest='qt_bin', required=True, help='Qt binary path (path to lrelease)')
     parser.add_argument('-t', dest='target', required=True, help='target path')
     parser.add_argument('-s', dest='source', required=True, help='Packages data source path (i.e. borsch root directory)')
     parser.add_argument('-r', dest='remote', required=False, help='repositry remote url')
-    parser.add_argument('-n', dest='network', action='store_true', help='online installer, the -r key should be present)')
+    parser.add_argument('-n', dest='network', action='store_true', help='online installer (the -r key should be present)')
+
+    subparsers = parser.add_subparsers(help='command help', dest='command')
+    parser_create = subparsers.add_parser('create')
+    parser_update = subparsers.add_parser('update')
     args = parser.parse_args()
 
 def run(args):
@@ -117,7 +115,7 @@ def save_versions():
         pickle.dump(libraries_version_dict, f, pickle.HIGHEST_PROTOCOL)
 
 def init():
-    print 'Initializing ...'
+    color_print('Initializing ...', True, 'LYELLOW')
     global repogen_file
     global binarycreator_file
     global repo_config_path
@@ -135,14 +133,14 @@ def init():
 
     bin_dir = os.path.join(repo_root_dir, 'qtifw_pkg', 'bin')
     repogen_file = os.path.join(bin_dir, 'repogen')
-    print 'repogent path: ' + repogen_file
+    color_print('repogen path: ' + repogen_file, True, 'LCYAN')
     binarycreator_file = os.path.join(bin_dir, 'binarycreator')
-    print 'binarycreator path: ' + binarycreator_file
+    color_print('binarycreator path: ' + binarycreator_file, True, 'LCYAN')
     scripts_path = os.path.join(repo_root_dir, 'qtifw_scripts')
     repo_config_path = os.path.join(scripts_path, 'config')
     repo_source_path = os.path.join(scripts_path, 'packages')
     repo_target_path = os.path.abspath(args.target)
-    print 'build path: ' + repo_target_path
+    color_print('build path: ' + repo_target_path, True, 'LCYAN')
     repo_new_packages_path = os.path.join(repo_target_path, 'packages')
     repo_new_config_path = os.path.join(repo_target_path, 'config')
 
@@ -220,72 +218,65 @@ def copyFiles(tag, sources_root_dir, data_path):
         shutil.copytree(os.path.join(sources_root_dir, src_path), os.path.join(data_path, dst_path))
     return
 
-def get_version_text(sources_root_dir):
+def get_version_text(sources_root_dir, component_name):
+    has_changes = False
     version_file_path = os.path.join(packages_data_source_path, sources_root_dir, 'build', 'version.str')
     with open(version_file_path) as f:
         content = f.readlines()
         version_str = content[0].rstrip()
         version_file_date = content[1].rstrip()
 
-    if sources_root_dir in libraries_version_dict:
-        if libraries_version_dict[sources_root_dir]['version'] == version_str:
-            if libraries_version_dict[sources_root_dir]['date'] == version_file_date:
-                version_str += '-' + str(libraries_version_dict[sources_root_dir]['count'])
+    if component_name in libraries_version_dict:
+        if libraries_version_dict[component_name]['version'] == version_str:
+            if libraries_version_dict[component_name]['date'] == version_file_date:
+                version_str += '-' + str(libraries_version_dict[component_name]['count'])
             else:
-                count = libraries_version_dict[sources_root_dir]['count'] + 1
+                count = libraries_version_dict[component_name]['count'] + 1
                 version_str += '-' + str(count)
-                libraries_version_dict[sources_root_dir]['count'] = count
-                libraries_version_dict[sources_root_dir]['date'] = version_file_date
+                libraries_version_dict[component_name]['count'] = count
+                libraries_version_dict[component_name]['date'] = version_file_date
+                print 'diff date'
+                has_changes = True
         else:
-            libraries_version_dict[sources_root_dir]['count'] = 0
-            libraries_version_dict[sources_root_dir]['date'] = version_file_date
-            libraries_version_dict[sources_root_dir]['version'] = version_str
+            libraries_version_dict[component_name]['count'] = 0
+            libraries_version_dict[component_name]['date'] = version_file_date
+            libraries_version_dict[component_name]['version'] = version_str
             version_str += '-0'
+            print 'diff ver'
+            has_changes = True
     else:
-        libraries_version_dict[sources_root_dir] = dict(count = 0, date = version_file_date, version = version_str)
+        libraries_version_dict[component_name] = dict(count = 0, date = version_file_date, version = version_str)
         version_str += '-0'
+        print 'no entry'
+        has_changes = True
 
-    return version_str
+    return version_str, has_changes
 
-def process_directory(dir_name):
-    color_print('Process ' + dir_name, True, 'LBLUE')
-    path = os.path.join(repo_source_path, dir_name)
-    path_meta = os.path.join(path, 'meta')
-    path_data = os.path.join(path, 'data')
+def process_files_in_meta_dir(path_meta, new_meta_path):
+    for meta_file in os.listdir(path_meta):
+        if meta_file == 'package.xml':
+            continue
 
-    if not os.path.exists(path_data):
-        return
+        meta_file_path = os.path.join(path_meta, meta_file)
+        filename, file_extension = os.path.splitext(os.path.basename(meta_file_path))
+        if file_extension == '.ts':
+            # Create translation
+            output_translation_path = os.path.join(new_meta_path, filename) + '.qm'
+            run((translate_tool, meta_file_path, '-qm', output_translation_path))
+        elif file_extension == '.qs':
+            shutil.copy(meta_file_path, new_meta_path)
 
-    # Parse install.xml file
-    if not os.path.exists(os.path.join(path_data, 'package.xml')):
-        return
-
-    tree = ET.parse(os.path.join(path_data, 'package.xml'))
-    root = tree.getroot()
-
-    if 'root' in root.attrib:
-        sources_root_dir = root.attrib['root']
-        version_text = get_version_text(sources_root_dir)
-    else:
-        version_text = root.find('Version').text
-
-    updatetext_tag = root.find('UpdateText')
-    updatetext_text = None
-    if updatetext_tag is not None:
-        updatetext_text = updatetext_tag.text
-
-    # Copy files
-    repo_new_package_path = os.path.join(repo_new_packages_path, dir_name)
+def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir, repo_new_package_path, data_root_tag, path_meta):
     os.makedirs(repo_new_package_path)
     new_data_path = os.path.join(repo_new_package_path, 'data')
     if sys.platform == 'darwin':
-        mac_tag = root.find('mac')
+        mac_tag = data_root_tag.find('mac')
         if mac_tag is not None:
-            copyFiles(mac_tag, os.path.join(packages_data_source_path, sources_root_dir), new_data_path)
+            copyFiles(mac_tag, sources_dir, new_data_path)
     elif sys.platform == 'win32':
-        win_tag = root.find('win')
+        win_tag = data_root_tag.find('win')
         if win_tag is not None:
-            copyFiles(win_tag, os.path.join(packages_data_source_path, sources_root_dir), new_data_path)
+            copyFiles(win_tag, sources_dir, new_data_path)
 
     # Process package.xml
     tree = ET.parse(os.path.join(path_meta, 'package.xml'))
@@ -308,23 +299,43 @@ def process_directory(dir_name):
             updatetext_tag = ET.SubElement(root, 'UpdateText')
         updatetext_tag.text = updatetext_text
 
-    # TODO: Additional change to xml
     new_meta_path = os.path.join(repo_new_package_path, 'meta')
     os.makedirs(new_meta_path)
     tree.write(os.path.join(new_meta_path, 'package.xml'))
+    process_files_in_meta_dir(path_meta, new_meta_path)
 
-    for meta_file in os.listdir(path_meta):
-        if meta_file == 'package.xml':
-            continue
 
-        meta_file_path = os.path.join(path_meta, meta_file)
-        filename, file_extension = os.path.splitext(os.path.basename(meta_file_path))
-        if file_extension == '.ts':
-            # Create translation
-            output_translation_path = os.path.join(new_meta_path, filename) + '.qm'
-            run((translate_tool, meta_file_path, '-qm', output_translation_path))
-        elif file_extension == '.qs':
-            shutil.copy(meta_file_path, new_meta_path)
+def process_directory(dir_name):
+    color_print('Process ' + dir_name, True, 'LBLUE')
+    path = os.path.join(repo_source_path, dir_name)
+    path_meta = os.path.join(path, 'meta')
+    path_data = os.path.join(path, 'data')
+
+    if not os.path.exists(path_data):
+        return
+
+    # Parse install.xml file
+    if not os.path.exists(os.path.join(path_data, 'package.xml')):
+        return
+
+    tree = ET.parse(os.path.join(path_data, 'package.xml'))
+    root = tree.getroot()
+
+    if 'root' in root.attrib:
+        sources_root_dir = root.attrib['root']
+        version_text, has_changes = get_version_text(sources_root_dir, dir_name)
+    else:
+        version_text = root.find('Version').text
+        libraries_version_dict[dir_name] = dict(count = 0, date = '1900-01-01 00:00:00', version = version_text)
+
+    updatetext_tag = root.find('UpdateText')
+    updatetext_text = None
+    if updatetext_tag is not None:
+        updatetext_text = updatetext_tag.text
+
+    # Copy files
+    repo_new_package_path = os.path.join(repo_new_packages_path, dir_name)
+    create_dest_package_dir(dir_name, version_text, updatetext_text, os.path.join(packages_data_source_path, sources_root_dir), repo_new_package_path, root, path_meta)
 
 
 def prepare_packages():
@@ -335,19 +346,78 @@ def prepare_packages():
         if os.path.isdir(os.path.join(repo_source_path, subdir)):
             process_directory(subdir)
 
+def delete_path(path_to_delete):
+    color_print('Delete existing build dir ...', True, 'LRED')
+    shutil.rmtree(path_to_delete, ignore_errors=True)
+
 def prepare():
-    print 'Preparing ...'
+    color_print('Preparing ...', True, 'LYELLOW')
 
     if os.path.exists(repo_target_path):
-        print 'delete existing build dir ...'
-        shutil.rmtree(repo_target_path, ignore_errors=True)
+        delete_path(repo_target_path)
     if os.path.exists(repo_target_path):
-        print 'delete existing build dir ...'
-        shutil.rmtree(repo_target_path, ignore_errors=True)
+        delete_path(repo_target_path)
     os.makedirs(repo_target_path)
 
     prepare_config()
     prepare_packages()
+
+def update_directory(dir_name):
+    color_print('Update ' + dir_name, True, 'LBLUE')
+    path = os.path.join(repo_source_path, dir_name)
+    path_meta = os.path.join(path, 'meta')
+    path_data = os.path.join(path, 'data')
+
+    if not os.path.exists(path_data):
+        return
+
+    # Check versions, if differ - delete directory and load it from sources.
+    if not os.path.exists(os.path.join(path_data, 'package.xml')):
+        return
+
+    tree = ET.parse(os.path.join(path_data, 'package.xml'))
+    root = tree.getroot()
+
+    if 'root' in root.attrib:
+        sources_root_dir = root.attrib['root']
+        version_text, has_changes = get_version_text(sources_root_dir, dir_name)
+    else:
+        version_text = root.find('Version').text
+        has_changes = False
+        if dir_name in libraries_version_dict:
+            if libraries_version_dict[dir_name]['version'] != version_text:
+                has_changes = True
+        else:
+            has_changes = True
+
+    repo_new_package_path = os.path.join(repo_new_packages_path, dir_name)
+    if not has_changes:
+        # Update translations
+        new_meta_path = os.path.join(repo_new_package_path, 'meta')
+        process_files_in_meta_dir(path_meta, new_meta_path)
+        color_print('No changes in ' + dir_name, True, 'LCYAN')
+        return
+
+    updatetext_tag = root.find('UpdateText')
+    updatetext_text = None
+    if updatetext_tag is not None:
+        updatetext_text = updatetext_tag.text
+
+    if os.path.exists(repo_new_package_path):
+        color_print('Delete existing dir ' + repo_new_package_path, True, 'LRED')
+        shutil.rmtree(repo_new_package_path, ignore_errors=True)
+    create_dest_package_dir(dir_name, version_text, updatetext_text, os.path.join(packages_data_source_path, sources_root_dir), repo_new_package_path, root, path_meta)
+
+def update():
+    # Scan for directories and files
+    source_dirs = os.listdir(repo_source_path)
+    for subdir in source_dirs:
+        if os.path.isdir(os.path.join(repo_source_path, subdir)):
+            update_directory(subdir)
+    # Delete not exist directories
+    for subdir in os.listdir(repo_new_packages_path):
+        if not subdir in source_dirs:
+            delete_path(os.path.join(repo_source_path, subdir))
 
 def create_installer():
     run((repogen_file, '--remove', '-v', '-p', repo_new_packages_path, get_repository_path()))
@@ -372,11 +442,20 @@ def create_installer():
                  files=[os.path.join(repo_target_path, 'nextgis-setup.app')]),
             lookForHiDPI=False)
 
-    print 'DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup')
+    color_print('DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup'), True, 'LMAGENTA')
 
+def update_istaller():
+    run((repogen_file, '--update-new-components', '-v', '-p', repo_new_packages_path, get_repository_path()))
+    color_print('DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup'), True, 'LMAGENTA')
 
 parse_arguments()
 init()
-prepare()
-create_installer()
+if args.command == 'create':
+    prepare()
+    create_installer()
+elif args.command == 'update':
+    update()
+    update_istaller()
+else:
+    exit('Unsupported command')
 save_versions()

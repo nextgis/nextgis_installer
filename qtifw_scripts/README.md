@@ -51,15 +51,15 @@ Note: To create installer via create_installer script python required.
 
 ```bash
 > cd <path to this repo>/opt
-> python create_installer.py -t <output path> -q <path to Qt bin files> -s <path to packages sources root (borsch root)>
+> python create_installer.py create -t <output path> -q <path to Qt bin files> -s <path to packages sources root (borsch root)> -r http://<path to network folder> -n
 ```
 
 ### 4.2 Updating existing packages:
 
 ### Windows
 ```bash
-> cd <path to this repo>
-> <path to framework>\repogen.exe --update-new-components -p packages repository-free
+> cd <path to this repo>/opt
+> python create_installer.py update -t <output path> -q <path to Qt bin files> -s <path to packages sources root (borsch root)> -r http://<path to network folder> -n
 ```
 
 # Packages structure
@@ -77,8 +77,8 @@ In data folder the package.xml should looks like:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <Version>1.0</Version> <!-- **required** Package version. For virtual package usually 1.0. For real package in form of major.minor.patch-build -->
+<Package root="repository folder name">
+    <Version>1.0</Version> <!-- **optional** Package version. For virtual package usually 1.0 and **required**. For real package in form of major.minor.patch-build (iterate automatically) -->
     <UpdateText></UpdateText> <!-- **optional** Some text for next version or build -->
     <win src="" dst=""/> <!-- **optional** src - Path from borsch root directory for install files. dst - path in package folder to copy install files -->
     <mac src="" dst=""/> <!-- **optional** -->
@@ -86,7 +86,7 @@ In data folder the package.xml should looks like:
 ```
 
 The description of package.xml in meta folder see in [this link](http://doc.qt.io/qtinstallerframework/ifw-component-description.html#package-directory-structure)
-The \<Version\> tag will be overwritten by value from package.xml of data folder.
+The \<Version\> tag will be overwritten by value from version.str of build folder in sources or xml tag in data folder (for groups).
 The \<ReleaseDate\> will be set on current date. Both tags can be skipped in package.xml
 in meta folder.
 
