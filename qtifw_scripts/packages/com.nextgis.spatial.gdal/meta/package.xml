@@ -6,4 +6,5 @@
     <Description xml:lang="ru_RU">GDAL</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
     <Dependencies>com.nextgis.common.jsonc, com.nextgis.common.jpeg, com.nextgis.common.png, com.nextgis.spatial.geotiff</Dependencies>
+    <Script>installscript.qs</Script>
 </Package>

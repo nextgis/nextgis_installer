@@ -1,3 +1,11 @@
+/*******************************************************************************
+**
+** Project: NextGIS online/offline installer
+** Author: Dmitry Baryshnikov <dmitry.baryshnikov@nextgis.com>
+** Copyright (c) 2016 NextGIS <info@nextgis.com>
+** License: GPL v.2
+**
+*******************************************************************************/
 
 var Dir = new function ()
 {

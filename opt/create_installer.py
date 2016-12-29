@@ -401,8 +401,10 @@ def update_directory(dir_name):
         has_changes = False
         if dir_name in libraries_version_dict:
             if libraries_version_dict[dir_name]['version'] != version_text:
+                libraries_version_dict[dir_name]['version'] = version_text
                 has_changes = True
         else:
+            libraries_version_dict[dir_name] = dict(count = 0, date = '1900-01-01 00:00:00', version = version_text)
             has_changes = True
 
     repo_new_package_path = os.path.join(repo_new_packages_path, dir_name)
