@@ -56,7 +56,6 @@ Note: To create installer via create_installer script python required.
 
 ### 4.2 Updating existing packages:
 
-### Windows
 ```bash
 > cd <path to this repo>/opt
 > python create_installer.py update -t <output path> -q <path to Qt bin files> -s <path to packages sources root (borsch root)> -r http://<path to network folder> -n

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_geos">
+    <mac>
+        <path src="inst/Library/Frameworks/geos.framework" dst="Library/Frameworks/geos.framework"/>
+    </mac>
+</Package>

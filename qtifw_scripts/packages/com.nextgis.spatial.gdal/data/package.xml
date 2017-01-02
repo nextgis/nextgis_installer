@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_gdal">
-    <UpdateText>Add setting GDAL_DATA Environment Variable for Mac OS X and Windows</UpdateText>
+    <UpdateText>Add GNM support, add OZI driver</UpdateText>
     <mac>
         <path src="inst/Library/Frameworks/gdal.framework" dst="Library/Frameworks/gdal.framework"/>
     </mac>

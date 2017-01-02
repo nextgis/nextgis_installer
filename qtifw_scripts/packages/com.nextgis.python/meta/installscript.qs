@@ -18,13 +18,13 @@ Component.prototype.createOperations = function()
     if (installer.value("os") == "win")
     {
         component.addOperation( "EnvironmentVariable",
-                                "GDAL_DATA",
-                                "@TargetDir@/share/gdal/data" );
+                                "PYTHONPATH",
+                                "@TargetDir@\\lib\\Python27\\site-packages" );
     }
     else if (installer.value("os") == "mac")
     {
         component.addOperation( "AppendFile",
                                 "@HomeDir@/.bash_profile",
-                                "\nexport GDAL_DATA=@TargetDir@/Library/Frameworks/gdal.framework/Resources/data" );
+                                "\nexport PYTHONPATH=$PYTHONPATH:@TargetDir@/Library/Python/2.7/site-packages" );
     }
 }

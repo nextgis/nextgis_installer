@@ -220,7 +220,7 @@ def copyFiles(tag, sources_root_dir, data_path):
         dst_path_full = os.path.join(data_path, dst_path)
 
         if os.path.isdir(src_path_full):
-            shutil.copytree(src_path_full, dst_path_full)
+            shutil.copytree(src_path_full, dst_path_full, symlinks=True)
         else:
             if not os.path.exists(dst_path_full):
                 os.makedirs(dst_path_full)

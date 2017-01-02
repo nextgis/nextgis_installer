@@ -27,29 +27,24 @@ Component.prototype.createOperations = function()
     if (installer.value("os") == "mac")
     {
         var utilities = [
-            "gdalinfo",
-            "gdaladdo",
-            "gdalbuildvrt",
-            "gdaldem",
-            "gdalenhance",
-            "gdallocationinfo",
-            "gdalmanage",
-            "gdalserver",
-            "gdalsrsinfo",
-            "gdaltindex",
-            "gdaltransform",
-            "gdalwarp",
-            "gdal_contour",
-            "gdal_grid",
-            "gdal_rasterize",
-            "gdal_translate",
-            "nearblack",
-            "testepsg",
-            "ogr2ogr",
-            "ogrtindex",
-            "ogrinfo",
-            "gnmmanage",
-            "gnmanalyse"
+            "epsg_tr.py",
+            "esri2wkt.py",
+            "gcps2vec.py",
+            "gcps2wld.py",
+            "gdal2tiles.py",
+            "gdal2xyz.py",
+            "gdal_fillnodata.py",
+            "gdal_merge.py",
+            "gdal_polygonize.py",
+            "gdal_proximity.py",
+            "gdal_retile.py",
+            "gdal_sieve.py",
+            "gdalchksum.py",
+            "gdalident.py",
+            "gdalimport.py",
+            "mkgraticule.py",
+            "pct2rgb.py",
+            "rgb2pct.py"
         ];
 
         for ( i = 0; i < utilities.length; i++ ) {

@@ -5,8 +5,6 @@
     <DisplayName xml:lang="ru_RU">Пространственные библиотеки</DisplayName>
     <Description>Spatial libraries</Description>
     <Description xml:lang="ru_RU">Пространственные библиотеки</Description>
-    <Version>1.0</Version>
-    <!--Virtual>true</Virtual-->
-    <ReleaseDate>2016-11-10</ReleaseDate>
+    <Virtual>false</Virtual>
     <RequiresAdminRights>true</RequiresAdminRights>
 </Package>

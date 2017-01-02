@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_gdal">
-    <UpdateText>Optimize install script</UpdateText>
+    <UpdateText>Add GNM utilities</UpdateText>
     <mac>
         <path src="inst/Applications/gdal.app/Contents/MacOS/gdaladdo" dst="Applications/gdal.app/Contents/MacOS/"/>
         <path src="inst/Applications/gdal.app/Contents/MacOS/gdalbuildvrt" dst="Applications/gdal.app/Contents/MacOS/"/>

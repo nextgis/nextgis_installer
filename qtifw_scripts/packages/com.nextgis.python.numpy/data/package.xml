@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="numpy">
+    <UpdateText>Add include directory</UpdateText>
+    <mac>
+        <path src="inst/Library/Python/2.7/site-packages/numpy" dst="Library/Python/2.7/site-packages/numpy"/>
+    </mac>
+</Package>

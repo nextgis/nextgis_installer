@@ -18,13 +18,13 @@ Component.prototype.createOperations = function()
     if (installer.value("os") == "win")
     {
         component.addOperation( "EnvironmentVariable",
-                                "GDAL_DATA",
-                                "@TargetDir@/share/gdal/data" );
+                                "PROJ_LIB",
+                                "@TargetDir@/share/proj" );
     }
     else if (installer.value("os") == "mac")
     {
         component.addOperation( "AppendFile",
                                 "@HomeDir@/.bash_profile",
-                                "\nexport GDAL_DATA=@TargetDir@/Library/Frameworks/gdal.framework/Resources/data" );
+                                "\nexport PROJ_LIB=@TargetDir@/Library/Frameworks/proj.framework/Resources/proj" );
     }
 }
