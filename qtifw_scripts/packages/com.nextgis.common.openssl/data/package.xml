@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_openssl">
+    <mac>
+        <path src="inst/Library/Frameworks/openssl.framework" dst="Library/Frameworks/openssl.framework"/>
+    </mac>
+</Package>

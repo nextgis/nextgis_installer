@@ -16,8 +16,8 @@ function CreateSymLink(name)
 {
     component.addElevatedOperation("Execute", "{0}", "ln", "-s",
         "@TargetDir@/Applications/gdal.app/Contents/MacOS/" + name,
-        "/usr/local/bin/" + name);
-    component.registerPathForUninstallation("/usr/local/bin/" + name);
+        "@TargetDir@/usr/bin/" + name);
+    component.registerPathForUninstallation("@TargetDir@/usr/bin/" + name);
 }
 
 Component.prototype.createOperations = function()
