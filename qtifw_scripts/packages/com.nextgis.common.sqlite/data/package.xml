@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_sqlite">
+    <mac>
+        <path src="inst/Library/Frameworks/sqlite3.framework" dst="Library/Frameworks/sqlite3.framework"/>
+    </mac>
+</Package>
