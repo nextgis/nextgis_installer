@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_pq">
+    <mac>
+        <path src="inst/Library/Frameworks/pq.framework" dst="Library/Frameworks/pq.framework"/>
+    </mac>
+</Package>
