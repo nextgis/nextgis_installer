@@ -34,7 +34,7 @@ Component.prototype.createOperations = function()
     if (installer.value("os") == "win")
     {
         component.addOperation( "EnvironmentVariable",
-                                "SSL_CERT_FILE",
+                                "CURL_CA_BUNDLE",
                                 "@TargetDir@/share/ssl/certs/cert.pem" );
     }
 
@@ -42,11 +42,8 @@ Component.prototype.createOperations = function()
     {
         component.addOperation( "AppendFile",
                                 "@HomeDir@/.bash_profile",
-                                "\nexport SSL_CERT_FILE=@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem"
+                                "\nexport CURL_CA_BUNDLE=@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem"
                               );
-        //                        "\nexport OPENSSL_CONF=@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/openssl.cnf");
-        //export SSL_CERT_FILE=@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem\n
-        SetEnvMac("SSL_CERT_FILE", "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem");
-        //SetEnvMac("OPENSSL_CONF", "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/openssl.cnf");
+        SetEnvMac("CURL_CA_BUNDLE", "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem");
     }
 }
