@@ -159,13 +159,16 @@ def init():
         sys.exit('Invalid packages data source path')
 
 def get_repository_path():
-    out_path = os.path.join(repo_target_path, 'repository')
-    if sys.platform == 'darwin':
-        out_path += '-mac'
-    elif sys.platform == 'win32':
-        out_path += '-win'
-    else: # This should never happened
-        out_path += '-nix'
+    if repo_remote_path != '':
+        out_path = os.path.join(repo_target_path, os.path.basename(repo_remote_path))
+    else:
+        out_path = os.path.join(repo_target_path, 'repository')
+        if sys.platform == 'darwin':
+            out_path += '-mac'
+        elif sys.platform == 'win32':
+            out_path += '-win'
+        else: # This should never happened
+            out_path += '-nix'
     return out_path
 
 def prepare_config():
