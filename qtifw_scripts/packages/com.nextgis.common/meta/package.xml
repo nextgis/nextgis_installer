@@ -6,7 +6,7 @@
     <Description>Common libraries</Description>
     <Description xml:lang="ru_RU">Общие библиотеки</Description>
     <Version>1.0</Version>
-    <Virtual>false</Virtual>
+    <Virtual>true</Virtual>
     <ReleaseDate>2016-11-10</ReleaseDate>
     <RequiresAdminRights>true</RequiresAdminRights>
 </Package>

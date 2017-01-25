@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_qca">
+    <mac>
+        <path src="inst/Library/Frameworks/qca.framework" dst="Library/Frameworks/qca.framework"/>
+        <path src="inst/Library/plugins/4/crypto" dst="Library/Plugins/4/crypto"/>
+    </mac>
+</Package>
