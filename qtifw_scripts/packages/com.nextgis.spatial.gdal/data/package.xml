@@ -4,4 +4,7 @@
     <mac>
         <path src="inst/Library/Frameworks/gdal.framework" dst="Library/Frameworks/gdal.framework"/>
     </mac>
+    <win>
+        <path src="inst/bin" dst="bin"/>
+    </win>
 </Package>

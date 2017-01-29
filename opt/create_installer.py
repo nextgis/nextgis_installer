@@ -18,7 +18,6 @@ import sys
 import xml.etree.ElementTree as ET
 import time
 import pickle
-import dmgbuild
 import glob
 
 args = {}
@@ -97,6 +96,7 @@ def parse_arguments():
     parser.add_argument('-n', dest='network', action='store_true', help='online installer (the -r key should be present)')
 
     subparsers = parser.add_subparsers(help='command help', dest='command')
+    parser_create = subparsers.add_parser('prepare')
     parser_create = subparsers.add_parser('create')
     parser_update = subparsers.add_parser('update')
     args = parser.parse_args()
@@ -151,6 +151,9 @@ def init():
         print 'remote repository URL: ' + repo_remote_path
 
     translate_tool = os.path.join(args.qt_bin, 'lrelease')
+    if sys.platform == 'win32':
+        translate_tool += '.exe'
+
     if not os.path.exists(translate_tool):
         sys.exit('No translate tool exists')
 
@@ -448,6 +451,7 @@ def create_installer():
 
     # Hack as <InstallerApplicationIcon> in config.xml not working
     if sys.platform == 'darwin':
+        import dmgbuild
         icns_path = os.path.join(repo_target_path, 'nextgis-setup.app', 'Contents', 'Resources', 'nextgis-setup.icns' )
         os.unlink(icns_path)
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
@@ -473,6 +477,8 @@ init()
 if args.command == 'create':
     prepare()
     create_installer()
+elif args.command == 'prepare':
+    prepare()
 elif args.command == 'update':
     update()
     update_istaller()
