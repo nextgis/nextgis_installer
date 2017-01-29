@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_spatialite">
+    <mac>
+        <path src="inst/Library/Frameworks/spatialite.framework" dst="Library/Frameworks/spatialite.framework"/>
+    </mac>
+</Package>
