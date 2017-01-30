@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>SpatialIndex C</DisplayName>
+    <DisplayName xml:lang="ru_RU">SpatialIndex C</DisplayName>
+    <Description>SpatialIndex C Library</Description>
+    <Description xml:lang="ru_RU">C библиотека SpatialIndex</Description>
+    <RequiresAdminRights>true</RequiresAdminRights>
+    <Dependencies>com.nextgis.common.spatial.spatialindex</Dependencies>
+</Package>
