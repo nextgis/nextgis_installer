@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>SpatiaLite</DisplayName>
+    <DisplayName xml:lang="ru_RU">SpatiaLite</DisplayName>
+    <Description>SpatiaLite Library</Description>
+    <Description xml:lang="ru_RU">Библиотека SpatiaLite</Description>
+    <RequiresAdminRights>true</RequiresAdminRights>
+    <Dependencies>com.nextgis.common.sqlite,com.nextgis.spatial.geos,com.nextgis.spatial.proj</Dependencies>
+</Package>

@@ -5,6 +5,6 @@
         <path src="inst/Library/Frameworks/gdal.framework" dst="Library/Frameworks/gdal.framework"/>
     </mac>
     <win>
-        <path src="inst/bin" dst="bin"/>
+        <path src="inst/bin/gdal2*.dll" dst="bin"/>
     </win>
 </Package>

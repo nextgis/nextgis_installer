@@ -243,6 +243,9 @@ def copyFiles(tag, sources_root_dir, data_path):
 def get_version_text(sources_root_dir, component_name):
     has_changes = False
     version_file_path = os.path.join(packages_data_source_path, sources_root_dir, 'build', 'version.str')
+    if not os.path.exists(version_file_path):
+        return "0.0.0", has_changes
+
     with open(version_file_path) as f:
         content = f.readlines()
         version_str = content[0].rstrip()
