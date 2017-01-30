@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_qwt">
+    <mac>
+        <path src="inst/Library/Frameworks/qwt.framework" dst="Library/Frameworks/qwt.framework"/>
+    </mac>
+</Package>
