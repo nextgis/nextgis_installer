@@ -3,4 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/spatialindex_c.framework" dst="Library/Frameworks/spatialindex_c.framework"/>
     </mac>
+    <win>
+        <path src="inst/bin" dst="bin"/>
+    </win>
 </Package>
