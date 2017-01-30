@@ -3,4 +3,7 @@
     <mac>
         <path src="inst/Applications/curl.app/Contents/MacOS/curl" dst="Applications/curl.app/Contents/MacOS/"/>
     </mac>
+    <win>
+        <path src="inst/bin/curl.exe" dst="bin"/>
+    </win>
 </Package>
