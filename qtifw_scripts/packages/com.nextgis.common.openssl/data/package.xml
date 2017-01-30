@@ -3,4 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/openssl.framework" dst="Library/Frameworks/openssl.framework"/>
     </mac>
+    <win>
+        <path src="inst/bin" dst="bin"/>
+    </win>
 </Package>

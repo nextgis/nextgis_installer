@@ -3,4 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/geos.framework" dst="Library/Frameworks/geos.framework"/>
     </mac>
+    <win>
+        <path src="inst/bin" dst="bin"/>
+    </win>
 </Package>
