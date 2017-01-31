@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_qscintilla">
+    <mac>
+        <path src="inst/Library/Frameworks/qscintilla.framework" dst="Library/Frameworks/qscintilla.framework"/>
+        <path src="inst/Library/Translations/4" dst="Library/Translations/4"/>
+    </mac>
+</Package>
