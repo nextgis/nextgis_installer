@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>XML2</DisplayName>
+    <DisplayName xml:lang="ru_RU">XML2</DisplayName>
+    <Description>XML2 Library</Description>
+    <Description xml:lang="ru_RU">Библиотека XML2</Description>
+    <Dependencies>com.nextgis.common.z, com.nextgis.common.iconv, com.nextgis.common.lzma</Dependencies>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>
