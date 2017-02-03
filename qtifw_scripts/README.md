@@ -43,6 +43,10 @@ Note: To build installer framework via build_installer script python required.
 > python build_installer.py --static-qmake <path to Qt bin files>/qmake --make make --targetdir <path to build directory> --qt_menu_nib <path to static QT>/qtbase/src/plugins/platforms/cocoa
 ```
 
+Note:
+it may be necessary to fix (add LIBS += -lngauth)
+https://github.com/nextgis/nextgis_installer/blob/master/qtifw/src/libs/installer/installer.pro#L215
+for windows
 ## 4. Create NextGIS installer
 
 ### 4.1 Generating installer:
