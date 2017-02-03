@@ -5,6 +5,6 @@
     <Description>GDAL library</Description>
     <Description xml:lang="ru_RU">Библиотека GDAL</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Dependencies>com.nextgis.common.jsonc, com.nextgis.common.jpeg, com.nextgis.common.png, com.nextgis.common.pq, com.nextgis.common.curl, com.nextgis.spatial.geotiff, com.nextgis.spatial.proj, com.nextgis.spatial.geos, com.nextgis.common.sqlite</Dependencies>
+    <Dependencies>com.nextgis.common.jsonc, com.nextgis.common.jpeg, com.nextgis.common.png, com.nextgis.common.pq, com.nextgis.common.curl, com.nextgis.common.expat, com.nextgis.common.xml2, com.nextgis.spatial.geotiff, com.nextgis.spatial.proj, com.nextgis.spatial.geos, com.nextgis.common.sqlite</Dependencies>
     <Script>installscript.qs</Script>
 </Package>
