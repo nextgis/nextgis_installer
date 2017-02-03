@@ -9,25 +9,26 @@
         <path src="inst/lib/QtHelp.framework" dst="Library/Frameworks/QtHelp.framework"/>
         <path src="inst/lib/QtNetwork.framework" dst="Library/Frameworks/QtNetwork.framework"/>
         <path src="inst/lib/QtOpenGL.framework" dst="Library/Frameworks/QtOpenGL.framework"/>
-        <!--path src="inst/lib/QtScript.framework" dst="Library/Frameworks/QtScript.framework"/>
-        <path src="inst/lib/QtScriptTools.framework" dst="Library/Frameworks/QtScriptTools.framework"/-->
+        <path src="inst/lib/QtScript.framework" dst="Library/Frameworks/QtScript.framework"/>
+        <!--path src="inst/lib/QtScriptTools.framework" dst="Library/Frameworks/QtScriptTools.framework"/-->
         <path src="inst/lib/QtSql.framework" dst="Library/Frameworks/QtSql.framework"/>
+        <path src="inst/lib/QtSvg.framework" dst="Library/Frameworks/QtSvg.framework"/>
         <!--path src="inst/lib/QtTest.framework" dst="Library/Frameworks/QtTest.framework"/-->
         <path src="inst/lib/QtWebKit.framework" dst="Library/Frameworks/QtWebKit.framework"/>
         <path src="inst/lib/QtXml.framework" dst="Library/Frameworks/QtXml.framework"/>
         <path src="inst/lib/QtXmlPatterns.framework" dst="Library/Frameworks/QtXmlPatterns.framework"/>
-        <path src="inst/plugins/accessible/*.dylib" dst="Library/Plugins/4/accessible"/>
-        <path src="inst/plugins/bearer/*.dylib" dst="Library/Plugins/4/bearer"/>
-        <path src="inst/plugins/codecs/*.dylib" dst="Library/Plugins/4/codecs"/>
+        <path src="inst/plugins/accessible/*.dylib" dst="Library/Plugins/Qt4/accessible"/>
+        <path src="inst/plugins/bearer/*.dylib" dst="Library/Plugins/Qt4/bearer"/>
+        <path src="inst/plugins/codecs/*.dylib" dst="Library/Plugins/Qt4/codecs"/>
         <!--path src="inst/plugins/designer/*.dylib" dst="Library/Plugins/4/designer"/-->
-        <path src="inst/plugins/graphicssystems/*.dylib" dst="Library/Plugins/4/graphicssystems"/>
-        <path src="inst/plugins/iconengines/*.dylib" dst="Library/Plugins/4/iconengines"/>
-        <path src="inst/plugins/imageformats/*.dylib" dst="Library/Plugins/4/imageformats"/>
-        <path src="inst/plugins/qmltooling/*.dylib" dst="Library/Plugins/4/qmltooling"/>
-        <path src="inst/plugins/sqldrivers/*.dylib" dst="Library/Plugins/4/sqldrivers"/>
-        <path src="inst/plugins/webkit/*.dylib" dst="Library/Plugins/4/webkit"/>
-        <path src="inst/translations/qt_*.qm" dst="Library/Translations/4"/>
-        <path src="inst/translations/qtconfig_*.qm" dst="Library/Translations/4"/>
-        <path src="inst/translations/qvfb_*.qm" dst="Library/Translations/4"/>
+        <path src="inst/plugins/graphicssystems/*.dylib" dst="Library/Plugins/Qt4/graphicssystems"/>
+        <path src="inst/plugins/iconengines/*.dylib" dst="Library/Plugins/Qt4/iconengines"/>
+        <path src="inst/plugins/imageformats/*.dylib" dst="Library/Plugins/Qt4/imageformats"/>
+        <path src="inst/plugins/qmltooling/*.dylib" dst="Library/Plugins/Qt4/qmltooling"/>
+        <path src="inst/plugins/sqldrivers/*.dylib" dst="Library/Plugins/Qt4/sqldrivers"/>
+        <path src="inst/plugins/webkit/*.dylib" dst="Library/Plugins/Qt4/webkit"/>
+        <path src="inst/translations/qt_*.qm" dst="Library/Translations/Qt4"/>
+        <path src="inst/translations/qtconfig_*.qm" dst="Library/Translations/Qt4"/>
+        <path src="inst/translations/qvfb_*.qm" dst="Library/Translations/Qt4"/>
     </mac>
 </Package>

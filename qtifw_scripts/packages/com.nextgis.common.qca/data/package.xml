@@ -2,6 +2,6 @@
 <Package root="lib_qca">
     <mac>
         <path src="inst/Library/Frameworks/qca.framework" dst="Library/Frameworks/qca.framework"/>
-        <path src="inst/Library/plugins/4/crypto" dst="Library/Plugins/4/crypto"/>
+        <path src="inst/Library/plugins/Qt4/crypto" dst="Library/Plugins/Qt4/crypto"/>
     </mac>
 </Package>
