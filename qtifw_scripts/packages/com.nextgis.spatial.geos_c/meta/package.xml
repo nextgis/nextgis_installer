@@ -5,5 +5,5 @@
     <Description>GEOS C library</Description>
     <Description xml:lang="ru_RU">C Библиотека GEOS</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Dependencies>com.nextgis.common.spatial.geos</Dependencies>
+    <Dependencies>com.nextgis.spatial.geos</Dependencies>
 </Package>
