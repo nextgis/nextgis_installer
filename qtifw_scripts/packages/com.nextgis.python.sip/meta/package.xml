@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <Name>com.nextgis.python.sip</Name>
-    <DisplayName>Sip package</DisplayName>
-    <DisplayName xml:lang="ru_RU">Sip package</DisplayName>
-    <Description>Sip package</Description>
-    <Description xml:lang="ru_RU">Sip package</Description>
-    <Version>4.16.5</Version>
-    <ReleaseDate>2016-11-10</ReleaseDate>
+    <DisplayName>SIP package</DisplayName>
+    <DisplayName xml:lang="ru_RU">Пакет SIP</DisplayName>
+    <Description>SIP package</Description>
+    <Description xml:lang="ru_RU">Пакет SIP</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
 </Package>
