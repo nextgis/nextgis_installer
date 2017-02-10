@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <Name>com.nextgis.python.pyqt4</Name>
-    <DisplayName>PyQt4 package</DisplayName>
-    <DisplayName xml:lang="ru_RU">Пакет PyQt4</DisplayName>
+    <DisplayName>PyQt4</DisplayName>
+    <DisplayName xml:lang="ru_RU">PyQt4</DisplayName>
     <Description>PyQt4 package</Description>
     <Description xml:lang="ru_RU">Пакет PyQt4</Description>
     <Dependencies>com.nextgis.common.qt4</Dependencies>
