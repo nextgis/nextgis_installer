@@ -2,10 +2,9 @@
 <Package>
     <Name>com.nextgis.python.pyqt4</Name>
     <DisplayName>PyQt4 package</DisplayName>
-    <DisplayName xml:lang="ru_RU">PyQt4 package</DisplayName>
+    <DisplayName xml:lang="ru_RU">Пакет PyQt4</DisplayName>
     <Description>PyQt4 package</Description>
-    <Description xml:lang="ru_RU">PyQt4 package</Description>
-    <Version>4.11.4</Version>
-    <ReleaseDate>2016-11-10</ReleaseDate>
+    <Description xml:lang="ru_RU">Пакет PyQt4</Description>
+    <Dependencies>com.nextgis.common.qt4</Dependencies>
     <RequiresAdminRights>true</RequiresAdminRights>
 </Package>
