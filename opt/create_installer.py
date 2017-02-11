@@ -289,16 +289,30 @@ def process_files_in_meta_dir(path_meta, new_meta_path):
             shutil.copy(meta_file_path, new_meta_path)
 
 def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir, repo_new_package_path, data_root_tag, path_meta):
-    os.makedirs(repo_new_package_path)
+
+    # If not install under current system - don;t create directory
+    is_dir_maked = False
     new_data_path = os.path.join(repo_new_package_path, 'data')
     if sys.platform == 'darwin':
         mac_tag = data_root_tag.find('mac')
         if mac_tag is not None:
+            if not is_dir_maked:
+                is_dir_maked = True
+                os.makedirs(repo_new_package_path)
             copyFiles(mac_tag, sources_dir, new_data_path)
+        else:
+            if data_root_tag.find('Version') is None:
+                return
     elif sys.platform == 'win32':
         win_tag = data_root_tag.find('win')
         if win_tag is not None:
+            if not is_dir_maked:
+                is_dir_maked = True
+                os.makedirs(repo_new_package_path)
             copyFiles(win_tag, sources_dir, new_data_path)
+        else:
+            if data_root_tag.find('Version') is None:
+                return
 
     # Process package.xml
     tree = ET.parse(os.path.join(path_meta, 'package.xml'))
@@ -320,6 +334,18 @@ def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir
         if updatetext_tag is None:
             updatetext_tag = ET.SubElement(root, 'UpdateText')
         updatetext_tag.text = updatetext_text
+
+    dependencies_tag = root.find('Dependencies')
+    if dependencies_tag is not None:
+        # If Mac OS X
+        if sys.platform == 'darwin':
+            # TODO: Change to iconv
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.xml2,', '')
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.xml2', '')
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.z,', '')
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.z', '')
+        dependencies_tag.text = dependencies_tag.text.replace('  ', ' ')
+        dependencies_tag.text = dependencies_tag.text.replace(', ', ',')
 
     new_meta_path = os.path.join(repo_new_package_path, 'meta')
     os.makedirs(new_meta_path)
