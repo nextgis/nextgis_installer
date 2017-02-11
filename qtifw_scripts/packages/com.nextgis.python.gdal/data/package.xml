@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_gdal">
     <mac>
-        <path src="inst/Library/Python/2.7/site-packages/osgeo" dst="Library/Python/2.7/site-packages/osgeo"/>        
-        <path src="inst/Applications/gdal.app/Contents/MacOS/epsg_tr.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/esri2wkt.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gcps2vec.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gcps2wld.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal2tiles.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal2xyz.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal_fillnodata.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal_merge.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal_polygonize.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal_proximity.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal_retile.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gdal_sieve.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gdalchksum.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gdalident.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/gdalimport.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/mkgraticule.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/pct2rgb.py" dst="Applications/gdal.app/Contents/MacOS/"/>
-        <path src="inst/Applications/gdal.app/Contents/MacOS/rgb2pct.py" dst="Applications/gdal.app/Contents/MacOS/"/>
+        <path src="inst/Library/Python/2.7/site-packages/osgeo" dst="Library/Python/2.7/site-packages/osgeo"/>
+        <path src="inst/bin/epsg_tr.py" dst="usr/bin/"/>
+        <path src="inst/bin/esri2wkt.py" dst="usr/bin/"/>
+        <path src="inst/bin/gcps2vec.py" dst="usr/bin/"/>
+        <path src="inst/bin/gcps2wld.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdal2tiles.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdal2xyz.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdal_fillnodata.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdal_merge.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdal_polygonize.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdal_proximity.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdal_retile.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdal_sieve.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdalchksum.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdalident.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdalimport.py" dst="usr/bin/"/>
+        <path src="inst/bin/mkgraticule.py" dst="usr/bin/"/>
+        <path src="inst/bin/pct2rgb.py" dst="usr/bin/"/>
+        <path src="inst/bin/rgb2pct.py" dst="usr/bin/"/>
     </mac>
 </Package>

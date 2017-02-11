@@ -6,5 +6,4 @@
     <Description xml:lang="ru_RU">GDAL python bindings</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
     <Dependencies>com.nextgis.spatial.gdal, com.nextgis.python.numpy</Dependencies>
-    <Script>installscript.qs</Script>
 </Package>
