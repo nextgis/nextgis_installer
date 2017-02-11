@@ -6,5 +6,4 @@
     <Description xml:lang="ru_RU">Утилиты коммандной строки QCA</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
     <Dependencies>com.nextgis.common.qca</Dependencies>
-    <Script>installscript.qs</Script>
 </Package>

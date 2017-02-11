@@ -6,5 +6,4 @@
     <Description xml:lang="ru_RU">Утилиты коммандной строки GDAL</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
     <Dependencies>com.nextgis.spatial.gdal</Dependencies>
-    <Script>installscript.qs</Script>
 </Package>

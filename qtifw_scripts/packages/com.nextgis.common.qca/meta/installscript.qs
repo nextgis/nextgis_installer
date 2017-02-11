@@ -42,27 +42,18 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "mac")
     {
-        var utilities = [
-            "mozcerts",
-            "qcatool"
-        ];
-
-        for ( i = 0; i < utilities.length; i++ ) {
-            CreateSymLink(utilities[i]);
-        }
-
         // Create qt.conf
-        /* qcatool not honor qt.conf
-        var settingsFile = "@TargetDir@/Applications/qca.app/Contents/MacOS/qt.conf";
+        /* this should created by some utility package
+        var settingsFile = "@TargetDir@/usr/bin/qt.conf";
         component.addOperation("Settings", "path="+settingsFile, "method=add_array_value",
-            "key=Paths/Plugins", "value=@TargetDir@/Library/Plugins/4/");
+            "key=Paths/Plugins", "value=@TargetDir@/Library/Plugins/Qt4/");
         component.addOperation("Settings", "path="+settingsFile, "method=add_array_value",
-            "key=Paths/Translations", "value=@TargetDir@/Library/Translations/4/");
+            "key=Paths/Translations", "value=@TargetDir@/Library/Translations/Qt4/");
         */
 
         component.addOperation( "AppendFile",
                                 "@HomeDir@/.bash_profile",
-                                "\nexport QCA_PLUGIN_PATH=@TargetDir@/Library/Plugins/4/" );
-        SetEnvMac("QCA_PLUGIN_PATH", "@TargetDir@/Library/Plugins/4/");
+                                "\nexport QCA_PLUGIN_PATH=@TargetDir@/Library/Plugins/Qt4/" );
+        SetEnvMac("QCA_PLUGIN_PATH", "@TargetDir@/Library/Plugins/Qt4/");
     }
 }

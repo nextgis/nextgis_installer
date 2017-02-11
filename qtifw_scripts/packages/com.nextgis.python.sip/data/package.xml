@@ -2,6 +2,9 @@
 <Package root="py_sip">
     <UpdateText>Add include directory</UpdateText>
     <mac>
-        <path src="inst/sip.so" dst="Library/Python/2.7/site-packages"/>
+        <path src="inst/sip.so" dst="Library/Python/2.7/site-packages/"/>
+        <path src="inst/*.py" dst="Library/Python/2.7/site-packages/"/>
+        <path src="inst/include" dst="usr/include/"/>
+        <path src="inst/bin/sip" dst="usr/bin/"/>
     </mac>
 </Package>

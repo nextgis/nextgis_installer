@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_curl">
     <mac>
-        <path src="inst/Applications/curl.app/Contents/MacOS/curl" dst="Applications/curl.app/Contents/MacOS/"/>
+        <path src="inst/bin/curl" dst="usr/bin/"/>
     </mac>
     <win>
-        <path src="inst/bin/curl.exe" dst="bin"/>
+        <path src="inst/bin/curl.exe" dst="bin/"/>
     </win>
 </Package>
