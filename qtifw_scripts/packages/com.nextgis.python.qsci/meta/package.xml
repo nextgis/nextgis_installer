@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>PyQScintilla</DisplayName>
+    <DisplayName xml:lang="ru_RU">PyQScintilla</DisplayName>
+    <Description>PyQScintilla package</Description>
+    <Description xml:lang="ru_RU">Пакет PyQScintilla</Description>
+    <Dependencies>com.nextgis.common.qscintilla</Dependencies>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

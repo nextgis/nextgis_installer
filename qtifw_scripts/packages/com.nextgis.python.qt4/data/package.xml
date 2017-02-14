@@ -3,5 +3,7 @@
     <UpdateText>Add include directory</UpdateText>
     <mac>
         <path src="inst/PyQt4" dst="Library/Python/2.7/site-packages/PyQt4"/>
+        <path src="inst/share/pyqt4" dst="usr/share/sip"/>
+        <path src="inst/bin" dst="usr/bin/"/>
     </mac>
 </Package>
