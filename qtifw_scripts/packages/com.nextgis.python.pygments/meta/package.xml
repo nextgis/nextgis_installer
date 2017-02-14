@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Pygments</DisplayName>
+    <DisplayName xml:lang="ru_RU">Pygments</DisplayName>
+    <Description>Pygments package</Description>
+    <Description xml:lang="ru_RU">Пакет Pygments</Description>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>
