@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Package root="py_qscintilla">
+<Package root="lib_qscintilla">
     <mac>
-        <path src="inst/PyQt4" dst="Library/Python/2.7/site-packages/PyQt4"/>
-        <path src="inst/share/sip" dst="usr/share/sip"/>
+        <path src="inst/Library/Python/2.7/site-packages/PyQt4" dst="Library/Python/2.7/site-packages/PyQt4"/>
+        <path src="inst/share/sip/Qsci" dst="usr/share/sip/Qsci"/>
     </mac>
 </Package>

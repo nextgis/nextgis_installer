@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_psycopg">
+    <mac>
+        <path src="inst/lib/python2.7/site-packages/psycopg2" dst="Library/Python/2.7/site-packages/psycopg2"/>
+    </mac>
+</Package>

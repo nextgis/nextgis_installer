@@ -90,15 +90,16 @@ def parse_arguments():
 
     parser = argparse.ArgumentParser(description='Create NextGIS desktop software installer.')
     parser.add_argument('-q', dest='qt_bin', required=True, help='Qt binary path (path to lrelease)')
-    parser.add_argument('-t', dest='target', required=True, help='target path')
+    parser.add_argument('-t', dest='target', required=True, help='Target path')
     parser.add_argument('-s', dest='source', required=True, help='Packages data source path (i.e. borsch root directory)')
-    parser.add_argument('-r', dest='remote', required=False, help='repositry remote url')
-    parser.add_argument('-n', dest='network', action='store_true', help='online installer (the -r key should be present)')
+    parser.add_argument('-r', dest='remote', required=False, help='Repositry remote url')
+    parser.add_argument('-n', dest='network', action='store_true', help='Online installer (the -r key should be present)')
 
     subparsers = parser.add_subparsers(help='command help', dest='command')
-    parser_create = subparsers.add_parser('prepare')
+    parser_prepare = subparsers.add_parser('prepare')
     parser_create = subparsers.add_parser('create')
     parser_update = subparsers.add_parser('update')
+    parser_update.add_argument('--force', dest='packages', required=False, help='Force update specified packages even not any changes exists', nargs='+')
     args = parser.parse_args()
 
 def run(args):
@@ -240,7 +241,7 @@ def copyFiles(tag, sources_root_dir, data_path):
                     shutil.copy(src_path_full, dst_path_full)
     return
 
-def get_version_text(sources_root_dir, component_name):
+def get_version_text(sources_root_dir, component_name, force):
     has_changes = False
     version_file_path = os.path.join(packages_data_source_path, sources_root_dir, 'build', 'version.str')
     if not os.path.exists(version_file_path):
@@ -253,7 +254,7 @@ def get_version_text(sources_root_dir, component_name):
 
     if component_name in libraries_version_dict:
         if libraries_version_dict[component_name]['version'] == version_str:
-            if libraries_version_dict[component_name]['date'] == version_file_date:
+            if libraries_version_dict[component_name]['date'] == version_file_date and force == False:
                 version_str += '-' + str(libraries_version_dict[component_name]['count'])
             else:
                 count = libraries_version_dict[component_name]['count'] + 1
@@ -372,7 +373,7 @@ def process_directory(dir_name):
     sources_root_dir = ''
     if 'root' in root.attrib:
         sources_root_dir = root.attrib['root']
-        version_text, has_changes = get_version_text(sources_root_dir, dir_name)
+        version_text, has_changes = get_version_text(sources_root_dir, dir_name, False)
     else:
         version_text = root.find('Version').text
         libraries_version_dict[dir_name] = dict(count = 0, date = '1900-01-01 00:00:00', version = version_text)
@@ -411,7 +412,7 @@ def prepare():
     prepare_config()
     prepare_packages()
 
-def update_directory(dir_name):
+def update_directory(dir_name, force):
     color_print('Update ' + dir_name, True, 'LBLUE')
     path = os.path.join(repo_source_path, dir_name)
     path_meta = os.path.join(path, 'meta')
@@ -430,7 +431,7 @@ def update_directory(dir_name):
     sources_root_dir = ''
     if 'root' in root.attrib:
         sources_root_dir = root.attrib['root']
-        version_text, has_changes = get_version_text(sources_root_dir, dir_name)
+        version_text, has_changes = get_version_text(sources_root_dir, dir_name, force)
     else:
         version_text = root.find('Version').text
         has_changes = False
@@ -460,16 +461,21 @@ def update_directory(dir_name):
         shutil.rmtree(repo_new_package_path, ignore_errors=True)
     create_dest_package_dir(dir_name, version_text, updatetext_text, os.path.join(packages_data_source_path, sources_root_dir), repo_new_package_path, root, path_meta)
 
-def update():
-    # Scan for directories and files
-    source_dirs = os.listdir(repo_source_path)
+def update(packages):
+    if packages:
+        source_dirs = packages
+    else:
+        # Scan for directories and files
+        packages = []
+        source_dirs = os.listdir(repo_source_path)
     for subdir in source_dirs:
         if os.path.isdir(os.path.join(repo_source_path, subdir)):
-            update_directory(subdir)
-    # Delete not exist directories
-    for subdir in os.listdir(repo_new_packages_path):
-        if not subdir in source_dirs:
-            delete_path(os.path.join(repo_source_path, subdir))
+            update_directory(subdir, len(packages) > 0)
+    if not packages:
+        # Delete not exist directories for full repo update
+        for subdir in os.listdir(repo_new_packages_path):
+            if not subdir in source_dirs:
+                delete_path(os.path.join(repo_source_path, subdir))
 
 def create_installer():
     run((repogen_file, '--remove', '-v', '-p', repo_new_packages_path, get_repository_path()))
@@ -509,7 +515,7 @@ if args.command == 'create':
 elif args.command == 'prepare':
     prepare()
 elif args.command == 'update':
-    update()
+    update(args.packages)
     update_istaller()
 else:
     exit('Unsupported command')
