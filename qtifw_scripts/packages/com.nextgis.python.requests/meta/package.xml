@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Requests</DisplayName>
+    <DisplayName xml:lang="ru_RU">Requests</DisplayName>
+    <Description>Requests package</Description>
+    <Description xml:lang="ru_RU">Пакет Requests</Description>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>
