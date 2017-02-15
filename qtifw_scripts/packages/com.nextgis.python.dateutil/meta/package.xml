@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>DateUtil</DisplayName>
     <DisplayName xml:lang="ru_RU">DateUtil</DisplayName>
-    <Description>Psycopg package</Description>
+    <Description>DateUtil package</Description>
     <Description xml:lang="ru_RU">Пакет DateUtil</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
 </Package>
