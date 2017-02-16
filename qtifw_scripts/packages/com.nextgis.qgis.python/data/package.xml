@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="qgis">
+    <mac>
+        <path src="inst/Applications/ngqgis.app/Contents/Resources/python/console" dst="Applications/ngqgis.app/Contents/Resources/python/console"/>
+        <path src="inst/Applications/ngqgis.app/Contents/Resources/python/pyplugin_installer" dst="Applications/ngqgis.app/Contents/Resources/python/pyplugin_installer"/>
+        <path src="inst/Applications/ngqgis.app/Contents/Resources/python/plugins" dst="Applications/ngqgis.app/Contents/Resources/python/plugins"/>
+    </mac>
+</Package>

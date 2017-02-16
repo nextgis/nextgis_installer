@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Name>com.nextgis.qgis.libapp</Name>
     <DisplayName>App library</DisplayName>
     <DisplayName xml:lang="ru_RU">App library</DisplayName>
     <Description>App library</Description>
     <Description xml:lang="ru_RU">App library</Description>
-    <Version>16.1.52-0</Version>
-    <ReleaseDate>2016-11-10</ReleaseDate>
     <Virtual>true</Virtual>
     <RequiresAdminRights>true</RequiresAdminRights>
+    <Dependencies>com.nextgis.common.qt4,com.nextgis.qgis.libcore,com.nextgis.qgis.libgui,com.nextgis.qgis.libanalysis,com.nextgis.spatial.gdal,com.nextgis.spatial.geos,com.nextgis.common.qca,com.nextgis.common.qscintilla,com.nextgis.common.qwt,com.nextgis.common.expat,com.nextgis.spatial.proj,com.nextgis.common.sqlite,com.nextgis.spatial.spatialite,com.nextgis.spatial.spatialindex,com.nextgis.common.pq</Dependencies>
 </Package>

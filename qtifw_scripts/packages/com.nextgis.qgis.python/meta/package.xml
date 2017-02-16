@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Name>com.nextgis.qgis.python</Name>
     <DisplayName>QGIS python</DisplayName>
     <DisplayName xml:lang="ru_RU">QGIS python</DisplayName>
     <Description>QGIS python</Description>
     <Description xml:lang="ru_RU">QGIS python</Description>
-    <Version>16.1.52-0</Version>
-    <ReleaseDate>2016-11-10</ReleaseDate>
-    <Virtual>true</Virtual>
+    <Default>true</Default>
     <RequiresAdminRights>true</RequiresAdminRights>
+    <Dependencies>com.nextgis.qgis.libpython</Dependencies>
 </Package>

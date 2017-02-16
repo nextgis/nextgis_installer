@@ -5,6 +5,6 @@
     <DisplayName xml:lang="ru_RU">Пространственные библиотеки</DisplayName>
     <Description>Spatial libraries</Description>
     <Description xml:lang="ru_RU">Пространственные библиотеки</Description>
-    <Virtual>true</Virtual>
+    <Virtual>false</Virtual>
     <RequiresAdminRights>true</RequiresAdminRights>
 </Package>

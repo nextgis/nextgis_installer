@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>Analysis library</DisplayName>
-    <DisplayName xml:lang="ru_RU">Analysis library</DisplayName>
-    <Description>Analysis library</Description>
-    <Description xml:lang="ru_RU">Analysis library</Description>
-    <Virtual>true</Virtual>
+    <DisplayName>PyQGIS</DisplayName>
+    <DisplayName xml:lang="ru_RU">PyQGIS</DisplayName>
+    <Description>PyQGIS module</Description>
+    <Description xml:lang="ru_RU">Модуль PyQGIS</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
     <Dependencies>com.nextgis.common.qt4,com.nextgis.qgis.libcore,com.nextgis.spatial.gdal,com.nextgis.spatial.geos,com.nextgis.common.qca,com.nextgis.common.qscintilla,com.nextgis.common.qwt,com.nextgis.common.expat,com.nextgis.spatial.proj,com.nextgis.common.sqlite,com.nextgis.spatial.spatialite,com.nextgis.spatial.spatialindex,com.nextgis.common.pq</Dependencies>
 </Package>

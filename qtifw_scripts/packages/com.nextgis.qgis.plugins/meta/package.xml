@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>QGIS plugins</DisplayName>
+    <DisplayName xml:lang="ru_RU">Плагины QGIS</DisplayName>
+    <Description>QGIS plugins</Description>
+    <Description xml:lang="ru_RU">Плагины QGIS</Description>
+    <Default>true</Default>
+    <RequiresAdminRights>true</RequiresAdminRights>
+    <Dependencies>com.nextgis.qgis.libcore,com.nextgis.qgis.libanalysis,com.nextgis.qgis.libgui,com.nextgis.qgis.libapp</Dependencies>
+</Package>
