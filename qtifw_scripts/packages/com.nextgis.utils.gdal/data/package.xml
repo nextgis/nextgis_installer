@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_gdal">
-    <UpdateText>Add GNM utilities</UpdateText>
     <mac>
         <path src="inst/bin/gdaladdo" dst="usr/bin/"/>
         <path src="inst/bin/gdalbuildvrt" dst="usr/bin/"/>

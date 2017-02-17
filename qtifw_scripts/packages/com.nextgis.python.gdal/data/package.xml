@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_gdal">
+    <UpdateText>Add BigTIFF support</UpdateText>
     <mac>
         <path src="inst/Library/Python/2.7/site-packages/osgeo" dst="Library/Python/2.7/site-packages/osgeo"/>
         <path src="inst/bin/epsg_tr.py" dst="usr/bin/"/>
