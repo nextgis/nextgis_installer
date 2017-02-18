@@ -6,5 +6,5 @@
     <Description xml:lang="ru_RU">Analysis library</Description>
     <Virtual>true</Virtual>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Dependencies>com.nextgis.common.qt4,com.nextgis.qgis.libcore,com.nextgis.spatial.gdal,com.nextgis.spatial.geos,com.nextgis.common.qca,com.nextgis.common.qscintilla,com.nextgis.common.qwt,com.nextgis.common.expat,com.nextgis.spatial.proj,com.nextgis.common.sqlite,com.nextgis.spatial.spatialite,com.nextgis.spatial.spatialindex,com.nextgis.common.pq</Dependencies>
+    <Dependencies>com.nextgis.qgis.libcore</Dependencies>
 </Package>
