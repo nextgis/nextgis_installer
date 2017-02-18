@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Name>com.nextgis.spatial</Name>
     <DisplayName>Spatial libraries</DisplayName>
     <DisplayName xml:lang="ru_RU">Пространственные библиотеки</DisplayName>
     <Description>Spatial libraries</Description>
     <Description xml:lang="ru_RU">Пространственные библиотеки</Description>
-    <Virtual>false</Virtual>
+    <Virtual>true</Virtual>
     <RequiresAdminRights>true</RequiresAdminRights>
 </Package>

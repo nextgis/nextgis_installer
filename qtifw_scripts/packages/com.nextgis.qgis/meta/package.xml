@@ -5,7 +5,5 @@
     <Description>QGIS Application</Description>
     <Description xml:lang="ru_RU">Программа QGIS</Description>
     <Default>true</Default>
-    <Script>afterinstall.qs</Script>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Dependencies>com.nextgis.qgis.libanalysis,com.nextgis.qgis.libapp,com.nextgis.qgis.libcore,com.nextgis.qgis.libgui,com.nextgis.utils.gdal</Dependencies>
 </Package>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="qgis">
+    <mac>
+        <path src="inst/Applications/ngqgis.app/Contents/Resources/doc/BUGS" dst="Applications/ngqgis.app/Contents/Resources/doc"/>
+        <path src="inst/Applications/ngqgis.app/Contents/Resources/doc/CODING" dst="Applications/ngqgis.app/Contents/Resources/doc"/>
+        <path src="inst/Applications/ngqgis.app/Contents/Resources/doc/Exception_to_GPL_for_Qt.txt" dst="Applications/ngqgis.app/Contents/Resources/doc"/>
+    </mac>
+</Package>

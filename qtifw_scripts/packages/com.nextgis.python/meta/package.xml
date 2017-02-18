@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Name>com.nextgis.python</Name>
     <DisplayName>Python</DisplayName>
     <DisplayName xml:lang="ru_RU">Python</DisplayName>
     <Description>Python framework</Description>
     <Description xml:lang="ru_RU">Python фреймворк</Description>
-    <Virtual>false</Virtual>
+    <Virtual>true</Virtual>
     <RequiresAdminRights>true</RequiresAdminRights>
     <Script>installscript.qs</Script>
 </Package>

@@ -4,7 +4,7 @@
     <DisplayName xml:lang="ru_RU">Утилиты</DisplayName>
     <Description>Utility applications</Description>
     <Description xml:lang="ru_RU">Небольшие утилиты</Description>
-    <!--Virtual>true</Virtual-->
+    <Virtual>false</Virtual>
     <RequiresAdminRights>true</RequiresAdminRights>
     <Script>installscript.qs</Script>
 </Package>
