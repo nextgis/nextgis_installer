@@ -5,4 +5,5 @@
     <Description>Jinja2 package</Description>
     <Description xml:lang="ru_RU">Пакет Jinja2</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
+    <Dependencies>com.nextgis.python</Dependencies>
 </Package>

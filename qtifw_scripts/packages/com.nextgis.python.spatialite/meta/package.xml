@@ -5,5 +5,5 @@
     <Description>PySpatialite package</Description>
     <Description xml:lang="ru_RU">Пакет PySpatialite</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Dependencies>com.nextgis.spatial.geos,com.nextgis.spatial.proj,com.nextgis.spatial.spatialite,com.nextgis.common.sqlite</Dependencies>
+    <Dependencies>com.nextgis.python,com.nextgis.spatial.geos,com.nextgis.spatial.proj,com.nextgis.spatial.spatialite,com.nextgis.common.sqlite</Dependencies>
 </Package>

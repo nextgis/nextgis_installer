@@ -5,4 +5,5 @@
     <Description>HttpLib2 package</Description>
     <Description xml:lang="ru_RU">Пакет HttpLib2</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
+    <Dependencies>com.nextgis.python</Dependencies>
 </Package>

@@ -5,4 +5,5 @@
     <Description>MarkupSafe package</Description>
     <Description xml:lang="ru_RU">Пакет MarkupSafe</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
+    <Dependencies>com.nextgis.python</Dependencies>
 </Package>
