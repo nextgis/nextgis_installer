@@ -4,6 +4,7 @@
         <path src="inst/Applications/ngqgis.app/Contents/MacOS" dst="Applications/ngqgis.app/Contents/MacOS"/>
         <path src="inst/Applications/ngqgis.app/Contents/Info.plist" dst="Applications/ngqgis.app/Contents"/>
         <path src="inst/Applications/ngqgis.app/Contents/Resources/*.icns" dst="Applications/ngqgis.app/Contents/Resources"/>
+        <path src="inst/Applications/ngqgis.app/Contents/Resources/*.conf" dst="Applications/ngqgis.app/Contents/Resources"/>
         <path src="inst/Applications/ngqgis.app/Contents/Resources/composer_templates" dst="Applications/ngqgis.app/Contents/Resources/composer_templates"/>
         <path src="inst/Applications/ngqgis.app/Contents/Resources/fonts" dst="Applications/ngqgis.app/Contents/Resources/fonts"/>
         <path src="inst/Applications/ngqgis.app/Contents/Resources/i18n" dst="Applications/ngqgis.app/Contents/Resources/i18n"/>

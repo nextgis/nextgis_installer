@@ -6,5 +6,5 @@
     <Description xml:lang="ru_RU">Пакет PyQScintilla</Description>
     <Dependencies>com.nextgis.common.qscintilla</Dependencies>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Dependencies>com.nextgis.python</Dependencies>
+    <Dependencies>com.nextgis.python,com.nextgis.python.qt4</Dependencies>
 </Package>

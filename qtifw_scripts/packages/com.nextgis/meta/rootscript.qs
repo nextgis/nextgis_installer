@@ -54,9 +54,4 @@ Component.prototype.createOperations = function()
                                 "@StartMenuDir@/NextGIS Maintenance Tool.lnk",
                                 "workingDirectory=@TargetDir@" );
     }
-
-    if (installer.value("os") == "mac")
-    {
-        component.addOperation( "Mkdir", "@TargetDir@/usr/bin" );
-    }
 }

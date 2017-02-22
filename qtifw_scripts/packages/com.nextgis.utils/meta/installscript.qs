@@ -36,6 +36,7 @@ Component.prototype.createOperations = function()
         component.addOperation( "AppendFile",
                                 "@HomeDir@/.bash_profile",
                                 "\nexport PATH=@TargetDir@/usr/bin:$PATH" );
+
         SetEnvMac("PATH", "@TargetDir@/usr/bin");
     }
 }
