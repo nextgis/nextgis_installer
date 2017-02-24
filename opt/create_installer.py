@@ -241,17 +241,8 @@ def copyFiles(tag, sources_root_dir, data_path):
                     shutil.copy(src_path_full, dst_path_full)
     return
 
-def get_version_text(sources_root_dir, component_name, force):
+def check_version(version_str, version_file_date, component_name, force):
     has_changes = False
-    version_file_path = os.path.join(packages_data_source_path, sources_root_dir, 'build', 'version.str')
-    if not os.path.exists(version_file_path):
-        return "0.0.0", has_changes
-
-    with open(version_file_path) as f:
-        content = f.readlines()
-        version_str = content[0].rstrip()
-        version_file_date = content[1].rstrip()
-
     if component_name in libraries_version_dict:
         if libraries_version_dict[component_name]['version'] == version_str:
             if libraries_version_dict[component_name]['date'] == version_file_date and force == False:
@@ -274,6 +265,19 @@ def get_version_text(sources_root_dir, component_name, force):
         has_changes = True
 
     return version_str, has_changes
+
+def get_version_text(sources_root_dir, component_name, force):
+    has_changes = False
+    version_file_path = os.path.join(packages_data_source_path, sources_root_dir, 'build', 'version.str')
+    if not os.path.exists(version_file_path):
+        return "0.0.0", has_changes
+
+    with open(version_file_path) as f:
+        content = f.readlines()
+        version_str = content[0].rstrip()
+        version_file_date = content[1].rstrip()
+
+    return check_version(version_str, version_file_date, component_name, force)
 
 def process_files_in_meta_dir(path_meta, new_meta_path):
     for meta_file in os.listdir(path_meta):
@@ -363,11 +367,12 @@ def process_directory(dir_name):
     if not os.path.exists(path_data):
         return
 
-    # Parse install.xml file
-    if not os.path.exists(os.path.join(path_data, 'package.xml')):
+    package_xml = os.path.join(path_data, 'package.xml')
+    # Parse package.xml file
+    if not os.path.exists(package_xml):
         return
 
-    tree = ET.parse(os.path.join(path_data, 'package.xml'))
+    tree = ET.parse(package_xml)
     root = tree.getroot()
 
     sources_root_dir = ''
@@ -375,8 +380,9 @@ def process_directory(dir_name):
         sources_root_dir = root.attrib['root']
         version_text, has_changes = get_version_text(sources_root_dir, dir_name, False)
     else:
-        version_text = root.find('Version').text
-        libraries_version_dict[dir_name] = dict(count = 0, date = '1900-01-01 00:00:00', version = version_text)
+        mtime = time.gmtime(os.path.getmtime(package_xml))
+        version_date = time.strftime('%Y-%m-%d %H:%M:%S', mtime)
+        version_text, has_changes = check_version(root.find('Version').text, version_date, dir_name, False)
 
     updatetext_tag = root.find('UpdateText')
     updatetext_text = None
@@ -421,11 +427,12 @@ def update_directory(dir_name, force):
     if not os.path.exists(path_data):
         return
 
+    package_xml = os.path.join(path_data, 'package.xml')
     # Check versions, if differ - delete directory and load it from sources.
-    if not os.path.exists(os.path.join(path_data, 'package.xml')):
+    if not os.path.exists(package_xml):
         return
 
-    tree = ET.parse(os.path.join(path_data, 'package.xml'))
+    tree = ET.parse(package_xml)
     root = tree.getroot()
 
     sources_root_dir = ''
@@ -433,15 +440,9 @@ def update_directory(dir_name, force):
         sources_root_dir = root.attrib['root']
         version_text, has_changes = get_version_text(sources_root_dir, dir_name, force)
     else:
-        version_text = root.find('Version').text
-        has_changes = False
-        if dir_name in libraries_version_dict:
-            if libraries_version_dict[dir_name]['version'] != version_text:
-                libraries_version_dict[dir_name]['version'] = version_text
-                has_changes = True
-        else:
-            libraries_version_dict[dir_name] = dict(count = 0, date = '1900-01-01 00:00:00', version = version_text)
-            has_changes = True
+        mtime = time.gmtime(os.path.getmtime(package_xml))
+        version_date = time.strftime('%Y-%m-%d %H:%M:%S', mtime)
+        version_text, has_changes = check_version(root.find('Version').text, version_date, dir_name, force)
 
     repo_new_package_path = os.path.join(repo_new_packages_path, dir_name)
     if not has_changes:
