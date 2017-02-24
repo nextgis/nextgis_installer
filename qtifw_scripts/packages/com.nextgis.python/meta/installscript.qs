@@ -11,30 +11,13 @@ function Component()
 {
 }
 
-function SetEnvMac(name, path)
-{
-    var contentString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
-    <plist version=\"1.0\">\n        <dict>\n        <key>Label</key>\n        <string>setenv.";
-    contentString += name;
-    contentString += "</string>\n        <key>ProgramArguments</key>\n        <array>\n            <string>/bin/launchctl</string>\n            <string>setenv</string>\n            <string>";
-    contentString += name;
-    contentString += "</string>\n            <string>";
-    contentString += path;
-    contentString += "</string>\n        </array>\n        <key>RunAtLoad</key>\n        <true/>\n        <key>ServiceIPC</key>\n        <false/>\n    </dict>\n    </plist>";
-
-    component.addOperation("AppendFile", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist", contentString);
-    // Fix permissions
-    component.addOperation("Execute", "{0,1,255}", "chmod", "644", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist");
-    component.addOperation("Execute", "{0}", "launchctl", "load", "-w", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist",
-                            "UNDOEXECUTE", "launchctl", "unload", "-w", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist");
-}
-
 Component.prototype.createOperations = function()
 {
     component.createOperations();
 
     if (installer.value("os") == "win")
     {
+        // TODO: Use pth file too
         component.addOperation( "EnvironmentVariable",
                                 "PYTHONPATH",
                                 "@TargetDir@\\lib\\Python27\\site-packages" );
@@ -42,8 +25,7 @@ Component.prototype.createOperations = function()
     else if (installer.value("os") == "mac")
     {
         component.addOperation( "AppendFile",
-                                "@HomeDir@/.bash_profile",
-                                "\nexport PYTHONPATH=$PYTHONPATH:@TargetDir@/Library/Python/2.7/site-packages" );
-        SetEnvMac("PYTHONPATH", "@TargetDir@/Library/Python/2.7/site-packages");
+                                "@HomeDir@/Library/Python/2.7/lib/python/site-packages/NextGIS.pth",
+                                "@TargetDir@/Library/Python/2.7/site-packages" );
     }
 }
