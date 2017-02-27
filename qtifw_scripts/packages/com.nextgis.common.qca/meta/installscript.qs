@@ -12,14 +12,6 @@ function Component()
 
 }
 
-function CreateSymLink(name)
-{
-    component.addOperation("Execute", "{0}", "ln", "-s",
-        "@TargetDir@/Applications/qca.app/Contents/MacOS/" + name,
-        "@TargetDir@/usr/bin/" + name);
-    component.registerPathForUninstallation("@TargetDir@/usr/bin/" + name);
-}
-
 function SetEnvMac(name, path)
 {
     var contentString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
@@ -43,15 +35,6 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "mac")
     {
-        // Create qt.conf
-        /* this should created by some utility package
-        var settingsFile = "@TargetDir@/usr/bin/qt.conf";
-        component.addOperation("Settings", "path="+settingsFile, "method=add_array_value",
-            "key=Paths/Plugins", "value=@TargetDir@/Library/Plugins/Qt4/");
-        component.addOperation("Settings", "path="+settingsFile, "method=add_array_value",
-            "key=Paths/Translations", "value=@TargetDir@/Library/Translations/Qt4/");
-        */
-
         component.addOperation( "AppendFile",
                                 "@HomeDir@/.bash_profile",
                                 "\nexport QCA_PLUGIN_PATH=@TargetDir@/Library/Plugins/Qt4/" );

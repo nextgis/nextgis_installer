@@ -26,7 +26,7 @@ Component.prototype.createOperations = function()
     {
         component.addElevatedOperation( "Mkdir",
                                 "@HomeDir@/Library/Python/2.7/lib/python/site-packages" );
-        component.addOperation( "AppendFile",
+        component.addElevatedOperation( "AppendFile",
                                 "@HomeDir@/Library/Python/2.7/lib/python/site-packages/NextGIS.pth",
                                 "@TargetDir@/Library/Python/2.7/site-packages" );
     }
