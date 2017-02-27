@@ -24,7 +24,7 @@ Component.prototype.createOperations = function()
     }
     else if (installer.value("os") == "mac")
     {
-        component.addOperation( "Mkdir",
+        component.addElevatedOperation( "Mkdir",
                                 "@HomeDir@/Library/Python/2.7/lib/python/site-packages" );
         component.addOperation( "AppendFile",
                                 "@HomeDir@/Library/Python/2.7/lib/python/site-packages/NextGIS.pth",
