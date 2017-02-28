@@ -280,6 +280,8 @@ def get_version_text(sources_root_dir, component_name, force):
     return check_version(version_str, version_file_date, component_name, force)
 
 def process_files_in_meta_dir(path_meta, new_meta_path):
+    if not os.path.exists(new_meta_path):
+        return
     for meta_file in os.listdir(path_meta):
         if meta_file == 'package.xml':
             continue
