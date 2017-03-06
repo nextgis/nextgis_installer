@@ -212,7 +212,7 @@ unix {
     else: SOURCES += adminauthorization_x11.cpp
 }
 
-LIBS += -l7z
+LIBS += -l7z ngauth
 win32 {
     SOURCES += adminauthorization_win.cpp sysinfo_win.cpp
 

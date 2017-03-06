@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Name>com.nextgis.common.qt4</Name>
+    <Name>com.nextgis.common.qt.qt4</Name>
     <DisplayName>Qt4</DisplayName>
     <DisplayName xml:lang="ru_RU">Qt4</DisplayName>
     <Description>Qt4 libraries</Description>
     <Description xml:lang="ru_RU">Библиотеки Qt4</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Dependencies>com.nextgis.common.tiff,com.nextgis.common.jpeg,com.nextgis.common.png,com.nextgis.common.sqlite,com.nextgis.common.openssl</Dependencies>
+    <Dependencies>com.nextgis.common.qt,com.nextgis.common.tiff,com.nextgis.common.jpeg,com.nextgis.common.png,com.nextgis.common.sqlite,com.nextgis.common.openssl</Dependencies>
 </Package>

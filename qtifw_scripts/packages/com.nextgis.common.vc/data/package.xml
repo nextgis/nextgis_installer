@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="vc_redist">
+    <win>
+        <path src="inst/bin/msvcr120.dll" dst="bin"/>
+		<path src="inst/bin/msvcp120.dll" dst="bin"/>
+    </win>
+</Package>

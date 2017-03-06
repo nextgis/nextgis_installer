@@ -5,6 +5,6 @@
     <Description>QCA Library</Description>
     <Description xml:lang="ru_RU">Библиотека QCA</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Dependencies>com.nextgis.common.openssl,com.nextgis.common.qt4</Dependencies>
+    <Dependencies>com.nextgis.common.openssl,com.nextgis.common.qt.qt4</Dependencies>
     <Script>installscript.qs</Script>
 </Package>

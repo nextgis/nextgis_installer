@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_qt5">
+    <win>
+        <path src="inst/bin/Qt5Core.dll" dst="bin"/>
+		<path src="inst/bin/Qt5Gui.dll" dst="bin"/>
+		<path src="inst/bin/Qt5Network.dll" dst="bin"/>
+		<path src="inst/bin/Qt5Widgets.dll" dst="bin"/>
+		<path src="inst/plugins/platforms/qwindows.dll" dst="lib/qt5/plugins/platforms"/>
+		<path src="inst/plugins/imageformats/qico.dll" dst="lib/qt5/plugins/imageformats"/>
+		<path src="inst/translations/qt_ru.qm" dst="share/qt5/translations"/>
+    </win>
+</Package>
