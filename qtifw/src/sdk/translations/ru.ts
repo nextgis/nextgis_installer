@@ -77,13 +77,6 @@
     </message>
 </context>
 <context>
-    <name>DummyComponent</name>
-    <message>
-        <source>Force crash to test rollback!</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>ExtractCallbackImpl</name>
     <message>
         <source>Could not retrieve path of archive item %1</source>
@@ -108,37 +101,6 @@
     <message>
         <source>Could not create symlink at %1. %2</source>
         <translation>Не удалось создать символьную ссылку %1. %2</translation>
-    </message>
-</context>
-<context>
-    <name>InstallationWidget</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Complete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Typical</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Common program features will be installed. Recommended for general use.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose which program features you want to install. Recommended for advanced users.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>All program features will be installed. (Requires the most disk space)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -700,10 +662,6 @@
         <source>Could not create output file for writing: %1</source>
         <translation>Не удалось создать выходной файл для записи: %1</translation>
     </message>
-    <message>
-        <source>Could not convert path: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Lib7z::ExtractItemJob</name>
@@ -740,104 +698,6 @@
     </message>
 </context>
 <context>
-    <name>LicenseWidget</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
-        <translation type="unfinished">Пожалуйста, прочитайте следующее лицензионное соглашение. Вы должны согласиться со всеми условиями этого соглашения перед продолжением установки.</translation>
-    </message>
-    <message>
-        <source>qrc:/license.txt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>I accept the license.</source>
-        <translation type="unfinished">Я согласен(а) с лицензией.</translation>
-    </message>
-    <message>
-        <source>I do not accept the license.</source>
-        <translation type="unfinished">Я не согласен(а) с лицензией.</translation>
-    </message>
-</context>
-<context>
-    <name>MainWindow</name>
-    <message>
-        <source>RepoCompare</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Production Repository:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Receive</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Update Repository:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Component Name</source>
-        <translation type="unfinished">Имя компонента</translation>
-    </message>
-    <message>
-        <source>Update required</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Old Version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Old Date</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Old Checksum</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Old Update Text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New Version</source>
-        <translation type="unfinished">Новая версия</translation>
-    </message>
-    <message>
-        <source>New Date</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New Checksum</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New Update Text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export Update File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exit</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>OpenArchiveInfo</name>
     <message>
         <source>Could not load codecs</source>
@@ -854,32 +714,6 @@
     <message>
         <source>No CArc found</source>
         <translation>CArc не найден</translation>
-    </message>
-</context>
-<context>
-    <name>OpenFileCheckBoxForm</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open registered example file based on suffix: </source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Page</name>
-    <message>
-        <source>Translations Example</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This is some text.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dynamic page example</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1015,42 +849,6 @@
         <source>The specified module could not be found.</source>
         <translation>Не удалось найти указанный модуль.</translation>
     </message>
-    <message>
-        <source>Error: --include and --exclude are mutually exclusive. Use either one or the other.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error: Package to exclude missing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error: --include and --exclude are mutual exclusive options. Use either one or the other.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error: Package to include missing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error: Packages parameter missing argument</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error: Package directory not found at the specified location</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Argument -r|--remove and --update|--update-new-components are mutually exclusive!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Repository target folder %1 already exists!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid content in &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QInstaller::Component</name>
@@ -1060,7 +858,7 @@
     </message>
     <message>
         <source>Could not open the requested translation file &apos;%1&apos;.</source>
-        <translation type="vanished">Невозможно открыть файл перевода «%1».</translation>
+        <translation>Невозможно открыть файл перевода «%1».</translation>
     </message>
     <message>
         <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
@@ -1905,51 +1703,6 @@ Error while loading %2</source>
     </message>
 </context>
 <context>
-    <name>QInstaller::NextgisAuthPage</name>
-    <message>
-        <source>NextGIS authentication</source>
-        <translation>Аутентификация NextGIS</translation>
-    </message>
-    <message>
-        <source>Enter your NextGIS credentials</source>
-        <translation>Введите ваши данные</translation>
-    </message>
-    <message>
-        <source>Login or E-mail: </source>
-        <translation>Логин или E-mail:</translation>
-    </message>
-    <message>
-        <source>Password: </source>
-        <translation>Пароль:</translation>
-    </message>
-    <message>
-        <source>Forgot password?</source>
-        <translation>Забыли пароль?</translation>
-    </message>
-    <message>
-        <source>Register now</source>
-        <translation>Регистрация</translation>
-    </message>
-    <message>
-        <source>Connecting ...</source>
-        <translation>Соединение ...</translation>
-    </message>
-    <message>
-        <source>Error connecting to server</source>
-        <translation>Ошибка соединения!</translation>
-    </message>
-    <message>
-        <source>Authorization successful.
-Click Next to continue installation</source>
-        <translation>Авторизация успешна.
-Нажмите Далее для продолжения установки</translation>
-    </message>
-    <message>
-        <source>Invalid login or password</source>
-        <translation>Неверные логин или пароль</translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::PackageManagerCore</name>
     <message>
         <source>Error writing Maintenance Tool</source>
@@ -2314,10 +2067,6 @@ Please copy the installer to a local drive</source>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
-    <message>
-        <source>Proxy Credentials</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QInstaller::ReadyForInstallationPage</name>
@@ -2420,7 +2169,7 @@ Please copy the installer to a local drive</source>
     <name>QInstaller::RemoteServerConnection</name>
     <message>
         <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation type="vanished">Не удалось прочитать все данные после отправки команды: %1. Ожидалось байт: %2; получено байт: %3. Ошибка: %4</translation>
+        <translation>Не удалось прочитать все данные после отправки команды: %1. Ожидалось байт: %2; получено байт: %3. Ошибка: %4</translation>
     </message>
 </context>
 <context>
@@ -2695,28 +2444,28 @@ Do you want to continue?</source>
     <name>QtPatchOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="vanished">Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
     </message>
     <message>
         <source>3 or 4</source>
-        <translation type="vanished">3 или 4</translation>
+        <translation>3 или 4</translation>
     </message>
     <message>
         <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation type="vanished">В операции «%1» необходимый объект установщика пуст.</translation>
+        <translation>В операции «%1» необходимый объект установщика пуст.</translation>
     </message>
     <message>
         <source>First argument should be &apos;linux&apos;, &apos;mac&apos; or &apos;windows&apos;. No other type is supported at this time.</source>
-        <translation type="vanished">Первым элементом должен быть «linux», «mac» или «windows». Другие типы в настоящий момент не поддерживаются.</translation>
+        <translation>Первым элементом должен быть «linux», «mac» или «windows». Другие типы в настоящий момент не поддерживаются.</translation>
     </message>
     <message>
         <source>Could not find the needed QmakeOutputInstallerKey(%1) value on the installer object. The ConsumeOutput operation on the valid qmake needs to be called first.</source>
-        <translation type="vanished">Не удалось найти значение QmakeOutputInstallerKey(%1) в объекте установщика. Сначала должна быть выполнена операция ConsumeOutput для рабочего qmake&apos;а.</translation>
+        <translation>Не удалось найти значение QmakeOutputInstallerKey(%1) в объекте установщика. Сначала должна быть выполнена операция ConsumeOutput для рабочего qmake&apos;а.</translation>
     </message>
     <message>
         <source>QMake from the current Qt version 
 (%1)is not existing. Please file a bugreport with this dialog at https://bugreports.qt-project.org.</source>
-        <translation type="vanished">Отсутствует QMake в текущем профиле Qt 
+        <translation>Отсутствует QMake в текущем профиле Qt 
 (%1). Пожалуйста, отправьте сообщение об ошибке, используя форму на вебсайте https://bugreports.qt-project.org.</translation>
     </message>
     <message>
@@ -2724,19 +2473,19 @@ Do you want to continue?</source>
 %1 -query
 is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
 output: &quot;%2&quot;</source>
-        <translation type="vanished">Невозможно разобрать вывод запроса %1.
+        <translation>Невозможно разобрать вывод запроса %1.
 Пожалуйста, отправьте сообщение об ошибке, используя форму на вебсайте https://bugreports.qt-project.org.
 вывод: «%2»</translation>
     </message>
     <message>
         <source>Qt patch error: new Qt dir(%1)
 needs to be less than 255 characters.</source>
-        <translation type="vanished">Ошибка патча Qt. Новый каталог Qt (%1)
+        <translation>Ошибка патча Qt. Новый каталог Qt (%1)
 должен содержать менее 255 символов в имени.</translation>
     </message>
     <message>
         <source>Qt patch error: Can not open %1.(%2)</source>
-        <translation type="vanished">Ошибка внесения изменений в Qt. Невозможно открыть %1.(%2)</translation>
+        <translation>Ошибка внесения изменений в Qt. Невозможно открыть %1.(%2)</translation>
     </message>
     <message>
         <source>The installer was not able to get the unpatched path from 
@@ -2744,51 +2493,11 @@ needs to be less than 255 characters.</source>
 It tried to patch the Qt binaries, but all other files in Qt are unpatched.
 This could result in a broken Qt version.
 Sometimes it helps to restart the installer with a switched off antivirus software.</source>
-        <translation type="vanished">Программе установки не удалось получить исходный путь
+        <translation>Программе установки не удалось получить исходный путь
 из %1.(возможная причина: файл повреждён или удалён)
 Система предприняла попытку исправить бинарные файлы Qt; при этом все прочие файлы остались в исходном виде.
 Эта ситуация может привести к повреждению Qt.
 Попробуйте отключить антивирусную программу и снова запустить программу-установщик.</translation>
-    </message>
-</context>
-<context>
-    <name>ReadMeCheckBoxForm</name>
-    <message>
-        <source>Open ReadMe</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ReadyToInstallWidget</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Setup is now ready to begin installing Dynamic Page Installer Example on your computer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show details</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Receiver</name>
-    <message>
-        <source>remaining.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>RegisterFileCheckBoxForm</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Register example file extension: </source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2944,21 +2653,6 @@ as root and then clicking OK.</source>
     </message>
 </context>
 <context>
-    <name>TargetWidget</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please specify the folder where Dynamic Page Installer Example will be installed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>UpdateOperation</name>
     <message>
         <source>Registry path %1 is not writable</source>
@@ -2971,28 +2665,6 @@ as root and then clicking OK.</source>
     <message>
         <source>Renaming %1 into %2 failed with %3.</source>
         <translation>Сбой переименования %1 в %2: %3.</translation>
-    </message>
-</context>
-<context>
-    <name>form</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CheckBox</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>installscript</name>
-    <message>
-        <source>Installation failed:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This is a dynamically created page.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

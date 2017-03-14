@@ -212,7 +212,7 @@ unix {
     else: SOURCES += adminauthorization_x11.cpp
 }
 
-LIBS += -l7z ngauth
+LIBS += -l7z -lngauth
 win32 {
     SOURCES += adminauthorization_win.cpp sysinfo_win.cpp
 
@@ -223,3 +223,6 @@ win32 {
     win32-g++*:LIBS += -lmpr -luuid
     win32-g++*:QMAKE_CXXFLAGS += -Wno-missing-field-initializers
 }
+
+target.path = $$[QT_INSTALL_LIBS]
+INSTALLS += target

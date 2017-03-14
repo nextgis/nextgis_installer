@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -217,18 +217,13 @@
             \li WizardStyle
             \li Set the wizard style to be used ("Modern", "Mac", "Aero" or "Classic").
         \row
-            \li StyleSheet
-            \li Set the stylesheet file.
-        \row
             \li WizardDefaultWidth
             \li Sets the default width of the wizard in pixels. Setting a banner image will
-                override this. You can add the \c em or \c ex suffix to the specified value to
-                use the \e em or \e ex unit, as in a CSS file.
+                override this.
         \row
             \li WizardDefaultHeight
             \li Sets the default height of the wizard in pixels. Setting a watermark image will
-                override this. You can add the \c em or \c ex suffix to the specified value to
-                use the \e em or \e ex unit, as in a CSS file.
+                override this.
         \row
             \li TitleColor
             \li Set the color of the titles and subtitles (takes an HTML color code,
@@ -282,10 +277,6 @@
             \li Set to \c true if the installation path can contain non-ASCII
                 characters.
         \row
-            \li DisableAuthorizationFallback
-            \li Set to \c true if the installation should not ask users to run the authorization
-                fallback in case of authorization errors. Instead abort the installation immediately.
-        \row
             \li RepositorySettingsPageVisible
             \li Set to \c false to hide the repository settings page inside the settings dialog.
         \row
@@ -316,14 +307,6 @@
             \li Set to \c true if you want to create a local repository inside the installation directory.
                 This option has no effect on online installers. The repository will be automatically added
                 to the list of default repositories.
-        \row
-            \li InstallActionColumnVisible
-            \li Set to \c true if you want to add an extra column into component tree showing install actions.
-                This extra column indicates whether a component is going to be installed or uninstalled,
-                or just stay installed or uninstalled.
-        \row
-            \li SupportsModify
-            \li Set to \c false if the product does not support modifying an existing installation.
 
     \endtable
 
@@ -560,12 +543,11 @@
         \row
             \li DisplayName
             \li Human-readable name of the component. Required.
-                Specify translations for the name of the component as values of additional
-                DisplayName tags, with the xml:lang attribute set to the correct locale.
         \row
             \li Description
             \li Human-readable description of the component. Required.
-                Translations may be specified similarly to DisplayName tag.
+                Specify translations for the description as values of additional
+                Description tags, with the xml:lang attribute set to the correct locale.
                 If a localization that matches the locale is not found and an untranslated
                 version exists, that one will be used. Otherwise no Description will be
                 shown for that locale.
@@ -621,8 +603,6 @@
             \li List of license agreements to be accepted by the installing
                 user. To add several licenses, add several \c <License> child
                 elements that each specify the license \c name and \c file.
-                ASCII and UTF8 file formats are supported for license files.
-
                 If there are translations listed for this component, the installer
                 will also look for translated licenses. These need to have the
                 same name as the original license file but with an added
@@ -687,12 +667,6 @@
             \li RequiresAdminRights
             \li Set to \c true if the package needs to be installed with elevated permissions.
                 Optional.
-        \row
-            \li Checkable
-            \li Set to \c false if you want to hide the checkbox for an item. This is useful
-                when only a few subcomponents should be selected instead of all. Optional.
-                \note The content from the data directory is not installed if \c Checkable
-                is \c false unless \c ForcedInstallation is set to \c true.
     \endtable
 
     \section2 Component Dependencies
@@ -856,11 +830,6 @@
         \row
             \li -v or --verbose
             \li Display debug output.
-
-        \row
-            \li -s or --sign identity
-            \li Only available on OS X. Allows specifying a code signing identity to be
-                used for signing the generated app bundle.
     \endtable
 
     These parameters are followed by the name of the target binary and a list
@@ -869,11 +838,6 @@
     \note The listed packages are included in the installer, as well as all
     their dependencies and all packages that share the same prefix, unless you
     specify the \c --nodeps parameter.
-
-    In the optional resource files specified via the \c --resources parameter, a
-    special \c fonts/ path can be used to ship custom fonts. These fonts will
-    be loaded automatically and thus become available in a stylesheet which can
-    be specified via the \c StyleSheet variable.
 
     On Windows, the name of the target binary is automatically extended with
     .exe, if you do not specify the extension. On Mac, the target is
@@ -1264,8 +1228,8 @@
                  displayname="Example Repository" />
     \endcode
 
-    \c{url} will be used as a base url to resolve an \c{Updates.xml} file against.
-    If \c{url} is itself relative, it will be resolved against the base url of the current document.
+    \c{url} will be used as a base URL to resolve an \c{Updates.xml} file against.
+    If \c{url} is itself relative, it will be resolved against the base URL of the current document.
 
     \c{displayname} specifies how the repository should be named in the \gui Settings page
     of the Maintenance Tool.
@@ -1280,7 +1244,7 @@
     <Repository action="remove" url="http://www.example.com/repository" />
     \endcode
 
-    \c{url} must match exactly the url that is to be removed.
+    \c{url} must match exactly the URL that is to be removed.
 
     \section2 Replacing Repositories
     To replace one repository with another, add a \c <Repository> child element to the
@@ -1292,32 +1256,34 @@
                 displayname="New Example Repository" />
     \endcode
 
-    \c{oldUrl} must match exactly the url that is to be replaced.
+    \c{oldUrl} must match exactly the URL that is to be replaced.
 
-    \c{newUrl} must match exactly the url that is replace to.
+    \c{newUrl} must match exactly the URL that it is replaced with.
 
     \section1 Relocatable Repositories
 
-    Some projects contain multiple repositories. To create relocatable set
+    Some projects contain multiple repositories. To create a relocatable set
     of repositories you should use relative paths.
 
-    So if generic repository available at address \c{http://www.example.com/repositories/generic}
-    and \c{Updates.xml} contains \c <Repository> element with the following options:
+    So if the generic repository available at the address
+    \c{http://www.example.com/repositories/generic} and \c{Updates.xml}
+    contains \c <Repository> element with the following options:
 
     \code
     <Repository action="add" url="../module" name="user" password="password"
                  displayname="Module Repository" />
     \endcode
 
-    Resolved address of added repository will be \c{http://www.example.com/repositories/module}.
-    So that the repository does not contain information about their absolute location.
+    Then the resolved address of the added repository will be
+    \c{http://www.example.com/repositories/module}, so that the repository does
+    not contain information about their absolute location.
 
     If you want to change the address, you can simply copy a set of repositories as is.
-    It recommended for some time to maintain the old generic repository and replace addresses
+    It is recommended to maintain the old generic repository for some time and replace the addresses
     as described above. You can also provide the updated installer with the new generic address.
 
-    You can use relative path for arguments \c url, \c oldUrl and \c newUrl at
-    \c <Repository> element.
+    You can use relative paths for the arguments \c url, \c oldUrl, and \c newUrl in
+    the \c <Repository> element.
 */
 
 /*!

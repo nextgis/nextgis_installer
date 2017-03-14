@@ -1,7 +1,7 @@
 /******************************************************************************
 *
 *    Author: Mikhail Gusev, gusevmihs@gmail.com
-*    Copyright (C) 2014-2016 NextGIS, info@nextgis.com
+*    Copyright (C) 2014-2017 NextGIS, info@nextgis.com
 *
 *    This file is part of the Qt Installer Framework modified for NextGIS
 *    Installer project.

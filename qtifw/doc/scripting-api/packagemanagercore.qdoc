@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,11 +35,9 @@
 /*!
     \qmlmethod array installer::components()
 
-    Returns an array of all components currently available.
-    If the repository metadata have not been fetched yet,
-    the array will be empty.
+    Returns an array of all available components.
 
-    \sa component, installer::finishAllComponentsReset(), installer::finishUpdaterComponentsReset()
+    \sa component
 */
 
 /*!
@@ -334,17 +332,6 @@
 */
 
 /*!
-    \qmlmethod boolean installer::readFile(string filePath, string codecName)
-
-    Returns the contents of the file \a filePath using the encoding specified
-    by \a codecName. The file is read in the text mode, that is, end-of-line
-    terminators are translated to the local encoding.
-
-    \note If the file does not exist or an error occurs while reading the file, an
-     empty string is returned.
-*/
-
-/*!
     \qmlmethod boolean installer::fileExists(string filePath)
 
     Returns \c true if the \a filePath exists; otherwise returns \c false.
@@ -505,19 +492,12 @@
 
 /*!
     \qmlmethod array installer::execute(string program, stringlist arguments = undefined,
-                                        string stdin = "", string stdinCodec = "latin1",
-                                        string stdoutCodec = "latin1")
+                                        string stdin = "")
 
     Starts the program \a program with the arguments \a arguments in a
     new process and waits for it to finish.
 
     \a stdin is sent as standard input to the application.
-
-    \a stdInCodec is the name of the codec to use for converting the input string
-    into bytes to write to the standard input of the application.
-
-    \a stdOutCodec is the name of the codec to use for converting data written by the
-    application to standard output into a string.
 
     Returns an empty array if the program could not be executed, otherwise
     the output of command as the first item, and the return code as the second.
