@@ -104,6 +104,17 @@
     </message>
 </context>
 <context>
+    <name>InstallerBase</name>
+    <message>
+        <source>Waiting for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>InstallerCalculator</name>
     <message>
         <source>Components added as automatic dependencies:</source>
@@ -657,6 +668,10 @@
         <source>Could not create output file for writing: %1</source>
         <translation>Konnte Ausgabedatei nicht zum Schreiben öffnen. Fehlermeldung: %1</translation>
     </message>
+    <message>
+        <source>Could not convert path: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Lib7z::ExtractItemJob</name>
@@ -853,7 +868,7 @@
     </message>
     <message>
         <source>Could not open the requested translation file &apos;%1&apos;.</source>
-        <translation>Konnte angeforderte Übersetzungsdatei %1 nicht öffnen.</translation>
+        <translation type="vanished">Konnte angeforderte Übersetzungsdatei %1 nicht öffnen.</translation>
     </message>
     <message>
         <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
@@ -1270,7 +1285,6 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Network error while downloading &apos;%1&apos;: %2.</source>
-        <extracomment>%2 is a sentence describing the error</extracomment>
         <translation>Netzwerkfehler beim Herunterladen von &apos;%1&apos;: %2.</translation>
     </message>
     <message>
@@ -1692,6 +1706,50 @@ Fehler beim Laden von %2</translation>
     </message>
 </context>
 <context>
+    <name>QInstaller::NextgisAuthPage</name>
+    <message>
+        <source>NextGIS authentication</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter your NextGIS credentials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Login or E-mail: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forgot password?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Register now</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connecting ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid login or password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error connecting to server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Authorization successful.
+Click Next to continue installation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QInstaller::PackageManagerCore</name>
     <message>
         <source>
@@ -2058,6 +2116,10 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
         <source>Password</source>
         <translation>Passwort</translation>
     </message>
+    <message>
+        <source>Proxy Credentials</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ReadyForInstallationPage</name>
@@ -2160,7 +2222,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     <name>QInstaller::RemoteServerConnection</name>
     <message>
         <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation>Konnte nicht alle Daten nach dem Senden des Kommandos &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
+        <translation type="vanished">Konnte nicht alle Daten nach dem Senden des Kommandos &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
     </message>
 </context>
 <context>
