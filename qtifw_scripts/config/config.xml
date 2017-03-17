@@ -13,8 +13,6 @@
     <TargetDir>@ApplicationsDir@/NextGIS</TargetDir>
     <MaintenanceToolName>nextgisupdater</MaintenanceToolName>
     <MaintenanceToolIniFile>nextgisupdater.ini</MaintenanceToolIniFile>
-    <Translations>
-    </Translations>
     <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
     <RemoteRepositories>
         <Repository>
