@@ -53,14 +53,15 @@ Downloader::Downloader()
 {
     // NEXTGIS: replace network access manager with global one.
     //connect(&m_nam, SIGNAL(finished(QNetworkReply*)), SLOT(onFinished(QNetworkReply*)));
-    connect(&NgAccess::manager, SIGNAL(finished(QNetworkReply*)), SLOT(onFinished(QNetworkReply*)));
+    NgAccess::copyManager(&m_namNg);
+    connect(&m_namNg, SIGNAL(finished(QNetworkReply*)), SLOT(onFinished(QNetworkReply*)));
 }
 
 Downloader::~Downloader()
 {
     // NEXTGIS: replace network access manager with global one.
     //m_nam.disconnect();
-    NgAccess::manager.disconnect();
+    m_namNg.disconnect();
     for (const auto &pair : m_downloads) {
         pair.first->disconnect();
         pair.first->abort();
@@ -83,10 +84,10 @@ void Downloader::download(QFutureInterface<FileTaskResult> &fi, const QList<File
     //    SLOT(onAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
     //connect(&m_nam, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this,
     //        SLOT(onProxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
-    NgAccess::manager.setProxyFactory(networkProxyFactory);
-    connect(&NgAccess::manager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), this,
+    m_namNg.setProxyFactory(networkProxyFactory);
+    connect(&m_namNg, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), this,
          SLOT(onAuthenticationRequired(QNetworkReply*,QAuthenticator*)));  
-    connect(&NgAccess::manager, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this,
+    connect(&m_namNg, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this,
          SLOT(onProxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));         
     QTimer::singleShot(0, this, SLOT(doDownload()));
 }
@@ -357,7 +358,7 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
 
     // NEXTGIS: replace network access manager with global one.
     //QNetworkReply *reply = m_nam.get(QNetworkRequest(source));
-    QNetworkReply *reply = NgAccess::manager.get(QNetworkRequest(source));
+    QNetworkReply *reply = m_namNg.get(QNetworkRequest(source));
     std::unique_ptr<Data> data(new Data(item));
     m_downloads[reply] = std::move(data);
 

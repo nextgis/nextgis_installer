@@ -1048,6 +1048,7 @@ struct KDUpdater::HttpDownloader::Private
     
     // NEXTGIS: replace network manager with global one.
     //QNetworkAccessManager manager;
+    QNetworkAccessManager managerNg;
     
     QNetworkReply *http;
     QFile *destination;
@@ -1076,15 +1077,16 @@ KDUpdater::HttpDownloader::HttpDownloader(QObject *parent)
     , d(new Private(this))
 {
     // NEXTGIS: replace network access manager with global one.
+    NgAccess::copyManager(&d->managerNg);
 #ifndef QT_NO_SSL
     //connect(&d->manager, SIGNAL(sslErrors(QNetworkReply*, QList<QSslError>)),
     //    this, SLOT(onSslErrors(QNetworkReply*, QList<QSslError>)));
-    connect(&NgAccess::manager, SIGNAL(sslErrors(QNetworkReply*, QList<QSslError>)),
+    connect(&d->managerNg, SIGNAL(sslErrors(QNetworkReply*, QList<QSslError>)),
          this, SLOT(onSslErrors(QNetworkReply*, QList<QSslError>)));
 #endif
     //connect(&d->manager, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)), this,
     //    SLOT(onAuthenticationRequired(QNetworkReply*, QAuthenticator*)));
-    connect(&NgAccess::manager, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)), this,
+    connect(&d->managerNg, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)), this,
          SLOT(onAuthenticationRequired(QNetworkReply*, QAuthenticator*)));
 }
 
@@ -1298,8 +1300,8 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
     // NEXTGIS: replace network access manager with global one.
     //d->manager.setProxyFactory(proxyFactory());
     //d->http = d->manager.get(QNetworkRequest(url));
-    NgAccess::manager.setProxyFactory(proxyFactory());
-    d->http = NgAccess::manager.get(QNetworkRequest(url));    
+    d->managerNg.setProxyFactory(proxyFactory());
+    d->http = d->managerNg.get(QNetworkRequest(url));
 
     connect(d->http, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
     connect(d->http, SIGNAL(downloadProgress(qint64, qint64)), this,

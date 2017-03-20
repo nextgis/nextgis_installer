@@ -48,7 +48,8 @@
 
 #include <QApplication>
 
-#include <QtUiTools/QUiLoader>
+// NEXTGIS: removed for installer size reducing.
+//#include <QtUiTools/QUiLoader>
 
 #include <algorithm>
 
@@ -562,6 +563,8 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 */
 void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis)
 {
+    // NEXTGIS: removed for installer size reducing.
+    /*
     if (qobject_cast<QApplication*> (qApp) == 0)
         return;
 
@@ -584,6 +587,7 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
         d->scriptEngine()->newQObject(widget);
         d->m_userInterfaces.insert(widget->objectName(), widget);
     }
+    */
 }
 
 /*!

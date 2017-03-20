@@ -101,8 +101,9 @@ private:
 
     int m_finished;
     
-    // NEXTGIS: replace network manager with global one.
+    // NEXTGIS: for replacing network manager with global one.
     //QNetworkAccessManager m_nam;
+    QNetworkAccessManager m_namNg;
     
     QList<FileTaskItem> m_items;
     QMultiHash<QNetworkReply*, QUrl> m_redirects;

@@ -43,6 +43,7 @@ class NgAccess: public QObject
     public:
 
      static QNetworkAccessManager manager;
+     static void copyManager (QNetworkAccessManager *targetManager);
      static bool authenticated;
      static QString _error;
      static QString _received;
