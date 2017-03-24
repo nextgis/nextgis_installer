@@ -1,7 +1,7 @@
 /******************************************************************************
 *
 *    Author: Mikhail Gusev, gusevmihs@gmail.com
-*    Copyright (C) 2014-2016 NextGIS, info@nextgis.com
+*    Copyright (C) 2014-2017 NextGIS, info@nextgis.com
 *
 *    This file is part of the Qt Installer Framework modified for NextGIS
 *    Installer project.
@@ -23,11 +23,11 @@
 
 #include <QUrl>
 #include <QNetworkCookie>
+#include <QNetworkCookieJar>
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
-
 
 // Global network manager for storing retrived from the server authentication
 // cookies.
@@ -41,6 +41,17 @@ bool NgAccess::authenticated = false;
 // Global error output for debugging.
 QString NgAccess::_error;
 QString NgAccess::_received;
+
+
+void NgAccess::copyManager (QNetworkAccessManager *targetManager) // STATIC
+{
+    // Copy cookies.
+    QNetworkCookieJar *cookieJar = NgAccess::manager.cookieJar();
+    targetManager->setCookieJar(cookieJar);
+    cookieJar->setParent(&NgAccess::manager); // return ownership to the global nam
+
+    // QUESTION: do we need to copy smth else?
+}
 
 
 NgAccess::NgAccess ():

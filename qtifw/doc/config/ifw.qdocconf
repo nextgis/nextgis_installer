@@ -8,7 +8,8 @@ project     = "Qt Installer Framework"
 description = "Qt Installer Framework Manual"
 url         = http://qt-project.org/doc/qtinstallerframework/
 
-sourcedirs += ../../src/libs/installer ../../src/libs/kdtools ../includes
+sourcedirs += includes
+sourcedirs += ../../src/libs/installer ../../src/libs/kdtools
 headerdirs += ../../src/libs/installer ../../src/libs/kdtools
 
 imagedirs = $SRCDIR/images $SRCDIR/templates/images

@@ -1,31 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL21$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 or version 3 as published by the Free
-** Software Foundation and appearing in the file LICENSE.LGPLv21 and
-** LICENSE.LGPLv3 included in the packaging of this file. Please review the
-** following information to ensure the GNU Lesser General Public License
-** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** As a special exception, The Qt Company gives you certain additional
-** rights. These rights are described in The Qt Company LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -53,7 +48,8 @@
 
 #include <QApplication>
 
-#include <QtUiTools/QUiLoader>
+// NEXTGIS: removed for installer size reducing.
+//#include <QtUiTools/QUiLoader>
 
 #include <algorithm>
 
@@ -567,6 +563,8 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 */
 void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis)
 {
+    // NEXTGIS: removed for installer size reducing.
+    /*
     if (qobject_cast<QApplication*> (qApp) == 0)
         return;
 
@@ -589,6 +587,7 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
         d->scriptEngine()->newQObject(widget);
         d->m_userInterfaces.insert(widget->objectName(), widget);
     }
+    */
 }
 
 /*!
@@ -1013,6 +1012,8 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
     \a parameter1, \a parameter2, \a parameter3, \a parameter4, \a parameter5, \a parameter6,
     \a parameter7, \a parameter8, \a parameter9, and \a parameter10.
 
+    Returns \c true if the operation succeeds, otherwise returns \c false.
+
     \sa {component::addOperation}{component.addOperation}
 */
 bool Component::addOperation(const QString &operation, const QString &parameter1, const QString &parameter2,
@@ -1033,6 +1034,8 @@ bool Component::addOperation(const QString &operation, const QString &parameter1
     Creates and adds an installation operation for \a operation. Add any number of \a parameters.
     The variables that the parameters contain, such as \c @TargetDir@, are replaced with their
     values.
+
+    Returns \c true if the operation succeeds, otherwise returns \c false.
 */
 bool Component::addOperation(const QString &operation, const QStringList &parameters)
 {
@@ -1050,6 +1053,8 @@ bool Component::addOperation(const QString &operation, const QStringList &parame
     \a parameter7, \a parameter8, \a parameter9, and \a parameter10.
 
     \sa {component::addElevatedOperation}{component.addElevatedOperation}
+
+    Returns \c true if the operation succeeds, otherwise returns \c false.
 */
 bool Component::addElevatedOperation(const QString &operation, const QString &parameter1,
     const QString &parameter2, const QString &parameter3, const QString &parameter4, const QString &parameter5,
@@ -1070,6 +1075,8 @@ bool Component::addElevatedOperation(const QString &operation, const QString &pa
     The variables that the parameters contain, such as \c @TargetDir@, are replaced with their
     values. The operation is executed with elevated rights.
 
+    Returns \c true if the operation succeeds, otherwise returns \c false.
+
 */
 bool Component::addElevatedOperation(const QString &operation, const QStringList &parameters)
 {
@@ -1082,8 +1089,9 @@ bool Component::addElevatedOperation(const QString &operation, const QStringList
 }
 
 /*!
-    Specifies whether operations should be automatically created when the installation starts. This
-    would be done by calling createOperations(). If you set this to \c false, it is completely up
+    Returns whether operations should be automatically created when the
+    installation starts and createOperations() is called. If you set this to
+    \c false, it is completely up
     to the component's script to create all operations.
 
     \sa {component::autoCreateOperations}{component.autoCreateOperations}

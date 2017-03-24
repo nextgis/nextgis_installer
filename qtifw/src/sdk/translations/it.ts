@@ -104,6 +104,17 @@
     </message>
 </context>
 <context>
+    <name>InstallerBase</name>
+    <message>
+        <source>Waiting for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>InstallerCalculator</name>
     <message>
         <source>Components added as automatic dependencies:</source>
@@ -657,6 +668,10 @@
         <source>Could not create output file for writing: %1</source>
         <translation>Impossibile creare il file di output aperto in scrittura: %1</translation>
     </message>
+    <message>
+        <source>Could not convert path: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Lib7z::ExtractItemJob</name>
@@ -853,7 +868,7 @@
     </message>
     <message>
         <source>Could not open the requested translation file &apos;%1&apos;.</source>
-        <translation>Impossibile aprire il file di traduzioni richiesto &apos;%1&apos;.</translation>
+        <translation type="vanished">Impossibile aprire il file di traduzioni richiesto &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
@@ -1270,7 +1285,6 @@ Errore durante lo scaricamento %2</translation>
     </message>
     <message>
         <source>Network error while downloading &apos;%1&apos;: %2.</source>
-        <extracomment>%2 is a sentence describing the error</extracomment>
         <translation>Errore di rete durante lo scaricamento di &apos;%1&apos;: %2.</translation>
     </message>
     <message>
@@ -1690,6 +1704,50 @@ Errore durante lo scaricamento %2</translation>
     </message>
 </context>
 <context>
+    <name>QInstaller::NextgisAuthPage</name>
+    <message>
+        <source>NextGIS authentication</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter your NextGIS credentials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Login or E-mail: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forgot password?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Register now</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connecting ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid login or password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error connecting to server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Authorization successful.
+Click Next to continue installation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QInstaller::PackageManagerCore</name>
     <message>
         <source>
@@ -2054,6 +2112,10 @@ Copiare l&apos;installer in locale</translation>
     <message>
         <source>Password</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Proxy Credentials</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Name>com.nextgis.common.vc</Name>
-    <DisplayName>VC</DisplayName>
-    <DisplayName xml:lang="ru_RU">VC</DisplayName>
-    <Description>VC</Description>
-    <Description xml:lang="ru_RU">VC</Description>
-    <Version>0.0.0</Version>
-    <ReleaseDate>2016-01-01</ReleaseDate>
+    <DisplayName>VC redistributables</DisplayName>
+    <DisplayName xml:lang="ru_RU">VC redistributables</DisplayName>
+    <Description>VC redistributables</Description>
+    <Description xml:lang="ru_RU">VC redistributables</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
 </Package>

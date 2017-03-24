@@ -3,8 +3,8 @@
 }
 IFW_PRI_INCLUDED = 1
 
-IFW_VERSION_STR = 2.0.3
-IFW_VERSION = 0x020003
+IFW_VERSION_STR = 2.0.5
+IFW_VERSION = 0x020005
 
 IFW_REPOSITORY_FORMAT_VERSION = 1.0.0
 IFW_NEWLINE = $$escape_expand(\\n\\t)
@@ -105,7 +105,10 @@ macx:LIBS += -framework Carbon -framework Security
     contains(QT_CONFIG, shared): CONFIG += shared
 }
 
-QT += uitools core-private
+# NEXTGIS: removed uitools and added widgets for installer size reducing.
+# Note: unable to simply remove qml because it contains JS parser which we currently need
+# for after-install operations (but not for ui constructing!).
+QT += widgets core-private #uitools core-private
 CONFIG(static, static|shared) {
     win32:QT += winextras
     QT += concurrent network qml xml
@@ -116,9 +119,9 @@ exists(".git") {
     GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
 }
 
-### NGI: Removed because of an error: https://bugreports.qt.io/browse/QTIFW-852
+# NEXTGIS: Removed because of an error: https://bugreports.qt.io/browse/QTIFW-852
 ###isEmpty(GIT_SHA1) {
-    # Attempt to read the sha1 from alternative location
+###    # Attempt to read the sha1 from alternative location
 ###    GIT_SHA1=\"$$cat(.tag)\"
 ###}
 

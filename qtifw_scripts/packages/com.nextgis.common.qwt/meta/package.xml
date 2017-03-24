@@ -5,5 +5,5 @@
     <Description>QWT Library</Description>
     <Description xml:lang="ru_RU">Библиотека QWT</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Dependencies>com.nextgis.common.qt4</Dependencies>
+    <Dependencies>com.nextgis.common.qt.qt4</Dependencies>
 </Package>

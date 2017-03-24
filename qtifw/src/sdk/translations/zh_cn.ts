@@ -104,6 +104,17 @@
     </message>
 </context>
 <context>
+    <name>InstallerBase</name>
+    <message>
+        <source>Waiting for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>InstallerCalculator</name>
     <message>
         <source>Components added as automatic dependencies:</source>
@@ -652,6 +663,10 @@
         <source>Could not create output file for writing: %1</source>
         <translation>无法创建输出文件进行写入：%1</translation>
     </message>
+    <message>
+        <source>Could not convert path: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Lib7z::ExtractItemJob</name>
@@ -861,7 +876,7 @@
     </message>
     <message>
         <source>Could not open the requested translation file &apos;%1&apos;.</source>
-        <translation>无法打开请求的翻译文件“%1”。</translation>
+        <translation type="vanished">无法打开请求的翻译文件“%1”。</translation>
     </message>
     <message>
         <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
@@ -1266,7 +1281,6 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Network error while downloading &apos;%1&apos;: %2.</source>
-        <extracomment>%2 is a sentence describing the error</extracomment>
         <translation>下载“%1”时发生网络错误：%2。</translation>
     </message>
     <message>
@@ -1682,6 +1696,50 @@ Error while loading %2</source>
     </message>
 </context>
 <context>
+    <name>QInstaller::NextgisAuthPage</name>
+    <message>
+        <source>NextGIS authentication</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter your NextGIS credentials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Login or E-mail: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forgot password?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Register now</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connecting ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid login or password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error connecting to server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Authorization successful.
+Click Next to continue installation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QInstaller::PackageManagerCore</name>
     <message>
         <source>
@@ -2048,6 +2106,10 @@ Please copy the installer to a local drive</source>
         <source>Password</source>
         <translation>密码</translation>
     </message>
+    <message>
+        <source>Proxy Credentials</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ReadyForInstallationPage</name>
@@ -2150,7 +2212,7 @@ Please copy the installer to a local drive</source>
     <name>QInstaller::RemoteServerConnection</name>
     <message>
         <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation>发送命令： %1 后无法读取所有数据。 期望： %2字节， 收到： %3字节。 错误： %4</translation>
+        <translation type="vanished">发送命令： %1 后无法读取所有数据。 期望： %2字节， 收到： %3字节。 错误： %4</translation>
     </message>
 </context>
 <context>

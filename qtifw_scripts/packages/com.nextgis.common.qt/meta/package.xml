@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Qt</DisplayName>
+    <DisplayName xml:lang="ru_RU">Qt</DisplayName>
+    <Description>Qt framework</Description>
+    <Description xml:lang="ru_RU">Фреймворк Qt</Description>
+    <Virtual>true</Virtual>
+    <RequiresAdminRights>true</RequiresAdminRights>
+    <Script>installscript.qs</Script>
+</Package>

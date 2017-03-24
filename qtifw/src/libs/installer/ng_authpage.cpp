@@ -1,7 +1,7 @@
 /******************************************************************************
 *
 *    Author: Mikhail Gusev, gusevmihs@gmail.com
-*    Copyright (C) 2014-2016 NextGIS, info@nextgis.com
+*    Copyright (C) 2014-2017 NextGIS, info@nextgis.com
 *
 *    This file is part of the Qt Installer Framework modified for NextGIS
 *    Installer project.
@@ -41,14 +41,18 @@ NextgisAuthPage::NextgisAuthPage (PackageManagerCore *core)
 
     m_labLogin = new QLabel(this);
     m_labLogin->setText(tr("Login or E-mail: "));
+    m_labLogin->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
 
     m_labPassword = new QLabel(this);
     m_labPassword->setText(tr("Password: "));
+    m_labPassword->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
 
     m_eLogin = new QLineEdit(this);
+    m_eLogin->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
 
     m_ePassword = new QLineEdit(this);
     m_ePassword->setEchoMode(QLineEdit::Password);
+    m_ePassword->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
 
     m_labInfo = new QLabel(this);
     m_labInfo->setText(tr(""));
@@ -84,9 +88,10 @@ NextgisAuthPage::NextgisAuthPage (PackageManagerCore *core)
     lvAll->addWidget(_test_textEdit);
 
     QHBoxLayout *lhMain = new QHBoxLayout(this);
-    lhMain->addStretch();
+    lhMain->addStretch(1);
     lhMain->addLayout(lvAll);
-    lhMain->addStretch();
+    lhMain->setStretchFactor(lvAll,4);
+    lhMain->addStretch(1);
 
     _test_textEdit->hide();
 
