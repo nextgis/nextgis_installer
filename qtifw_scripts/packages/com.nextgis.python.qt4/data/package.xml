@@ -6,4 +6,9 @@
         <path src="inst/share/pyqt4" dst="usr/share/sip"/>
         <path src="inst/bin" dst="usr/bin/"/>
     </mac>
+    <win>
+        <path src="inst/PyQt4" dst="lib/Python27/site-packages/PyQt4"/>
+        <path src="inst/share/pyqt4" dst="share/sip"/>
+        <path src="inst/bin" dst="bin"/>
+    </win>
 </Package>

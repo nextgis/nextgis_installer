@@ -3,4 +3,7 @@
     <mac>
         <path src="inst/Library/Plugins/Qt4/ngqgis/*" dst="Library/Plugins/Qt4/ngqgis"/>
     </mac>
+    <win>
+        <path src="inst/lib/ngqgis/plugins/*" dst="lib/ngqgis/plugins"/>
+    </win>
 </Package>

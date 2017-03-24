@@ -22,4 +22,7 @@
         <path src="inst/bin/gnm*" dst="usr/bin/"/>
         <path src="inst/bin/testepsg" dst="usr/bin/"/>
     </mac>
+    <win>
+        <path src="inst/bin/*.exe" dst="bin"/>
+    </win>
 </Package>

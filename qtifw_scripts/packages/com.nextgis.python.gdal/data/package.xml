@@ -22,4 +22,25 @@
         <path src="inst/bin/pct2rgb.py" dst="usr/bin/"/>
         <path src="inst/bin/rgb2pct.py" dst="usr/bin/"/>
     </mac>
+    <win>
+        <path src="inst/lib/Python27/site-packages/osgeo" dst="lib/Python27/site-packages/osgeo"/>
+        <path src="inst/bin/epsg_tr.py" dst="bin"/>
+        <path src="inst/bin/esri2wkt.py" dst="bin"/>
+        <path src="inst/bin/gcps2vec.py" dst="bin"/>
+        <path src="inst/bin/gcps2wld.py" dst="bin"/>
+        <path src="inst/bin/gdal2tiles.py" dst="bin"/>
+        <path src="inst/bin/gdal2xyz.py" dst="bin"/>
+        <path src="inst/bin/gdal_fillnodata.py" dst="bin"/>
+        <path src="inst/bin/gdal_merge.py" dst="bin"/>
+        <path src="inst/bin/gdal_polygonize.py" dst="bin"/>
+        <path src="inst/bin/gdal_proximity.py" dst="bin"/>
+        <path src="inst/bin/gdal_retile.py" dst="bin"/>
+        <path src="inst/bin/gdal_sieve.py" dst="bin"/>
+        <path src="inst/bin/gdalchksum.py" dst="bin"/>
+        <path src="inst/bin/gdalident.py" dst="bin"/>
+        <path src="inst/bin/gdalimport.py" dst="bin"/>
+        <path src="inst/bin/mkgraticule.py" dst="bin"/>
+        <path src="inst/bin/pct2rgb.py" dst="bin"/>
+        <path src="inst/bin/rgb2pct.py" dst="bin"/>
+    </win>
 </Package>

@@ -7,4 +7,10 @@
         <path src="inst/include" dst="usr/include/"/>
         <path src="inst/bin/sip" dst="usr/bin/"/>
     </mac>
+    <win>
+        <path src="inst/sip.*" dst="lib/Python27/site-packages"/>
+        <path src="inst/*.py" dst="lib/Python27/site-packages"/>
+        <path src="inst/include" dst="include"/>
+        <path src="inst/bin/sip.exe" dst="bin"/>
+    </win>
 </Package>

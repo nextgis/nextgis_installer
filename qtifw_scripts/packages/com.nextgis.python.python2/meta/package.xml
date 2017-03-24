@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Python27</DisplayName>
+    <DisplayName xml:lang="ru_RU">Python27</DisplayName>
+    <Description>Python27</Description>
+    <Description xml:lang="ru_RU">Python27</Description>
+    <RequiresAdminRights>true</RequiresAdminRights>
+    <Dependencies>com.nextgis.python</Dependencies>
+</Package>
