@@ -223,8 +223,8 @@ def copyFiles(tag, sources_root_dir, data_path):
     for path in tag.iter('path'):
         src_path = path.attrib['src']
         dst_path = path.attrib['dst']
-        src_path_full = os.path.join(sources_root_dir, src_path)
-        dst_path_full = os.path.join(data_path, dst_path)
+        src_path_full = unicode(os.path.join(sources_root_dir, src_path))
+        dst_path_full = unicode(os.path.join(data_path, dst_path))
 
         if os.path.isdir(src_path_full):
             shutil.copytree(src_path_full, dst_path_full, symlinks=True)
