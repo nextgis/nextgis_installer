@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/openssl.framework" dst="Library/Frameworks/openssl.framework"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/bin/openssl*.dll" dst="bin"/>
         <path src="inst/share/ssl" dst="share/ssl"/>
     </win>

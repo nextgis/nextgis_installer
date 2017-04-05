@@ -55,6 +55,7 @@ class bcolors:
     LCYAN='\033[1;36m'
     WHITE='\033[1;37m'
 
+
 def color_print(text, bold, color):
     if sys.platform == 'win32':
         print text
@@ -85,6 +86,7 @@ def color_print(text, bold, color):
         out_text += text + bcolors.ENDC
         print out_text
 
+
 def parse_arguments():
     global args
 
@@ -102,9 +104,11 @@ def parse_arguments():
     parser_update.add_argument('--force', dest='packages', required=False, help='Force update specified packages even not any changes exists', nargs='+')
     args = parser.parse_args()
 
+
 def run(args):
     print 'calling ' + string.join(args)
     subprocess.check_call(args)
+
 
 def load_versions():
     if os.path.exists('versions.pkl'):
@@ -112,9 +116,11 @@ def load_versions():
         with open('versions.pkl', 'rb') as f:
             libraries_version_dict = pickle.load(f)
 
+
 def save_versions():
     with open('versions.pkl', 'wb') as f:
         pickle.dump(libraries_version_dict, f, pickle.HIGHEST_PROTOCOL)
+
 
 def init():
     color_print('Initializing ...', True, 'LYELLOW')
@@ -162,6 +168,7 @@ def init():
     if not os.path.exists(packages_data_source_path):
         sys.exit('Invalid packages data source path')
 
+
 def get_repository_path():
     if repo_remote_path != '':
         out_path = os.path.join(repo_target_path, os.path.basename(repo_remote_path))
@@ -174,6 +181,7 @@ def get_repository_path():
         else: # This should never happened
             out_path += '-nix'
     return out_path
+
 
 def prepare_config():
     os.makedirs(repo_new_config_path)
@@ -219,6 +227,7 @@ def prepare_config():
     tree.write(os.path.join(repo_new_config_path, 'config.xml'))
     shutil.copy(os.path.join(repo_config_path, 'initscript.qs'), repo_new_config_path)
 
+
 def copyFiles(tag, sources_root_dir, data_path):
     for path in tag.iter('path'):
         src_path = path.attrib['src']
@@ -240,6 +249,7 @@ def copyFiles(tag, sources_root_dir, data_path):
                 if os.path.exists(src_path_full):
                     shutil.copy(src_path_full, dst_path_full)
     return
+
 
 def check_version(version_str, version_file_date, component_name, force):
     has_changes = False
@@ -266,6 +276,7 @@ def check_version(version_str, version_file_date, component_name, force):
 
     return version_str, has_changes
 
+
 def get_version_text(sources_root_dir, component_name, force):
     has_changes = False
     version_file_path = os.path.join(packages_data_source_path, sources_root_dir, 'build', 'version.str')
@@ -278,6 +289,7 @@ def get_version_text(sources_root_dir, component_name, force):
         version_file_date = content[1].rstrip()
 
     return check_version(version_str, version_file_date, component_name, force)
+
 
 def process_files_in_meta_dir(path_meta, new_meta_path):
     if not os.path.exists(new_meta_path):
@@ -294,6 +306,7 @@ def process_files_in_meta_dir(path_meta, new_meta_path):
             run((translate_tool, meta_file_path, '-qm', output_translation_path))
         elif file_extension == '.qs':
             shutil.copy(meta_file_path, new_meta_path)
+
 
 def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir, repo_new_package_path, data_root_tag, path_meta):
 
@@ -391,9 +404,16 @@ def process_directory(dir_name):
     if updatetext_tag is not None:
         updatetext_text = updatetext_tag.text
 
-    # Copy files
+    # Avoid creating package if disabled. Temporary only for Windows.
+    if sys.platform == 'win32':
+        tag_os = root.find('win')
+        if tag_os is not None:
+            attr_enabled = tag_os.get('enabled')
+            if attr_enabled is None or attr_enabled != 'true':
+                return
     repo_new_package_path = os.path.join(repo_new_packages_path, dir_name)
     create_dest_package_dir(dir_name, version_text, updatetext_text, os.path.join(packages_data_source_path, sources_root_dir), repo_new_package_path, root, path_meta)
+    color_print('... added as a package', True, 'LBLUE')
 
 
 def prepare_packages():
@@ -404,9 +424,11 @@ def prepare_packages():
         if os.path.isdir(os.path.join(repo_source_path, subdir)):
             process_directory(subdir)
 
+
 def delete_path(path_to_delete):
     color_print('Delete existing build dir ...', True, 'LRED')
     shutil.rmtree(path_to_delete, ignore_errors=True)
+
 
 def prepare():
     color_print('Preparing ...', True, 'LYELLOW')
@@ -419,6 +441,7 @@ def prepare():
 
     prepare_config()
     prepare_packages()
+
 
 def update_directory(dir_name, force):
     color_print('Update ' + dir_name, True, 'LBLUE')
@@ -462,7 +485,17 @@ def update_directory(dir_name, force):
     if os.path.exists(repo_new_package_path):
         color_print('Delete existing dir ' + repo_new_package_path, True, 'LRED')
         shutil.rmtree(repo_new_package_path, ignore_errors=True)
+
+    # Avoid creating package if disabled. Temporary only for Windows.
+    if sys.platform == 'win32':
+        tag_os = root.find('win')
+        if tag_os is not None:
+            attr_enabled = tag_os.get('enabled')
+            if attr_enabled is None or attr_enabled != 'true':
+                return
     create_dest_package_dir(dir_name, version_text, updatetext_text, os.path.join(packages_data_source_path, sources_root_dir), repo_new_package_path, root, path_meta)
+    color_print('... package updated', True, 'LBLUE')
+
 
 def update(packages):
     if packages:
@@ -479,6 +512,7 @@ def update(packages):
         for subdir in os.listdir(repo_new_packages_path):
             if not subdir in source_dirs:
                 delete_path(os.path.join(repo_source_path, subdir))
+
 
 def create_installer():
     run((repogen_file, '--remove', '-v', '-p', repo_new_packages_path, get_repository_path()))
@@ -506,9 +540,11 @@ def create_installer():
 
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup'), True, 'LMAGENTA')
 
+
 def update_istaller():
     run((repogen_file, '--update-new-components', '-v', '-p', repo_new_packages_path, get_repository_path()))
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup'), True, 'LMAGENTA')
+
 
 parse_arguments()
 init()

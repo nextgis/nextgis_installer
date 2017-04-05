@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/json-c.framework" dst="Library/Frameworks/json-c.framework"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/bin" dst="bin"/>
     </win>
 </Package>

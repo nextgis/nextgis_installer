@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/jpeg12.framework" dst="Library/Frameworks/jpeg12.framework"/>
     </mac>
-	<win>
+	<win enabled="true">
         <path src="inst/bin" dst="bin"/>
     </win>
 </Package>

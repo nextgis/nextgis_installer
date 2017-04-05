@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/lzma.framework" dst="Library/Frameworks/lzma.framework"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/bin" dst="bin"/>
     </win>
 </Package>

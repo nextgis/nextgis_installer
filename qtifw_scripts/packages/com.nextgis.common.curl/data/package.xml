@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/curl.framework" dst="Library/Frameworks/curl.framework"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/bin/curl*.dll" dst="bin"/>
     </win>
 </Package>

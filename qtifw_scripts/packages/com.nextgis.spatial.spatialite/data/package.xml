@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/spatialite.framework" dst="Library/Frameworks/spatialite.framework"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/bin/*.dll" dst="bin"/>
     </win>
 </Package>

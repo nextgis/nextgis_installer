@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/tiffxx.framework" dst="Library/Frameworks/tiffxx.framework"/>
     </mac>
-	<win>
+	<win enabled="true">
         <path src="inst/bin" dst="bin"/>
     </win>
 </Package>

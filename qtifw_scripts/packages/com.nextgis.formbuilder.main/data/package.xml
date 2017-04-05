@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="fb">
-    <win>
+    <win enabled="true">
         <path src="inst/bin/fb.exe" dst="bin"/>
 		<path src="inst/share/nextgis/fb/translations/fb_ru_RU.qm" dst="share/nextgis/fb/translations"/>
     </win>
