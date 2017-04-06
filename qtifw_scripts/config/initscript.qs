@@ -2,7 +2,7 @@
 function Controller()
 {
     var stringName = qsTranslate("initscript","NextGIS programs");
-    installer.setValue("Name",stringName);
+    installer.setValue("Name",stringName); 
 }
 
 Controller.prototype.ComponentSelectionPageCallback = function()

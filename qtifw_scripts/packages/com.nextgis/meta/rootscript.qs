@@ -36,22 +36,13 @@ Component.prototype.createOperations = function()
 {
     component.createOperations();
 
-    // Create uninstall link only for windows
-    if (installer.value("os") == "win")
-    {
-        // shortcut to uninstaller
-        component.addOperation( "CreateShortcut",
-                                "@TargetDir@/nextgisupdater.exe",
-                                "@StartMenuDir@/Uninstall NextGIS.lnk",
-                                " --uninstall");
-    }
     // only for windows online installer
-    if ( installer.value("os") == "win" && !installer.isOfflineOnly() )
+    if ( installer.value("os") == "win")
     {
         // create shortcut
         component.addOperation( "CreateShortcut",
                                 "@TargetDir@/nextgisupdater.exe",
                                 "@StartMenuDir@/NextGIS Maintenance Tool.lnk",
-                                "workingDirectory=@TargetDir@" );
+                                " --updater");
     }
 }
