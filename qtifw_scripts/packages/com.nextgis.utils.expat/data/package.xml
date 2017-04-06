@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/bin/xmlwf" dst="usr/bin/"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/bin/xmlwf.exe" dst="bin/"/>
     </win>
 </Package>
