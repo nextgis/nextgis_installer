@@ -3037,6 +3037,10 @@ void FinishedPage::entering()
 
     m_runItCheckBox->hide();
     m_runItCheckBox->setChecked(false);
+
+    // NEXTGIS: hide "Restart" button.
+    if (packageManagerCore()->isUpdater() || packageManagerCore()->isPackageManager())
+        gui()->button(QWizard::CommitButton)->hide();
 }
 
 /*!
