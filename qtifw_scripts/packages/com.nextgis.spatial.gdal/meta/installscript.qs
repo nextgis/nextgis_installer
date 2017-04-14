@@ -36,7 +36,7 @@ Component.prototype.createOperations = function()
     {
         component.addOperation( "EnvironmentVariable",
                                 "GDAL_DATA",
-                                "@TargetDir@\\share\\gdal\\data" );
+                                "@TargetDir@\\share\\gdal" );
     }
 
     if (installer.value("os") == "mac")

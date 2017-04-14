@@ -36,7 +36,7 @@ Component.prototype.createOperations = function()
     {
         component.addOperation( "EnvironmentVariable",
                                 "PROJ_LIB",
-                                "@TargetDir@/share/proj" );
+                                "@TargetDir@\\share\\proj" );
     }
     else if (installer.value("os") == "mac")
     {

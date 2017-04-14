@@ -36,7 +36,7 @@ Component.prototype.createOperations = function()
     {
         component.addOperation( "EnvironmentVariable",
                                 "CURL_CA_BUNDLE",
-                                "@TargetDir@/share/ssl/certs/cert.pem" );
+                                "@TargetDir@\\share\\ssl\\certs\\cert.pem" );
     }
 
     if (installer.value("os") == "mac")
