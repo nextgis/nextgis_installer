@@ -77,6 +77,13 @@
     </message>
 </context>
 <context>
+    <name>DummyComponent</name>
+    <message>
+        <source>Force crash to test rollback!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ExtractCallbackImpl</name>
     <message>
         <source>Could not retrieve path of archive item %1</source>
@@ -713,6 +720,81 @@
     </message>
 </context>
 <context>
+    <name>MainWindow</name>
+    <message>
+        <source>RepoCompare</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Production Repository:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Receive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Repository:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Component Name</source>
+        <translation type="unfinished">Имя компонента</translation>
+    </message>
+    <message>
+        <source>Update required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Old Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Old Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Old Checksum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Old Update Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Version</source>
+        <translation type="unfinished">Новая версия</translation>
+    </message>
+    <message>
+        <source>New Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Checksum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Update Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export Update File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>OpenArchiveInfo</name>
     <message>
         <source>Could not load codecs</source>
@@ -863,6 +945,42 @@
     <message>
         <source>The specified module could not be found.</source>
         <translation>Не удалось найти указанный модуль.</translation>
+    </message>
+    <message>
+        <source>Error: --include and --exclude are mutually exclusive. Use either one or the other.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Package to exclude missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: --include and --exclude are mutual exclusive options. Use either one or the other.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Package to include missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Packages parameter missing argument</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Package directory not found at the specified location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Argument -r|--remove and --update|--update-new-components are mutually exclusive!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Repository target folder %1 already exists!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid content in &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1760,6 +1878,10 @@ Click Next to continue installation</source>
         <translation>Вы успешно авторизированы.
 Нажмите Далее для продолжения установки</translation>
     </message>
+    <message>
+        <source>Uninstall only</source>
+        <translation>Только деинсталляция</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
@@ -2564,6 +2686,13 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     </message>
 </context>
 <context>
+    <name>Receiver</name>
+    <message>
+        <source>remaining.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>RemoteClient</name>
     <message>
         <source>Could not get authorization.</source>
@@ -2728,6 +2857,17 @@ as root and then clicking OK.</source>
     <message>
         <source>Renaming %1 into %2 failed with %3.</source>
         <translation>Сбой переименования %1 в %2: %3.</translation>
+    </message>
+</context>
+<context>
+    <name>form</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CheckBox</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -24,6 +24,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QCheckBox>
 
 
 using namespace QInstaller;
@@ -57,6 +58,11 @@ NextgisAuthPage::NextgisAuthPage (PackageManagerCore *core)
     m_labInfo = new QLabel(this);
     m_labInfo->setText(tr(""));
 
+    m_cbDelete = new QCheckBox(this);
+    m_cbDelete->hide();
+    m_cbDelete->setText(tr("Uninstall only"));
+    m_cbDelete->setChecked(false);
+
     _test_textEdit = new QTextEdit(this);
 
     m_labForgot = new QLabel(this);
@@ -85,6 +91,7 @@ NextgisAuthPage::NextgisAuthPage (PackageManagerCore *core)
     lvAll->addWidget(m_labGet);
     lvAll->addStretch();
     lvAll->addWidget(m_labInfo);
+    lvAll->addWidget(m_cbDelete);
     lvAll->addWidget(_test_textEdit);
 
     QHBoxLayout *lhMain = new QHBoxLayout(this);
@@ -98,9 +105,11 @@ NextgisAuthPage::NextgisAuthPage (PackageManagerCore *core)
     m_ngAccessPtr = new NgAccess();
 
     // If this is not an installer:
-    // Load last entered login and password.
     if (!m_isInstaller)
     {
+        m_cbDelete->show();
+
+        // Load last entered login and password.
         m_ngAccessPtr->readAuthData();
         m_eLogin->setText(m_ngAccessPtr->getCurLogin());
         m_ePassword->setText(m_ngAccessPtr->getCurPassword());
@@ -115,6 +124,12 @@ NextgisAuthPage::~NextgisAuthPage ()
 
 bool NextgisAuthPage::validatePage ()
 {
+    if (!m_isInstaller)
+    {
+        if (m_cbDelete->isChecked())
+            return true;
+    }
+
     m_labInfo->setText(tr("Connecting ..."));
 
     this->gui()->button(QWizard::NextButton)->setEnabled(false);

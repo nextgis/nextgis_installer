@@ -2816,6 +2816,9 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     m_performInstallationForm->setDetailsWidgetVisible(true);
 
     setCommitPage(true);
+
+    // NEXTGIS: temporary hide details button.
+    m_performInstallationForm->setDetailsWidgetVisible(false);
 }
 
 /*!

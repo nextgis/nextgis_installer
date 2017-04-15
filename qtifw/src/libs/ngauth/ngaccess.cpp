@@ -48,7 +48,7 @@ void NgAccess::copyManager (QNetworkAccessManager *targetManager) // STATIC
     // Copy cookies.
     QNetworkCookieJar *cookieJar = NgAccess::manager.cookieJar();
     targetManager->setCookieJar(cookieJar);
-    cookieJar->setParent(&NgAccess::manager); // return ownership to the global nam
+    cookieJar->setParent(&NgAccess::manager); // return ownership to the global NAM
 
     // QUESTION: do we need to copy smth else?
 }

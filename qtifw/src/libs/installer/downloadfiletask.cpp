@@ -88,7 +88,8 @@ void Downloader::download(QFutureInterface<FileTaskResult> &fi, const QList<File
     connect(&m_namNg, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), this,
          SLOT(onAuthenticationRequired(QNetworkReply*,QAuthenticator*)));  
     connect(&m_namNg, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this,
-         SLOT(onProxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));         
+         SLOT(onProxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
+
     QTimer::singleShot(0, this, SLOT(doDownload()));
 }
 

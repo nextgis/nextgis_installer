@@ -59,6 +59,7 @@ class INSTALLER_EXPORT NextgisAuthPage : public PackageManagerPage
      QLineEdit *m_ePassword;
 //     QPushButton *m_bpAuth;
      QLabel *m_labInfo;
+     QCheckBox *m_cbDelete;
      QLabel *m_labForgot;
      QLabel *m_labGet;
      QTextEdit *_test_textEdit;

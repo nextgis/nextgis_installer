@@ -105,10 +105,7 @@ macx:LIBS += -framework Carbon -framework Security
     contains(QT_CONFIG, shared): CONFIG += shared
 }
 
-# NEXTGIS: removed uitools and added widgets for installer size reducing.
-# Note: unable to simply remove qml because it contains JS parser which we currently need
-# for after-install operations (but not for ui constructing!).
-QT += widgets core-private #uitools core-private
+QT += uitools core-private
 CONFIG(static, static|shared) {
     win32:QT += winextras
     QT += concurrent network qml xml
