@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
+    <Name>com.nextgis.common.qt</Name>
     <DisplayName>Qt</DisplayName>
     <DisplayName xml:lang="ru_RU">Qt</DisplayName>
     <Description>Qt framework</Description>

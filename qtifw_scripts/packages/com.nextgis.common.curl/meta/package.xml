@@ -5,6 +5,6 @@
     <Description>CURL Library</Description>
     <Description xml:lang="ru_RU">Библиотека CURL</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Dependencies>com.nextgis.common.openssl</Dependencies>
+    <Dependencies>com.nextgis.common.openssl,com.nextgis.common.z</Dependencies>
     <Script>installscript.qs</Script>
 </Package>

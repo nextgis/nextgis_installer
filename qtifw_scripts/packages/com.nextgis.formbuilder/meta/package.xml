@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <Name>com.nextgis.formbuilder</Name>
-    <Dependencies>com.nextgis.common.qt.qt5,com.nextgis.common.vc,com.nextgis.common.curl,com.nextgis.common.expat,com.nextgis.common.iconv,com.nextgis.common.jpeg,com.nextgis.common.jpeg12,com.nextgis.common.jsonc,com.nextgis.common.openssl,com.nextgis.common.tiff,com.nextgis.common.tiffxx,com.nextgis.common.xml2,com.nextgis.common.z,com.nextgis.spatial.geos,com.nextgis.spatial.geos_c,com.nextgis.spatial.geotiff,com.nextgis.spatial.proj,com.nextgis.spatial.gdal,com.nextgis.formbuilder.main</Dependencies>
+    <Dependencies>com.nextgis.common.qt.qt5,com.nextgis.common.vc,com.nextgis.common.curl,com.nextgis.common.expat,com.nextgis.common.iconv,com.nextgis.common.jpeg,com.nextgis.common.jpeg12,com.nextgis.common.jsonc,com.nextgis.common.openssl,com.nextgis.common.tiff,com.nextgis.common.tiffxx,com.nextgis.common.xml2,com.nextgis.common.z,com.nextgis.spatial.geos,com.nextgis.spatial.geos_c,com.nextgis.spatial.geotiff,com.nextgis.spatial.proj,com.nextgis.spatial.gdal</Dependencies>
     <DisplayName>Formbuilder</DisplayName>
     <DisplayName xml:lang="ru_RU">Formbuilder</DisplayName>
-    <Description>Formbuilder</Description>
-    <Description xml:lang="ru_RU">Formbuilder</Description>
+    <Description>Forms builder for NextGIS Mobile</Description>
+    <Description xml:lang="ru_RU">Построитель форм для NextGIS Mobile</Description>
     <Version>2.1.0</Version>
     <Default>true</Default>
     <Script>afterinstall.qs</Script>   
