@@ -1,7 +1,15 @@
 
 function Component() 
 {
+    if (installer.isInstaller())
+    {
+        component.loaded.connect(this, Component.prototype.componentLoaded);
+    }
+}
 
+Component.prototype.componentLoaded = function ()
+{
+    component.setValue("Description",qsTranslate("afterinstall","Forms builder for NextGIS Mobile"));
 }
 
 Component.prototype.createOperations = function()

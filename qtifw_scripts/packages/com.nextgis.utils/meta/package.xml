@@ -6,5 +6,4 @@
     <Description xml:lang="ru_RU">Небольшие утилиты</Description>
     <Virtual>false</Virtual>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Script>installscript.qs</Script>
 </Package>

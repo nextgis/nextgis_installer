@@ -5,5 +5,5 @@
     <Description>GDAL command line utilities</Description>
     <Description xml:lang="ru_RU">Утилиты коммандной строки GDAL</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
-    <Dependencies>com.nextgis.spatial.gdal</Dependencies>
+    <Dependencies>com.nextgis.utils.all,com.nextgis.spatial.gdal</Dependencies>
 </Package>
