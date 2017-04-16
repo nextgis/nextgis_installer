@@ -364,8 +364,15 @@ def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.xml2', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.z,', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.z', '')
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.qt.all,', '') # Only install qt.conf which installed in separate app folder on Mac OS X
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.qt.all', '')
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.python.python2,', '') # Python 2 is default application in Mac OS X
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.python.python2', '')
+
         dependencies_tag.text = dependencies_tag.text.replace('  ', ' ')
         dependencies_tag.text = dependencies_tag.text.replace(', ', ',')
+        if dependencies_tag.text.endswith(','):
+            dependencies_tag.text = dependencies_tag.text[:-1]
 
     new_meta_path = os.path.join(repo_new_package_path, 'meta')
     os.makedirs(new_meta_path)
