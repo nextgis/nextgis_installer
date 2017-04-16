@@ -3,7 +3,11 @@
     <DisplayName>CURL utilities</DisplayName>
     <DisplayName xml:lang="ru_RU">Утилиты CURL</DisplayName>
     <Description>CURL command line utilities</Description>
-    <Description xml:lang="ru_RU">Утилиты коммандной строки CURL</Description>
+    <Description xml:lang="ru_RU">Утилиты командной строки CURL</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+    <Script>script.qs</Script>
     <Dependencies>com.nextgis.utils.all,com.nextgis.common.curl</Dependencies>
 </Package>
