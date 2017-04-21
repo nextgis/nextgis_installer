@@ -13,7 +13,7 @@ authentication:
 > mkdir build
 > cd build
 > cmake -WITH_ZLIB -WITH_ZLIB_EXTERNAL ..
-> cmake -build . -- -j 4
+> cmake --build . -- -j 4
 ```
 
 ## 2. Build Qt (5.6.0 strictly required on Windows due the UAC bug) statically with OpenSSL linked
