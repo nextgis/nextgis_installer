@@ -6,4 +6,8 @@
     <Description xml:lang="ru_RU">Небольшие утилиты</Description>
     <Virtual>false</Virtual>
     <RequiresAdminRights>true</RequiresAdminRights>
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+    <Script>script.qs</Script>
 </Package>

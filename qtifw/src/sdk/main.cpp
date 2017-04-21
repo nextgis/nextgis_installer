@@ -67,6 +67,9 @@ int main(int argc, char *argv[])
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
 
+    // NEXTGIS: fix gui appearance for windows 10.
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
     qsrand(QDateTime::currentDateTime().toTime_t());
 
     // We need to start either a command line application or a GUI application. Since we
