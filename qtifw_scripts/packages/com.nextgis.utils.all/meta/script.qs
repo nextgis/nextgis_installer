@@ -35,9 +35,10 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "mac")
     {
-        component.addOperation( "AppendFile",
-                                "@HomeDir@/.bash_profile",
-                                "\nexport PATH=@TargetDir@/usr/bin:$PATH" );
+        component.addOperation( "NgEnvironmentVariable",
+                                "PATH",
+                                "@TargetDir@/usr/bin:$PATH",
+                                "@HomeDir@/.bash_profile" );
 
         SetEnvMac("PATH", "@TargetDir@/usr/bin");
     }

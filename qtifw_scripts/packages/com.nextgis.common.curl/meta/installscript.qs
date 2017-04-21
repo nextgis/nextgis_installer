@@ -41,10 +41,10 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "mac")
     {
-        component.addOperation( "AppendFile",
-                                "@HomeDir@/.bash_profile",
-                                "\nexport CURL_CA_BUNDLE=@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem"
-                              );
+        component.addOperation( "NgEnvironmentVariable",
+                                "CURL_CA_BUNDLE",
+                                "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem",
+                                "@HomeDir@/.bash_profile");
         SetEnvMac("CURL_CA_BUNDLE", "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem");
     }
 }

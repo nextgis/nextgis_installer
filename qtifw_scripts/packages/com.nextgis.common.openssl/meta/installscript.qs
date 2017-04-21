@@ -41,12 +41,10 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "mac")
     {
-        component.addOperation( "AppendFile",
-                                "@HomeDir@/.bash_profile",
-                                "\nexport SSL_CERT_FILE=@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem"
-                              );
-        //                        "\nexport OPENSSL_CONF=@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/openssl.cnf");
-        //export SSL_CERT_FILE=@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem\n
+        component.addOperation( "NgEnvironmentVariable",
+                                "SSL_CERT_FILE",
+                                "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem"
+                                "@HomeDir@/.bash_profile");
         SetEnvMac("SSL_CERT_FILE", "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem");
         //SetEnvMac("OPENSSL_CONF", "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/openssl.cnf");
     }

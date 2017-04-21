@@ -40,9 +40,10 @@ Component.prototype.createOperations = function()
     }
     else if (installer.value("os") == "mac")
     {
-        component.addOperation( "AppendFile",
-                                "@HomeDir@/.bash_profile",
-                                "\nexport PROJ_LIB=@TargetDir@/Library/Frameworks/proj.framework/Resources/proj" );
+        component.addOperation( "NgEnvironmentVariable",
+                                "PROJ_LIB",
+                                "@TargetDir@/Library/Frameworks/proj.framework/Resources/proj",
+                                "@HomeDir@/.bash_profile");
         SetEnvMac("PROJ_LIB", "@TargetDir@/Library/Frameworks/proj.framework/Resources/proj");
     }
 }
