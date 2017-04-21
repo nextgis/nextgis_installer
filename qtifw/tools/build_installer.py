@@ -48,7 +48,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='Build installer for installer framework.')
     parser.add_argument('--clean', dest='clean', action='store_true', help='delete all previous build artifacts')
     parser.add_argument('--static-qmake', dest='qmake', required=True, help='path to qmake that will be used to build the tools')
-    parser.add_argument('--doc-qmake', dest='doc_qmake', required=True, help='path to qmake that will be used to generate the documentation')
+    parser.add_argument('--doc-qmake', dest='doc_qmake', required=False, help='path to qmake that will be used to generate the documentation')
     parser.add_argument('--make', dest='make', required=True, help='make command')
     parser.add_argument('--targetdir', dest='target_dir', required=True, help='directory the generated installer will be placed in')
     if sys.platform == 'darwin':
@@ -118,8 +118,8 @@ def package():
         run(('strip',os.path.join(package_dir, 'bin/devtool')))
         run(('strip',os.path.join(package_dir, 'bin/installerbase')))
         run(('strip',os.path.join(package_dir, 'bin/repogen')))
-    shutil.copytree(os.path.join(build_dir, 'doc'), os.path.join(package_dir, 'doc'))
-    shutil.copytree(os.path.join(src_dir, 'examples'), os.path.join(package_dir, 'examples'))
+    # shutil.copytree(os.path.join(build_dir, 'doc'), os.path.join(package_dir, 'doc'))
+    # shutil.copytree(os.path.join(src_dir, 'examples'), os.path.join(package_dir, 'examples'))
     shutil.copy(os.path.join(src_dir, 'README'), package_dir)
     # create 7z
     archive_file = os.path.join(src_dir, 'dist', 'packages', 'org.qtproject.ifw.binaries', 'data', 'data.7z')
@@ -138,7 +138,7 @@ def package():
 
 parse_arguments()
 init()
-build_docs()
+#build_docs()
 build()
 package()
 

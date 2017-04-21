@@ -41,9 +41,10 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "mac")
     {
-        component.addOperation( "AppendFile",
-                                "@HomeDir@/.bash_profile",
-                                "\nexport GDAL_DATA=@TargetDir@/Library/Frameworks/gdal.framework/Resources/data" );
+        component.addOperation( "NgEnvironmentVariable",
+                                "GDAL_DATA",
+                                "@TargetDir@/Library/Frameworks/gdal.framework/Resources/data",
+                                "@HomeDir@/.bash_profile");
         SetEnvMac("GDAL_DATA", "@TargetDir@/Library/Frameworks/gdal.framework/Resources/data");
     }
 }
