@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>GDAL utilities</DisplayName>
-    <DisplayName xml:lang="ru_RU">Утилиты GDAL</DisplayName>
     <Description>GDAL command line utilities</Description>
-    <Description xml:lang="ru_RU">Утилиты командной строки GDAL</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
     <Translations>
         <Translation>ru.qm</Translation>

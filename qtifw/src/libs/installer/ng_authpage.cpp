@@ -58,10 +58,10 @@ NextgisAuthPage::NextgisAuthPage (PackageManagerCore *core)
     m_labInfo = new QLabel(this);
     m_labInfo->setText(tr(""));
 
-    m_cbDelete = new QCheckBox(this);
-    m_cbDelete->hide();
-    m_cbDelete->setText(tr("Uninstall only"));
-    m_cbDelete->setChecked(false);
+    m_chbDelete = new QCheckBox(this);
+    m_chbDelete->hide();
+    m_chbDelete->setText(tr("Uninstall only"));
+    m_chbDelete->setChecked(false);
 
     _test_textEdit = new QTextEdit(this);
 
@@ -91,13 +91,13 @@ NextgisAuthPage::NextgisAuthPage (PackageManagerCore *core)
     lvAll->addWidget(m_labGet);
     lvAll->addStretch();
     lvAll->addWidget(m_labInfo);
-    lvAll->addWidget(m_cbDelete);
+    lvAll->addWidget(m_chbDelete);
     lvAll->addWidget(_test_textEdit);
 
     QHBoxLayout *lhMain = new QHBoxLayout(this);
     lhMain->addStretch(1);
     lhMain->addLayout(lvAll);
-    lhMain->setStretchFactor(lvAll,4);
+    lhMain->setStretchFactor(lvAll,6);
     lhMain->addStretch(1);
 
     _test_textEdit->hide();
@@ -107,7 +107,7 @@ NextgisAuthPage::NextgisAuthPage (PackageManagerCore *core)
     // If this is not an installer:
     if (!m_isInstaller)
     {
-        m_cbDelete->show();
+        m_chbDelete->show();
 
         // Load last entered login and password.
         m_ngAccessPtr->readAuthData();
@@ -126,7 +126,7 @@ bool NextgisAuthPage::validatePage ()
 {
     if (!m_isInstaller)
     {
-        if (m_cbDelete->isChecked())
+        if (m_chbDelete->isChecked())
             return true;
     }
 

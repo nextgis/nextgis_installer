@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>EXPAT utilities</DisplayName>
-    <DisplayName xml:lang="ru_RU">Утилиты EXPAT</DisplayName>
     <Description>EXPAT command line utilities</Description>
-    <Description xml:lang="ru_RU">Утилиты командной строки EXPAT</Description>
     <RequiresAdminRights>true</RequiresAdminRights>
     <Translations>
         <Translation>ru.qm</Translation>

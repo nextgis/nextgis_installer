@@ -6,6 +6,7 @@ function Component()
 
 Component.prototype.componentLoaded = function ()
 {
+    component.setValue("DisplayName",qsTranslate("afterinstall","Formbuilder"));
     component.setValue("Description",qsTranslate("afterinstall","Forms builder for NextGIS Mobile"));
 }
 

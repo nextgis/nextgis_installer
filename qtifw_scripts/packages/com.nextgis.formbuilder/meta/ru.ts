@@ -4,6 +4,10 @@
 <context>
     <name>afterinstall</name>
     <message>
+        <source>Formbuilder</source>
+        <translation>Formbuilder</translation>
+    </message>    
+    <message>
         <source>Forms builder for NextGIS Mobile</source>
         <translation>Построитель форм для NextGIS Mobile</translation>
     </message>

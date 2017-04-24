@@ -4,8 +4,12 @@
 <context>
     <name>script</name>
     <message>
+        <source>CURL utilities</source>
+        <translation>Утилиты cURL</translation>
+    </message>
+    <message>
         <source>CURL command line utilities</source>
-        <translation>Утилиты командной строки CURL</translation>
+        <translation>Утилиты командной строки cURL</translation>
     </message>
 </context>
 </TS>

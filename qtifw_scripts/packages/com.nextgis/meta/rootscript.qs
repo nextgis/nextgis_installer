@@ -29,6 +29,7 @@ function Component()
 
 Component.prototype.componentLoaded = function ()
 {
+    component.setValue("DisplayName",qsTranslate("rootscript","All"));
     component.setValue("Description",qsTranslate("rootscript","All NextGIS programs"));
 }
 

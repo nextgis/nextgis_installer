@@ -4,6 +4,10 @@
 <context>
     <name>script</name>
     <message>
+        <source>EXPAT utilities</source>
+        <translation>Утилиты EXPAT</translation>
+    </message>    
+    <message>
         <source>EXPAT command line utilities</source>
         <translation>Утилиты командной строки EXPAT</translation>
     </message>

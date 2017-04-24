@@ -4,6 +4,10 @@
 <context>
     <name>script</name>
     <message>
+        <source>Utilities</source>
+        <translation>Утилиты</translation>
+    </message>    
+    <message>
         <source>Utility applications</source>
         <translation>Утилиты командной строки</translation>
     </message>

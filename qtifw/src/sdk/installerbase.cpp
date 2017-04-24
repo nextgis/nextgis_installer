@@ -170,7 +170,15 @@ int InstallerBase::run()
         QInstaller::PackageManagerCore::setVirtualComponentsVisible(true);
     }
 
-    if (parser.isSet(QLatin1String(CommandLineOptions::Updater))) {
+    // NEXTGIS: the following code added so the GUI always starts as an updater for MAC OS.
+    #if defined(Q_OS_OSX)
+    if (!m_core->isInstaller())
+        m_core->setUpdater();
+    else
+    #endif
+
+    if (parser.isSet(QLatin1String(CommandLineOptions::Updater)))
+    {
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
         m_core->setUpdater();

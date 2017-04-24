@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>Utilities</DisplayName>
-    <DisplayName xml:lang="ru_RU">Утилиты</DisplayName>
     <Description>Utility applications</Description>
-    <Description xml:lang="ru_RU">Небольшие утилиты</Description>
     <Virtual>false</Virtual>
     <RequiresAdminRights>true</RequiresAdminRights>
     <Translations>

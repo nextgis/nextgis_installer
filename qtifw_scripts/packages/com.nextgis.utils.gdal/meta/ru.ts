@@ -4,6 +4,10 @@
 <context>
     <name>script</name>
     <message>
+        <source>GDAL utilities</source>
+        <translation>Утилиты GDAL</translation>
+    </message>    
+    <message>
         <source>GDAL command line utilities</source>
         <translation>Утилиты командной строки GDAL</translation>
     </message>

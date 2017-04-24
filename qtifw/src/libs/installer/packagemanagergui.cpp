@@ -1574,9 +1574,11 @@ void IntroductionPage::entering()
     }
 
     // NEXTGIS: disable update radio buttons so user can at least select uninstalling
-    // when the authorization failed.
+    // when the authorization failed or has not been performed.
     m_packageManager->setEnabled(NgAccess::authenticated);
     m_updateComponents->setEnabled(NgAccess::authenticated);
+    if (!NgAccess::authenticated)
+        m_removeAllComponents->setChecked(true);
 }
 
 /*!

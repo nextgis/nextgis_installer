@@ -6,5 +6,6 @@ function Component()
 
 Component.prototype.componentLoaded = function ()
 {
+    component.setValue("DisplayName",qsTranslate("script","EXPAT utilities"));
     component.setValue("Description",qsTranslate("script","EXPAT command line utilities"));
 }

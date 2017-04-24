@@ -27,6 +27,10 @@
         <translation>%1Забыли пароль?%2</translation>
     </message>
     <message>
+        <source>All</source>
+        <translation>Все</translation>
+    </message>    
+    <message>
         <source>All NextGIS programs</source>
         <translation>Все программы NextGIS</translation>
     </message>
