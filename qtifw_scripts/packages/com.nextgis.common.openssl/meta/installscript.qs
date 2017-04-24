@@ -43,7 +43,7 @@ Component.prototype.createOperations = function()
     {
         component.addOperation( "NgEnvironmentVariable",
                                 "SSL_CERT_FILE",
-                                "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem"
+                                "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem",
                                 "@HomeDir@/.bash_profile");
         SetEnvMac("SSL_CERT_FILE", "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem");
         //SetEnvMac("OPENSSL_CONF", "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/openssl.cnf");
