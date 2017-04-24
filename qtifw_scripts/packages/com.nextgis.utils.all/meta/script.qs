@@ -37,9 +37,13 @@ Component.prototype.createOperations = function()
     {
         component.addOperation( "NgEnvironmentVariable",
                                 "PATH",
-                                "@TargetDir@/usr/bin:$PATH",
+                                "@TargetDir@/usr/bin",
                                 "@HomeDir@/.bash_profile" );
-
+        component.addOperation( "NgEnvironmentVariable",
+                                "PATH",
+                                "$PATH",
+                                "@HomeDir@/.bash_profile" );
+                                
         SetEnvMac("PATH", "@TargetDir@/usr/bin");
     }
 }

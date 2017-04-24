@@ -26,9 +26,9 @@
 using namespace QInstaller;
 
 #ifdef Q_OS_WIN
-    #define NG_ENVVAR_DELIMETER ";"
+    #define NG_ENVVAR_DELIMITER ";"
 #else
-    #define NG_ENVVAR_DELIMETER ":"
+    #define NG_ENVVAR_DELIMITER ":"
 #endif
 
 
@@ -44,6 +44,8 @@ void NgEnvironmentVariableOperation::backup ()
 
 
 // Add persistant environment variable to the system.
+// WARNING. Do not use this operation to add more than one variable (via delimiter). Use several
+// operations instead!
 bool NgEnvironmentVariableOperation::performOperation ()
 {
     QStringList args = arguments();
@@ -51,7 +53,7 @@ bool NgEnvironmentVariableOperation::performOperation ()
     {
         setError(InvalidArguments);
         setErrorString(tr("[Ng] Invalid arguments: %1 argument(s) given, 3 expected.\n")
-            .arg(name()).arg(arguments().count()));
+            .arg(arguments().count()));
         return false;
     }
 
@@ -70,7 +72,7 @@ bool NgEnvironmentVariableOperation::performOperation ()
 
     // Read/parse file.
     QStringList fileContents = this->readFile(&file);
-    file.close();
+    file.close(); // close in order to replace this file further
 
     // Find the given variable. Append the given value via delimeter if found. Otherwise create
     // a new line with variable and its value.
@@ -83,16 +85,12 @@ bool NgEnvironmentVariableOperation::performOperation ()
     }
     else
     {
-        if (!values.contains(value))
-        {
-            QString newVariableStr = QString(QLatin1String(NG_ENVVAR_DELIMETER)) + value;
-            fileContents[i] += newVariableStr;
-        }
-        else
-        {
-            return true; // no need to add value because we already have it
-        }
-
+        QString newVariableStr = QString(QLatin1String(NG_ENVVAR_DELIMITER)) + value;
+        fileContents[i] += newVariableStr;
+        // NOTE: if this variable already has such value - we double it in order to correctly
+        // remove the value in the undoOperation(). This behaviour can be important when user e.g.
+        // for Mac already has a "some-path:$PATH" value in PATH variable and at the same time he
+        // adds "another-path" + "$PATH" values.
     }
 
     // Write back modified file contents.
@@ -127,7 +125,7 @@ bool NgEnvironmentVariableOperation::undoOperation ()
 
     // Read/parse file.
     QStringList fileContents = this->readFile(&file);
-    file.close();
+    file.close(); // close in order to replace this file further
 
     // Find the given variable. If variable is found and it contains the given value - we delete
     // the value.
@@ -157,7 +155,7 @@ bool NgEnvironmentVariableOperation::undoOperation ()
             else
             {
                 QString newVariableStr = QLatin1String("export ") + name + QLatin1String("=")
-                        + values.join(QLatin1String(NG_ENVVAR_DELIMETER));
+                        + values.join(QLatin1String(NG_ENVVAR_DELIMITER));
                 fileContents[i] = newVariableStr;
             }
         }
@@ -235,7 +233,7 @@ int NgEnvironmentVariableOperation::findVariable (QStringList list, QString name
 
             // Form the list of variable values for returning in parameter.
             strs.removeFirst();
-            listValues = strs.join(QLatin1String("")).split(QLatin1String(NG_ENVVAR_DELIMETER));
+            listValues = strs.join(QLatin1String("")).split(QLatin1String(NG_ENVVAR_DELIMITER));
 
             break;
         }
