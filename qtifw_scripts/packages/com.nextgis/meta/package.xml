@@ -2,7 +2,7 @@
 <Package>
     <Name>com.nextgis</Name>
     <DisplayName>All</DisplayName>
-    <Description>All NextGIS desktop software</Description>
+    <Description>All NextGIS programs</Description>
     <Version>1.0</Version>
     <ReleaseDate>2016-11-10</ReleaseDate>
     <Default>true</Default>

@@ -97,7 +97,7 @@ NextgisAuthPage::NextgisAuthPage (PackageManagerCore *core)
     QHBoxLayout *lhMain = new QHBoxLayout(this);
     lhMain->addStretch(1);
     lhMain->addLayout(lvAll);
-    lhMain->setStretchFactor(lvAll,6);
+    lhMain->setStretchFactor(lvAll,5);
     lhMain->addStretch(1);
 
     _test_textEdit->hide();

@@ -2680,7 +2680,7 @@ ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, con
 
     model->setObjectName(objectName);
     model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal,
-        ComponentModel::tr("Component Name"));
+        ComponentModel::tr("Component Name                         "));
     model->setHeaderData(ComponentModelHelper::ActionColumn, Qt::Horizontal,
         ComponentModel::tr("Action"));
     model->setHeaderData(ComponentModelHelper::InstalledVersionColumn, Qt::Horizontal,

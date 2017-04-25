@@ -898,7 +898,7 @@
 <context>
     <name>QInstaller::ComponentModel</name>
     <message>
-        <source>Component Name</source>
+        <source>Component Name                         </source>
         <translation type="unfinished"></translation>
     </message>
     <message>

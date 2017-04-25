@@ -20,10 +20,7 @@ var Dir = new function ()
 
 function Component()
 {
-    if (installer.isInstaller())
-    {
-        component.loaded.connect(this, Component.prototype.componentLoaded);
-    }
+    component.loaded.connect(this, Component.prototype.componentLoaded);
 }
 
 

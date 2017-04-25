@@ -87,7 +87,7 @@
      <widget class="QTreeWidget" name="treeWidget">
       <column>
        <property name="text">
-        <string>Component Name</string>
+        <string>Component Name                         </string>
        </property>
       </column>
       <column>

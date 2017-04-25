@@ -738,7 +738,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Component Name</source>
+        <source>Component Name                    </source>
         <translation type="unfinished">Имя компонента</translation>
     </message>
     <message>
@@ -1025,8 +1025,8 @@
 <context>
     <name>QInstaller::ComponentModel</name>
     <message>
-        <source>Component Name</source>
-        <translation>Имя компонента</translation>
+        <source>Component Name                         </source>
+        <translation>Имя компонента                         </translation>
     </message>
     <message>
         <source>Action</source>
