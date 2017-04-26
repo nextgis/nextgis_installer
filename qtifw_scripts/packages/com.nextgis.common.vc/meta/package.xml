@@ -4,5 +4,5 @@
     <DisplayName xml:lang="ru_RU">VC redistributables</DisplayName>
     <Description>VC redistributables</Description>
     <Description xml:lang="ru_RU">VC redistributables</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
 </Package>

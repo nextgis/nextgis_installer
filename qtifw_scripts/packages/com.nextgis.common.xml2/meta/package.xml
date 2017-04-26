@@ -5,5 +5,5 @@
     <Description>XML2 Library</Description>
     <Description xml:lang="ru_RU">Библиотека XML2</Description>
     <Dependencies>com.nextgis.common.z, com.nextgis.common.iconv, com.nextgis.common.lzma</Dependencies>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
 </Package>

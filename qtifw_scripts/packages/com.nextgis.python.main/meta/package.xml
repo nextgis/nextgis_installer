@@ -7,5 +7,5 @@
     <Description xml:lang="ru_RU">Python core</Description>
     <Version>2.7.4</Version>
     <ReleaseDate>2016-11-10</ReleaseDate>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
 </Package>

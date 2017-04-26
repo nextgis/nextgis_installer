@@ -4,6 +4,6 @@
     <DisplayName xml:lang="ru_RU">GeoTIFF</DisplayName>
     <Description>GeoTIFF Library</Description>
     <Description xml:lang="ru_RU">Библиотека GeoTIFF</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.common.tiff, com.nextgis.common.jpeg, com.nextgis.common.jpeg12</Dependencies>
 </Package>

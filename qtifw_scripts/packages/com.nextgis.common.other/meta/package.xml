@@ -7,5 +7,5 @@
     <Description xml:lang="ru_RU">Other libraries</Description>
     <Version>0</Version>
     <ReleaseDate>2016-11-10</ReleaseDate>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
 </Package>

@@ -6,5 +6,5 @@
     <Description xml:lang="ru_RU">Документация QGIS</Description>
     <Default>false</Default>
     <Script>afterinstall.qs</Script>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
 </Package>

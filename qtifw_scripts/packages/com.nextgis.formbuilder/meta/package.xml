@@ -8,7 +8,7 @@
     <Default>true</Default>
     <Script>afterinstall.qs</Script>   
     <ReleaseDate>2017-03-01</ReleaseDate>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

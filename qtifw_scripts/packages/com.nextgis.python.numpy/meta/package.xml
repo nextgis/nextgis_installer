@@ -5,6 +5,6 @@
     <DisplayName xml:lang="ru_RU">Numpy</DisplayName>
     <Description>Numpy package</Description>
     <Description xml:lang="ru_RU">Пакет Numpy</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.python</Dependencies>
 </Package>

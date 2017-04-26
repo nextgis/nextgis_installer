@@ -4,5 +4,5 @@
     <DisplayName xml:lang="ru_RU">YAML</DisplayName>
     <Description>YAML Library</Description>
     <Description xml:lang="ru_RU">Библиотека YAML</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
 </Package>

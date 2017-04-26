@@ -4,6 +4,6 @@
     <DisplayName xml:lang="ru_RU">Утилиты QCA</DisplayName>
     <Description>QCA command line utilities</Description>
     <Description xml:lang="ru_RU">Утилиты коммандной строки QCA</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.utils.all,com.nextgis.common.qca</Dependencies>
 </Package>

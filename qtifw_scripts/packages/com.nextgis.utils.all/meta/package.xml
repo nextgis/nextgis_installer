@@ -2,6 +2,6 @@
 <Package>
     <DisplayName>operation for all utils</DisplayName>
     <Virtual>true</Virtual>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Script>script.qs</Script>
 </Package>

@@ -4,5 +4,5 @@
     <DisplayName xml:lang="ru_RU">SpatialIndex</DisplayName>
     <Description>SpatialIndex Library</Description>
     <Description xml:lang="ru_RU">Библиотека SpatialIndex</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
 </Package>

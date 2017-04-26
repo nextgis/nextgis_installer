@@ -5,6 +5,6 @@
     <Description>App library</Description>
     <Description xml:lang="ru_RU">App library</Description>
     <Virtual>true</Virtual>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.qgis.libgui</Dependencies>
 </Package>

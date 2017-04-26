@@ -3,7 +3,7 @@
     <DisplayName>Utilities</DisplayName>
     <Description>Utility applications</Description>
     <Virtual>false</Virtual>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

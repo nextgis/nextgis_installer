@@ -4,6 +4,6 @@
     <DisplayName xml:lang="ru_RU">Requests</DisplayName>
     <Description>Requests package</Description>
     <Description xml:lang="ru_RU">Пакет Requests</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.python</Dependencies>
 </Package>

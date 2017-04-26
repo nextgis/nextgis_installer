@@ -4,6 +4,6 @@
     <DisplayName xml:lang="ru_RU">PyYaml</DisplayName>
     <Description>PyYaml package</Description>
     <Description xml:lang="ru_RU">Пакет PyYaml</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.python,com.nextgis.common.yaml</Dependencies>
 </Package>

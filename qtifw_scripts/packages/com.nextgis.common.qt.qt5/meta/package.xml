@@ -7,6 +7,6 @@
     <Description xml:lang="ru_RU">Библиотеки Qt5</Description>
     <Version>5.8.0</Version>
     <ReleaseDate>2017-03-01</ReleaseDate>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.common.qt.all</Dependencies>
 </Package>

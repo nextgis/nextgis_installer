@@ -2237,6 +2237,33 @@ void TargetDirectoryPage::initializePage()
             targetDir += productName();
         }
     }
+
+    // NEXTGIS: added in order to allow users without admin permissions install
+    // software by default.
+    #if defined(Q_OS_WIN)
+//    QFileInfoList list = QDir::drives();
+//    if (!list.isEmpty()) // unusual?
+//    {
+//        targetDir.clear();
+//        for (int i=0; i<list.size(); i++)
+//        {
+//            QString drivePath = list[i].absoluteDir().absolutePath();
+//            UINT driveType = GetDriveTypeW(drivePath.data());
+//            if (driveType == DRIVE_FIXED)
+//            {
+//                targetDir = drivePath + QLatin1String("NextGIS");
+//                break;
+//            }
+//        }
+//        if (targetDir.isEmpty()) // also unusual?
+//            targetDir = QDir::homePath() + QLatin1String("\\NextGIS");
+//    }
+//    else
+//    {
+        targetDir = QDir::homePath() + QLatin1String("\\NextGIS");
+//    }
+    #endif
+
     m_lineEdit->setText(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));
 
     PackageManagerPage::initializePage();

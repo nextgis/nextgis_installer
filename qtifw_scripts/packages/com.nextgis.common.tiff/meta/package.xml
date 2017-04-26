@@ -4,6 +4,6 @@
     <DisplayName xml:lang="ru_RU">TIFF</DisplayName>
     <Description>TIFF Library</Description>
     <Description xml:lang="ru_RU">Библиотека TIFF</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.common.jbig, com.nextgis.common.jpeg, com.nextgis.common.jpeg12, com.nextgis.common.lzma</Dependencies>
 </Package>

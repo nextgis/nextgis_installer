@@ -4,6 +4,6 @@
     <DisplayName xml:lang="ru_RU">Pygments</DisplayName>
     <Description>Pygments package</Description>
     <Description xml:lang="ru_RU">Пакет Pygments</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.python</Dependencies>
 </Package>

@@ -4,5 +4,5 @@
     <DisplayName xml:lang="ru_RU">JSON-C</DisplayName>
     <Description>JSON-C Library</Description>
     <Description xml:lang="ru_RU">Библиотека JSON-C</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
 </Package>

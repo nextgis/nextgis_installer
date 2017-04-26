@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>CURL utilities</DisplayName>
     <Description>CURL command line utilities</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

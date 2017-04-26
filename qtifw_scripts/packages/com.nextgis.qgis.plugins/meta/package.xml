@@ -5,6 +5,6 @@
     <Description>QGIS plugins</Description>
     <Description xml:lang="ru_RU">Плагины QGIS</Description>
     <Default>true</Default>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.qgis.main</Dependencies>
 </Package>

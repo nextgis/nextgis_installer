@@ -2699,16 +2699,8 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
         <translation>Не удалось авторизоваться.</translation>
     </message>
     <message>
-        <source>Could not get authorization that is needed for continuing the installation.
- Either abort the installation or use the fallback solution by running
-
-%1
-
-as root and then clicking OK.</source>
-        <translation>Не удалось пройти авторизацию, которая необходима для продолжения установки.
-Можно прервать установку или попытаться устранить проблему запустив
-%1
-от имени root&apos;а и нажав ОК.</translation>
+        <source>Could not get authorization that is needed for continuing the installation.</source>
+        <translation>Не удалось пройти авторизацию, которая необходима для продолжения установки.</translation>
     </message>
 </context>
 <context>

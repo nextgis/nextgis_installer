@@ -5,6 +5,6 @@
     <Description>QGIS python</Description>
     <Description xml:lang="ru_RU">QGIS python</Description>
     <Default>true</Default>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.qgis.libpython</Dependencies>
 </Package>

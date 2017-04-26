@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>EXPAT utilities</DisplayName>
     <Description>EXPAT command line utilities</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

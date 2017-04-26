@@ -5,6 +5,6 @@
     <Description>Python framework</Description>
     <Description xml:lang="ru_RU">Python фреймворк</Description>
     <Virtual>true</Virtual>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Script>installscript.qs</Script>
 </Package>

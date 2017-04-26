@@ -5,6 +5,6 @@
     <Description>Gui library</Description>
     <Description xml:lang="ru_RU">Gui library</Description>
     <Virtual>true</Virtual>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.qgis.libanalysis</Dependencies>
 </Package>

@@ -5,6 +5,6 @@
     <Description>Analysis library</Description>
     <Description xml:lang="ru_RU">Analysis library</Description>
     <Virtual>true</Virtual>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.qgis.libcore</Dependencies>
 </Package>

@@ -4,5 +4,5 @@
     <DisplayName xml:lang="ru_RU">PNG</DisplayName>
     <Description>PNG Library</Description>
     <Description xml:lang="ru_RU">Библиотека PNG</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
 </Package>

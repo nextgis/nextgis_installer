@@ -4,6 +4,6 @@
     <DisplayName xml:lang="ru_RU">LibPQ</DisplayName>
     <Description>LibPQ Library (PostgreSQL)</Description>
     <Description xml:lang="ru_RU">Библиотека LibPQ (PostgreSQL)</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Dependencies>com.nextgis.common.openssl</Dependencies>
 </Package>

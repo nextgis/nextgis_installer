@@ -4,6 +4,6 @@
     <DisplayName xml:lang="ru_RU">OpenSSL</DisplayName>
     <Description>OpenSSL Library</Description>
     <Description xml:lang="ru_RU">Библиотека OpenSSL</Description>
-    <RequiresAdminRights>true</RequiresAdminRights>
+    
     <Script>installscript.qs</Script>
 </Package>
