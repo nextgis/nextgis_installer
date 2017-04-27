@@ -21,6 +21,6 @@ Component.prototype.createOperations = function()
         component.addOperation("LineReplace",
             "@TargetDir@/Applications/ngqgis.app/Contents/Resources/qt.conf",
             "Prefix = ", "Prefix = @TargetDir@");
-        component.addElevatedOperation("CreateLink", "@HomeDir@/Applications/NextGIS QGIS.app", "@TargetDir@/Applications/ngqgis.app" );
+        component.addOperation("CreateLink", "@HomeDir@/Applications/NextGIS QGIS.app", "@TargetDir@/Applications/ngqgis.app" );
     }
 }
