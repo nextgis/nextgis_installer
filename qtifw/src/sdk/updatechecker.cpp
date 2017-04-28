@@ -55,10 +55,10 @@ int UpdateChecker::check()
     // If we are still not authenticated - the app is in command line mode (any
     // update checks in installer GUI are possible only after showing authentication
     // page).
-    if (!NgAccess::authenticated)
+    if (!NgAuthenticator::authenticated)
     {
         std::cout << std::endl << "[NG] NextGIS authentication. Connecting ...\n" << std::endl;
-        NgAccess ngAccessPtr;
+        NgAuthenticator ngAccessPtr;
         ngAccessPtr.readAuthData(); // read lastly saved credentials
         QEventLoop eventLoop;
         QObject::connect(&ngAccessPtr, SIGNAL(authFinished()),
@@ -67,7 +67,7 @@ int UpdateChecker::check()
         QString password = QString::fromUtf8(ngAccessPtr.getCurPassword().toUtf8());
         ngAccessPtr.startAuthetication(login, password);
         eventLoop.exec(); // wait for the end of the authentication
-        if (NgAccess::authenticated)
+        if (NgAuthenticator::authenticated)
             std::cout << "[NG] Authentication succeded! Checking for updates ...\n" << std::endl;
         else
             std::cout << "[NG] Authentication failed! Anyway trying to check for updates ...\n" << std::endl;

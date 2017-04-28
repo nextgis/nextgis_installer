@@ -53,7 +53,8 @@ Downloader::Downloader()
 {
     // NEXTGIS: replace network access manager with global one.
     //connect(&m_nam, SIGNAL(finished(QNetworkReply*)), SLOT(onFinished(QNetworkReply*)));
-    NgAccess::copyManager(&m_namNg);
+    QNetworkCookieJar* newCookieJar = NgAuthenticator::copyCookie();
+    m_namNg.setCookieJar(newCookieJar);
     connect(&m_namNg, SIGNAL(finished(QNetworkReply*)), SLOT(onFinished(QNetworkReply*)));
 }
 

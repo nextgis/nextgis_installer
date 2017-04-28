@@ -30,23 +30,25 @@
 #define NG_URL_FORGOT "https://my.nextgis.com/password/reset/"
 #define NG_URL_REGISTER "https://my.nextgis.com/signup/"
 //#define NG_URL_LOGIN "https://my.nextgis.com/login/"
+#define NG_URL "https://my.nextgis.com/"
 #define NG_URL_LOGIN "https://my.nextgis.com/api/v1/simple_auth/"
 #define NG_COOKIE_CSRF "ngid_csrftoken"
 #define NG_SETTINGS_LOGIN "login"
 #define NG_SETTINGS_PASSWORD "password"
 
 
-class NgAccess: public QObject
+class NgAuthenticator: public QObject
 {
     Q_OBJECT
 
     public:
 
      static QNetworkAccessManager manager;
-     static void copyManager (QNetworkAccessManager *targetManager);
      static bool authenticated;
      static QString _error;
      static QString _received;
+
+     static QNetworkCookieJar *copyCookie();
 
     signals:
 
@@ -54,10 +56,11 @@ class NgAccess: public QObject
 
     public:
 
-     NgAccess ();
-     ~NgAccess ();
+     NgAuthenticator ();
+     ~NgAuthenticator ();
 
      void startAuthetication (QString login, QString password);
+//     bool isAuthenticated () { return authenticated; }
      void readAuthData ();
      void writeAuthData ();
      QString getCurLogin () { return m_curLogin; }
@@ -74,8 +77,6 @@ class NgAccess: public QObject
 
      void _readReply (QNetworkReply *reply);
 
-    private:
-
      SimpleCrypt crypto;
      QString m_curLogin;
      QString m_curPassword;
@@ -83,6 +84,12 @@ class NgAccess: public QObject
      QByteArray m_baReceived;
      QNetworkReply *m_netReply;
      QNetworkReply *m_netReply2;
+
+//     QNetworkAccessManager manager;
+//     bool authenticated;
+
+//     QString _error;
+//     QString _received;
 };
 
 #endif //NG_ACCESS_H

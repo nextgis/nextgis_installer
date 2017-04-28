@@ -64,7 +64,7 @@ class INSTALLER_EXPORT NextgisAuthPage : public PackageManagerPage
      QLabel *m_labGet;
      QTextEdit *_test_textEdit;
 
-     NgAccess *m_ngAccessPtr;
+     NgAuthenticator *m_ngAccessPtr;
 
 //     bool m_isAuthorized;
 

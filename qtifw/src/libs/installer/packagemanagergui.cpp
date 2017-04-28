@@ -1575,9 +1575,9 @@ void IntroductionPage::entering()
 
     // NEXTGIS: disable update radio buttons so user can at least select uninstalling
     // when the authorization failed or has not been performed.
-    m_packageManager->setEnabled(NgAccess::authenticated);
-    m_updateComponents->setEnabled(NgAccess::authenticated);
-    if (!NgAccess::authenticated)
+    m_packageManager->setEnabled(NgAuthenticator::authenticated);
+    m_updateComponents->setEnabled(NgAuthenticator::authenticated);
+    if (!NgAuthenticator::authenticated)
         m_removeAllComponents->setChecked(true);
 }
 
@@ -2238,30 +2238,30 @@ void TargetDirectoryPage::initializePage()
         }
     }
 
-    // NEXTGIS: added in order to allow users without admin permissions install
-    // software by default.
+    // NEXTGIS: change the default dir for Windows. Added in order to allow users without admin
+    // permissions install software by default.
     #if defined(Q_OS_WIN)
-//    QFileInfoList list = QDir::drives();
-//    if (!list.isEmpty()) // unusual?
-//    {
-//        targetDir.clear();
-//        for (int i=0; i<list.size(); i++)
-//        {
-//            QString drivePath = list[i].absoluteDir().absolutePath();
-//            UINT driveType = GetDriveTypeW(drivePath.data());
-//            if (driveType == DRIVE_FIXED)
-//            {
-//                targetDir = drivePath + QLatin1String("NextGIS");
-//                break;
-//            }
-//        }
-//        if (targetDir.isEmpty()) // also unusual?
-//            targetDir = QDir::homePath() + QLatin1String("\\NextGIS");
-//    }
-//    else
-//    {
+    QFileInfoList drives = QDir::drives();
+    if (!drives.isEmpty()) // unusual?
+    {
+        targetDir.clear();
+        foreach (const QFileInfo &drive, drives)
+        {
+            const QString driveLetter = QDir::toNativeSeparators(drive.canonicalPath());
+            const uint driveType = GetDriveTypeA(qPrintable(driveLetter));
+            if (driveType == DRIVE_FIXED)
+            {
+                targetDir = driveLetter + QLatin1String("NextGIS"); // select the first hard disk drive
+                break;
+            }
+        }
+        if (targetDir.isEmpty()) // also unusual?
+            targetDir = QDir::homePath() + QLatin1String("\\NextGIS");
+    }
+    else
+    {
         targetDir = QDir::homePath() + QLatin1String("\\NextGIS");
-//    }
+    }
     #endif
 
     m_lineEdit->setText(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));

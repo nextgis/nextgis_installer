@@ -22,50 +22,52 @@
 #include "ngaccess.h"
 
 #include <QUrl>
-#include <QNetworkCookie>
-#include <QNetworkCookieJar>
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
+#include <QNetworkCookie>
+#include <QNetworkCookieJar>
 
 // Global network manager for storing retrived from the server authentication
 // cookies.
 // Used as global variable all over the installer.
-QNetworkAccessManager NgAccess::manager;
+QNetworkAccessManager NgAuthenticator::manager;
 
 // Global variable to see if there was a successfull authentication e.g. in different
 // installer GUI pages.
-bool NgAccess::authenticated = false;
+bool NgAuthenticator::authenticated = false;
 
 // Global error output for debugging.
-QString NgAccess::_error;
-QString NgAccess::_received;
+QString NgAuthenticator::_error;
+QString NgAuthenticator::_received;
 
 
-void NgAccess::copyManager (QNetworkAccessManager *targetManager) // STATIC
+// Returns new QNetworkCookieJar with copied data which must be freed by the caller.
+QNetworkCookieJar *NgAuthenticator::copyCookie () // STATIC
 {
-    // Copy cookies.
-    QNetworkCookieJar *cookieJar = NgAccess::manager.cookieJar();
-    targetManager->setCookieJar(cookieJar);
-    cookieJar->setParent(&NgAccess::manager); // return ownership to the global NAM
+    QNetworkCookieJar *currentCookieJar = NgAuthenticator::manager.cookieJar();
+    QList<QNetworkCookie> currentCookies = currentCookieJar->cookiesForUrl(QString::fromUtf8(NG_URL));
 
-    // QUESTION: do we need to copy smth else?
+    QNetworkCookieJar *newCookieJar = new QNetworkCookieJar();
+    newCookieJar->setCookiesFromUrl(currentCookies,QString::fromUtf8(NG_URL));
+
+    return newCookieJar;
 }
 
 
-NgAccess::NgAccess ():
+NgAuthenticator::NgAuthenticator ():
     QObject()
 {
     crypto.setKey(Q_UINT64_C(0x0c2ad4a4acb9f023)); // TEMP
 }
 
-NgAccess::~NgAccess ()
+NgAuthenticator::~NgAuthenticator ()
 {
 }
 
 
-void NgAccess::readAuthData ()
+void NgAuthenticator::readAuthData ()
 {
     // TODO: maybe use QSettings::NativeFormat.
     QSettings settings(QSettings::IniFormat, QSettings::UserScope,
@@ -79,7 +81,7 @@ void NgAccess::readAuthData ()
     m_curPassword = crypto.decryptToString(passReaded);
 }
 
-void NgAccess::writeAuthData ()
+void NgAuthenticator::writeAuthData ()
 {
     // TODO: maybe use QSettings::NativeFormat.
     QString loginToSave = crypto.encryptToString(
@@ -94,9 +96,9 @@ void NgAccess::writeAuthData ()
 }
 
 
-void NgAccess::startAuthetication(QString login, QString password)
+void NgAuthenticator::startAuthetication(QString login, QString password)
 {
-    std::cout << "[NGAuth] Sending request for cookies";
+    std::cout << "[NGAuth] Sending request for cookies\n";
 
     _error = QString::fromUtf8("");
     _received = QString::fromUtf8("");
@@ -108,7 +110,7 @@ void NgAccess::startAuthetication(QString login, QString password)
     QUrl url;
     url.setUrl(QString::fromUtf8(NG_URL_LOGIN));
     QNetworkRequest request(url);
-    m_netReply = NgAccess::manager.get(request);
+    m_netReply = NgAuthenticator::manager.get(request);
     QObject::connect(m_netReply, SIGNAL(finished()),
                      this, SLOT(onReplyFinished()));
     QObject::connect(m_netReply, SIGNAL(readyRead()),
@@ -116,18 +118,18 @@ void NgAccess::startAuthetication(QString login, QString password)
 }
 
 
-void NgAccess::onReplyReadyRead ()
+void NgAuthenticator::onReplyReadyRead ()
 {
     this->_readReply(m_netReply);
 }
 
-void NgAccess::onReply2ReadyRead ()
+void NgAuthenticator::onReply2ReadyRead ()
 {
     this->_readReply(m_netReply2);
 }
 
 
-void NgAccess::onReplyFinished ()
+void NgAuthenticator::onReplyFinished ()
 {
     if (m_netReply->error() != QNetworkReply::NoError)
     {
@@ -135,7 +137,7 @@ void NgAccess::onReplyFinished ()
         _received = QString::fromUtf8(m_baReceived);
 
         m_netReply->deleteLater();
-        NgAccess::authenticated = false;
+        NgAuthenticator::authenticated = false;
         emit authFinished();
         return;
     }
@@ -162,12 +164,12 @@ void NgAccess::onReplyFinished ()
         _received = QString::fromUtf8(m_baReceived);
 
         m_netReply->deleteLater();
-        NgAccess::authenticated = false;
+        NgAuthenticator::authenticated = false;
         emit authFinished();
         return;
     }
 
-    std::cout << "[NGAuth] Sending auth request";
+    std::cout << "[NGAuth] Sending auth request\n";
 
     // Make second (final) POST request if first GET one was successful.
     m_baReceived.clear();
@@ -184,7 +186,7 @@ void NgAccess::onReplyFinished ()
             QVariant(QString::fromUtf8("application/x-www-form-urlencoded")));
     request.setRawHeader(QString::fromUtf8("Referer").toUtf8(),
                          QString::fromUtf8(NG_URL_LOGIN).toUtf8());
-    m_netReply2 = NgAccess::manager.post(request, ba);
+    m_netReply2 = NgAuthenticator::manager.post(request, ba);
     QObject::connect(m_netReply2, SIGNAL(finished()),
                      this, SLOT(onReply2Finished()));
     QObject::connect(m_netReply2, SIGNAL(readyRead()),
@@ -194,7 +196,7 @@ void NgAccess::onReplyFinished ()
 }
 
 
-void NgAccess::onReply2Finished ()
+void NgAuthenticator::onReply2Finished ()
 {
     if (m_netReply2->error() != QNetworkReply::NoError)
     {
@@ -202,7 +204,7 @@ void NgAccess::onReply2Finished ()
         _received = QString::fromUtf8(m_baReceived);
 
         m_netReply2->deleteLater();
-        NgAccess::authenticated = false;
+        NgAuthenticator::authenticated = false;
         emit authFinished();
         return;
     }
@@ -215,7 +217,7 @@ void NgAccess::onReply2Finished ()
         _received = QString::fromUtf8(m_baReceived);
 
         m_netReply2->deleteLater();
-        NgAccess::authenticated = false;
+        NgAuthenticator::authenticated = false;
         emit authFinished();
         return;
     }
@@ -227,20 +229,20 @@ void NgAccess::onReply2Finished ()
         _received = QString::fromUtf8(m_baReceived);
 
         m_netReply2->deleteLater();
-        NgAccess::authenticated = false;
+        NgAuthenticator::authenticated = false;
         emit authFinished();
         return;
     }
 
-    std::cout << "[NGAuth] Authentication successful";
+    std::cout << "[NGAuth] Authentication successful\n";
 
     m_netReply2->deleteLater();
-    NgAccess::authenticated = true;
+    NgAuthenticator::authenticated = true;
     emit authFinished();
 }
 
 
-void NgAccess::_readReply (QNetworkReply *reply)
+void NgAuthenticator::_readReply (QNetworkReply *reply)
 {
     QByteArray ba;
     ba = reply->readAll();
