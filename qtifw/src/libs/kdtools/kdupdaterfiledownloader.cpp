@@ -1078,7 +1078,7 @@ KDUpdater::HttpDownloader::HttpDownloader(QObject *parent)
 {
     // NEXTGIS: replace network access manager with global one.
     QNetworkCookieJar* newCookieJar = NgAuthenticator::copyCookie();
-    d->managerNg.setCookieJar(newCookieJar);
+    d->managerNg.setCookieJar(newCookieJar); // cookie object will be deleted with NAM
 #ifndef QT_NO_SSL
     //connect(&d->manager, SIGNAL(sslErrors(QNetworkReply*, QList<QSslError>)),
     //    this, SLOT(onSslErrors(QNetworkReply*, QList<QSslError>)));

@@ -130,13 +130,14 @@ public:
 
                     // NEXTGIS: replace the message with not so scary one.
                     QCoreApplication::translate("RemoteClient","Could not get authorization that is needed for continuing the installation."),
-
                     //QCoreApplication::translate("RemoteClient", "Could not get authorization that "
                     //    "is needed for continuing the installation.\n Either abort the "
                     //    "installation or use the fallback solution by running\n\n%1\n\nas root "
                     //    "and then clicking OK.").arg(fallback),
 
-                    QMessageBox::Abort | QMessageBox::Ok, QMessageBox::Ok);
+                    // NEXTGIS: removed OK button because of "not responding" hang after pressing it.
+                    QMessageBox::Abort, QMessageBox::Abort);
+                    //QMessageBox::Abort | QMessageBox::Ok, QMessageBox::Ok);
 
                 if (res == QMessageBox::Ok)
                     started = true;
