@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/lib/python2.7/site-packages/pyspatialite" dst="Library/Python/2.7/site-packages/pyspatialite"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/lib/Python27/site-packages/pyspatialite" dst="lib/Python27/site-packages/pyspatialite"/>
     </win>
 </Package>

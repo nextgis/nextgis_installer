@@ -4,4 +4,7 @@
         <path src="inst/lib/python2.7/site-packages/pygments" dst="Library/Python/2.7/site-packages/pygments"/>
         <path src="inst/bin" dst="usr/bin"/>
     </mac>
+    <win enabled="true">
+        <path src="inst/lib/Python27/site-packages/pygments" dst="lib/Python27/site-packages/pygments"/>
+    </win>
 </Package>

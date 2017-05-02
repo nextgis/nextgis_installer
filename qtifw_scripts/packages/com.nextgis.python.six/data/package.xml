@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/lib/python2.7/site-packages/six.*" dst="Library/Python/2.7/site-packages"/>
     </mac>
-    <win>
-        <path src="inst/lib/python2.7/site-packages/lib/six.*" dst="lib/Python/2.7/site-packages"/>
+    <win enabled="true">
+        <path src="inst/lib/Python27/site-packages/lib/six.*" dst="lib/Python27/site-packages"/>
     </win>
 </Package>

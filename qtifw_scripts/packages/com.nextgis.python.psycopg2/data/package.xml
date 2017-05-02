@@ -4,7 +4,7 @@
     <mac>
         <path src="inst/lib/python2.7/site-packages/psycopg2" dst="Library/Python/2.7/site-packages/psycopg2"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/lib/Python27/site-packages/psycopg2" dst="lib/Python27/site-packages/psycopg2"/>
     </win>
 </Package>

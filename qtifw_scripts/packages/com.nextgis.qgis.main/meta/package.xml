@@ -7,5 +7,5 @@
     <Default>true</Default>
     <Script>afterinstall.qs</Script>
     
-    <Dependencies>com.nextgis.qgis.libapp,com.nextgis.utils.gdal,com.nextgis.python.python2</Dependencies>
+    <Dependencies>com.nextgis.qgis.libapp,com.nextgis.qgis.plugins,com.nextgis.utils.gdal,com.nextgis.python.python2</Dependencies>
 </Package>

@@ -4,7 +4,7 @@
         <path src="inst/lib/python2.7/site-packages/yaml" dst="Library/Python/2.7/site-packages/yaml"/>
         <path src="inst/lib/python2.7/site-packages/_yaml.so" dst="Library/Python/2.7/site-packages/"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/lib/site-packages" dst="lib/Python27/site-packages"/>
     </win>
 </Package>

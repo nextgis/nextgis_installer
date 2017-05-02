@@ -3,4 +3,7 @@
     <mac>
         <path src="inst/lib/python2.7/site-packages/markupsafe" dst="Library/Python/2.7/site-packages/markupsafe"/>
     </mac>
+    <win enabled="true">
+        <path src="inst/lib/Python27/site-packages/markupsafe" dst="lib/Python27/site-packages/markupsafe"/>
+    </win>
 </Package>

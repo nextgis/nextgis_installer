@@ -417,6 +417,7 @@ def process_directory(dir_name):
         if tag_os is not None:
             attr_enabled = tag_os.get('enabled')
             if attr_enabled is None or attr_enabled != 'true':
+                color_print('... not add because package data config has not enabled attr in <win> tag', True, 'LBLUE')
                 return
     repo_new_package_path = os.path.join(repo_new_packages_path, dir_name)
     create_dest_package_dir(dir_name, version_text, updatetext_text, os.path.join(packages_data_source_path, sources_root_dir), repo_new_package_path, root, path_meta)

@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Applications/ngqgis.app/Contents/Frameworks/ngqgis_app.framework" dst="Applications/ngqgis.app/Contents/Frameworks/ngqgis_app.framework"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/bin/ngqgis_app.dll" dst="bin"/>
     </win>
 </Package>
