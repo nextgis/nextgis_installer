@@ -51,18 +51,18 @@ AuthenticationRequiredException::AuthenticationRequiredException(Type type, cons
 Downloader::Downloader()
     : m_finished(0)
 {
-    // NEXTGIS: replace network access manager with global one.
-    //connect(&m_nam, SIGNAL(finished(QNetworkReply*)), SLOT(onFinished(QNetworkReply*)));
+    // NEXTGIS: add copying of cookies with auth data.
+#ifdef NG_AUTH_ON
     QNetworkCookieJar* newCookieJar = NgAuthenticator::copyCookie();
-    m_namNg.setCookieJar(newCookieJar); // cookie object will be deleted with NAM
-    connect(&m_namNg, SIGNAL(finished(QNetworkReply*)), SLOT(onFinished(QNetworkReply*)));
+    m_nam.setCookieJar(newCookieJar); // cookie object will be deleted with this NAM
+#endif
+
+    connect(&m_nam, SIGNAL(finished(QNetworkReply*)), SLOT(onFinished(QNetworkReply*)));
 }
 
 Downloader::~Downloader()
 {
-    // NEXTGIS: replace network access manager with global one.
-    //m_nam.disconnect();
-    m_namNg.disconnect();
+    m_nam.disconnect();
     for (const auto &pair : m_downloads) {
         pair.first->disconnect();
         pair.first->abort();
@@ -79,16 +79,10 @@ void Downloader::download(QFutureInterface<FileTaskResult> &fi, const QList<File
     fi.reportStarted();
     fi.setExpectedResultCount(items.count());
 
-    // NEXTGIS: replace network access manager with global one.
-    //m_nam.setProxyFactory(networkProxyFactory);
-    //connect(&m_nam, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), this,
-    //    SLOT(onAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
-    //connect(&m_nam, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this,
-    //        SLOT(onProxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
-    m_namNg.setProxyFactory(networkProxyFactory);
-    connect(&m_namNg, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), this,
+    m_nam.setProxyFactory(networkProxyFactory);
+    connect(&m_nam, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), this,
          SLOT(onAuthenticationRequired(QNetworkReply*,QAuthenticator*)));  
-    connect(&m_namNg, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this,
+    connect(&m_nam, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this,
          SLOT(onProxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
 
     QTimer::singleShot(0, this, SLOT(doDownload()));
@@ -358,9 +352,7 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
         return 0;
     }
 
-    // NEXTGIS: replace network access manager with global one.
-    //QNetworkReply *reply = m_nam.get(QNetworkRequest(source));
-    QNetworkReply *reply = m_namNg.get(QNetworkRequest(source));
+    QNetworkReply *reply = m_nam.get(QNetworkRequest(source));
     std::unique_ptr<Data> data(new Data(item));
     m_downloads[reply] = std::move(data);
 

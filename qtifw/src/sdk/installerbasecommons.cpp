@@ -51,7 +51,9 @@ InstallerGui::InstallerGui(PackageManagerCore *core)
     }
     
     // NEXTGIS: add NextGIS authentication page.
+#ifdef NG_AUTH_ON
     setPage(0x500, new NextgisAuthPage(core));
+#endif
 
     setPage(PackageManagerCore::Introduction, new IntroductionPage(core));
     setPage(PackageManagerCore::TargetDirectory, new TargetDirectoryPage(core));
@@ -86,8 +88,10 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
     }
     
     // NEXTGIS: add NextGIS authentication page.
+#ifdef NG_AUTH_ON
     NextgisAuthPage *pageNgAuth = new NextgisAuthPage(core);
     setPage(0x500, pageNgAuth);
+#endif
 
     IntroductionPage *intro = new IntroductionPage(core);
     connect(intro, SIGNAL(packageManagerCoreTypeChanged()), this, SLOT(updateRestartPage()));

@@ -252,7 +252,9 @@ private:
 #endif
 
     // NEXTGIS: added for page skipping.
+#ifdef NG_AUTH_ON
     bool m_visited;
+#endif
 };
 
 
