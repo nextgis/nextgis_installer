@@ -5,5 +5,5 @@
     <Description>Python27</Description>
     <Description xml:lang="ru_RU">Python27</Description>
     
-    <Dependencies>com.nextgis.python</Dependencies>
+    <Dependencies>com.nextgis.python.all</Dependencies>
 </Package>

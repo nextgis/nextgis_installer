@@ -6,5 +6,5 @@
     <Description xml:lang="ru_RU">Плагины QGIS</Description>
     <Default>true</Default>
     
-    <!-- <Dependencies>com.nextgis.qgis.main</Dependencies> -->
+    <Dependencies>com.nextgis.qgis.main</Dependencies>
 </Package>

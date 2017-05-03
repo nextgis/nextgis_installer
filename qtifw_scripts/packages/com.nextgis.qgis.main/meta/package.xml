@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>QGIS main</DisplayName>
-    <DisplayName xml:lang="ru_RU">QGIS main</DisplayName>
+    <DisplayName xml:lang="ru">QGIS main</DisplayName>
     <Description>QGIS Application main files</Description>
-    <Description xml:lang="ru_RU">Основные файлы программы QGIS</Description>
+    <Description xml:lang="ru">Основные файлы программы QGIS</Description>
     <Default>true</Default>
+    <!-- <ForcedInstallation>true</ForcedInstallation> -->
     <Script>afterinstall.qs</Script>
     
-    <Dependencies>com.nextgis.qgis.libapp,com.nextgis.qgis.plugins,com.nextgis.utils.gdal,com.nextgis.python.python2</Dependencies>
+    <Dependencies>com.nextgis.qgis.libapp,com.nextgis.utils.gdal</Dependencies>
 </Package>

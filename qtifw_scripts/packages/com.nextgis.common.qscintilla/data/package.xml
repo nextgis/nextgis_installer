@@ -6,6 +6,5 @@
     </mac>
     <win enabled="true">
         <path src="inst/bin/qscintilla.dll" dst="bin"/>
-        <path src="inst/lib/Python27/site-packages/PyQt4/Qsci*" dst="lib/Python27/site-packages/PyQt4"/>
     </win>
 </Package>
