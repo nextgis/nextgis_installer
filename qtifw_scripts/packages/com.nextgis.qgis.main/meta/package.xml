@@ -5,7 +5,6 @@
     <Description>QGIS Application main files</Description>
     <Description xml:lang="ru">Основные файлы программы QGIS</Description>
     <Default>true</Default>
-    <!-- <ForcedInstallation>true</ForcedInstallation> -->
     <Script>afterinstall.qs</Script>
     
     <Dependencies>com.nextgis.qgis.libapp,com.nextgis.utils.gdal</Dependencies>
