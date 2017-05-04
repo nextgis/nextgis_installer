@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>QGIS documentation (russian)</DisplayName>
-    <DisplayName xml:lang="ru_RU">Документация QGIS</DisplayName>
     <Description>QGIS documentation (russian)</Description>
-    <Description xml:lang="ru_RU">Документация QGIS</Description>
     <Default>false</Default>
     <Script>afterinstall.qs</Script>
     
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
 </Package>

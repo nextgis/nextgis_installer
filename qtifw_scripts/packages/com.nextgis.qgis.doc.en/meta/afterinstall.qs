@@ -1,7 +1,13 @@
 
-function Component()
+function Component() 
 {
+    component.loaded.connect(this, Component.prototype.componentLoaded);
+}
 
+Component.prototype.componentLoaded = function ()
+{
+    component.setValue("DisplayName",qsTranslate("script","QGIS documentation"));
+    component.setValue("Description",qsTranslate("script","QGIS documentation"));
 }
 
 Component.prototype.createOperations = function()
