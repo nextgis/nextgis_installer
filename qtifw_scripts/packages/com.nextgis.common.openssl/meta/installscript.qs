@@ -34,9 +34,9 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "win")
     {
-        component.addOperation( "EnvironmentVariable",
-                                "SSL_CERT_FILE",
-                                "@TargetDir@\\share\\ssl\\certs\\cert.pem" );
+        //component.addOperation( "EnvironmentVariable",
+        //                        "SSL_CERT_FILE",
+        //                        "@TargetDir@\\share\\ssl\\certs\\cert.pem" );
     }
 
     if (installer.value("os") == "mac")

@@ -45,5 +45,5 @@ Component.prototype.createOperations = function()
                                 "@HomeDir@/.bash_profile" );
                                 
         SetEnvMac("PATH", "@TargetDir@/usr/bin");
-    }
+    } 
 }

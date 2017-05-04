@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <Version>1.0.2</Version>    
-    <UpdateText>Add create bin directory</UpdateText>
-    <!--
-        <win></win>
-        <mac></mac>
-    -->
+<Package root="all">
+    <win enabled="true">
+        <path src="inst/run_ng_env.bat" dst=""/>
+    </win>
 </Package>
