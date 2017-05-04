@@ -5,5 +5,5 @@
     <Description>Nose2 package</Description>
     <Description xml:lang="ru_RU">Пакет Nose2</Description>
     
-    <Dependencies>com.nextgis.python</Dependencies>
+    <Dependencies>com.nextgis.python.all</Dependencies>
 </Package>
