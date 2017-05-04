@@ -61,6 +61,7 @@ class NgAuthenticator: public QObject
 
      void startAuthetication (QString login, QString password);
 //     bool isAuthenticated () { return authenticated; }
+//     QNetworkCookieJar *copyCookie ();
      void readAuthData ();
      void writeAuthData ();
      QString getCurLogin () { return m_curLogin; }

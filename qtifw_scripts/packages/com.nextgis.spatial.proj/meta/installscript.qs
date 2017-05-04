@@ -34,9 +34,9 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "win")
     {
-        component.addOperation( "EnvironmentVariable",
-                                "PROJ_LIB",
-                                "@TargetDir@\\share\\proj" );
+        //component.addOperation( "EnvironmentVariable",
+        //                        "PROJ_LIB",
+        //                        "@TargetDir@\\share\\proj" );
     }
     else if (installer.value("os") == "mac")
     {

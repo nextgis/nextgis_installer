@@ -55,6 +55,7 @@ int UpdateChecker::check()
     // If we are still not authenticated - the app is in command line mode (any
     // update checks in installer GUI are possible only after showing authentication
     // page).
+#ifdef NG_AUTH_ON
     if (!NgAuthenticator::authenticated)
     {
         std::cout << std::endl << "[NG] NextGIS authentication. Connecting ...\n" << std::endl;
@@ -72,7 +73,8 @@ int UpdateChecker::check()
         else
             std::cout << "[NG] Authentication failed! Anyway trying to check for updates ...\n" << std::endl;
     }
-    
+#endif
+
     KDRunOnceChecker runCheck(qApp->applicationDirPath() + QLatin1String("/lockmyApp15021976.lock"));
     if (runCheck.isRunning(KDRunOnceChecker::ConditionFlag::Lockfile)) {
         // It is possible to install an application and thus the maintenance tool into a

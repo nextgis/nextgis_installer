@@ -18,9 +18,9 @@ Component.prototype.createOperations = function()
     if (installer.value("os") == "win")
     {
         // TODO: Use pth file too
-        component.addOperation( "EnvironmentVariable",
-                                "PYTHONPATH",
-                                "@TargetDir@\\lib\\Python27\\site-packages" );
+        //component.addOperation( "EnvironmentVariable",
+        //                        "PYTHONPATH",
+        //                        "@TargetDir@\\lib\\Python27\\site-packages" );
     }
     else if (installer.value("os") == "mac")
     {

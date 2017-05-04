@@ -1580,15 +1580,15 @@ Error while loading %2</source>
     <name>QInstaller::FinishedPage</name>
     <message>
         <source>Completing the %1 Wizard</source>
-        <translation>Завершение установки %1</translation>
+        <translation>Завершение установки программ NextGIS</translation>
     </message>
     <message>
         <source>Click Done to exit the %1 Wizard.</source>
-        <translation>Нажмите &quot;Готово&quot; для выхода из мастера установки %1.</translation>
+        <translation>Нажмите &quot;Готово&quot; для выхода из мастера установки программ NextGIS.</translation>
     </message>
     <message>
         <source>Click Finish to exit the %1 Wizard.</source>
-        <translation>Нажмите &quot;Завершить&quot; для выхода из мастера установки %1.</translation>
+        <translation>Нажмите &quot;Завершить&quot; для выхода из мастера установки программ NextGIS.</translation>
     </message>
     <message>
         <source>Restart</source>
@@ -1661,11 +1661,11 @@ Error while loading %2</source>
     <name>QInstaller::IntroductionPage</name>
     <message>
         <source>Setup - %1</source>
-        <translation>Установка - %1</translation>
+        <translation>Установка - программы NextGIS</translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup Wizard.</source>
-        <translation>Добро пожаловать в мастер установки %1.</translation>
+        <translation>Добро пожаловать в мастер установки программ NextGIS</translation>
     </message>
     <message>
         <source>Add or remove components</source>
@@ -2140,7 +2140,7 @@ Installing component %1</source>
     <name>QInstaller::PackageManagerGui</name>
     <message>
         <source>%1 Setup</source>
-        <translation>Установка %1</translation>
+        <translation>Установка NextGIS</translation>
     </message>
     <message>
         <source>Maintain %1</source>
@@ -2219,7 +2219,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Installing %1</source>
-        <translation>Установка %1</translation>
+        <translation>Идёт процесс установки</translation>
     </message>
 </context>
 <context>
@@ -2289,7 +2289,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Setup is now ready to begin installing %1 on your computer.</source>
-        <translation>Программа установки готова начать установку %1 на ваш компьютер.</translation>
+        <translation>Всё готово к началу установки программ NextGIS на ваш компьютер.</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
@@ -2504,7 +2504,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Please specify the folder where %1 will be installed.</source>
-        <translation>Укажите каталог для установки %1.</translation>
+        <translation>Укажите каталог для установки программ NextGIS</translation>
     </message>
     <message>
         <source>Alt+R</source>

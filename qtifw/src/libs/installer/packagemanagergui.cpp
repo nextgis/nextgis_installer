@@ -1269,7 +1269,9 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
 #endif
 
     // NEXTGIS: added for page skipping.
+#ifdef NG_AUTH_ON
     m_visited = false;
+#endif
 }
 
 /*!
@@ -1559,6 +1561,7 @@ void IntroductionPage::entering()
     setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
     
     // NEXTGIS: skip this page if this is an installer.
+#ifdef NG_AUTH_ON
     if (core->isInstaller())
     {
         if (!m_visited)
@@ -1572,13 +1575,16 @@ void IntroductionPage::entering()
             this->gui()->clickButton(QWizard::BackButton);
         }
     }
+#endif
 
     // NEXTGIS: disable update radio buttons so user can at least select uninstalling
     // when the authorization failed or has not been performed.
+#ifdef NG_AUTH_ON
     m_packageManager->setEnabled(NgAuthenticator::authenticated);
     m_updateComponents->setEnabled(NgAuthenticator::authenticated);
     if (!NgAuthenticator::authenticated)
         m_removeAllComponents->setChecked(true);
+#endif
 }
 
 /*!

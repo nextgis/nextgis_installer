@@ -34,9 +34,9 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "win")
     {
-        component.addOperation( "EnvironmentVariable",
-                                "CURL_CA_BUNDLE",
-                                "@TargetDir@\\share\\ssl\\certs\\cert.pem" );
+        //component.addOperation( "EnvironmentVariable",
+        //                        "CURL_CA_BUNDLE",
+        //                        "@TargetDir@\\share\\ssl\\certs\\cert.pem" );
     }
 
     if (installer.value("os") == "mac")

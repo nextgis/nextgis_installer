@@ -29,6 +29,7 @@
 #include <QNetworkCookie>
 #include <QNetworkCookieJar>
 
+
 // Global network manager for storing retrived from the server authentication
 // cookies.
 // Used as global variable all over the installer.
