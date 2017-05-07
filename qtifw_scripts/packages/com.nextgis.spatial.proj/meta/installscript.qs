@@ -40,7 +40,7 @@ Component.prototype.createOperations = function()
     }
     else if (installer.value("os") == "mac")
     {
-        component.addOperation( "NgEnvironmentVariable",
+        component.addOperation( "NgFileEnvironmentVariable",
                                 "PROJ_LIB",
                                 "@TargetDir@/Library/Frameworks/proj.framework/Resources/proj",
                                 "@HomeDir@/.bash_profile");

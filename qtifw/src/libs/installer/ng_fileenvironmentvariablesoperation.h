@@ -17,8 +17,8 @@
 *
 *****************************************************************************/
 
-#ifndef NG_ENVIRONMENTVARIABLESOPERATION_H
-#define NG_ENVIRONMENTVARIABLESOPERATION_H
+#ifndef NG_FILEENVIRONMENTVARIABLESOPERATION_H
+#define NG_FILEENVIRONMENTVARIABLESOPERATION_H
 
 #include "qinstallerglobal.h"
 
@@ -27,10 +27,10 @@
 namespace QInstaller
 {
 
-class INSTALLER_EXPORT NgEnvironmentVariableOperation: public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT NgFileEnvironmentVariableOperation: public KDUpdater::UpdateOperation
 {
     public:
-     NgEnvironmentVariableOperation();
+     NgFileEnvironmentVariableOperation();
      void backup();
      bool performOperation();
      bool undoOperation();
@@ -44,7 +44,7 @@ class INSTALLER_EXPORT NgEnvironmentVariableOperation: public KDUpdater::UpdateO
 
 }
 
-#endif // NG_ENVIRONMENTVARIABLESOPERATION_H
+#endif // NG_FILEENVIRONMENTVARIABLESOPERATION_H
 
 
 

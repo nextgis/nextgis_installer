@@ -35,7 +35,7 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "mac")
     {
-        component.addOperation( "NgEnvironmentVariable",
+        component.addOperation( "NgFileEnvironmentVariable",
                                 "QCA_PLUGIN_PATH",
                                 "@TargetDir@/Library/Plugins/Qt4/",
                                 "@HomeDir@/.bash_profile");
