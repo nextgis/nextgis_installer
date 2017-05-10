@@ -49,7 +49,9 @@
 #include "consumeoutputoperation.h"
 
 #include "ng_fileenvironmentvariablesoperation.h"
+#ifdef Q_OS_WIN
 #include "ng_userpathwinenvironmentvariablesoperation.h"
+#endif
 
 #include "utils.h"
 
