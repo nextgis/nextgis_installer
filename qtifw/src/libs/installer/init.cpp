@@ -224,7 +224,9 @@ void QInstaller::init()
 
     // NEXTGIS: register specific environmaent variable operations.
     factory.registerUpdateOperation<NgFileEnvironmentVariableOperation>(QLatin1String("NgFileEnvironmentVariable"));
+    #ifdef Q_OS_WIN
     factory.registerUpdateOperation<NgUserPathWinEnvironmentVariableOperation>(QLatin1String("NgUserPathWinEnvironmentVariable"));
+    #endif
 
     FileDownloaderFactory::setFollowRedirects(true);
 
