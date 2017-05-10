@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>Documentation</DisplayName>
-    <DisplayName xml:lang="ru_RU">Документация</DisplayName>
-    <Description>Documentation</Description>
-    <Description xml:lang="ru_RU">Документация</Description>
+    <Description>QGIS Documentation</Description>
     <Default>false</Default>
-    
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+    <Script>script.qs</Script>
 </Package>

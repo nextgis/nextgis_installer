@@ -4,7 +4,6 @@
     <DisplayName xml:lang="ru_RU">QGIS python</DisplayName>
     <Description>QGIS python</Description>
     <Description xml:lang="ru_RU">QGIS python</Description>
-    <Default>true</Default>
-    
-    <Dependencies>com.nextgis.qgis.libpython</Dependencies>
+    <Default>true</Default>    
+    <Dependencies>com.nextgis.qgis.libpython,com.nextgis.utils.gdal</Dependencies>
 </Package>

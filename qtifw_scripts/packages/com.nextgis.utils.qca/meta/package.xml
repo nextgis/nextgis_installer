@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>QCA utilities</DisplayName>
-    <DisplayName xml:lang="ru_RU">Утилиты QCA</DisplayName>
     <Description>QCA command line utilities</Description>
-    <Description xml:lang="ru_RU">Утилиты коммандной строки QCA</Description>
-    
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+    <Script>script.qs</Script>
     <Dependencies>com.nextgis.utils.all,com.nextgis.common.qca</Dependencies>
 </Package>
