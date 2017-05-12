@@ -41,7 +41,7 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "mac")
     {
-        component.addOperation( "NgEnvironmentVariable",
+        component.addOperation( "NgFileEnvironmentVariable",
                                 "SSL_CERT_FILE",
                                 "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem",
                                 "@HomeDir@/.bash_profile");

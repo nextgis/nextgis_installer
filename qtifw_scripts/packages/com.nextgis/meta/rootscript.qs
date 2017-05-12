@@ -40,23 +40,17 @@ Component.prototype.createOperations = function()
                                 "@TargetDir@/nextgisupdater.exe",
                                 "@StartMenuDir@/NextGIS Maintenance Tool.lnk",
                                 " --updater");
-        
-        var strTargetDir = installer.value("TargetDir");
-        component.addOperation( "AppendFile",
+                                
+        component.addOperation( "Replace", 
                                 "@TargetDir@/run_ng_env.bat",
-                                "echo off\n" +
-                                "cls\n" +
-                                "set PATH=" + strTargetDir + "\\bin;%PATH%\n" +
-                                "set PROJ_LIB=" + strTargetDir + "\\share\\proj\n" +
-                                "set SSL_CERT_FILE=" + strTargetDir + "\\share\\ssl\\certs\\cert.pem\n" +
-                                "set CURL_CA_BUNDLE=" + strTargetDir + "\\share\\ssl\\certs\\cert.pem\n" +
-                                "set GDAL_DATA=" + strTargetDir + "\\share\\gdal\n" +
-                                "cmd.exe /k\n" +
-                                "echo on\n" );
+                                "TargetDir",
+                                "@TargetDir@" );
 
         component.addOperation( "CreateShortcut",
                                 "@TargetDir@/run_ng_env.bat",
-                                "@StartMenuDir@/NextGIS Command Prompt.lnk" );                                
-        
+                                "@StartMenuDir@/NextGIS Command Prompt.lnk" );    
+
+        component.addOperation( "NgUserPathWinEnvironmentVariable",
+                                "@TargetDir@" );
     }
 }

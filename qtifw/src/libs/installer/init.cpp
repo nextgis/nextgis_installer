@@ -48,8 +48,10 @@
 #include "settingsoperation.h"
 #include "consumeoutputoperation.h"
 
-#include "ng_environmentvariablesoperation.h"
-
+#include "ng_fileenvironmentvariablesoperation.h"
+#ifdef Q_OS_WIN
+#include "ng_userpathwinenvironmentvariablesoperation.h"
+#endif
 
 #include "utils.h"
 
@@ -222,8 +224,11 @@ void QInstaller::init()
     factory.registerUpdateOperation<ConsumeOutputOperation>(QLatin1String("ConsumeOutput"));
     factory.registerUpdateOperation<SettingsOperation>(QLatin1String("Settings"));
 
-    // NEXTGIS: register specific EnvVar operation.
-    factory.registerUpdateOperation<NgEnvironmentVariableOperation>(QLatin1String("NgEnvironmentVariable"));
+    // NEXTGIS: register specific environmaent variable operations.
+    factory.registerUpdateOperation<NgFileEnvironmentVariableOperation>(QLatin1String("NgFileEnvironmentVariable"));
+    #ifdef Q_OS_WIN
+    factory.registerUpdateOperation<NgUserPathWinEnvironmentVariableOperation>(QLatin1String("NgUserPathWinEnvironmentVariable"));
+    #endif
 
     FileDownloaderFactory::setFollowRedirects(true);
 

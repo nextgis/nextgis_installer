@@ -126,7 +126,10 @@ HEADERS += packagemanagercore.h \
     systeminfo.h \
     localsocket.h \
     ng_authpage.h \
-    ng_environmentvariablesoperation.h
+    ng_fileenvironmentvariablesoperation.h
+win32 {
+    HEADERS += ng_userpathwinenvironmentvariablesoperation.h
+}
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -202,7 +205,10 @@ SOURCES += packagemanagercore.cpp \
     keepaliveobject.cpp \
     systeminfo.cpp \
     ng_authpage.cpp \
-    ng_environmentvariablesoperation.cpp
+    ng_fileenvironmentvariablesoperation.cpp
+win32 {
+    SOURCES += ng_userpathwinenvironmentvariablesoperation.cpp
+}
 
 FORMS += proxycredentialsdialog.ui \
     serverauthenticationdialog.ui

@@ -4,8 +4,8 @@
 <context>
     <name>script</name>
     <message>
-        <source>QGIS documentation (russian)</source>
-        <translation>Документация QGIS</translation>
+        <source>QGIS documentation (Russian)</source>
+        <translation>Документация QGIS (рус)</translation>
     </message>
 </context>
 </TS>

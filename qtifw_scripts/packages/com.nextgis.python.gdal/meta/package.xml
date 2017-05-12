@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>GDAL python</DisplayName>
-    <DisplayName xml:lang="ru_RU">GDAL python</DisplayName>
     <Description>GDAL python bindings</Description>
-    <Description xml:lang="ru_RU">GDAL python bindings</Description>
-    
     <Dependencies>com.nextgis.python.all,com.nextgis.spatial.gdal,com.nextgis.python.numpy</Dependencies>
 </Package>

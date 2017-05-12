@@ -7,5 +7,9 @@
         <source>Documentation</source>
         <translation>Документация</translation>
     </message>
+    <message>
+        <source>QGIS Documentation</source>
+        <translation>Документация QGIS</translation>
+    </message>
 </context>
 </TS>

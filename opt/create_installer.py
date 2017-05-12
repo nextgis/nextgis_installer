@@ -35,6 +35,7 @@ repo_new_packages_path = ''
 repo_new_config_path = ''
 translate_tool = ''
 packages_data_source_path = ''
+mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 
 class bcolors:
     HEADER = '\033[95m'
@@ -527,6 +528,8 @@ def create_installer():
     key_only = '--offline-only'
     if args.network:
         key_only = '--online-only'
+
+    '--sign', mac_sign_identy
     run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, 'nextgis-setup') ))
 
     # Hack as <InstallerApplicationIcon> in config.xml not working
@@ -535,6 +538,11 @@ def create_installer():
         icns_path = os.path.join(repo_target_path, 'nextgis-setup.app', 'Contents', 'Resources', 'nextgis-setup.icns' )
         os.unlink(icns_path)
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
+
+        # TODO: In Qt installer master dmg create and sign are already in binarycreator (see https://github.com/qtproject/installer-framework/blob/master/tools/binarycreator/binarycreator.cpp)
+        # Sign install application
+        run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app') ))
+
         # Build dgm image file
         color_print('Create DMG file ...', True, 'LMAGENTA')
         dmgbuild.build_dmg(

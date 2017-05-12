@@ -1,5 +1,5 @@
 
-function Component() 
+function Component()
 {
     component.loaded.connect(this, Component.prototype.componentLoaded);
 }

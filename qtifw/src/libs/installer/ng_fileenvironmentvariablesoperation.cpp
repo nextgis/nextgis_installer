@@ -21,7 +21,7 @@
 #include <QTextStream>
 #include <QDir>
 
-#include "ng_environmentvariablesoperation.h"
+#include "ng_fileenvironmentvariablesoperation.h"
 
 using namespace QInstaller;
 
@@ -32,13 +32,13 @@ using namespace QInstaller;
 #endif
 
 
-NgEnvironmentVariableOperation::NgEnvironmentVariableOperation ()
+NgFileEnvironmentVariableOperation::NgFileEnvironmentVariableOperation ()
 {
-    setName(QLatin1String("NgEnvironmentVariable"));
+    setName(QLatin1String("NgFileEnvironmentVariable"));
 }
 
 
-void NgEnvironmentVariableOperation::backup ()
+void NgFileEnvironmentVariableOperation::backup ()
 {
 }
 
@@ -46,7 +46,7 @@ void NgEnvironmentVariableOperation::backup ()
 // Add persistant environment variable to the system.
 // WARNING. Do not use this operation to add more than one variable (via delimiter). Use several
 // operations instead!
-bool NgEnvironmentVariableOperation::performOperation ()
+bool NgFileEnvironmentVariableOperation::performOperation ()
 {
     QStringList args = arguments();
     if (args.count() != 3)
@@ -106,7 +106,7 @@ bool NgEnvironmentVariableOperation::performOperation ()
 }
 
 
-bool NgEnvironmentVariableOperation::undoOperation ()
+bool NgFileEnvironmentVariableOperation::undoOperation ()
 {
     QStringList args = arguments();
     if (args.count() != 3)
@@ -182,20 +182,20 @@ bool NgEnvironmentVariableOperation::undoOperation ()
 }
 
 
-bool NgEnvironmentVariableOperation::testOperation ()
+bool NgFileEnvironmentVariableOperation::testOperation ()
 {
     return true;
 }
 
 
-KDUpdater::UpdateOperation *NgEnvironmentVariableOperation::clone () const
+KDUpdater::UpdateOperation *NgFileEnvironmentVariableOperation::clone () const
 {
-    return new NgEnvironmentVariableOperation();
+    return new NgFileEnvironmentVariableOperation();
 }
 
 
 // Return all lines in a text file.
-QStringList NgEnvironmentVariableOperation::readFile (QFile *file)
+QStringList NgFileEnvironmentVariableOperation::readFile (QFile *file)
 {
     QStringList fileContents;
     QTextStream in(file);
@@ -213,7 +213,7 @@ QStringList NgEnvironmentVariableOperation::readFile (QFile *file)
 
 // Return a line number in a given list of system variables (with export commands) or -1 if
 // variable is not found. The returned listValues is an array of values of the given variable.
-int NgEnvironmentVariableOperation::findVariable (QStringList list, QString name,
+int NgFileEnvironmentVariableOperation::findVariable (QStringList list, QString name,
                                                   QStringList &listValues)
 {
     bool found = false;
@@ -247,7 +247,7 @@ int NgEnvironmentVariableOperation::findVariable (QStringList list, QString name
 
 
 // Write to the temp file and than replace the target one.
-bool NgEnvironmentVariableOperation::rewriteFile (QString targetFilePath, QStringList fileContents)
+bool NgFileEnvironmentVariableOperation::rewriteFile (QString targetFilePath, QStringList fileContents)
 {
     QTemporaryFile tempFile(QDir::tempPath() + QLatin1String("/ng_envvarXXXXXX"));
     if (!tempFile.open())

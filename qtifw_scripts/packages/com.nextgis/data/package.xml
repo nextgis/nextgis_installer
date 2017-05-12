@@ -2,5 +2,6 @@
 <Package root="all">
     <win enabled="true">
         <path src="inst/run_ng_env.bat" dst=""/>
+        <path src="inst/ng.bat" dst=""/>
     </win>
 </Package>

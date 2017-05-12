@@ -3,9 +3,8 @@
     <DisplayName>QGIS python</DisplayName>
     <Description>QGIS python</Description>
     <Default>true</Default>
-    
-    <Dependencies>com.nextgis.qgis.libpython,com.nextgis.qgis.main</Dependencies>
-    
+    <Dependencies>com.nextgis.qgis.libpython,com.nextgis.qgis.main,com.nextgis.utils.gdal</Dependencies>
+
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>
