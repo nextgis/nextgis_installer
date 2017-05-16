@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>OpenJPEG</DisplayName>
+    <DisplayName xml:lang="ru_RU">OpenJPEG</DisplayName>
+    <Description>OpenJPEG Library</Description>
+    <Description xml:lang="ru_RU">Библиотека OpenJPEG</Description>
+</Package>
