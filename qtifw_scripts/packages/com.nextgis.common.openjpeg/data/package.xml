@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Package root="lib_curl">
+<Package root="lib_openjpeg">
     <win enabled="true">
         <path src="inst/bin/openjpeg.dll" dst="bin"/>
     </win>
