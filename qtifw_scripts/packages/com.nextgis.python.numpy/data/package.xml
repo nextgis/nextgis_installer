@@ -4,7 +4,7 @@
     <mac>
         <path src="inst/Library/Python/2.7/site-packages/numpy" dst="Library/Python/2.7/site-packages/numpy"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/Lib/Python27/site-packages" dst="lib/Python27/site-packages"/>
     </win>
 </Package>

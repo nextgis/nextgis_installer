@@ -2,5 +2,7 @@
 <Package>
     <DisplayName>GDAL python</DisplayName>
     <Description>GDAL python bindings</Description>
-    <Dependencies>com.nextgis.python,com.nextgis.spatial.gdal,com.nextgis.python.numpy</Dependencies>
+    <Description xml:lang="ru_RU">GDAL python bindings</Description>
+    
+    <Dependencies>com.nextgis.python.all,com.nextgis.spatial.gdal,com.nextgis.python.numpy</Dependencies>
 </Package>

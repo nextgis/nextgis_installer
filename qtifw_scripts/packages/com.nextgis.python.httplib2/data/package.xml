@@ -3,4 +3,7 @@
     <mac>
         <path src="inst/lib/python2.7/site-packages/httplib2" dst="Library/Python/2.7/site-packages/httplib2"/>
     </mac>
+    <win enabled="true">
+        <path src="inst/lib/Python27/site-packages/httplib2" dst="lib/Python27/site-packages/httplib2"/>
+    </win>
 </Package>

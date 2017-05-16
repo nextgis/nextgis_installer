@@ -1,7 +1,13 @@
 
-function Component()
+function Component() 
 {
+    component.loaded.connect(this, Component.prototype.componentLoaded);
+}
 
+Component.prototype.componentLoaded = function ()
+{
+    component.setValue("DisplayName",qsTranslate("script","QGIS main"));
+    component.setValue("Description",qsTranslate("script","QGIS Application main files"));
 }
 
 Component.prototype.createOperations = function()
@@ -11,9 +17,9 @@ Component.prototype.createOperations = function()
     if (systemInfo.productType === "windows")
     {
         component.addOperation("CreateShortcut",
-            "@TargetDir@/bin/ngq.bat", "@DesktopDir@/NextGIS QGIS.lnk", "workingDirectory=@TargetDir@", "iconPath=@TargetDir@/bin/ngqgis.exe");
+            "@TargetDir@/bin/ngqgis.exe", "@DesktopDir@/NextGIS QGIS.lnk", "workingDirectory=@TargetDir@", "iconPath=@TargetDir@/bin/ngqgis.exe");
         component.addOperation("CreateShortcut",
-            "@TargetDir@/bin/ngq.bat", "@StartMenuDir@/NextGIS QGIS.lnk", "workingDirectory=@TargetDir@", "iconPath=@TargetDir@/bin/ngqgis.exe");
+            "@TargetDir@/bin/ngqgis.exe", "@StartMenuDir@/NextGIS QGIS.lnk", "workingDirectory=@TargetDir@", "iconPath=@TargetDir@/bin/ngqgis.exe");
     }
 
     if (installer.value("os") == "mac")

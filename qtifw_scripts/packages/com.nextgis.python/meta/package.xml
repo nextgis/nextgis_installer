@@ -5,6 +5,4 @@
     <Description>Python framework</Description>
     <Description xml:lang="ru_RU">Python фреймворк</Description>
     <Virtual>true</Virtual>
-    
-    <Script>installscript.qs</Script>
 </Package>

@@ -5,5 +5,5 @@
     <Description>Pygments package</Description>
     <Description xml:lang="ru_RU">Пакет Pygments</Description>
     
-    <Dependencies>com.nextgis.python</Dependencies>
+    <Dependencies>com.nextgis.python.all</Dependencies>
 </Package>

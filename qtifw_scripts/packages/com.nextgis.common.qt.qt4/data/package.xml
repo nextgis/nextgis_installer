@@ -31,7 +31,7 @@
         <path src="inst/translations/qtconfig_*.qm" dst="Library/Translations/Qt4"/>
         <path src="inst/translations/qvfb_*.qm" dst="Library/Translations/Qt4"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/bin/*.dll" dst="bin"/>
         <path src="inst/plugins" dst="lib/qt4/plugins"/>
     </win>

@@ -3,4 +3,7 @@
     <mac>
         <path src="inst/Applications/ngqgis.app/Contents/Resources/doc/NextGIS_QGIS_en.pdf" dst="Applications/ngqgis.app/Contents/Resources/doc/"/>
     </mac>
+    <win enabled="true">
+        <path src="inst/share/doc/qgis/NextGIS_QGIS_en.pdf" dst="share/doc/ngqgis"/>
+    </win>
 </Package>

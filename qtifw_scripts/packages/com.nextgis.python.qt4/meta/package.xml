@@ -6,5 +6,5 @@
     <Description xml:lang="ru_RU">Пакет PyQt4</Description>
     <Dependencies>com.nextgis.common.qt.qt4</Dependencies>
     
-    <Dependencies>com.nextgis.python</Dependencies>
+    <Dependencies>com.nextgis.python.all</Dependencies>
 </Package>

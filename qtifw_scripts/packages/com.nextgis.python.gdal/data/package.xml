@@ -22,7 +22,7 @@
         <path src="inst/bin/pct2rgb.py" dst="usr/bin/"/>
         <path src="inst/bin/rgb2pct.py" dst="usr/bin/"/>
     </mac>
-    <win>
+    <win enabled="true">
         <path src="inst/lib/Python27/site-packages/osgeo" dst="lib/Python27/site-packages/osgeo"/>
         <path src="inst/bin/epsg_tr.py" dst="bin"/>
         <path src="inst/bin/esri2wkt.py" dst="bin"/>

@@ -6,5 +6,5 @@
     <Description>Numpy package</Description>
     <Description xml:lang="ru_RU">Пакет Numpy</Description>
     
-    <Dependencies>com.nextgis.python</Dependencies>
+    <Dependencies>com.nextgis.python.all</Dependencies>
 </Package>
