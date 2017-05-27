@@ -2,7 +2,6 @@
 <Package>
     <DisplayName>QGIS Python</DisplayName>
     <Description>QGIS Python support</Description>
-    <Description xml:lang="ru_RU">Поддержка Python для QGIS</Description>
     <Default>true</Default>    
     <Dependencies>com.nextgis.qgis.libpython,com.nextgis.qgis.main,com.nextgis.utils.gdal</Dependencies>
     
