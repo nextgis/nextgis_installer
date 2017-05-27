@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>QGIS python</DisplayName>
-    <Description>QGIS python</Description>
-    <Description xml:lang="ru_RU">QGIS python</Description>
+    <DisplayName>QGIS Python</DisplayName>
+    <Description>QGIS Python support</Description>
+    <Description xml:lang="ru_RU">Поддержка Python для QGIS</Description>
     <Default>true</Default>    
     <Dependencies>com.nextgis.qgis.libpython,com.nextgis.qgis.main,com.nextgis.utils.gdal</Dependencies>
     
