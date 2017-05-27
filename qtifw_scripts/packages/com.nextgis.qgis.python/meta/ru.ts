@@ -7,5 +7,9 @@
         <source>QGIS Python</source>
         <translation>QGIS Python</translation>
     </message>
+    <message>
+        <source>QGIS Python support</source>
+        <translation>Поддержка Python для QGIS</translation>
+    </message>
 </context>
 </TS>
