@@ -4,12 +4,12 @@
 <context>
     <name>script</name>
     <message>
-        <source>QGIS main</source>
-        <translation>QGIS main</translation>
+        <source>QGIS</source>
+        <translation>QGIS</translation>
     </message>
     <message>
-        <source>QGIS Application main files</source>
-        <translation>Основные файлы программы QGIS</translation>
+        <source>Main QGIS application</source>
+        <translation>Основное приложение QGIS</translation>
     </message>
 </context>
 </TS>
