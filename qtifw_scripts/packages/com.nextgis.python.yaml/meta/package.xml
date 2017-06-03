@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>PyYaml</DisplayName>
-    <DisplayName xml:lang="ru_RU">PyYaml</DisplayName>
     <Description>PyYaml package</Description>
-    <Description xml:lang="ru_RU">Пакет PyYaml</Description>
-    
     <Dependencies>com.nextgis.python.all,com.nextgis.common.yaml</Dependencies>
 </Package>
