@@ -370,6 +370,8 @@ def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.qt.all', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.python.python2,', '') # Python 2 is default application in Mac OS X
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.python.python2', '')
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.vc,', '')
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.vc', '')
 
         dependencies_tag.text = dependencies_tag.text.replace('  ', ' ')
         dependencies_tag.text = dependencies_tag.text.replace(', ', ',')
