@@ -103,6 +103,7 @@ def parse_arguments():
     parser_create = subparsers.add_parser('create')
     parser_update = subparsers.add_parser('update')
     parser_update.add_argument('--force', dest='packages', required=False, help='Force update specified packages even not any changes exists', nargs='+')
+    parser_update.add_argument('--force_all', dest='force_all', action='store_true', help='Force update all packages even not any changes exists')
     args = parser.parse_args()
 
 
@@ -506,7 +507,7 @@ def update_directory(dir_name, force):
     color_print('... package updated', True, 'LBLUE')
 
 
-def update(packages):
+def update(packages, force_all):
     if packages:
         source_dirs = packages
     else:
@@ -515,7 +516,7 @@ def update(packages):
         source_dirs = os.listdir(repo_source_path)
     for subdir in source_dirs:
         if os.path.isdir(os.path.join(repo_source_path, subdir)):
-            update_directory(subdir, len(packages) > 0)
+            update_directory(subdir, len(packages) > 0 or force_all)
     if not packages:
         # Delete not exist directories for full repo update
         for subdir in os.listdir(repo_new_packages_path):
@@ -570,7 +571,7 @@ if args.command == 'create':
 elif args.command == 'prepare':
     prepare()
 elif args.command == 'update':
-    update(args.packages)
+    update(args.packages, args.force_all)
     update_istaller()
 else:
     exit('Unsupported command')
