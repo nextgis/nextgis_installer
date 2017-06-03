@@ -4,8 +4,12 @@
 <context>
     <name>script</name>
     <message>
-        <source>QGIS python</source>
-        <translation>QGIS python</translation>
+        <source>QGIS Python</source>
+        <translation>QGIS Python</translation>
+    </message>
+    <message>
+        <source>QGIS Python support</source>
+        <translation>Поддержка Python для QGIS</translation>
     </message>
 </context>
 </TS>
