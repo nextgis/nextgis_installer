@@ -49,6 +49,7 @@
 #include "consumeoutputoperation.h"
 
 #include "ng_fileenvironmentvariablesoperation.h"
+#include "ng_copyonlyoperation.h"
 #ifdef Q_OS_WIN
 #include "ng_userpathwinenvironmentvariablesoperation.h"
 #endif
@@ -224,8 +225,9 @@ void QInstaller::init()
     factory.registerUpdateOperation<ConsumeOutputOperation>(QLatin1String("ConsumeOutput"));
     factory.registerUpdateOperation<SettingsOperation>(QLatin1String("Settings"));
 
-    // NEXTGIS: register specific environmaent variable operations.
+    // NEXTGIS: register custom operations.
     factory.registerUpdateOperation<NgFileEnvironmentVariableOperation>(QLatin1String("NgFileEnvironmentVariable"));
+    factory.registerUpdateOperation<NgCopyOnlyOperation>(QLatin1String("NgCopyOnly"));
     #ifdef Q_OS_WIN
     factory.registerUpdateOperation<NgUserPathWinEnvironmentVariableOperation>(QLatin1String("NgUserPathWinEnvironmentVariable"));
     #endif

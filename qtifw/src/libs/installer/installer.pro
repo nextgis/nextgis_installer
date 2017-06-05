@@ -126,7 +126,8 @@ HEADERS += packagemanagercore.h \
     systeminfo.h \
     localsocket.h \
     ng_authpage.h \
-    ng_fileenvironmentvariablesoperation.h
+    ng_fileenvironmentvariablesoperation.h \
+    ng_copyonlyoperation.h
 win32 {
     HEADERS += ng_userpathwinenvironmentvariablesoperation.h
 }
@@ -205,7 +206,8 @@ SOURCES += packagemanagercore.cpp \
     keepaliveobject.cpp \
     systeminfo.cpp \
     ng_authpage.cpp \
-    ng_fileenvironmentvariablesoperation.cpp
+    ng_fileenvironmentvariablesoperation.cpp \
+    ng_copyonlyoperation.cpp
 win32 {
     SOURCES += ng_userpathwinenvironmentvariablesoperation.cpp
 }

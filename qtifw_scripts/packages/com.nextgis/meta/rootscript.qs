@@ -56,7 +56,7 @@ Component.prototype.createOperations = function()
     
     if ( installer.value("os") == "mac")
     {
-        component.addOperation( "Copy",
+        component.addOperation( "NgCopyOnly",
                             "@HomeDir@/.bash_profile",
                             "@HomeDir@/.bash_profile.ngbackup");
     }
