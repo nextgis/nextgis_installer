@@ -51,6 +51,13 @@ Component.prototype.createOperations = function()
                                 "@StartMenuDir@/NextGIS Command Prompt.lnk" );    
 
         component.addOperation( "NgUserPathWinEnvironmentVariable",
-                                "@TargetDir@" );
+                                "@TargetDir@" );                               
+    }
+    
+    if ( installer.value("os") == "mac")
+    {
+        component.addOperation( "Copy",
+                            "@HomeDir@/.bash_profile",
+                            "@HomeDir@/.bash_profile.ngbackup");
     }
 }
