@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="all">
+    <Version>1.0</Version>
     <win enabled="true">
         <path src="inst/run_ng_env.bat" dst=""/>
         <path src="inst/ng.bat" dst=""/>
