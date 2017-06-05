@@ -38,7 +38,8 @@ class INSTALLER_EXPORT NgFileEnvironmentVariableOperation: public KDUpdater::Upd
      Operation *clone() const;
     protected:
      QStringList readFile (QFile *file);
-     int findVariable (QStringList list, QString name, QStringList &listValues);
+     int findExportVariable (QStringList list, QString name, QStringList &listValues);
+     QString getNewAssignement (QString name, QString value);
      bool rewriteFile (QString targetFilePath, QStringList fileContents);
 };
 

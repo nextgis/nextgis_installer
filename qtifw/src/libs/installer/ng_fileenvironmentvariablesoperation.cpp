@@ -77,20 +77,37 @@ bool NgFileEnvironmentVariableOperation::performOperation ()
     // Find the given variable. Append the given value via delimeter if found. Otherwise create
     // a new line with variable and its value.
     QStringList values;
-    int i = this->findVariable(fileContents, name, values);
+    int i = this->findExportVariable(fileContents, name, values);
     if (i == -1) // variable was not found
     {
+        // Add new string with export assignement.
         QString newVariableStr = QLatin1String("export ") + name + QLatin1String("=") + value;
         fileContents.append(newVariableStr);
     }
     else
     {
-        QString newVariableStr = QString(QLatin1String(NG_ENVVAR_DELIMITER)) + value;
-        fileContents[i] += newVariableStr;
-        // NOTE: if this variable already has such value - we double it in order to correctly
-        // remove the value in the undoOperation(). This behaviour can be important when user e.g.
-        // for Mac already has a "some-path:$PATH" value in PATH variable and at the same time he
-        // adds "another-path" + "$PATH" values.
+        // Case 1.
+        // We must consider the case when we have e.g. "export PATH" without any "=". This
+        // means that there is already some variable assignement above this string.
+        // So we must add our own assignement right above the "export" string and also with
+        // saving of an old value.
+        if (values.size() == 0)
+        {
+            QString assignementStr = this->getNewAssignement(name, value);
+            fileContents.insert(i, assignementStr);
+        }
+
+        // Case 2.
+        // Otherwise just append the variable.
+        else
+        {
+            // NOTE: if this variable already has the same value - we double it in order to correctly
+            // remove the value in the undoOperation(). This behaviour can be important when user e.g.
+            // for Mac already has a "some-path:$PATH" value in PATH variable and at the same time he
+            // adds "another-path" + "$PATH" values.
+            QString newExportStr = QString(QLatin1String(NG_ENVVAR_DELIMITER)) + value;
+            fileContents[i] += newExportStr;
+        }
     }
 
     // Write back modified file contents.
@@ -130,43 +147,51 @@ bool NgFileEnvironmentVariableOperation::undoOperation ()
     // Find the given variable. If variable is found and it contains the given value - we delete
     // the value.
     QStringList values;
-    int i = this->findVariable(fileContents, name, values);
-    if (i != -1) // variable was found
+    int i = this->findExportVariable(fileContents, name, values);
+    if (i == -1) // variable was not found
+        return true;
+
+    // Case 1: string with the void export (e.g. when we have "export PATH" without "=").
+    // Delete the added string with an assignement which is placed above the "export" string.
+    if (values.size() == 0)
+    {
+        // Search for that string and remove it.
+        // NOTE: currently we do not suppose that this string was changed by user.
+        QString str = this->getNewAssignement(name, value);
+        fileContents.removeAll(str);
+    }
+
+    // Case 2: string with export assignement. Look for the added value inside the "export"
+    // string.
+    else
     {
         int k;
-        bool found = false;
+        bool valueFound = false;
+
         for (k = 0; k < values.size(); k++)
         {
             if (values[k] == value) // value of the variable was found
             {
-                found = true;
+                valueFound = true;
                 break;
             }
         }
 
-        if (found)
+        if (!valueFound)
+            return true;
+
+        // If a variable becomes void after deletion of the value - we delete the whole variable.
+        values.removeAt(k);
+        if (values.size() == 0)
         {
-            // If variable becomes void after deletion of the value - we delete the whole variable.
-            values.removeAt(k);
-            if (values.size() == 0)
-            {
-                fileContents.removeAt(i);
-            }
-            else
-            {
-                QString newVariableStr = QLatin1String("export ") + name + QLatin1String("=")
-                        + values.join(QLatin1String(NG_ENVVAR_DELIMITER));
-                fileContents[i] = newVariableStr;
-            }
+            fileContents.removeAt(i);
         }
         else
         {
-            return true;
+            QString newVariableStr = QLatin1String("export ") + name + QLatin1String("=")
+                    + values.join(QLatin1String(NG_ENVVAR_DELIMITER));
+            fileContents[i] = newVariableStr;
         }
-    }
-    else
-    {
-        return true;
     }
 
     // Write back modified file contents.
@@ -213,7 +238,7 @@ QStringList NgFileEnvironmentVariableOperation::readFile (QFile *file)
 
 // Return a line number in a given list of system variables (with export commands) or -1 if
 // variable is not found. The returned listValues is an array of values of the given variable.
-int NgFileEnvironmentVariableOperation::findVariable (QStringList list, QString name,
+int NgFileEnvironmentVariableOperation::findExportVariable (QStringList list, QString name,
                                                   QStringList &listValues)
 {
     bool found = false;
@@ -243,6 +268,15 @@ int NgFileEnvironmentVariableOperation::findVariable (QStringList list, QString 
         return i;
 
     return -1;
+}
+
+
+// Return the new string with variable assignement.
+QString NgFileEnvironmentVariableOperation::getNewAssignement (QString name, QString value)
+{
+    return name + QLatin1String("=\"") + value
+            + QLatin1String(NG_ENVVAR_DELIMITER)
+            + QLatin1String("${") + name + QLatin1String("}\"");
 }
 
 
