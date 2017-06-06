@@ -91,7 +91,7 @@ bool NgFileEnvironmentVariableOperation::performOperation ()
         // means that there is already some variable assignement above this string.
         // So we must add our own assignement right above the "export" string and also with
         // saving of an old value.
-        if (values.size() == 0)
+        if (values.isEmpty())
         {
             QString assignementStr = this->getNewAssignement(name, value);
             fileContents.insert(i, assignementStr);
@@ -153,7 +153,7 @@ bool NgFileEnvironmentVariableOperation::undoOperation ()
 
     // Case 1: string with the void export (e.g. when we have "export PATH" without "=").
     // Delete the added string with an assignement which is placed above the "export" string.
-    if (values.size() == 0)
+    if (values.isEmpty())
     {
         // Search for that string and remove it.
         // NOTE: currently we do not suppose that this string was changed by user.
@@ -252,14 +252,18 @@ int NgFileEnvironmentVariableOperation::findExportVariable (QStringList list, QS
 
         str.remove(0,7); // remove "export "
         QStringList strs = str.split(QLatin1String("=")); // 0 item will be the name of the variable
+
+        if (strs.isEmpty())
+            continue;
         if (strs[0] == name)
         {
             found = true;
 
             // Form the list of variable values for returning in parameter.
             strs.removeFirst();
+            if (strs.isEmpty()) // so listValues will be empty
+                break;
             listValues = strs.join(QLatin1String("")).split(QLatin1String(NG_ENVVAR_DELIMITER));
-
             break;
         }
     }
