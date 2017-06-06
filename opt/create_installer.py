@@ -97,6 +97,7 @@ def parse_arguments():
     parser.add_argument('-s', dest='source', required=True, help='Packages data source path (i.e. borsch root directory)')
     parser.add_argument('-r', dest='remote', required=False, help='Repositry remote url')
     parser.add_argument('-n', dest='network', action='store_true', help='Online installer (the -r key should be present)')
+    parser.add_argument('-i', dest='installer_name', required=False, help='Installer name')
 
     subparsers = parser.add_subparsers(help='command help', dest='command')
     parser_prepare = subparsers.add_parser('prepare')
@@ -533,7 +534,12 @@ def create_installer():
         key_only = '--online-only'
 
     '--sign', mac_sign_identy
-    run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, 'nextgis-setup') ))
+    
+    installer_name = 'nextgis-setup'
+    if args.installer_name:
+        installer_name = args.installer_name
+
+    run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name) ))
 
     # Hack as <InstallerApplicationIcon> in config.xml not working
     if sys.platform == 'darwin':
