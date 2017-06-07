@@ -80,7 +80,7 @@ Component.prototype.createOperations = function()
                                 "    'sip_mod_dir':    '@TargetDir@/Library/Python/2.7/site-packages',"
                             );
 
-        component.addOperation( "Mkdir", "@TargetDir@/usr/share/sip" );
+//        component.addOperation( "Mkdir", "@TargetDir@/usr/share/sip" );
         component.addOperation( "LineReplace",
                                 "@TargetDir@/Library/Python/2.7/site-packages/sipconfig.py",
                                 "'sip_bin':",
