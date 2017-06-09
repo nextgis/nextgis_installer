@@ -494,12 +494,15 @@ bool MkdirOperation::undoOperation()
 
     const bool result = removeDirectory(createdDir.path(), &errorString, forceremoval);
 
-    if (!result) {
-        if (errorString.isEmpty())
-            setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errorString));
-        else
-            setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errnoToQString(errno)));
-    }
+    // NEXTGIS: comment these errors out in order to remove unnecessary warnings on Mac for
+    // our specific (and may be even not correctly used) installer operations. This is a
+    // temporary fix.
+    //if (!result) {
+    //    if (errorString.isEmpty())
+    //        setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errorString));
+    //    else
+    //        setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errnoToQString(errno)));
+    //}
     return result;
 }
 
