@@ -26,6 +26,8 @@ Component.prototype.createOperations = function()
     {
         component.addOperation( "Mkdir",
                                 "@HomeDir@/Library/Python/2.7/lib/python/site-packages" );
+        component.addOperation( "Delete",
+                                "@HomeDir@/Library/Python/2.7/lib/python/site-packages/NextGIS.pth" );
         component.addOperation( "AppendFile",
                                 "@HomeDir@/Library/Python/2.7/lib/python/site-packages/NextGIS.pth",
                                 "@TargetDir@/Library/Python/2.7/site-packages" );
