@@ -3,12 +3,9 @@
     <Name>com.nextgis</Name>
     <DisplayName>All</DisplayName>
     <Description>All NextGIS programs</Description>
-    <Version>1.0</Version>
-    <ReleaseDate>2016-11-10</ReleaseDate>
     <Default>true</Default>
     <Script>rootscript.qs</Script>
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>
-    
 </Package>

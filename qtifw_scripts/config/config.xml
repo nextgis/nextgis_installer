@@ -20,7 +20,7 @@
         <Repository>
             <!-- <Url>https://my.nextgis.com/downloads/software/installer/repository-mac</Url> -->
             <Url>file:///Users/Bishop/work/projects/infrastructure/nextgis_installer/build/repository-mac</Url>
-            <DisplayName>Free plan software</DisplayName>
+            <DisplayName>NextGIS software</DisplayName>
             <Enabled>1</Enabled>
         </Repository>
     </RemoteRepositories>
