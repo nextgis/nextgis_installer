@@ -22,6 +22,7 @@ function SetEnvMac(name, path)
     contentString += path;
     contentString += "</string>\n        </array>\n        <key>RunAtLoad</key>\n        <true/>\n        <key>ServiceIPC</key>\n        <false/>\n    </dict>\n    </plist>";
 
+    component.addOperation("Delete", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist");
     component.addOperation("AppendFile", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist", contentString);
     // Fix permissions
     component.addOperation("Execute", "{0,1,255}", "chmod", "644", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist");
@@ -43,7 +44,7 @@ Component.prototype.createOperations = function()
                                 "PATH",
                                 "$PATH",
                                 "@HomeDir@/.bash_profile" );
-                                
+
         SetEnvMac("PATH", "@TargetDir@/usr/bin");
-    } 
+    }
 }
