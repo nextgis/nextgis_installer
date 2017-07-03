@@ -52,6 +52,10 @@ const char SetTmpRepository[] = "setTempRepository";
 const char StartServer[] = "startserver";
 const char StartClient[] = "startclient";
 
+// NEXTGIS: add options for launch external programs after the work of installer.
+const char Launch[] = "launch";
+const char LaunchOptions[] = "launch-options";
+
 } // namespace CommandLineOptions
 
 #endif // CONSTANTS_H

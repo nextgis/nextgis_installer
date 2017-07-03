@@ -56,8 +56,6 @@
 #include <QUuid>
 #include <QLoggingCategory>
 
-#include <QProcess>
-
 InstallerBase::InstallerBase(int &argc, char *argv[])
     : SDKApp<QApplication>(argc, argv)
     , m_core(0)
@@ -296,34 +294,6 @@ int InstallerBase::run()
 
         default:
             break;
-    }
-
-    // NEXTGIS: add the task to run the passed app after the apdater's gui finishes.
-    if (parser.isSet(QLatin1String("launch")))
-    {
-        QString param = parser.value(QLatin1String("launch"));
-        if (param.isEmpty())
-            throw QInstaller::Error(QLatin1String("Empty launch parameters list for option 'launch'."));
-
-        QStringList params = param.split(QLatin1String(" "));
-
-        QString launchPath = params[0]; // we defenitely have at least one string in this array
-        if (!QFile::exists(launchPath))
-        {
-            qDebug() << "Application for launching not found: " << launchPath;
-        }
-        else
-        {
-            params.removeAt(0);
-
-            if (params.size() == 0)
-                qDebug() << "No additional launch parameters for the external application";
-
-            QProcess *otherAppProcess = new QProcess(this);
-            //QObject::connect(otherAppProcess, SIGNAL(finished(int,QProcess::ExitStatus)),
-            //                    this, SLOT());
-            otherAppProcess->start(launchPath, params);
-        }
     }
 
     return QInstaller::PackageManagerCore::Failure;

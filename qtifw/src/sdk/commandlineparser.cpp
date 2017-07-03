@@ -112,4 +112,13 @@ CommandLineParser::CommandLineParser()
 
     m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::KeyValue),
         QLatin1String("Key Value pair to be set."));
+
+    // NEXTGIS: add options for launch external programs after the work of the installer.
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Launch),
+              QLatin1String("Specify the program to launch after the work of the installer "
+                            "(only in the GUI --updater mode)."),
+              QLatin1String("path")));
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::LaunchOptions),
+              QLatin1String("Specify the options for the launched program via --launch."),
+              QLatin1String("string")));
 }

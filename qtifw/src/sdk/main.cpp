@@ -44,6 +44,8 @@
 
 #include <iostream>
 
+#include <QProcess>
+
 #if defined(Q_OS_OSX)
 #  include <unistd.h>
 #  include <sys/types.h>
@@ -199,7 +201,45 @@ int main(int argc, char *argv[])
             std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;
 
         const KDSelfRestarter restarter(argc, argv);
-        return InstallerBase(argc, argv).run();
+        int result = InstallerBase(argc, argv).run();
+
+        // NEXTGIS: add the task to run the passed app after the updater's gui finishes.
+        // Note: we run the passed app anyway, even if the updater has finished with an error.
+        if (parser.isSet(QLatin1String(CommandLineOptions::Updater))
+                && parser.isSet(QLatin1String(CommandLineOptions::Launch)))
+        {
+            QString launchPath = parser.value(QLatin1String(CommandLineOptions::Launch));
+            if (launchPath.isEmpty())
+                throw QInstaller::Error(QLatin1String("Empty launch path for option 'launch'."));
+
+            if (!QFile::exists(launchPath))
+            {
+                std::cout << "Application for launching not found: " << launchPath.toUtf8().data()
+                          << std::endl;
+            }
+            else
+            {
+                QString launchOption;
+                QStringList launchOptions;
+
+                if (parser.isSet(QLatin1String(CommandLineOptions::LaunchOptions)))
+                {
+                    QString launchOption = parser.value(QLatin1String(CommandLineOptions::LaunchOptions));
+                    if (launchOption.startsWith(QLatin1String("\"")))
+                        launchOption.remove(0,1);
+                    if (launchOption.endsWith(QLatin1String("\"")))
+                        launchOption.remove(launchOption.size()-1,1);
+                    launchOptions = launchOption.split(QLatin1String(" "));
+                }
+
+                std::cout << "Starting " << launchPath.toUtf8().data() << " " <<
+                          launchOption.toUtf8().data() << std::endl;
+                QProcess *otherAppProcess = new QProcess();
+                otherAppProcess->start(launchPath, launchOptions);
+            }
+        }
+
+        return result;
 
     } catch (const QInstaller::Error &e) {
         std::cerr << qPrintable(e.message()) << std::endl;
