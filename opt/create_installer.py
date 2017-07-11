@@ -95,6 +95,7 @@ def parse_arguments():
     parser.add_argument('-q', dest='qt_bin', required=True, help='Qt binary path (path to lrelease)')
     parser.add_argument('-t', dest='target', required=True, help='Target path')
     parser.add_argument('-s', dest='source', required=True, help='Packages data source path (i.e. borsch root directory)')
+    parser.add_argument('-se', dest='source_ext', required=False, help='Extended packages data source path (i.e. qgis directory)')
     parser.add_argument('-r', dest='remote', required=False, help='Repositry remote url')
     parser.add_argument('-n', dest='network', action='store_true', help='Online installer (the -r key should be present)')
     parser.add_argument('-i', dest='installer_name', required=False, help='Installer name')
@@ -170,7 +171,14 @@ def init():
     packages_data_source_path = os.path.abspath(args.source)
     if not os.path.exists(packages_data_source_path):
         sys.exit('Invalid packages data source path')
-
+    
+def get_sources_dir_path(sources_root_dir):
+    if args.source_ext:
+        sources_dir_path = os.path.join(args.source_ext, sources_root_dir)
+        if os.path.exists(sources_dir_path):
+            return sources_dir_path
+    
+    return os.path.join(packages_data_source_path, sources_root_dir) 
 
 def get_repository_path():
     if repo_remote_path != '':
@@ -282,7 +290,7 @@ def check_version(version_str, version_file_date, component_name, force):
 
 def get_version_text(sources_root_dir, component_name, force):
     has_changes = False
-    version_file_path = os.path.join(packages_data_source_path, sources_root_dir, 'build', 'version.str')
+    version_file_path = os.path.join(get_sources_dir_path(sources_root_dir), 'build', 'version.str')
     if not os.path.exists(version_file_path):
         return "0.0.0", has_changes
 
@@ -425,7 +433,7 @@ def process_directory(dir_name):
                 color_print('... not add because package data config has not enabled attr in <win> tag', True, 'LBLUE')
                 return
     repo_new_package_path = os.path.join(repo_new_packages_path, dir_name)
-    create_dest_package_dir(dir_name, version_text, updatetext_text, os.path.join(packages_data_source_path, sources_root_dir), repo_new_package_path, root, path_meta)
+    create_dest_package_dir(dir_name, version_text, updatetext_text, get_sources_dir_path(sources_root_dir), repo_new_package_path, root, path_meta)
     color_print('... added as a package', True, 'LBLUE')
 
 
@@ -506,7 +514,7 @@ def update_directory(dir_name, force):
             attr_enabled = tag_os.get('enabled')
             if attr_enabled is None or attr_enabled != 'true':
                 return
-    create_dest_package_dir(dir_name, version_text, updatetext_text, os.path.join(packages_data_source_path, sources_root_dir), repo_new_package_path, root, path_meta)
+    create_dest_package_dir(dir_name, version_text, updatetext_text, get_sources_dir_path(sources_root_dir), repo_new_package_path, root, path_meta)
     color_print('... package updated', True, 'LBLUE')
 
 
