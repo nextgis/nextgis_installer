@@ -23,8 +23,8 @@ development and support for this software.
 | NextGIS QGIS | Поддержка HDF4 | + | - | - |
 | NextGIS QGIS | .bat файлы для  инструментов GDAL | + | - | - |
 | NextGIS QGIS | Обновление до 2.14.16 | - | + | - |
-| NextGIS QGIS | Инструмент привязки растров | + | - | - |
+| NextGIS QGIS | Инструмент привязки растров | + | + | - |
 | NextGIS QGIS | Изменения поведения полей ввода SQL (переключение на английский) | - | + | - |
 | Libraries | Обновление GDAL до 2.2.1 | - | + | - |
 | Installer | New package with nextgisupdater.exe app | - | - | - |
-| Installer | Network settings button added | + | - | - |
+| Installer | Network settings button added | + | + | - |
