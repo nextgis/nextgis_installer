@@ -19,10 +19,10 @@ development and support for this software.
 
 | Software | Description | Windows | Mac | Linux |
 |---|---|---|---|---|
-| NextGIS QGIS | Самообновление | - | - | - |
+| NextGIS QGIS | Самообновление | + | - | - |
 | NextGIS QGIS | Поддержка HDF4 | + | - | - |
 | NextGIS QGIS | .bat файлы для  инструментов GDAL | + | N/A | N/A |
-| NextGIS QGIS | Обновление до 2.14.16 | - | + | - |
+| NextGIS QGIS | Обновление до 2.14.16 | + | + | - |
 | NextGIS QGIS | Инструмент привязки растров | + | + | - |
 | NextGIS QGIS | Изменения поведения полей ввода SQL (переключение на английский) | - | + | - |
 | Libraries | Обновление GDAL до 2.2.1 | + | + | - |
