@@ -45,6 +45,6 @@ Component.prototype.createOperations = function()
                                 "$PATH",
                                 "@HomeDir@/.bash_profile" );
 
-        SetEnvMac("PATH", "@TargetDir@/usr/bin");
+        // Not work in GUI App - SetEnvMac("PATH", "@TargetDir@/usr/bin");
     }
 }

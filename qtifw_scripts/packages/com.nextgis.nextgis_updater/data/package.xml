@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="nextgis_updater">
+    <mac>
+        <path src="inst" dst=""/>
+    </mac>
     <win enabled="true">
         <path src="inst/nextgisupdater.dat" dst=""/>
         <path src="inst/nextgisupdater.exe" dst=""/>

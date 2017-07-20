@@ -171,14 +171,14 @@ def init():
     packages_data_source_path = os.path.abspath(args.source)
     if not os.path.exists(packages_data_source_path):
         sys.exit('Invalid packages data source path')
-    
+
 def get_sources_dir_path(sources_root_dir):
     if args.source_ext:
         sources_dir_path = os.path.join(args.source_ext, sources_root_dir)
         if os.path.exists(sources_dir_path):
             return sources_dir_path
-    
-    return os.path.join(packages_data_source_path, sources_root_dir) 
+
+    return os.path.join(packages_data_source_path, sources_root_dir)
 
 def get_repository_path():
     if repo_remote_path != '':
@@ -381,6 +381,10 @@ def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.python.python2', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.vc,', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.vc', '')
+            # FIXME: Add HDF4 support
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.hdf4,', '')
+            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.hdf4', '')
+
 
         dependencies_tag.text = dependencies_tag.text.replace('  ', ' ')
         dependencies_tag.text = dependencies_tag.text.replace(', ', ',')
@@ -542,7 +546,7 @@ def create_installer():
         key_only = '--online-only'
 
     '--sign', mac_sign_identy
-    
+
     installer_name = 'nextgis-setup'
     if args.installer_name:
         installer_name = args.installer_name

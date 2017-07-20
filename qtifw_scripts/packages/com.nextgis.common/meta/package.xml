@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>Common libraries</DisplayName>
-    <DisplayName xml:lang="ru_RU">Общие библиотеки</DisplayName>
     <Description>Common libraries</Description>
-    <Description xml:lang="ru_RU">Общие библиотеки</Description>
     <Virtual>true</Virtual>
-    
 </Package>

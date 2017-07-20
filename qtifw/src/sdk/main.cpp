@@ -234,8 +234,15 @@ int main(int argc, char *argv[])
 
                 std::cout << "Starting " << launchPath.toUtf8().data() << " " <<
                           launchOption.toUtf8().data() << std::endl;
+#ifdef Q_OS_MACX
+                QProcess::startDetached(
+                    launchPath,
+                    launchOptions
+                );
+#else
                 QProcess *otherAppProcess = new QProcess();
                 otherAppProcess->start(launchPath, launchOptions);
+#endif
             }
         }
 

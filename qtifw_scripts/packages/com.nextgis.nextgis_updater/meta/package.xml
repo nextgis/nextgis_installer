@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Name>com.nextgis.nextgis_updater</Name>
     <DisplayName>NextGIS Updater</DisplayName>
-    <DisplayName xml:lang="ru_RU">NextGIS Updater</DisplayName>
     <Description>NextGIS Updater</Description>
-    <Description xml:lang="ru_RU">NextGIS Updater</Description>
     <Essential>true</Essential>
     <Virtual>true</Virtual>
 </Package>
