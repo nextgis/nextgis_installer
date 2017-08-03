@@ -21,6 +21,10 @@
         <path src="inst/bin/mkgraticule.py" dst="usr/bin/"/>
         <path src="inst/bin/pct2rgb.py" dst="usr/bin/"/>
         <path src="inst/bin/rgb2pct.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdal_calc.py" dst="usr/bin/"/>
+        <path src="inst/bin/ogrmerge.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdal_pansharpen.py" dst="usr/bin/"/>
+        <path src="inst/bin/gdal_edit.py" dst="usr/bin/"/>
     </mac>
     <win enabled="true">
         <path src="inst/lib/Python27/site-packages/osgeo" dst="lib/Python27/site-packages/osgeo"/>
@@ -42,5 +46,9 @@
         <path src="inst/bin/mkgraticule.py" dst="bin"/>
         <path src="inst/bin/pct2rgb.py" dst="bin"/>
         <path src="inst/bin/rgb2pct.py" dst="bin"/>
+        <path src="inst/bin/gdal_calc.py" dst="bin"/>
+        <path src="inst/bin/ogrmerge.py" dst="bin"/>
+        <path src="inst/bin/gdal_pansharpen.py" dst="bin"/>
+        <path src="inst/bin/gdal_edit.py" dst="bin"/>
     </win>
 </Package>
