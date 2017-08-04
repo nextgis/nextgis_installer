@@ -41,5 +41,9 @@ Component.prototype.createOperations = function()
         create_bat("mkgraticule");
         create_bat("pct2rgb");
         create_bat("rgb2pct");
+        create_bat("gdal_calc");
+        create_bat("ogrmerge");
+        create_bat("gdal_pansharpen");
+        create_bat("gdal_edit");
     }
 }
