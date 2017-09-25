@@ -4,10 +4,10 @@
     <Dependencies>com.nextgis.common.qt.qt5,com.nextgis.common.vc,com.nextgis.common.curl,com.nextgis.common.expat,com.nextgis.common.iconv,com.nextgis.common.jpeg,com.nextgis.common.jpeg12,com.nextgis.common.jsonc,com.nextgis.common.openssl,com.nextgis.common.tiff,com.nextgis.common.tiffxx,com.nextgis.common.xml2,com.nextgis.common.z,com.nextgis.spatial.geos,com.nextgis.spatial.geos_c,com.nextgis.spatial.geotiff,com.nextgis.spatial.proj,com.nextgis.spatial.gdal</Dependencies>
     <DisplayName>Formbuilder</DisplayName>
     <Description>Forms builder for NextGIS Mobile</Description>
-    <Version>2.1.0</Version>
+    <Version>2.2.0</Version>
     <Default>true</Default>
     <Script>afterinstall.qs</Script>   
-    <ReleaseDate>2017-03-01</ReleaseDate>
+    <ReleaseDate>2017-09-25</ReleaseDate>
     
     <Translations>
         <Translation>ru.qm</Translation>
