@@ -2,11 +2,13 @@
 <Package root="lib_qt5">
     <win enabled="true">
         <path src="inst/bin/Qt5Core.dll" dst="bin"/>
-		<path src="inst/bin/Qt5Gui.dll" dst="bin"/>
-		<path src="inst/bin/Qt5Network.dll" dst="bin"/>
-		<path src="inst/bin/Qt5Widgets.dll" dst="bin"/>
-		<path src="inst/plugins/platforms/qwindows.dll" dst="lib/qt5/plugins/platforms"/>
-		<path src="inst/plugins/imageformats/qico.dll" dst="lib/qt5/plugins/imageformats"/>
-		<path src="inst/translations/qtbase_ru.qm" dst="share/qt5/translations"/>
+        <path src="inst/bin/Qt5Gui.dll" dst="bin"/>
+        <path src="inst/bin/Qt5Network.dll" dst="bin"/>
+        <path src="inst/bin/Qt5NetworkAuth.dll" dst="bin"/>
+        <path src="inst/bin/Qt5Widgets.dll" dst="bin"/>
+        <path src="inst/plugins/platforms/qwindows.dll" dst="lib/qt5/plugins/platforms"/>
+        <path src="inst/plugins/imageformats/qico.dll" dst="lib/qt5/plugins/imageformats"/>
+        <path src="inst/plugins/imageformats/qgif.dll" dst="lib/qt5/plugins/imageformats"/>
+        <path src="inst/translations/qtbase_ru.qm" dst="share/qt5/translations"/>
     </win>
 </Package>
