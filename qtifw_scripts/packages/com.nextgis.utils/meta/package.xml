@@ -3,7 +3,9 @@
     <DisplayName>Utilities</DisplayName>
     <Description>Utility applications</Description>
     <Virtual>false</Virtual>
-    
+
+    <Dependencies>com.nextgis.nextgis_updater</Dependencies>
+
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

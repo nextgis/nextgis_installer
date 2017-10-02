@@ -2,6 +2,8 @@
 <Package root="fb">
     <win enabled="true">
         <path src="inst/bin/fb.exe" dst="bin"/>
+        <path src="inst/bin/libeay32.dll" dst="bin"/>
+        <path src="inst/bin/ssleay32.dll" dst="bin"/>
 		<path src="inst/share/nextgis/fb/translations/fb_ru_RU.qm" dst="share/nextgis/fb/translations"/>
     </win>
 </Package>
