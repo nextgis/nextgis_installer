@@ -22,25 +22,19 @@
 
 #include "qinstallerglobal.h"
 
-#include <QFile>
-
 namespace QInstaller
 {
 
-class INSTALLER_EXPORT NgFileEnvironmentVariableOperation: public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT NgFileEnvironmentVariableOperation: public Operation
 {
-    public:
-     NgFileEnvironmentVariableOperation();
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::NgFileEnvironmentVariableOperation)
+public:
+     explicit NgFileEnvironmentVariableOperation(PackageManagerCore *core);
+
      void backup();
      bool performOperation();
      bool undoOperation();
      bool testOperation();
-     Operation *clone() const;
-    protected:
-     QStringList readFile (QFile *file);
-     int findExportVariable (QStringList list, QString name, QStringList &listValues);
-     QString getNewAssignement (QString name, QString value);
-     bool rewriteFile (QString targetFilePath, QStringList fileContents);
 };
 
 }

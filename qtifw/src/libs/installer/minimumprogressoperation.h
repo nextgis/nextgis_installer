@@ -40,13 +40,12 @@ class MinimumProgressOperation : public QObject, public Operation
     Q_OBJECT
 
 public:
-    MinimumProgressOperation();
+    explicit MinimumProgressOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation *clone() const;
 
 signals:
     void progressChanged(double progress);

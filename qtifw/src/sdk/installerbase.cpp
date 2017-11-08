@@ -36,7 +36,7 @@
 #include <copydirectoryoperation.h>
 #include <errors.h>
 #include <init.h>
-#include <kdupdaterupdateoperations.h>
+#include <updateoperations.h>
 #include <messageboxhandler.h>
 #include <packagemanagercore.h>
 #include <packagemanagerproxyfactory.h>
@@ -47,10 +47,12 @@
 #include <utils.h>
 #include <globals.h>
 
-#include <kdrunoncechecker.h>
-#include <kdupdaterfiledownloaderfactory.h>
+#include <runoncechecker.h>
+#include <filedownloaderfactory.h>
 
+#include <QDir>
 #include <QDirIterator>
+#include <QFontDatabase>
 #include <QTemporaryFile>
 #include <QTranslator>
 #include <QUuid>
@@ -70,13 +72,17 @@ InstallerBase::~InstallerBase()
 
 int InstallerBase::run()
 {
-    KDRunOnceChecker runCheck(qApp->applicationDirPath() + QLatin1String("/lockmyApp1234865.lock"));
-    if (runCheck.isRunning(KDRunOnceChecker::ConditionFlag::Lockfile)) {
-        // It is possible to install an application and thus the maintenance tool into a
-        // directory that requires elevated permission to create a lock file. Since this
-        // cannot be done without requesting credentials from the user, we silently ignore
-        // the fact that we could not create the lock file and check the running processes.
-        if (runCheck.isRunning(KDRunOnceChecker::ConditionFlag::ProcessList)) {
+    RunOnceChecker runCheck(QDir::tempPath()
+                            + QLatin1Char('/')
+                            + qApp->applicationName()
+                            + QLatin1String("1234865.lock"));
+    if (runCheck.isRunning(RunOnceChecker::ConditionFlag::Lockfile)) {
+        // It is possible that two installers with the same name get executed
+        // concurrently and thus try to access the same lock file. This causes
+        // a warning to be shown (when verbose output is enabled) but let's
+        // just silently ignore the fact that we could not create the lock file
+        // and check the running processes.
+        if (runCheck.isRunning(RunOnceChecker::ConditionFlag::ProcessList)) {
             QInstaller::MessageBoxHandler::information(0, QLatin1String("AlreadyRunning"),
                 tr("Waiting for %1").arg(qAppName()),
                 tr("Another %1 instance is already running. Wait "
@@ -123,7 +129,7 @@ int InstallerBase::run()
 
     qCDebug(QInstaller::lcTranslations) << "Language:" << QLocale().uiLanguages()
         .value(0, QLatin1String("No UI language set")).toUtf8().constData();
-    qDebug() << "Arguments: " << arguments().join(QLatin1String(", ")).toUtf8().constData();
+    qDebug().noquote() << "Arguments:" << arguments().join(QLatin1String(", "));
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
     if (parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
@@ -177,8 +183,7 @@ int InstallerBase::run()
     else
     #endif
 
-    if (parser.isSet(QLatin1String(CommandLineOptions::Updater)))
-    {
+    if (parser.isSet(QLatin1String(CommandLineOptions::Updater))) {
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
         m_core->setUpdater();
@@ -212,6 +217,20 @@ int InstallerBase::run()
         if (repoList.isEmpty())
             throw QInstaller::Error(QLatin1String("Empty repository list for option 'setTempRepository'."));
         m_core->setTemporaryRepositories(repoList, true);
+    }
+
+    if (parser.isSet(QLatin1String(CommandLineOptions::InstallCompressedRepository))) {
+        const QStringList repoList = repositories(parser
+            .value(QLatin1String(CommandLineOptions::InstallCompressedRepository)));
+        if (repoList.isEmpty())
+            throw QInstaller::Error(QLatin1String("Empty repository list for option 'installCompressedRepository'."));
+        foreach (QString repository, repoList) {
+            if (!QFileInfo::exists(repository)) {
+                qDebug() << "The file " << repository << "does not exist.";
+                return EXIT_FAILURE;
+            }
+        }
+        m_core->setTemporaryRepositories(repoList, false, true);
     }
 
     QInstaller::PackageManagerCore::setNoForceInstallation(parser
@@ -261,16 +280,41 @@ int InstallerBase::run()
         }
     }
 
+    {
+        QDirIterator fontIt(QStringLiteral(":/fonts"));
+        while (fontIt.hasNext()) {
+            const QString path = fontIt.next();
+            qCDebug(QInstaller::lcResources) << "Registering custom font" << path;
+            if (QFontDatabase::addApplicationFont(path) == -1)
+                qWarning() << "Failed to register font!";
+        }
+    }
+
+    //Do not show gui with --silentUpdate, instead update components silently
+    if (parser.isSet(QLatin1String(CommandLineOptions::SilentUpdate))) {
+        if (m_core->isInstaller())
+            throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
+        const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
+        if (!productKeyCheck->hasValidLicense())
+            throw QInstaller::Error(QLatin1String("Silent update not allowed."));
+        m_core->setUpdater();
+        m_core->updateComponentsSilently();
+    }
+    else {
     //create the wizard GUI
     TabController controller(0);
     controller.setManager(m_core);
     controller.setManagerParams(params);
     controller.setControlScript(controlScript);
-
-    if (m_core->isInstaller())
+        if (m_core->isInstaller()) {
         controller.setGui(new InstallerGui(m_core));
-    else
+        }
+        else {
         controller.setGui(new MaintenanceGui(m_core));
+            //Start listening to setValue changes that newly installed components might have
+            connect(m_core, &QInstaller::PackageManagerCore::valueChanged, &controller,
+                &TabController::updateManagerParams);
+        }
 
     QInstaller::PackageManagerCore::Status status =
         QInstaller::PackageManagerCore::Status(controller.init());
@@ -295,8 +339,9 @@ int InstallerBase::run()
         default:
             break;
     }
-
     return QInstaller::PackageManagerCore::Failure;
+}
+    return QInstaller::PackageManagerCore::Success;
 }
 
 
@@ -318,6 +363,6 @@ QStringList InstallerBase::repositories(const QString &list) const
 {
     const QStringList items = list.split(QLatin1Char(','), QString::SkipEmptyParts);
     foreach (const QString &item, items)
-        qDebug() << "Adding custom repository:" << item.toUtf8().constData();
+        qDebug().noquote() << "Adding custom repository:" << item;
     return items;
 }

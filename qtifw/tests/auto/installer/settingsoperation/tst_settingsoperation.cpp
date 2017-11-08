@@ -60,7 +60,7 @@ private slots:
 
     void testWrongArguments()
     {
-        SettingsOperation noArgumentsOperation;
+        SettingsOperation noArgumentsOperation(0);
 
         QVERIFY(noArgumentsOperation.testOperation());
 
@@ -69,14 +69,14 @@ private slots:
 
         QCOMPARE(UpdateOperation::Error(noArgumentsOperation.error()),
             UpdateOperation::InvalidArguments);
-        QString compareString("Missing argument(s) 'path; method; key; value' calling 'Settings' "
-            "with arguments ''.");
+        QString compareString("Missing argument(s) \"path; method; key; value\" calling Settings "
+            "with arguments \"\".");
         QCOMPARE(noArgumentsOperation.errorString(), compareString);
 
         // same for undo
         QCOMPARE(noArgumentsOperation.undoOperation(), false);
 
-        SettingsOperation wrongMethodArgumentOperation;
+        SettingsOperation wrongMethodArgumentOperation(0);
         wrongMethodArgumentOperation.setArguments(QStringList() << "path=first" << "method=second"
             << "key=third" << "value=fourth");
 
@@ -87,8 +87,8 @@ private slots:
 
         QCOMPARE(UpdateOperation::Error(wrongMethodArgumentOperation.error()),
             UpdateOperation::InvalidArguments);
-        compareString = "Current method argument calling 'Settings' with arguments 'path=first; "
-            "method=second; key=third; value=fourth' is not supported. Please use set, remove, "
+        compareString = "Current method argument calling \"Settings\" with arguments \"path=first; "
+            "method=second; key=third; value=fourth\" is not supported. Please use set, remove, "
             "add_array_value or remove_array_value.";
         QCOMPARE(wrongMethodArgumentOperation.errorString(), compareString);
 
@@ -109,14 +109,14 @@ private slots:
             testSettings.setValue(key, value);
         }
 
-        SettingsOperation settingsOperation;
+        SettingsOperation settingsOperation(0);
         settingsOperation.setArguments(QStringList() << QString("path=%1").arg(testFilePath) <<
             "method=set" << QString("key=%1").arg(key) << QString("value=%1").arg(value));
         settingsOperation.backup();
 
         QVERIFY2(settingsOperation.performOperation(), settingsOperation.errorString().toLatin1());
 
-        QVERIFY2(compareFiles(verifyFilePath, testFilePath), QString("'%1' and '%2' are different")
+        QVERIFY2(compareFiles(verifyFilePath, testFilePath), QString("\"%1\" and \"%2\" are different.")
             .arg(verifyFilePath, testFilePath).toLatin1());
     }
 
@@ -127,7 +127,7 @@ private slots:
         const QString key = "key";
         const QString value = "value";
 
-        SettingsOperation settingsOperation;
+        SettingsOperation settingsOperation(0);
         settingsOperation.setArguments(QStringList() << QString("path=%1").arg(testFilePath) <<
             "method=set" << QString("key=%1").arg(key) << QString("value=%1").arg(value));
         settingsOperation.backup();
@@ -154,7 +154,7 @@ private slots:
         }
         QCOMPARE(testValueString.isEmpty(), false);
 
-        SettingsOperation settingsOperation;
+        SettingsOperation settingsOperation(0);
         settingsOperation.setArguments(QStringList() <<  QString("path=%1").arg(testFilePath) <<
             "method=remove" << QString("key=%1").arg(key));
         settingsOperation.backup();
@@ -189,10 +189,10 @@ private slots:
         testFile.close();
 
         QMap<QString, SettingsOperation*> testSettingsOperationMap;
-        testSettingsOperationMap["testcategory/categoryarrayvalue1"] = new SettingsOperation;
-        testSettingsOperationMap["testcategory/categoryarrayvalue2"] = new SettingsOperation;
-        testSettingsOperationMap["testcategory/categoryarrayvalue3"] = new SettingsOperation;
-        testSettingsOperationMap["testcategory/categoryarrayvalue4"] = new SettingsOperation;
+        testSettingsOperationMap["testcategory/categoryarrayvalue1"] = new SettingsOperation(0);
+        testSettingsOperationMap["testcategory/categoryarrayvalue2"] = new SettingsOperation(0);
+        testSettingsOperationMap["testcategory/categoryarrayvalue3"] = new SettingsOperation(0);
+        testSettingsOperationMap["testcategory/categoryarrayvalue4"] = new SettingsOperation(0);
 
         QMap<QString, SettingsOperation*>::iterator i = testSettingsOperationMap.begin();
         while (i != testSettingsOperationMap.end()) {
@@ -256,9 +256,9 @@ private slots:
         testFile.close();
 
         QMap<QString, SettingsOperation*> testSettingsOperationMap;
-        testSettingsOperationMap["testcategory/categoryarrayvalue1"] = new SettingsOperation;
-        testSettingsOperationMap["testcategory/categoryarrayvalue2"] = new SettingsOperation;
-        testSettingsOperationMap["testcategory/categoryarrayvalue3"] = new SettingsOperation;
+        testSettingsOperationMap["testcategory/categoryarrayvalue1"] = new SettingsOperation(0);
+        testSettingsOperationMap["testcategory/categoryarrayvalue2"] = new SettingsOperation(0);
+        testSettingsOperationMap["testcategory/categoryarrayvalue3"] = new SettingsOperation(0);
 
         QMap<QString, SettingsOperation*>::iterator i = testSettingsOperationMap.begin();
         while (i != testSettingsOperationMap.end()) {

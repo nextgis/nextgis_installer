@@ -214,24 +214,40 @@ QInstaller::VerboseWriter::VerboseWriter()
 
 QInstaller::VerboseWriter::~VerboseWriter()
 {
+    if (preFileBuffer.isOpen()) {
+        PlainVerboseWriterOutput output;
+        (void)flush(&output);
+    }
+}
+
+bool QInstaller::VerboseWriter::flush(VerboseWriterOutput *output)
+{
     stream.flush();
     if (logFileName.isEmpty()) // binarycreator
-        return;
+        return true;
+    if (!preFileBuffer.isOpen())
+        return true;
     //if the installer installed nothing - there is no target directory - where the logfile can be saved
     if (!QFileInfo(logFileName).absoluteDir().exists())
-        return;
+        return true;
 
-    QFile output(logFileName);
-    if (output.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text)) {
-        QString logInfo;
-        logInfo += QLatin1String("************************************* Invoked: ");
-        logInfo += currentDateTimeAsString;
-        logInfo += QLatin1String("\n");
-        output.write(logInfo.toLocal8Bit());
-        output.write(preFileBuffer.data());
-        output.close();
+    QString logInfo;
+    logInfo += QLatin1String("************************************* Invoked: ");
+    logInfo += currentDateTimeAsString;
+    logInfo += QLatin1String("\n");
+
+    QBuffer buffer;
+    buffer.open(QIODevice::WriteOnly);
+    buffer.write(logInfo.toLocal8Bit());
+    buffer.write(preFileBuffer.data());
+    buffer.close();
+
+    if (output->write(logFileName, QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text, buffer.data())) {
+        preFileBuffer.close();
+        stream.setDevice(0);
+        return true;
     }
-    stream.setDevice(0);
+    return false;
 }
 
 void QInstaller::VerboseWriter::setFileName(const QString &fileName)
@@ -250,6 +266,20 @@ QInstaller::VerboseWriter *QInstaller::VerboseWriter::instance()
 void QInstaller::VerboseWriter::appendLine(const QString &msg)
 {
     stream << msg << endl;
+}
+
+QInstaller::VerboseWriterOutput::~VerboseWriterOutput()
+{
+}
+
+bool QInstaller::PlainVerboseWriterOutput::write(const QString &fileName, QIODevice::OpenMode openMode, const QByteArray &data)
+{
+    QFile output(fileName);
+    if (output.open(openMode)) {
+        output.write(data);
+        return true;
+    }
+    return false;
 }
 
 #ifdef Q_OS_WIN

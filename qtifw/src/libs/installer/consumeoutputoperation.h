@@ -35,14 +35,14 @@ namespace QInstaller {
 
 class INSTALLER_EXPORT ConsumeOutputOperation : public Operation
 {
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::ConsumeOutputOperation)
 public:
-    ConsumeOutputOperation();
+    explicit ConsumeOutputOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation *clone() const;
 
 private:
 };

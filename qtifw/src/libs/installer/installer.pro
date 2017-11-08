@@ -34,7 +34,8 @@ QT += \
     xml \
     concurrent \
     widgets \
-    core-private
+    core-private \
+    qml-private
 win32:QT += winextras
 
 HEADERS += packagemanagercore.h \
@@ -124,7 +125,11 @@ HEADERS += packagemanagercore.h \
     serverauthenticationdialog.h \
     keepaliveobject.h \
     systeminfo.h \
-    localsocket.h \
+    packagesource.h \
+    lib7z_guid.h \
+    lib7z_create.h \
+    lib7z_extract.h \
+    lib7z_list.h \    
     ng_authpage.h \
     ng_fileenvironmentvariablesoperation.h \
     ng_copyonlyoperation.h
@@ -205,6 +210,7 @@ SOURCES += packagemanagercore.cpp \
     serverauthenticationdialog.cpp \
     keepaliveobject.cpp \
     systeminfo.cpp \
+    packagesource.cpp \
     ng_authpage.cpp \
     ng_fileenvironmentvariablesoperation.cpp \
     ng_copyonlyoperation.cpp

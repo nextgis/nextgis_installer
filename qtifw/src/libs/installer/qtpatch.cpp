@@ -85,8 +85,8 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
             if (process.exitStatus() == QProcess::CrashExit) {
                 qWarning() << qmake.absoluteFilePath() << args
                            << "crashed with exit code" << process.exitCode()
-                           << "standard output: " << output
-                           << "error output: " << process.readAllStandardError();
+                           << "standard output:" << output
+                           << "error output:" << process.readAllStandardError();
                 return qmakeValueHash;
             }
             qmakeValueHash = readQmakeOutput(output);
@@ -120,7 +120,7 @@ bool QtPatch::patchBinaryFile(const QString &fileName,
     openFileForPatching(&file);
     if (!file.isOpen()) {
         qDebug() << "qpatch: warning: file" << qPrintable(fileName) << "cannot open.";
-        qDebug() << qPrintable(file.errorString());
+        qDebug().noquote() << file.errorString();
         return false;
     }
 
@@ -168,8 +168,7 @@ bool QtPatch::patchTextFile(const QString &fileName,
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly)) {
-        qDebug() << QString::fromLatin1("qpatch: warning: Open the file '%1' stopped: %2").arg(
-            fileName, file.errorString());
+        qDebug() << "Cannot open file" << fileName << "for patching:" << file.errorString();
         return false;
     }
 
@@ -183,7 +182,7 @@ bool QtPatch::patchTextFile(const QString &fileName,
     }
 
     if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
-        qDebug() << QString::fromLatin1("qpatch: error: file '%1' not writable").arg(fileName);
+        qDebug() << "File" << fileName << "not writable.";
         return false;
     }
 
@@ -203,7 +202,6 @@ bool QtPatch::openFileForPatching(QFile *file)
         }
         return file->openMode() == QFile::ReadWrite;
     }
-    qDebug() << QString::fromLatin1("qpatch: error: File '%1 is open, so it cannot be opened again.").arg(
-        file->fileName());
+    qDebug() << "File" << file->fileName() << "is open, so it cannot be opened again.";
     return false;
 }

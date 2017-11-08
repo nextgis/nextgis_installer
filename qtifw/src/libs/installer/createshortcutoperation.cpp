@@ -41,6 +41,7 @@ using namespace QInstaller;
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
 #include <shlobj.h>
+#include <Intshcut.h>
 
 #ifndef PIDLIST_ABSOLUTE
 typedef ITEMIDLIST *PIDLIST_ABSOLUTE;
@@ -93,39 +94,62 @@ static QString takeArgument(const QString argument, QStringList *arguments)
 
 static bool createLink(const QString &fileName, const QString &linkName, QString workingDir,
     const QString &arguments = QString(), const QString &iconPath = QString(),
-    const QString &iconId = QString())
+    const QString &iconId = QString(), const QString &description = QString())
 {
 #ifdef Q_OS_WIN
-    bool success = QFile::link(fileName, linkName);
-
-    if (!success)
-        return success;
-
-    if (workingDir.isEmpty())
-        workingDir = QFileInfo(fileName).absolutePath();
-    workingDir = QDir::toNativeSeparators(workingDir);
-
     // CoInitialize cleanup object
     DeCoInitializer _;
 
-    IShellLink *psl = NULL;
-    if (FAILED(CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&psl)))
-        return success;
+    IUnknown *iunkn = NULL;
 
-    // TODO: implement this server side, since there's not Qt equivalent to set working dir and arguments
-    psl->SetPath((wchar_t *)QDir::toNativeSeparators(fileName).utf16());
-    psl->SetWorkingDirectory((wchar_t *)workingDir.utf16());
-    if (!arguments.isNull())
-        psl->SetArguments((wchar_t*)arguments.utf16());
-    if (!iconPath.isNull())
-        psl->SetIconLocation((wchar_t*)(iconPath.utf16()), iconId.toInt());
+    if (fileName.toLower().startsWith(QLatin1String("http:"))
+        || fileName.toLower().startsWith(QLatin1String("ftp:"))) {
+        IUniformResourceLocator *iurl = NULL;
+        if (FAILED(CoCreateInstance(CLSID_InternetShortcut, NULL, CLSCTX_INPROC_SERVER,
+                                    IID_IUniformResourceLocator, (LPVOID*)&iurl))) {
+            return false;
+        }
+
+        if (FAILED(iurl->SetURL((wchar_t *)fileName.utf16(), IURL_SETURL_FL_GUESS_PROTOCOL))) {
+            iurl->Release();
+            return false;
+        }
+        iunkn = iurl;
+    } else {
+        bool success = QFile::link(fileName, linkName);
+
+        if (!success) {
+            return success;
+        }
+
+        if (workingDir.isEmpty())
+            workingDir = QFileInfo(fileName).absolutePath();
+        workingDir = QDir::toNativeSeparators(workingDir);
+
+        IShellLink *psl = NULL;
+        if (FAILED(CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER,
+                                    IID_IShellLink, (LPVOID*)&psl))) {
+            return success;
+        }
+
+        // TODO: implement this server side, since there's not Qt equivalent to set working dir and arguments
+        psl->SetPath((wchar_t *)QDir::toNativeSeparators(fileName).utf16());
+        psl->SetWorkingDirectory((wchar_t *)workingDir.utf16());
+        if (!arguments.isNull())
+            psl->SetArguments((wchar_t*)arguments.utf16());
+        if (!iconPath.isNull())
+            psl->SetIconLocation((wchar_t*)(iconPath.utf16()), iconId.toInt());
+        if (!description.isNull())
+            psl->SetDescription((wchar_t*)(description.utf16()));
+        iunkn = psl;
+    }
 
     IPersistFile *ppf = NULL;
-    if (SUCCEEDED(psl->QueryInterface(IID_IPersistFile, (void **)&ppf))) {
+    if (SUCCEEDED(iunkn->QueryInterface(IID_IPersistFile, (void **)&ppf))) {
         ppf->Save((wchar_t*)QDir::toNativeSeparators(linkName).utf16(), true);
         ppf->Release();
     }
-    psl->Release();
+    iunkn->Release();
 
     PIDLIST_ABSOLUTE pidl;  // Force start menu cache update
     if (SUCCEEDED(SHGetFolderLocation(0, CSIDL_STARTMENU, 0, 0, &pidl))) {
@@ -137,7 +161,7 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
         CoTaskMemFree(pidl);
     }
 
-    return success;
+    return true;
 #else
     Q_UNUSED(arguments)
     Q_UNUSED(workingDir)
@@ -152,13 +176,17 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
 
 // -- CreateShortcutOperation
 
-CreateShortcutOperation::CreateShortcutOperation()
+CreateShortcutOperation::CreateShortcutOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
+    , m_optionalArgumentsRead(false)
 {
     setName(QLatin1String("CreateShortcut"));
 }
 
 void CreateShortcutOperation::backup()
 {
+    ensureOptionalArgumentsRead();
+
     QDir linkPath(QFileInfo(arguments().at(1)).absolutePath());
 
     QStringList directoriesToCreate;
@@ -171,25 +199,38 @@ void CreateShortcutOperation::backup()
     setValue(QLatin1String("createddirs"), directoriesToCreate);
 }
 
-bool CreateShortcutOperation::performOperation()
+void CreateShortcutOperation::ensureOptionalArgumentsRead()
 {
+    if (m_optionalArgumentsRead)
+        return;
+
+    m_optionalArgumentsRead = true;
+
     QStringList args = arguments();
 
-    const QString iconId = takeArgument(QString::fromLatin1("iconId="), &args);
-    const QString iconPath = takeArgument(QString::fromLatin1("iconPath="), &args);
-    const QString workingDir = takeArgument(QString::fromLatin1("workingDirectory="), &args);
+    m_iconId = takeArgument(QString::fromLatin1("iconId="), &args);
+    m_iconPath = takeArgument(QString::fromLatin1("iconPath="), &args);
+    m_workingDir = takeArgument(QString::fromLatin1("workingDirectory="), &args);
+    m_description = takeArgument(QString::fromLatin1("description="), &args);
 
-    if (args.count() != 2 && args.count() != 3) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("2 or 3"),
-            tr(" (optional: 'workingDirectory=...', 'iconPath=...', 'iconId=...')")));
+    setArguments(args);
+}
+
+bool CreateShortcutOperation::performOperation()
+{
+    ensureOptionalArgumentsRead();
+
+    if (!checkArgumentCount(2, 3, tr("<target> <link location> [target arguments] "
+                                     "[\"workingDirectory=...\"] [\"iconPath=...\"] [\"iconId=...\"] "
+                                     "[\"description=...\"]"))) {
         return false;
     }
 
+    QStringList args = arguments();
+
     const QString linkTarget = args.at(0);
     const QString linkLocation = args.at(1);
-    const QString targetArguments = args.value(2); //used value because it could be not existing
+    const QString targetArguments = args.value(2);  // value() used since it's optional
 
     const QString linkPath = QFileInfo(linkLocation).absolutePath().trimmed();
     const bool created = QDir(linkPath).exists() || QDir::root().mkpath(linkPath);
@@ -199,11 +240,11 @@ bool CreateShortcutOperation::performOperation()
 #if defined(Q_OS_WIN) && !defined(Q_CC_MINGW)
         char msg[128];
         if (strerror_s(msg, sizeof msg, errno) != 0) {
-            setErrorString(tr("Could not create folder %1: %2.").arg(QDir::toNativeSeparators(linkPath),
+            setErrorString(tr("Cannot create directory \"%1\": %2").arg(QDir::toNativeSeparators(linkPath),
                 QString::fromLocal8Bit(msg)));
         }
 #else
-        setErrorString(tr("Could not create folder %1: %2.").arg(QDir::toNativeSeparators(linkPath),
+        setErrorString(tr("Cannot create directory \"%1\": %2").arg(QDir::toNativeSeparators(linkPath),
             QString::fromLocal8Bit(strerror(errno))));
 #endif
         return false;
@@ -213,15 +254,16 @@ bool CreateShortcutOperation::performOperation()
     QString errorString;
     if (QFile::exists(linkLocation) && !deleteFileNowOrLater(linkLocation, &errorString)) {
         setError(UserDefinedError);
-        setErrorString(tr("Failed to overwrite %1: %2").arg(QDir::toNativeSeparators(linkLocation),
+        setErrorString(tr("Failed to overwrite \"%1\": %2").arg(QDir::toNativeSeparators(linkLocation),
             errorString));
         return false;
     }
 
-    const bool linked = createLink(linkTarget, linkLocation, workingDir, targetArguments, iconPath, iconId);
+    const bool linked = createLink(linkTarget, linkLocation, m_workingDir, targetArguments, m_iconPath, m_iconId,
+                                   m_description);
     if (!linked) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not create link %1: %2").arg(QDir::toNativeSeparators(linkLocation),
+        setErrorString(tr("Cannot create link \"%1\": %2").arg(QDir::toNativeSeparators(linkLocation),
             qt_error_string()));
         return false;
     }
@@ -230,6 +272,8 @@ bool CreateShortcutOperation::performOperation()
 
 bool CreateShortcutOperation::undoOperation()
 {
+    ensureOptionalArgumentsRead();
+
     const QString &linkLocation = arguments().at(1);
     if (!deleteFileNowOrLater(linkLocation) )
         qDebug() << "Cannot delete:" << linkLocation;
@@ -270,9 +314,4 @@ bool CreateShortcutOperation::undoOperation()
 bool CreateShortcutOperation::testOperation()
 {
     return true;
-}
-
-Operation *CreateShortcutOperation::clone() const
-{
-    return new CreateShortcutOperation();
 }

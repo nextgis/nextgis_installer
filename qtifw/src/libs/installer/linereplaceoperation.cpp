@@ -34,7 +34,8 @@
 
 using namespace QInstaller;
 
-LineReplaceOperation::LineReplaceOperation()
+LineReplaceOperation::LineReplaceOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("LineReplace"));
 }
@@ -45,18 +46,14 @@ void LineReplaceOperation::backup()
 
 bool LineReplaceOperation::performOperation()
 {
-    const QStringList args = arguments();
-
     // Arguments:
     // 1. filename
     // 2. startsWith Search-String
     // 3. Replace-Line-String
-    if (args.count() != 3) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("exactly 3"), QLatin1String("")));
+    if (!checkArgumentCount(3))
         return false;
-    }
+
+    const QStringList args = arguments();
     const QString fileName = args.at(0);
     const QString searchString = args.at(1);
     const QString replaceString = args.at(2);
@@ -64,7 +61,8 @@ bool LineReplaceOperation::performOperation()
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         setError(UserDefinedError);
-        setErrorString(tr("Failed to open '%1' for reading.").arg(fileName));
+        setErrorString(tr("Cannot open file \"%1\" for reading: %2").arg(
+                           QDir::toNativeSeparators(fileName), file.errorString()));
         return false;
     }
 
@@ -81,7 +79,8 @@ bool LineReplaceOperation::performOperation()
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         setError(UserDefinedError);
-        setErrorString(tr("Failed to open '%1' for writing.").arg(fileName));
+        setErrorString(tr("Cannot open file \"%1\" for writing: %2").arg(
+                           QDir::toNativeSeparators(fileName), file.errorString()));
         return false;
     }
 
@@ -100,9 +99,4 @@ bool LineReplaceOperation::undoOperation()
 bool LineReplaceOperation::testOperation()
 {
     return true;
-}
-
-Operation *LineReplaceOperation::clone() const
-{
-    return new LineReplaceOperation();
 }

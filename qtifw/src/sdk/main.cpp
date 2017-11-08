@@ -34,7 +34,7 @@
 #include "updatechecker.h"
 
 #include <errors.h>
-#include <kdselfrestarter.h>
+#include <selfrestarter.h>
 #include <remoteserver.h>
 #include <utils.h>
 
@@ -44,22 +44,21 @@
 
 #include <iostream>
 
-#include <QProcess>
-
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_OSX) or defined(Q_OS_UNIX)
 #  include <unistd.h>
 #  include <sys/types.h>
 #endif
 
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
-#define VERSION "IFW Version: \"" QUOTE(IFW_VERSION_STR) "\""
-#define BUILDDATE "Build date: " QUOTE(__DATE__)
-#define SHA "Installer Framework SHA1: \"" QUOTE(_GIT_SHA1_) "\""
+#define VERSION "IFW Version: " QUOTE(IFW_VERSION_STR) ", built with Qt " QT_VERSION_STR "."
+#define BUILDDATE "Build date: " __DATE__
+#define SHA "Installer Framework SHA1: " QUOTE(_GIT_SHA1_)
 static const char PLACEHOLDER[32] = "MY_InstallerCreateDateTime_MY";
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     // increase maximum numbers of file descriptors
 #if defined (Q_OS_OSX)
     QCoreApplication::setSetuidAllowed(true);
@@ -68,9 +67,6 @@ int main(int argc, char *argv[])
     rl.rlim_cur = qMin((rlim_t) OPEN_MAX, rl.rlim_max);
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
-
-    // NEXTGIS: fix gui appearance for windows 10 (does it work actually?).
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     qsrand(QDateTime::currentDateTime().toTime_t());
 
@@ -137,8 +133,24 @@ int main(int argc, char *argv[])
 
         const bool production = (mode.compare(QLatin1String(QInstaller::Protocol::ModeProduction),
             Qt::CaseInsensitive) == 0);
-        if (production)
+        if (production) {
             argumentsValid = (!key.isEmpty()) && (!socketName.isEmpty());
+#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
+            /* In production mode detach child so that sudo waiting on us will terminate. */
+            pid_t child = fork();
+            if (child <= -1) {
+                std::cerr << "Fatal cannot fork and detach server." << std::endl;
+                return EXIT_FAILURE;
+            }
+
+            if (child != 0) {
+                return EXIT_SUCCESS;
+            }
+
+            ::setsid();
+#endif
+        }
+
 
         SDKApp<QCoreApplication> app(argc, argv);
         if (!argumentsValid) {
@@ -157,7 +169,7 @@ int main(int argc, char *argv[])
 #endif
 
         QInstaller::RemoteServer *server = new QInstaller::RemoteServer;
-        QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
+        QObject::connect(server, &QInstaller::RemoteServer::destroyed, &app, &decltype(app)::quit);
         server->init(socketName, key, (production ? QInstaller::Protocol::Mode::Production
             : QInstaller::Protocol::Mode::Debug));
 
@@ -200,53 +212,8 @@ int main(int argc, char *argv[])
         if (QInstaller::isVerbose())
             std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;
 
-        const KDSelfRestarter restarter(argc, argv);
-        int result = InstallerBase(argc, argv).run();
-
-        // NEXTGIS: add the task to run the passed app after the updater's gui finishes.
-        // Note: we run the passed app anyway, even if the updater has finished with an error.
-        if (parser.isSet(QLatin1String(CommandLineOptions::Updater))
-                && parser.isSet(QLatin1String(CommandLineOptions::Launch)))
-        {
-            QString launchPath = parser.value(QLatin1String(CommandLineOptions::Launch));
-            if (launchPath.isEmpty())
-                throw QInstaller::Error(QLatin1String("Empty launch path for option 'launch'."));
-
-            if (!QFile::exists(launchPath))
-            {
-                std::cout << "Application for launching not found: " << launchPath.toUtf8().data()
-                          << std::endl;
-            }
-            else
-            {
-                QString launchOption;
-                QStringList launchOptions;
-
-                if (parser.isSet(QLatin1String(CommandLineOptions::LaunchOptions)))
-                {
-                    QString launchOption = parser.value(QLatin1String(CommandLineOptions::LaunchOptions));
-                    if (launchOption.startsWith(QLatin1String("\"")))
-                        launchOption.remove(0,1);
-                    if (launchOption.endsWith(QLatin1String("\"")))
-                        launchOption.remove(launchOption.size()-1,1);
-                    launchOptions = launchOption.split(QLatin1String(" "));
-                }
-
-                std::cout << "Starting " << launchPath.toUtf8().data() << " " <<
-                          launchOption.toUtf8().data() << std::endl;
-#ifdef Q_OS_MACX
-                QProcess::startDetached(
-                    launchPath,
-                    launchOptions
-                );
-#else
-                QProcess *otherAppProcess = new QProcess();
-                otherAppProcess->start(launchPath, launchOptions);
-#endif
-            }
-        }
-
-        return result;
+        const SelfRestarter restarter(argc, argv);
+        return InstallerBase(argc, argv).run();
 
     } catch (const QInstaller::Error &e) {
         std::cerr << qPrintable(e.message()) << std::endl;

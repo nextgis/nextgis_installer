@@ -31,8 +31,6 @@
 
 #include "init.h"
 
-#include <kdupdaterapplication.h>
-
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
@@ -49,10 +47,9 @@ void EnvironmentVariableTest::testPersistentNonSystem()
 #ifndef Q_OS_WIN
     QSKIP("This operation only works on Windows");
 #endif
-    KDUpdater::Application app;
     QString key = QLatin1String("IFW_TestKey");
     QString value = QLatin1String("IFW_TestValue");
-    QInstaller::EnvironmentVariableOperation op;
+    QInstaller::EnvironmentVariableOperation op(0);
     op.setArguments( QStringList() << key
                     << value
                     << QLatin1String("true")
@@ -78,10 +75,9 @@ void EnvironmentVariableTest::testNonPersistentNonSystem()
 #ifndef Q_OS_WIN
     QSKIP("This operation only works on Windows");
 #endif
-    KDUpdater::Application app;
     QString key = QLatin1String("IFW_TestKey");
     QString value = QLatin1String("IFW_TestValue");
-    QInstaller::EnvironmentVariableOperation op;
+    QInstaller::EnvironmentVariableOperation op(0);
     op.setArguments( QStringList() << key
                     << value
                     << QLatin1String("false")

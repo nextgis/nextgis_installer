@@ -34,6 +34,7 @@
 
 #include <QDesktopServices>
 #include <QDir>
+#include <QRegExp>
 
 #ifdef Q_OS_WIN
 # include <windows.h>
@@ -46,26 +47,13 @@ namespace QInstaller
 PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &variables)
 {
     m_variables = variables;
+    setDynamicPredefinedVariables();
 
     // Set some common variables that may used e.g. as placeholder in some of the settings variables or
     // in a script or...
-    m_variables.insert(QLatin1String("rootDir"), QDir::rootPath());
-    m_variables.insert(QLatin1String("homeDir"), QDir::homePath());
-    m_variables.insert(QLatin1String("RootDir"), QDir::rootPath());
-    m_variables.insert(QLatin1String("HomeDir"), QDir::homePath());
     m_variables.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
     m_variables.insert(QLatin1String("InstallerDirPath"), QCoreApplication::applicationDirPath());
     m_variables.insert(QLatin1String("InstallerFilePath"), QCoreApplication::applicationFilePath());
-
-    QString dir = QLatin1String("/opt");
-#ifdef Q_OS_WIN
-    TCHAR buffer[MAX_PATH + 1] = { 0 };
-    SHGetFolderPath(0, CSIDL_PROGRAM_FILES, 0, 0, buffer);
-    dir = QString::fromWCharArray(buffer);
-#elif defined (Q_OS_OSX)
-    dir = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation).value(0);
-#endif
-    m_variables.insert(QLatin1String("ApplicationsDir"), dir);
 
 #ifdef Q_OS_WIN
     m_variables.insert(QLatin1String("os"), QLatin1String("win"));
@@ -75,26 +63,6 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(QLatin1String("os"), QLatin1String("x11"));
 #else
     // TODO: add more platforms as needed...
-#endif
-
-#ifdef Q_OS_WIN
-    QSettingsWrapper user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\"
-        "CurrentVersion\\Explorer\\User Shell Folders"), QSettingsWrapper::NativeFormat);
-    QSettingsWrapper system(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\"
-        "CurrentVersion\\Explorer\\Shell Folders"), QSettingsWrapper::NativeFormat);
-
-    const QString programs = user.value(QLatin1String("Programs"), QString()).toString();
-    const QString allPrograms = system.value(QLatin1String("Common Programs"), QString()).toString();
-
-    QString desktop;
-    if (m_variables.value(QLatin1String("AllUsers")) == scTrue) {
-        desktop = system.value(QLatin1String("Desktop")).toString();
-    } else {
-        desktop = user.value(QLatin1String("Desktop")).toString();
-    }
-    m_variables.insert(QLatin1String("DesktopDir"), replaceWindowsEnvironmentVariables(desktop));
-    m_variables.insert(QLatin1String("UserStartMenuProgramsPath"), replaceWindowsEnvironmentVariables(programs));
-    m_variables.insert(QLatin1String("AllUsersStartMenuProgramsPath"), replaceWindowsEnvironmentVariables(allPrograms));
 #endif
 
     m_settings = Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
@@ -126,12 +94,81 @@ void PackageManagerCoreData::clear()
     m_settings = Settings();
 }
 
+/*!
+    Set some common variables that may be used e.g. as placeholder in some of the settings
+    variables or in a script or...
+*/
+void PackageManagerCoreData::setDynamicPredefinedVariables()
+{
+    m_variables.insert(QLatin1String("rootDir"), QDir::rootPath());
+    m_variables.insert(QLatin1String("homeDir"), QDir::homePath());
+    m_variables.insert(QLatin1String("RootDir"), QDir::rootPath());
+    m_variables.insert(QLatin1String("HomeDir"), QDir::homePath());
+
+    QString dir = QLatin1String("/opt");
+#ifdef Q_OS_WIN
+    TCHAR buffer[MAX_PATH + 1] = { 0 };
+    SHGetFolderPath(0, CSIDL_PROGRAM_FILES, 0, 0, buffer);
+    dir = QString::fromWCharArray(buffer);
+#elif defined (Q_OS_OSX)
+    dir = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation).value(0);
+#endif
+    m_variables.insert(QLatin1String("ApplicationsDir"), dir);
+
+    QString dirX86 = dir;
+    QString dirX64 = dir;
+#ifdef Q_OS_WIN
+    QSettingsWrapper current(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion")
+                          , QSettingsWrapper::NativeFormat);
+    BOOL onWow64Or64bit = TRUE;
+#ifndef Q_OS_WIN64
+    IsWow64Process(GetCurrentProcess(), &onWow64Or64bit);
+#endif
+    QString programfilesX86;
+    QString programfilesX64;
+    if (onWow64Or64bit == TRUE) {
+        programfilesX86 = current.value(QLatin1String("ProgramFilesDir (x86)"), QString()).toString();
+        programfilesX64 = current.value(QLatin1String("ProgramW6432Dir"), QString()).toString();
+    } else {
+        programfilesX86 = current.value(QLatin1String("ProgramFilesDir"), QString()).toString();
+        programfilesX64 = programfilesX86;
+    }
+    dirX86 = replaceWindowsEnvironmentVariables(programfilesX86);
+    dirX64 = replaceWindowsEnvironmentVariables(programfilesX64);
+#endif
+    m_variables.insert(QLatin1String("ApplicationsDirX86"), dirX86);
+    m_variables.insert(QLatin1String("ApplicationsDirX64"), dirX64);
+
+#ifdef Q_OS_WIN
+    QSettingsWrapper user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\"
+        "CurrentVersion\\Explorer\\User Shell Folders"), QSettingsWrapper::NativeFormat);
+    QSettingsWrapper system(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\"
+        "CurrentVersion\\Explorer\\Shell Folders"), QSettingsWrapper::NativeFormat);
+
+    const QString programs = user.value(QLatin1String("Programs"), QString()).toString();
+    const QString allPrograms = system.value(QLatin1String("Common Programs"), QString())
+        .toString();
+
+    QString desktop;
+    if (m_variables.value(QLatin1String("AllUsers")) == scTrue) {
+        desktop = system.value(QLatin1String("Desktop")).toString();
+    } else {
+        desktop = user.value(QLatin1String("Desktop")).toString();
+    }
+    m_variables.insert(QLatin1String("DesktopDir"), replaceWindowsEnvironmentVariables(desktop));
+    m_variables.insert(QLatin1String("UserStartMenuProgramsPath"),
+        replaceWindowsEnvironmentVariables(programs));
+    m_variables.insert(QLatin1String("AllUsersStartMenuProgramsPath"),
+        replaceWindowsEnvironmentVariables(allPrograms));
+#endif
+}
+
 Settings &PackageManagerCoreData::settings() const
 {
     return m_settings;
 }
 
-QList<QString> PackageManagerCoreData::keys() const
+QStringList PackageManagerCoreData::keys() const
 {
     return m_variables.keys();
 }
@@ -143,7 +180,7 @@ bool PackageManagerCoreData::contains(const QString &key) const
 
 bool PackageManagerCoreData::setValue(const QString &key, const QString &normalizedValue)
 {
-    if (m_variables.value(key) == normalizedValue)
+    if (m_variables.contains(key) && m_variables.value(key) == normalizedValue)
         return false;
     m_variables.insert(key, normalizedValue);
     return true;

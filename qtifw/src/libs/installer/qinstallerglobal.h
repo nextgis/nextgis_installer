@@ -31,9 +31,9 @@
 
 #include <installer_global.h>
 
-#include <kdupdaterupdate.h>
-#include <kdupdaterupdateoperation.h>
-#include <kdupdaterpackagesinfo.h>
+#include "update.h"
+#include "updateoperation.h"
+#include "localpackagehub.h"
 
 namespace QInstaller {
 
@@ -55,8 +55,7 @@ typedef QList<QInstaller::Operation*> OperationList;
 typedef KDUpdater::Update Package;
 typedef QList<QInstaller::Package*> PackagesList;
 
-typedef KDUpdater::PackageInfo LocalPackage;
-typedef QHash<QString, LocalPackage> LocalPackagesHash;
+typedef QHash<QString, KDUpdater::LocalPackage> LocalPackagesHash;
 
 } // namespace QInstaller
 

@@ -22,20 +22,19 @@
 
 #include "qinstallerglobal.h"
 
-#include <QFile>
-
 namespace QInstaller
 {
 
-class INSTALLER_EXPORT NgCopyOnlyOperation: public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT NgCopyOnlyOperation: public Operation
 {
-    public:
-     NgCopyOnlyOperation();
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::NgCopyOnlyOperation)
+public:
+     explicit NgCopyOnlyOperation(PackageManagerCore *core);
+
      void backup();
      bool performOperation();
      bool undoOperation();
      bool testOperation();
-     Operation *clone() const;
 };
 
 }

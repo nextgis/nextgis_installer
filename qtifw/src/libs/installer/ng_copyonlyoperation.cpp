@@ -19,10 +19,13 @@
 
 #include "ng_copyonlyoperation.h"
 
+#include <QFile>
+
 using namespace QInstaller;
 
 
-NgCopyOnlyOperation::NgCopyOnlyOperation ()
+NgCopyOnlyOperation::NgCopyOnlyOperation (PackageManagerCore* core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("NgCopyOnly"));
 }
@@ -36,17 +39,12 @@ void NgCopyOnlyOperation::backup ()
 // This operation copies file in performOperation() and does not delete it in undoOperation().
 bool NgCopyOnlyOperation::performOperation ()
 {
-    QStringList args = arguments();
-    if (args.count() != 2)
-    {
-        setError(InvalidArguments);
-        setErrorString(tr("[Ng] Invalid arguments: %1 argument(s) given, 2 expected.\n")
-            .arg(arguments().count()));
+    if (!checkArgumentCount(2))
         return false;
-    }
 
-    const QString srcPath = arguments().at(0);
-    const QString tgtPath = arguments().at(1);
+    const QStringList args = arguments();
+    const QString srcPath = args.at(0);
+    const QString tgtPath = args.at(1);
 
     QFile srcFile(srcPath);
     if (!srcFile.exists())
@@ -97,11 +95,6 @@ bool NgCopyOnlyOperation::testOperation ()
     return true;
 }
 
-
-KDUpdater::UpdateOperation *NgCopyOnlyOperation::clone () const
-{
-    return new NgCopyOnlyOperation();
-}
 
 
 

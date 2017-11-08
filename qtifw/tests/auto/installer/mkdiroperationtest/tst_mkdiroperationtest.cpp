@@ -27,7 +27,7 @@
 **************************************************************************/
 
 #include "init.h"
-#include "kdupdaterupdateoperations.h"
+#include "updateoperations.h"
 
 #include <QDir>
 #include <QObject>
@@ -60,7 +60,8 @@ private slots:
         QVERIFY(!op.performOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
-        QCOMPARE(op.errorString(), QString("Invalid arguments: 0 arguments given, 1 expected."));
+        QCOMPARE(op.errorString(), QString("Invalid arguments in Mkdir: "
+                                           "0 arguments given, exactly 1 arguments expected."));
 
     }
 
@@ -116,7 +117,7 @@ private slots:
         file.close();
         QVERIFY2(!op.undoOperation(), op.errorString().toLatin1());
         QVERIFY2(file.exists(), filepath.toLatin1());
-        QVERIFY2(QDir(filepath).remove(filepath), "Could not remove file");
+        QVERIFY2(QDir(filepath).remove(filepath), "Cannot remove file");
         QVERIFY2(!file.exists(), filepath.toLatin1());
         QVERIFY2(op.undoOperation(), op.errorString().toLatin1());
         QVERIFY2(!QDir(path).exists(), path.toLatin1());

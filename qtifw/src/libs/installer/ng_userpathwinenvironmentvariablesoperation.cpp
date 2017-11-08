@@ -16,10 +16,10 @@
 *    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 *
 *****************************************************************************/
+#include "ng_userpathwinenvironmentvariablesoperation.h"
 
 #include <QSettings>
 
-#include "ng_userpathwinenvironmentvariablesoperation.h"
 #ifdef Q_OS_WIN
 # include <windows.h>
 #endif
@@ -28,6 +28,24 @@ using namespace QInstaller;
 
 #define NG_REGISTRY_USER_PATH "HKEY_CURRENT_USER\\Environment"
 
+
+// Read old variable value from the Windows registry.
+// Note: we do not need admin rights to do this because it's a user variable (not system).
+// Returns "" if Path variable does not exist.
+static QString readPath ()
+{
+    return QSettings(QLatin1String(NG_REGISTRY_USER_PATH),
+                     QSettings::NativeFormat).value(QLatin1String("Path"),
+                                                    QLatin1String("")).toString();
+}
+
+// Write back new variable value to the Windows registry.
+// Note: we do not need admin rights to do this because it's a user variable (not system).
+static void rewritePath (QString value)
+{
+    QSettings(QLatin1String(NG_REGISTRY_USER_PATH),
+              QSettings::NativeFormat).setValue(QLatin1String("Path"), value);
+}
 
 // Note: This function is copied from EnvironmentVariableOperation.
 #ifdef Q_OS_WIN
@@ -44,7 +62,8 @@ static void broadcastEnvironmentChange()
 #endif
 
 
-NgUserPathWinEnvironmentVariableOperation::NgUserPathWinEnvironmentVariableOperation ()
+NgUserPathWinEnvironmentVariableOperation::NgUserPathWinEnvironmentVariableOperation (PackageManagerCore* core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("NgUserPathWinEnvironmentVariable"));
 }
@@ -57,22 +76,18 @@ void NgUserPathWinEnvironmentVariableOperation::backup ()
 
 bool NgUserPathWinEnvironmentVariableOperation::performOperation ()
 {
-    QStringList args = arguments();
-    if (args.count() != 1)
-    {
-        setError(InvalidArguments);
-        setErrorString(tr("[Ng] Invalid arguments: %1 argument(s) given, 1 expected.\n")
-            .arg(arguments().count()));
+    if (!checkArgumentCount(1))
         return false;
-    }
 
-    const QString value = arguments().at(0);
-    QString curValue = this->readPath();
+    const QStringList args = arguments();
+    const QString value = args.at(0);
+
+    QString curValue = readPath();
     if (curValue == QLatin1String(""))
         curValue = value;
     else
         curValue += QLatin1String(";") + value;
-    this->rewritePath(curValue);
+    rewritePath(curValue);
 
     broadcastEnvironmentChange(); // otherwise no changes in system right away
 
@@ -82,13 +97,13 @@ bool NgUserPathWinEnvironmentVariableOperation::performOperation ()
 
 bool NgUserPathWinEnvironmentVariableOperation::undoOperation ()
 {
-    QStringList args = arguments();
-    if (args.count() != 1)
+    if (!checkArgumentCount(1))
         return false;
 
-    const QString value = arguments().at(0);
+    const QStringList args = arguments();
+    const QString value = args.at(0);
 
-    QString curValue = this->readPath();
+    QString curValue = readPath();
 
     QStringList list = curValue.split(QLatin1String(";"));
     for (int i=list.size()-1; i>=0; i--) // search from the end because we had appended the variable
@@ -109,7 +124,7 @@ bool NgUserPathWinEnvironmentVariableOperation::undoOperation ()
 
     // QUESTION: maybe delete the Path variable if it becomes void.
 
-    this->rewritePath(curValue);
+    rewritePath(curValue);
 
     return true;
 }
@@ -119,32 +134,3 @@ bool NgUserPathWinEnvironmentVariableOperation::testOperation ()
 {
     return true;
 }
-
-
-KDUpdater::UpdateOperation *NgUserPathWinEnvironmentVariableOperation::clone () const
-{
-    return new NgUserPathWinEnvironmentVariableOperation();
-}
-
-
-// Read old variable value from the Windows registry.
-// Note: we do not need admin rights to do this because it's a user variable (not system).
-// Returns "" if Path variable does not exist.
-QString NgUserPathWinEnvironmentVariableOperation::readPath ()
-{
-    return QSettings(QLatin1String(NG_REGISTRY_USER_PATH),
-                     QSettings::NativeFormat).value(QLatin1String("Path"),
-                                                    QLatin1String("")).toString();
-}
-
-// Write back new variable value to the Windows registry.
-// Note: we do not need admin rights to do this because it's a user variable (not system).
-void NgUserPathWinEnvironmentVariableOperation::rewritePath (QString value)
-{
-    QSettings(QLatin1String(NG_REGISTRY_USER_PATH),
-              QSettings::NativeFormat).setValue(QLatin1String("Path"), value);
-}
-
-
-
-

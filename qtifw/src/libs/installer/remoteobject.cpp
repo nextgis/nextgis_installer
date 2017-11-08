@@ -30,7 +30,6 @@
 
 #include "protocol.h"
 #include "remoteclient.h"
-#include "localsocket.h"
 
 #include <QCoreApplication>
 #include <QElapsedTimer>
@@ -52,7 +51,8 @@ RemoteObject::~RemoteObject()
 {
     if (m_socket) {
         if (QThread::currentThread() == m_socket->thread()) {
-            writeData(QLatin1String(Protocol::Destroy), m_type, dummy, dummy);
+            if (m_type != QLatin1String("RemoteClientPrivate"))
+                writeData(QLatin1String(Protocol::Destroy), m_type, dummy, dummy);
         } else {
             Q_ASSERT_X(false, Q_FUNC_INFO, "Socket running in a different Thread than this object.");
         }
@@ -68,7 +68,7 @@ bool RemoteObject::authorize()
     if (m_socket)
         delete m_socket;
 
-    m_socket = new LocalSocket;
+    m_socket = new QLocalSocket;
     m_socket->connectToServer(RemoteClient::instance().socketName());
 
     if (m_socket->waitForConnected()) {

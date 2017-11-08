@@ -36,14 +36,14 @@ namespace QInstaller {
 class QSettingsWrapper;
 class INSTALLER_EXPORT GlobalSettingsOperation : public Operation
 {
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::GlobalSettingsOperation)
 public:
-    GlobalSettingsOperation();
+    explicit GlobalSettingsOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation *clone() const;
 
 private:
     QSettingsWrapper *setup(QString *key, QString *value, const QStringList &args);

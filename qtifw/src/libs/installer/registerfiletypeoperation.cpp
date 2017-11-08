@@ -28,6 +28,7 @@
 
 #include "registerfiletypeoperation.h"
 
+#include "constants.h"
 #include "packagemanagercore.h"
 #include "qsettingswrapper.h"
 
@@ -73,7 +74,9 @@ static QVariantHash readHive(QSettingsWrapper *const settings, const QString &hi
 
 // -- RegisterFileTypeOperation
 
-RegisterFileTypeOperation::RegisterFileTypeOperation()
+RegisterFileTypeOperation::RegisterFileTypeOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
+    , m_optionalArgumentsRead(false)
 {
     setName(QLatin1String("RegisterFileType"));
 }
@@ -85,37 +88,29 @@ void RegisterFileTypeOperation::backup()
 bool RegisterFileTypeOperation::performOperation()
 {
 #ifdef Q_OS_WIN
-    QStringList args = arguments();
-    QString progId = takeProgIdArgument(args);
-
-    if (args.count() < 2 || args.count() > 5) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("2 to 5"), QLatin1String("")));
+    ensureOptionalArgumentsRead();
+    if (!checkArgumentCount(2, 5, tr("<extension> <command> [description [contentType [icon]]]")))
         return false;
-    }
+    QStringList args = arguments();
 
     bool allUsers = false;
-    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
-    if (core && core->value(QLatin1String("AllUsers")) == QLatin1String("true"))
+    PackageManagerCore *const core = packageManager();
+    if (core && core->value(scAllUsers) == scTrue)
         allUsers = true;
 
     QSettingsWrapper settings(QLatin1String(allUsers ? "HKEY_LOCAL_MACHINE" : "HKEY_CURRENT_USER")
         , QSettingsWrapper::NativeFormat);
 
-    const QString extension = args.at(0);
-    if (progId.isEmpty())
-        progId = QString::fromLatin1("%1_auto_file").arg(extension);
-    const QString classesProgId = QString::fromLatin1("Software/Classes/") + progId;
-    const QString classesFileType = QString::fromLatin1("Software/Classes/.%2").arg(extension);
-    const QString classesApplications = QString::fromLatin1("Software/Classes/Applications/") + progId;
+    const QString classesProgId = QString::fromLatin1("Software/Classes/") + m_progId;
+    const QString classesFileType = QString::fromLatin1("Software/Classes/.%2").arg(args.at(0));
+    const QString classesApplications = QString::fromLatin1("Software/Classes/Applications/") + m_progId;
 
     // backup old value
     setValue(QLatin1String("oldType"), readHive(&settings, classesFileType));
 
     // register new values
-    settings.setValue(QString::fromLatin1("%1/Default").arg(classesFileType), progId);
-    settings.setValue(QString::fromLatin1("%1/OpenWithProgIds/%2").arg(classesFileType, progId), QString());
+    settings.setValue(QString::fromLatin1("%1/Default").arg(classesFileType), m_progId);
+    settings.setValue(QString::fromLatin1("%1/OpenWithProgIds/%2").arg(classesFileType, m_progId), QString());
     settings.setValue(QString::fromLatin1("%1/shell/Open/Command/Default").arg(classesProgId), args.at(1));
     settings.setValue(QString::fromLatin1("%1/shell/Open/Command/Default").arg(classesApplications), args.at(1));
 
@@ -151,28 +146,23 @@ bool RegisterFileTypeOperation::performOperation()
 bool RegisterFileTypeOperation::undoOperation()
 {
 #ifdef Q_OS_WIN
+    ensureOptionalArgumentsRead();
     QStringList args = arguments();
-    QString progId = takeProgIdArgument(args);
 
-    if (args.count() < 2 || args.count() > 5) {
-        setErrorString(tr("Register File Type: Invalid arguments"));
+    if (!checkArgumentCount(2, 5, tr("Register File Type: Invalid arguments")))
         return false;
-    }
 
     bool allUsers = false;
-    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
-    if (core && core->value(QLatin1String("AllUsers")) == QLatin1String("true"))
+    PackageManagerCore *const core = packageManager();
+    if (core && core->value(scAllUsers) == scTrue)
         allUsers = true;
 
     QSettingsWrapper settings(QLatin1String(allUsers ? "HKEY_LOCAL_MACHINE" : "HKEY_CURRENT_USER")
         , QSettingsWrapper::NativeFormat);
 
-    const QString extension = args.at(0);
-    if (progId.isEmpty())
-        progId = QString::fromLatin1("%1_auto_file").arg(extension);
-    const QString classesProgId = QString::fromLatin1("Software/Classes/") + progId;
-    const QString classesFileType = QString::fromLatin1("Software/Classes/.%2").arg(extension);
-    const QString classesApplications = QString::fromLatin1("Software/Classes/Applications/") + progId;
+    const QString classesProgId = QString::fromLatin1("Software/Classes/") + m_progId;
+    const QString classesFileType = QString::fromLatin1("Software/Classes/.%2").arg(args.at(0));
+    const QString classesApplications = QString::fromLatin1("Software/Classes/Applications/") + m_progId;
 
     // Quoting MSDN here: When uninstalling an application, the ProgIDs and most other registry information
     // associated with that application should be deleted as part of the uninstallation.However, applications
@@ -194,7 +184,7 @@ bool RegisterFileTypeOperation::undoOperation()
         settings.endGroup();
     } else {
         // some changes happened, remove the only save value we know about
-        settings.remove(QString::fromLatin1("%1/OpenWithProgIds/%2").arg(classesFileType, progId));
+        settings.remove(QString::fromLatin1("%1/OpenWithProgIds/%2").arg(classesFileType, m_progId));
     }
 
     // remove ProgId and Applications entry
@@ -216,7 +206,21 @@ bool RegisterFileTypeOperation::testOperation()
     return true;
 }
 
-Operation *RegisterFileTypeOperation::clone() const
+void RegisterFileTypeOperation::ensureOptionalArgumentsRead()
 {
-    return new RegisterFileTypeOperation();
+#ifdef Q_OS_WIN
+    if (m_optionalArgumentsRead)
+        return;
+
+    m_optionalArgumentsRead = true;
+
+    QStringList args = arguments();
+
+    m_progId = takeProgIdArgument(args);
+
+    if (m_progId.isEmpty() && args.count() > 0)
+        m_progId = QString::fromLatin1("%1_auto_file").arg(args.at(0));
+
+    setArguments(args);
+#endif
 }

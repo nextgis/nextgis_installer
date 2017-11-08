@@ -33,6 +33,8 @@
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QStringList>
+#include <QtGui/QFontMetrics>
+#include <QtWidgets/QApplication>
 
 #include <QRegularExpression>
 #include <QXmlStreamReader>
@@ -56,6 +58,7 @@ static const QLatin1String scRemoteRepositories("RemoteRepositories");
 static const QLatin1String scDependsOnLocalInstallerBinary("DependsOnLocalInstallerBinary");
 static const QLatin1String scTranslations("Translations");
 static const QLatin1String scCreateLocalRepository("CreateLocalRepository");
+static const QLatin1String scInstallActionColumnVisible("InstallActionColumnVisible");
 
 static const QLatin1String scFtpProxy("FtpProxy");
 static const QLatin1String scHttpProxy("HttpProxy");
@@ -79,9 +82,10 @@ static void raiseError(QXmlStreamReader &reader, const QString &error, Settings:
     } else {
         QFile *xmlFile = qobject_cast<QFile*>(reader.device());
         if (xmlFile) {
-            qWarning() << QString::fromLatin1("Ignoring following settings reader error in %1, line %2, "
-                "column %3: %4").arg(xmlFile->fileName()).arg(reader.lineNumber()).arg(reader.columnNumber())
-                .arg(error);
+            qWarning().noquote().nospace()
+                    << "Ignoring following settings reader error in " << xmlFile->fileName()
+                                 << ", line " << reader.lineNumber() << ", column " << reader.columnNumber()
+                                 << ": " << error;
         } else {
             qWarning("Ignoring following settings reader error: %s", qPrintable(error));
         }
@@ -97,7 +101,7 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
         switch (token) {
             case QXmlStreamReader::StartElement: {
                 if (!reader.attributes().isEmpty()) {
-                    raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.")
+                    raiseError(reader, QString::fromLatin1("Unexpected attribute for element \"%1\".")
                         .arg(reader.name().toString()), parseMode);
                     return arguments;
                 } else {
@@ -105,7 +109,7 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
                         (lc) ? arguments.append(reader.readElementText().toLower()) :
                                arguments.append(reader.readElementText());
                     } else {
-                        raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name()
+                        raiseError(reader, QString::fromLatin1("Unexpected element \"%1\".").arg(reader.name()
                             .toString()), parseMode);
                         return arguments;
                     }
@@ -147,23 +151,23 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
                 } else if (reader.name() == QLatin1String("Enabled")) {
                     repo.setEnabled(bool(reader.readElementText().toInt()));
                 } else {
-                    raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name()
+                    raiseError(reader, QString::fromLatin1("Unexpected element \"%1\".").arg(reader.name()
                         .toString()), parseMode);
                 }
 
                 if (!reader.attributes().isEmpty()) {
-                    raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.")
+                    raiseError(reader, QString::fromLatin1("Unexpected attribute for element \"%1\".")
                         .arg(reader.name().toString()), parseMode);
                 }
             }
             set.insert(repo);
         } else {
-            raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name().toString()),
+            raiseError(reader, QString::fromLatin1("Unexpected element \"%1\".").arg(reader.name().toString()),
                 parseMode);
         }
 
         if (!reader.attributes().isEmpty()) {
-            raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.").arg(reader
+            raiseError(reader, QString::fromLatin1("Unexpected attribute for element \"%1\".").arg(reader
                 .name().toString()), parseMode);
         }
     }
@@ -230,12 +234,12 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         file.setFileName(overrideConfig.fileName());
 
     if (!file.open(QIODevice::ReadOnly))
-        throw Error(tr("Could not open settings file %1 for reading: %2").arg(path, file.errorString()));
+        throw Error(tr("Cannot open settings file %1 for reading: %2").arg(path, file.errorString()));
 
     QXmlStreamReader reader(&file);
     if (reader.readNextStartElement()) {
         if (reader.name() != QLatin1String("Installer")) {
-            reader.raiseError(QString::fromLatin1("Unexpected element '%1' as root element.").arg(reader
+            reader.raiseError(QString::fromLatin1("Unexpected element \"%1\" as root element.").arg(reader
                 .name().toString()));
         }
     }
@@ -247,26 +251,27 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scStartMenuDir << scMaintenanceToolName << scMaintenanceToolIniFile << scRemoveTargetDir
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
-                << scAllowSpaceInPath << scAllowNonAsciiCharacters << scWizardStyle << scTitleColor
+                << scAllowSpaceInPath << scAllowNonAsciiCharacters << scDisableAuthorizationFallback
+                << scWizardStyle << scStyleSheet << scTitleColor
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
-                << scRemoteRepositories << scTranslations << QLatin1String(scControlScript)
-                << scCreateLocalRepository;
+                << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
+                << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify;
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
     while (reader.readNextStartElement()) {
         const QString name = reader.name().toString();
         if (!elementList.contains(name))
-            raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(name), parseMode);
+            raiseError(reader, QString::fromLatin1("Unexpected element \"%1\".").arg(name), parseMode);
 
         if (!reader.attributes().isEmpty()) {
-            raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.").arg(name),
+            raiseError(reader, QString::fromLatin1("Unexpected attribute for element \"%1\".").arg(name),
                 parseMode);
         }
 
         if (s.d->m_data.contains(name))
-            reader.raiseError(QString::fromLatin1("Element '%1' has been defined before.").arg(name));
+            reader.raiseError(QString::fromLatin1("Element \"%1\" has been defined before.").arg(name));
 
         if (name == scTranslations) {
             s.setTranslations(readArgumentAttributes(reader, parseMode, QLatin1String("Translation"), true));
@@ -318,6 +323,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         s.d->m_data.insert(scRepositorySettingsPageVisible, true);
     if (!s.d->m_data.contains(scCreateLocalRepository))
         s.d->m_data.insert(scCreateLocalRepository, false);
+    if (!s.d->m_data.contains(scInstallActionColumnVisible))
+        s.d->m_data.insert(scInstallActionColumnVisible, false);
 
     return s;
 }
@@ -372,19 +379,41 @@ QString Settings::wizardStyle() const
     return d->m_data.value(scWizardStyle).toString();
 }
 
+QString Settings::styleSheet() const
+{
+    return d->absolutePathFromKey(scStyleSheet);
+}
+
 QString Settings::titleColor() const
 {
     return d->m_data.value(scTitleColor).toString();
 }
 
+static int lengthToInt(const QVariant &variant)
+{
+    QString length = variant.toString().trimmed();
+    if (length.endsWith(QLatin1String("em"), Qt::CaseInsensitive)) {
+        length.chop(2);
+        return qRound(length.toDouble() * QApplication::fontMetrics().height());
+    }
+    if (length.endsWith(QLatin1String("ex"), Qt::CaseInsensitive)) {
+        length.chop(2);
+        return qRound(length.toDouble() * QApplication::fontMetrics().xHeight());
+    }
+    if (length.endsWith(QLatin1String("px"), Qt::CaseInsensitive)) {
+        length.chop(2);
+    }
+    return length.toInt();
+}
+
 int Settings::wizardDefaultWidth() const
 {
-    return d->m_data.value(scWizardDefaultWidth).toInt();
+    return lengthToInt(d->m_data.value(scWizardDefaultWidth));
 }
 
 int Settings::wizardDefaultHeight() const
 {
-    return d->m_data.value(scWizardDefaultHeight).toInt();
+    return lengthToInt(d->m_data.value(scWizardDefaultHeight));
 }
 
 QString Settings::installerApplicationIcon() const
@@ -472,6 +501,11 @@ bool Settings::createLocalRepository() const
     return d->m_data.value(scCreateLocalRepository).toBool();
 }
 
+bool Settings::installActionColumnVisible() const
+{
+    return d->m_data.value(scInstallActionColumnVisible, false).toBool();
+}
+
 bool Settings::allowSpaceInPath() const
 {
     return d->m_data.value(scAllowSpaceInPath, true).toBool();
@@ -480,6 +514,11 @@ bool Settings::allowSpaceInPath() const
 bool Settings::allowNonAsciiCharacters() const
 {
     return d->m_data.value(scAllowNonAsciiCharacters, false).toBool();
+}
+
+bool Settings::disableAuthorizationFallback() const
+{
+    return d->m_data.value(scDisableAuthorizationFallback, false).toBool();
 }
 
 bool Settings::dependsOnLocalInstallerBinary() const
@@ -698,4 +737,9 @@ void Settings::setTranslations(const QStringList &translations)
 QString Settings::controlScript() const
 {
     return d->m_data.value(QLatin1String(scControlScript)).toString();
+}
+
+bool Settings::supportsModify() const
+{
+    return d->m_data.value(scSupportsModify, true).toBool();
 }

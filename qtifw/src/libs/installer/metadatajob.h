@@ -31,7 +31,7 @@
 
 #include "downloadfiletask.h"
 #include "fileutils.h"
-#include "kdjob.h"
+#include "job.h"
 #include "repository.h"
 
 #include <QFutureWatcher>
@@ -46,7 +46,7 @@ struct Metadata
     Repository repository;
 };
 
-class INSTALLER_EXPORT MetadataJob : public KDJob
+class INSTALLER_EXPORT MetadataJob : public Job
 {
     Q_OBJECT
     Q_DISABLE_COPY(MetadataJob)
@@ -64,6 +64,7 @@ public:
     QList<Metadata> metadata() const { return m_metadata.values(); }
     Repository repositoryForDirectory(const QString &directory) const;
     void setPackageManagerCore(PackageManagerCore *core) { m_core = core; }
+    void addCompressedPackages(bool addCompressPackage) { m_addCompressedPackages = addCompressPackage;}
 
 private slots:
     void doStart();
@@ -73,9 +74,14 @@ private slots:
     void unzipTaskFinished();
     void metadataTaskFinished();
     void progressChanged(int progress);
+    void setProgressTotalAmount(int maximum);
+    void unzipRepositoryTaskFinished();
+    void startXMLTask(const QList<FileTaskItem> items);
 
 private:
+    void startUnzipRepositoryTask(const Repository &repo);
     void reset();
+    void resetCompressedFetch();
     Status parseUpdatesXml(const QList<FileTaskResult> &results);
 
 private:
@@ -87,6 +93,9 @@ private:
     QFutureWatcher<FileTaskResult> m_xmlTask;
     QFutureWatcher<FileTaskResult> m_metadataTask;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipTasks;
+    QHash<QFutureWatcher<void> *, QObject*> m_unzipRepositoryTasks;
+    bool m_addCompressedPackages;
+    QList<FileTaskItem> m_unzipRepositoryitems;
 };
 
 }   // namespace QInstaller

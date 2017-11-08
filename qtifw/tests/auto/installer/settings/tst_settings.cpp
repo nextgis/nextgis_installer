@@ -23,6 +23,8 @@ private slots:
     void loadMinimalConfigTagDefaults();
     void loadUnexpectedAttributeConfig();
     void loadUnexpectedTagConfig();
+    void loadConfigWithValidLengthUnits();
+    void loadConfigWithInvalidLengthUnits();
 };
 
 void tst_Settings::loadTutorialConfig()
@@ -72,7 +74,9 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.repositorySettingsPageVisible(), true);
     QCOMPARE(settings.allowSpaceInPath(), true);
     QCOMPARE(settings.allowNonAsciiCharacters(), false);
+    QCOMPARE(settings.disableAuthorizationFallback(), false);
     QCOMPARE(settings.createLocalRepository(), false);
+    QCOMPARE(settings.installActionColumnVisible(), false);
 
     QCOMPARE(settings.hasReplacementRepos(), false);
     QCOMPARE(settings.repositories(), QSet<Repository>());
@@ -86,6 +90,8 @@ void tst_Settings::loadTutorialConfig()
 
     QCOMPARE(settings.translations(), QStringList());
     QCOMPARE(settings.controlScript(), QString());
+
+    QCOMPARE(settings.supportsModify(), true);
 }
 
 void tst_Settings::loadFullConfig()
@@ -95,8 +101,6 @@ void tst_Settings::loadFullConfig()
 
 void tst_Settings::loadEmptyConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Missing or empty <Name> tag in "
-                         ":/data/empty_config.xml.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/empty_config.xml", ":/data");
     } catch (const Error &error) {
@@ -115,13 +119,13 @@ void tst_Settings::loadNotExistingConfig()
     if (!file.open(QIODevice::ReadOnly)) {
         errorString = file.errorString();
     }
-    QTest::ignoreMessage(QtDebugMsg, QString::fromLatin1("create Error-Exception: \"Could not open"
+    QTest::ignoreMessage(QtDebugMsg, QString::fromLatin1("create Error-Exception: \"Cannot open"
                          " settings file %1 for reading: %2\"")
                          .arg(configFile).arg(errorString).toLatin1());
     try {
         Settings::fromFileAndPrefix(configFile, ":/data");
     } catch (const Error &error) {
-        QCOMPARE(error.message(), QString::fromLatin1("Could not open settings file "
+        QCOMPARE(error.message(), QString::fromLatin1("Cannot open settings file "
                         "%1 for reading: %2").arg(configFile).arg(errorString));
         return;
     }
@@ -130,8 +134,6 @@ void tst_Settings::loadNotExistingConfig()
 
 void tst_Settings::loadMalformedConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in :/data/malformed_config.xml, "
-                         "line 9, column 0: Premature end of document.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/malformed_config.xml", ":/data");
     } catch (const Error &error) {
@@ -144,13 +146,11 @@ void tst_Settings::loadMalformedConfig()
 
 void tst_Settings::loadUnknownElementConfigInStrictParseMode()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in :/data/unknown_element_config.xml, "
-        "line 5, column 13: Unexpected element 'unknown'.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/unknown_element_config.xml", ":/data");
     } catch (const Error &error) {
         QCOMPARE(error.message(), QLatin1String("Error in :/data/unknown_element_config.xml, line 5, "
-                                                "column 13: Unexpected element 'unknown'."));
+                                                "column 13: Unexpected element \"unknown\"."));
         return;
     }
     QFAIL("No exception thrown");
@@ -158,8 +158,8 @@ void tst_Settings::loadUnknownElementConfigInStrictParseMode()
 
 void tst_Settings::loadUnknownElementConfigInRelaxedParseMode()
 {
-    QTest::ignoreMessage(QtWarningMsg, "\"Ignoring following settings reader error in "
-        ":/data/unknown_element_config.xml, line 5, column 13: Unexpected element 'unknown'.\" ");
+    QTest::ignoreMessage(QtWarningMsg, "Ignoring following settings reader error in "
+        ":/data/unknown_element_config.xml, line 5, column 13: Unexpected element \"unknown\".");
     try {
         Settings settings = Settings::fromFileAndPrefix(":/data/unknown_element_config.xml", ":/data",
             Settings::RelaxedParseMode);
@@ -183,15 +183,11 @@ void tst_Settings::loadMinimalConfigTagDefaults()
 
 void tst_Settings::loadUnexpectedAttributeConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in "
-        ":///data/unexpectedattribute_config.xml, line 6, column 27: Unexpected attribute "
-        "for element 'Argument'.\" ");
-
     try {
         Settings::fromFileAndPrefix(":///data/unexpectedattribute_config.xml", ":///data");
     } catch (const Error &error) {
         QCOMPARE(error.message(), QLatin1String("Error in :///data/unexpectedattribute_config.xml,"
-           " line 6, column 27: Unexpected attribute for element 'Argument'."));
+           " line 6, column 27: Unexpected attribute for element \"Argument\"."));
         return;
     }
     QFAIL("No exception thrown");
@@ -201,14 +197,11 @@ void tst_Settings::loadUnexpectedAttributeConfig()
 
 void tst_Settings::loadUnexpectedTagConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in "
-        ":///data/unexpectedtag_config.xml, line 6, column 12: Unexpected element 'Foo'.\" ");
-
     try {
         Settings::fromFileAndPrefix(":///data/unexpectedtag_config.xml", ":///data");
     } catch (const Error &error) {
         QCOMPARE(error.message(), QLatin1String("Error in :///data/unexpectedtag_config.xml,"
-           " line 6, column 12: Unexpected element 'Foo'."));
+           " line 6, column 12: Unexpected element \"Foo\"."));
         return;
     }
     QFAIL("No exception thrown");
@@ -216,6 +209,33 @@ void tst_Settings::loadUnexpectedTagConfig()
     return;
 }
 
+void tst_Settings::loadConfigWithValidLengthUnits()
+{
+    try {
+        Settings settings = Settings::fromFileAndPrefix(":///data/length_units_valid_px.xml", ":///data");
+        QCOMPARE(settings.wizardDefaultWidth(), 800);
+        QCOMPARE(settings.wizardDefaultHeight(), 600);
+
+        // Cannot test the parsed values for these units portably since the
+        // pixel value depends on the font metrics. Let's just check for parse
+        // errors.
+        (void)Settings::fromFileAndPrefix(":///data/length_units_valid_em.xml", ":///data");
+        (void)Settings::fromFileAndPrefix(":///data/length_units_valid_ex.xml", ":///data");
+    } catch (const Error &error) {
+        QFAIL(qPrintable(QString::fromLatin1("Exception caught: %1").arg(error.message())));
+    }
+}
+
+void tst_Settings::loadConfigWithInvalidLengthUnits()
+{
+    try {
+        Settings settings = Settings::fromFileAndPrefix(":///data/length_units_invalid.xml", ":///data");
+        QCOMPARE(settings.wizardDefaultWidth(), 0);
+        QCOMPARE(settings.wizardDefaultHeight(), 0);
+    } catch (const Error &error) {
+        QFAIL(qPrintable(QString::fromLatin1("Exception caught: %1").arg(error.message())));
+    }
+}
 
 QTEST_MAIN(tst_Settings)
 

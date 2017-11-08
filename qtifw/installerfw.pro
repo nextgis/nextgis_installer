@@ -1,19 +1,25 @@
-CONFIG += ordered
 TEMPLATE = subdirs
 SUBDIRS += src tools
+tools.depends = src
 
 include (installerfw.pri)
 include (doc/doc.pri)
 
 BUILD_TESTS = $$(BUILDTESTS)
 isEmpty(BUILD_TESTS):BUILD_TESTS=$${BUILDTESTS}
-!isEmpty(BUILD_TESTS):SUBDIRS += tests
+!isEmpty(BUILD_TESTS) {
+    SUBDIRS += tests
+    tests.depends = src
+}
 
 BUILD_EXAMPLES = $$(BUILDEXAMPLES)
 isEmpty(BUILD_EXAMPLES):BUILD_EXAMPLES=$${BUILDEXAMPLES}
-!isEmpty(BUILD_EXAMPLES):SUBDIRS += examples
+!isEmpty(BUILD_EXAMPLES) {
+    SUBDIRS += examples
+    examples.depends = src
+}
 
-!minQtVersion(5, 5, 0) {
+!minQtVersion(5, 6, 2) {
     message("Cannot build Qt Installer Framework with Qt version $${QT_VERSION}.")
-    error("Use at least Qt 5.5.0.")
+    error("Use at least Qt 5.6.2.")
 }

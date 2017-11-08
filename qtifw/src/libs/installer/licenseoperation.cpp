@@ -37,7 +37,8 @@
 
 using namespace QInstaller;
 
-LicenseOperation::LicenseOperation()
+LicenseOperation::LicenseOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("License"));
 }
@@ -55,26 +56,25 @@ bool LicenseOperation::performOperation()
         return false;
     }
 
-    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
+    PackageManagerCore *const core = packageManager();
     if (!core) {
         setError( UserDefinedError );
         setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
         return false;
     }
 
-    QString targetDir = QString::fromLatin1("%1/%2").arg(core->value(scTargetDir),
-        QLatin1String("Licenses"));
+    QString targetDir = QString::fromLatin1("%1%2%3").arg(core->value(scTargetDir),
+        QDir::separator(), QLatin1String("Licenses"));
 
     QDir dir;
     dir.mkpath(targetDir);
     setArguments(QStringList(targetDir));
 
-    for (QVariantMap::const_iterator it = licenses.begin(); it != licenses.end(); ++it) {
-        QFile file(targetDir + QDir::separator() + it.key());
+    for (QVariantMap::const_iterator it = licenses.constBegin(); it != licenses.constEnd(); ++it) {
+        QFile file(targetDir + QLatin1Char('/') + it.key());
         if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
             setError(UserDefinedError);
-            setErrorString(tr("Can not write license file: %1.").arg(targetDir + QDir::separator()
-                + it.key()));
+            setErrorString(tr("Can not write license file \"%1\".").arg(QDir::toNativeSeparators(file.fileName())));
             return false;
         }
 
@@ -87,7 +87,7 @@ bool LicenseOperation::performOperation()
 
 bool LicenseOperation::undoOperation()
 {
-    QVariantMap licenses = value(QLatin1String("licenses")).toMap();
+    const QVariantMap licenses = value(QLatin1String("licenses")).toMap();
     if (licenses.isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("No license files found to delete."));
@@ -107,9 +107,4 @@ bool LicenseOperation::undoOperation()
 bool LicenseOperation::testOperation()
 {
     return true;
-}
-
-Operation *LicenseOperation::clone() const
-{
-    return new LicenseOperation();
 }

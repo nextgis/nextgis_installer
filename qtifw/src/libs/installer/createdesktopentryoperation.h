@@ -35,15 +35,15 @@ namespace QInstaller {
 
 class INSTALLER_EXPORT CreateDesktopEntryOperation : public Operation
 {
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::CreateDesktopEntryOperation)
 public:
-    CreateDesktopEntryOperation();
+    explicit CreateDesktopEntryOperation(PackageManagerCore *core);
     ~CreateDesktopEntryOperation();
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation* clone() const;
 
     QString absoluteFileName();
 };

@@ -49,7 +49,7 @@ public:
     ConsoleProxy() {}
 
 public slots :
-        void log(const QString &log) { qDebug() << log; }
+        void log(const QString &log) { qDebug().noquote() << log; }
 };
 
 class InstallerProxy : public QObject
@@ -152,6 +152,10 @@ public:
 
     Q_INVOKABLE QJSValue findChild(QObject *parent, const QString &objectName);
     Q_INVOKABLE QList<QJSValue> findChildren(QObject *parent, const QString &objectName);
+
+    Q_INVOKABLE void setSilent(bool silent);
+
+    Q_INVOKABLE void setTextItems(QObject *object, const QStringList &items);
 
 signals:
     void interrupted();

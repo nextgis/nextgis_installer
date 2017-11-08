@@ -26,7 +26,7 @@
 **
 **************************************************************************/
 
-#include "kdsysinfo.h"
+#include "sysinfo.h"
 #include "link.h"
 
 #ifdef Q_CC_MINGW

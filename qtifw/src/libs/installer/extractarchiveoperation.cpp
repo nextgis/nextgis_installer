@@ -26,17 +26,15 @@
 **
 **************************************************************************/
 
-#include "extractarchiveoperation.h"
 #include "extractarchiveoperation_p.h"
 
-#include <QtCore/QEventLoop>
-#include <QtCore/QThread>
-#include <QtCore/QThreadPool>
+#include <QEventLoop>
+#include <QThreadPool>
 
-using namespace QInstaller;
+namespace QInstaller {
 
-
-ExtractArchiveOperation::ExtractArchiveOperation()
+ExtractArchiveOperation::ExtractArchiveOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("Extract"));
 }
@@ -48,55 +46,46 @@ void ExtractArchiveOperation::backup()
 
 bool ExtractArchiveOperation::performOperation()
 {
-    const QStringList args = arguments();
-    if (args.count() != 2) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("exactly 2"), QLatin1String("")));
+    if (!checkArgumentCount(2))
         return false;
-    }
 
-    const QString archivePath = args.first();
+    const QStringList args = arguments();
+    const QString archivePath = args.at(0);
     const QString targetDir = args.at(1);
 
     Receiver receiver;
     Callback callback;
 
-    connect(&callback, SIGNAL(currentFileChanged(QString)), this, SLOT(fileFinished(QString)));
-    connect(&callback, SIGNAL(progressChanged(double)), this, SIGNAL(progressChanged(double)));
+    connect(&callback, &Callback::currentFileChanged, this, &ExtractArchiveOperation::fileFinished);
+    connect(&callback, &Callback::progressChanged, this, &ExtractArchiveOperation::progressChanged);
 
-    if (PackageManagerCore *core = this->value(QLatin1String("installer")).value<PackageManagerCore*>()) {
-        connect(core, SIGNAL(statusChanged(QInstaller::PackageManagerCore::Status)), &callback,
-            SLOT(statusChanged(QInstaller::PackageManagerCore::Status)));
+    if (PackageManagerCore *core = packageManager()) {
+        connect(core, &PackageManagerCore::statusChanged, &callback, &Callback::statusChanged);
     }
 
-    //Runnable is derived from QRunable which will be deleted by the ThreadPool -> no parent is needed
     Runnable *runnable = new Runnable(archivePath, targetDir, &callback);
-    connect(runnable, SIGNAL(finished(bool,QString)), &receiver, SLOT(runnableFinished(bool,QString)),
+    connect(runnable, &Runnable::finished, &receiver, &Receiver::runnableFinished,
         Qt::QueuedConnection);
 
     QEventLoop loop;
-    connect(&receiver, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(&receiver, &Receiver::finished, &loop, &QEventLoop::quit);
     if (QThreadPool::globalInstance()->tryStart(runnable)) {
         loop.exec();
     } else {
-        // in case there is no availabe thread we should call it directly this is more a hack
+        // HACK: In case there is no availabe thread we should call it directly.
         runnable->run();
         receiver.runnableFinished(true, QString());
     }
 
-    typedef QPair<QString, QString> StringPair;
-    QVector<StringPair> backupFiles = callback.backupFiles;
+    // TODO: Use backups for rollback, too? Doesn't work for uninstallation though.
 
-    //TODO use backups for rollback, too? doesn't work for uninstallation though
-
-    //delete all backups we can delete right now, remember the rest
-    foreach (const StringPair &i, backupFiles)
+    // delete all backups we can delete right now, remember the rest
+    foreach (const Backup &i, callback.backupFiles())
         deleteFileNowOrLater(i.second);
 
-    if (!receiver.success) {
+    if (!receiver.success()) {
         setError(UserDefinedError);
-        setErrorString(receiver.errorString);
+        setErrorString(receiver.errorString());
         return false;
     }
     return true;
@@ -105,17 +94,16 @@ bool ExtractArchiveOperation::performOperation()
 bool ExtractArchiveOperation::undoOperation()
 {
     Q_ASSERT(arguments().count() == 2);
-    //const QString archivePath = arguments().first();
-    //const QString targetDir = arguments().last();
-
     const QStringList files = value(QLatin1String("files")).toStringList();
 
     WorkerThread *const thread = new WorkerThread(this, files);
-    connect(thread, SIGNAL(currentFileChanged(QString)), this, SIGNAL(outputTextChanged(QString)));
-    connect(thread, SIGNAL(progressChanged(double)), this, SIGNAL(progressChanged(double)));
+    connect(thread, &WorkerThread::currentFileChanged, this,
+        &ExtractArchiveOperation::outputTextChanged);
+    connect(thread, &WorkerThread::progressChanged, this,
+        &ExtractArchiveOperation::progressChanged);
 
     QEventLoop loop;
-    connect(thread, SIGNAL(finished()), &loop, SLOT(quit()), Qt::QueuedConnection);
+    connect(thread, &QThread::finished, &loop, &QEventLoop::quit, Qt::QueuedConnection);
     thread->start();
     loop.exec();
     thread->deleteLater();
@@ -127,18 +115,16 @@ bool ExtractArchiveOperation::testOperation()
     return true;
 }
 
-Operation *ExtractArchiveOperation::clone() const
-{
-    return new ExtractArchiveOperation();
-}
-
 /*!
-    This slot is direct connected to the caller so please don't call it from another thread in the same time.
+    This slot is direct connected to the caller so please don't call it from another thread in the
+    same time.
 */
 void ExtractArchiveOperation::fileFinished(const QString &filename)
 {
     QStringList files = value(QLatin1String("files")).toStringList();
     files.prepend(filename);
     setValue(QLatin1String("files"), files);
-    emit outputTextChanged(filename);
+    emit outputTextChanged(QDir::toNativeSeparators(filename));
 }
+
+} // namespace QInstaller

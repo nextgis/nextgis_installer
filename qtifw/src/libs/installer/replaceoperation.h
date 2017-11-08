@@ -35,14 +35,14 @@ namespace QInstaller {
 
 class INSTALLER_EXPORT ReplaceOperation : public Operation
 {
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::ReplaceOperation)
 public:
-    ReplaceOperation();
+    explicit ReplaceOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation *clone() const;
 };
 
 } // namespace QInstaller

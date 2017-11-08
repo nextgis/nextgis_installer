@@ -29,6 +29,7 @@
 #include "adminauthorization.h"
 
 #include <QtCore/QFile>
+#include <QtCore/QRegExp>
 #include <QDebug>
 
 #include <QApplication>
@@ -54,6 +55,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 #include <iostream>
 
@@ -129,9 +131,13 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
     if (pipe(pipedData) != 0)
         return false;
 
-    int flags = ::fcntl(pipedData[0], F_GETFD);
+    int flags = ::fcntl(pipedData[0], F_GETFL);
     if (flags != -1)
         ::fcntl(pipedData[0], F_SETFL, flags | O_NONBLOCK);
+
+    flags = ::fcntl(masterFD, F_GETFL);
+    if (flags != -1)
+        ::fcntl(masterFD, F_SETFL, flags | O_NONBLOCK);
 
     pid_t child = fork();
 
@@ -150,25 +156,36 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         ::close(pipedData[1]);
 
         QRegExp re(QLatin1String("[Pp]assword.*:"));
+        QByteArray data;
         QByteArray errData;
-        flags = ::fcntl(masterFD, F_GETFD);
         int bytes = 0;
         int errBytes = 0;
         char buf[1024];
         char errBuf[1024];
+        int status;
+        bool statusValid = false;
         while (bytes >= 0) {
-            int state;
-            if (::waitpid(child, &state, WNOHANG) == -1)
+            const pid_t waitResult = ::waitpid(child, &status, WNOHANG);
+            if (waitResult == -1) {
                 break;
+            }
+            if (waitResult == child) {
+                statusValid = true;
+                break;
+            }
             bytes = ::read(masterFD, buf, 1023);
+            if (bytes == -1 && errno == EAGAIN)
+                bytes = 0;
+            else if (bytes > 0)
+                data.append(buf, bytes);
             errBytes = ::read(pipedData[0], errBuf, 1023);
             if (errBytes > 0)
             {
-                errData.append(buf, errBytes);
+                errData.append(errBuf, errBytes);
                 errBytes=0;
             }
             if (bytes > 0) {
-                const QString line = QString::fromLatin1(buf, bytes);
+                const QString line = QString::fromLatin1(data);
                 if (re.indexIn(line) != -1) {
                     const QString password = getPassword(parent);
                     if (password.isEmpty()) {
@@ -188,20 +205,28 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
             if (bytes == 0)
                 ::usleep(100000);
         }
-        if (!errData.isEmpty()) {
-            printError(parent, QString::fromLocal8Bit(errData.constData()));
-            return false;
+
+        while (true) {
+            errBytes = ::read(pipedData[0], errBuf, 1023);
+            if (errBytes == -1 && errno == EAGAIN) {
+                ::usleep(100000);
+                continue;
+            }
+
+            if (errBytes <= 0)
+                break;
+
+            errData.append(errBuf, errBytes);
         }
 
-        int status;
-        child = ::wait(&status);
-        const int exited = WIFEXITED(status);
-        const int exitStatus = WEXITSTATUS(status);
-        ::close(pipedData[1]);
-        if (exited)
-            return exitStatus == 0;
+        const bool success = statusValid && WIFEXITED(status) && WEXITSTATUS(status) == 0;
 
-        return false;
+        if (!success && !errData.isEmpty()) {
+            printError(parent, QString::fromLocal8Bit(errData.constData()));
+        }
+
+        ::close(pipedData[0]);
+        return success;
     }
 
     // child process
@@ -228,7 +253,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         for (int i = 3; i < static_cast<int>(rlp.rlim_cur); ++i)
             ::close(i);
 
-        char **argp = (char **) ::malloc(arguments.count() + 4 * sizeof(char *));
+        char **argp = (char **) ::malloc((arguments.count() + 4) * sizeof(char *));
         QList<QByteArray> args;
         args.push_back(SU_COMMAND);
         args.push_back("-b");
@@ -244,8 +269,10 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         ::unsetenv("LANG");
         ::unsetenv("LC_ALL");
 
-        ::execv(SU_COMMAND, argp);
-        _exit(0);
+        int exitStatus = 0;
+        if (::execv(SU_COMMAND, argp) == -1)
+            exitStatus = -errno;
+        _exit(exitStatus);
         return false;
     }
 }

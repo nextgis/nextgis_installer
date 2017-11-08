@@ -62,7 +62,7 @@ private slots:
 
     void testMissingArguments()
     {
-        ConsumeOutputOperation operation;
+        ConsumeOutputOperation operation(0);
 
         QVERIFY(operation.testOperation());
         QVERIFY(!operation.performOperation());
@@ -73,7 +73,8 @@ private slots:
         QCOMPARE(UpdateOperation::Error(operation.error()), UpdateOperation::InvalidArguments);
         //qDebug() << operation.errorString();
         QString compareString("Invalid arguments in ConsumeOutput: 0 arguments given, at least 2 "
-                    "expected(<to be saved installer key name>, <executable>, [argument1], [argument2], ...).");
+                              "arguments expected in the form: <to be saved installer key name> "
+                              "<executable> [argument1] [argument2] [...].");
         //qDebug() << compareString;
         QCOMPARE(operation.errorString(), compareString);
     }
@@ -82,8 +83,7 @@ private slots:
     {
         QString testOutput = getOutputFrom(QUOTE(QMAKE_BINARY), QStringList("-query"));
 
-        ConsumeOutputOperation operation;
-        operation.setValue(QLatin1String("installer"), QVariant::fromValue(&m_core));
+        ConsumeOutputOperation operation(&m_core);
 
         operation.setArguments(QStringList() << "testConsumeOutputKey" << QUOTE(QMAKE_BINARY) << "-query");
         QVERIFY2(operation.performOperation(), qPrintable(operation.errorString()));
@@ -107,7 +107,7 @@ private:
         QEventLoop loop;
         QProcess process;
 
-        QObject::connect(&process, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
+        QObject::connect(&process, SIGNAL(finished(int,QProcess::ExitStatus)), &loop, SLOT(quit()));
         process.start(binary, arguments, QIODevice::ReadOnly);
 
         if (process.state() != QProcess::NotRunning)

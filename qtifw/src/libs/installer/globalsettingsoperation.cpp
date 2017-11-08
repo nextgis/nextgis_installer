@@ -31,7 +31,8 @@
 
 using namespace QInstaller;
 
-GlobalSettingsOperation::GlobalSettingsOperation()
+GlobalSettingsOperation::GlobalSettingsOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("GlobalConfig"));
 }
@@ -49,7 +50,7 @@ bool GlobalSettingsOperation::performOperation()
 
     if (!settings->isWritable()) {
         setError(UserDefinedError);
-        setErrorString(tr("Settings are not writable"));
+        setErrorString(tr("Settings are not writable."));
         return false;
     }
 
@@ -59,7 +60,7 @@ bool GlobalSettingsOperation::performOperation()
 
     if (settings->status() != QSettingsWrapper::NoError) {
         setError(UserDefinedError);
-        setErrorString(tr("Failed to write settings"));
+        setErrorString(tr("Failed to write settings."));
         return false;
     }
 
@@ -92,24 +93,15 @@ bool GlobalSettingsOperation::testOperation()
     return true;
 }
 
-Operation *GlobalSettingsOperation::clone() const
-{
-    return new GlobalSettingsOperation();
-}
-
 QSettingsWrapper *GlobalSettingsOperation::setup(QString *key, QString *value, const QStringList &arguments)
 {
-    if (arguments.count() != 3 && arguments.count() != 4 && arguments.count() != 5) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments.count()).arg(tr("3, 4 or 5"), QLatin1String("")));
+    if (!checkArgumentCount(3, 5))
         return 0;
-    }
 
     if (arguments.count() == 5) {
         QSettingsWrapper::Scope scope = QSettingsWrapper::UserScope;
         if (arguments.at(0) == QLatin1String("SystemScope"))
-          scope = QSettingsWrapper::SystemScope;
+            scope = QSettingsWrapper::SystemScope;
         const QString &company = arguments.at(1);
         const QString &application = arguments.at(2);
         *key = arguments.at(3);

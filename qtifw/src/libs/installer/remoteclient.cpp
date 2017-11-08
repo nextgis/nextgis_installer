@@ -31,6 +31,8 @@
 
 namespace QInstaller {
 
+RemoteClient *RemoteClient::s_instance = 0;
+
 RemoteClient::RemoteClient()
     : d_ptr(new RemoteClientPrivate(this))
 {
@@ -42,8 +44,9 @@ RemoteClient::~RemoteClient()
 
 RemoteClient &RemoteClient::instance()
 {
-    static RemoteClient instance;
-    return instance;
+    if (!s_instance)
+        s_instance = new RemoteClient;
+    return *s_instance;
 }
 
 QString RemoteClient::socketName() const
@@ -69,11 +72,23 @@ void RemoteClient::init(const QString &socketName, const QString &key, Protocol:
     d->init(socketName, key, mode, startAs);
 }
 
+void RemoteClient::setAuthorizationFallbackDisabled(bool disabled)
+{
+    Q_D(RemoteClient);
+    d->setAuthorizationFallbackDisabled(disabled);
+}
+
 void RemoteClient::shutdown()
 {
     Q_D(RemoteClient);
     d->shutdown();
     d_ptr.reset(new RemoteClientPrivate(this));
+}
+
+void RemoteClient::destroy()
+{
+    delete s_instance;
+    s_instance = 0;
 }
 
 bool RemoteClient::isActive() const

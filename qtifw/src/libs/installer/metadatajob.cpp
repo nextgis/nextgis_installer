@@ -34,6 +34,7 @@
 #include "proxycredentialsdialog.h"
 #include "serverauthenticationdialog.h"
 #include "settings.h"
+#include "testrepository.h"
 
 #include <QTemporaryDir>
 
@@ -48,17 +49,19 @@ static QUrl resolveUrl(const FileTaskResult &result, const QString &url)
 }
 
 MetadataJob::MetadataJob(QObject *parent)
-    : KDJob(parent)
+    : Job(parent)
     , m_core(0)
+    , m_addCompressedPackages(false)
 {
     setCapabilities(Cancelable);
-    connect(&m_xmlTask, SIGNAL(finished()), this, SLOT(xmlTaskFinished()));
-    connect(&m_metadataTask, SIGNAL(finished()), this, SLOT(metadataTaskFinished()));
-    connect(&m_metadataTask, SIGNAL(progressValueChanged(int)), this, SLOT(progressChanged(int)));
+    connect(&m_xmlTask, &QFutureWatcherBase::finished, this, &MetadataJob::xmlTaskFinished);
+    connect(&m_metadataTask, &QFutureWatcherBase::finished, this, &MetadataJob::metadataTaskFinished);
+    connect(&m_metadataTask, &QFutureWatcherBase::progressValueChanged, this, &MetadataJob::progressChanged);
 }
 
 MetadataJob::~MetadataJob()
 {
+    resetCompressedFetch();
     reset();
 }
 
@@ -72,46 +75,183 @@ Repository MetadataJob::repositoryForDirectory(const QString &directory) const
 
 void MetadataJob::doStart()
 {
-    reset();
     if (!m_core) {
-        emitFinishedWithError(KDJob::Canceled, tr("Missing package manager core engine."));
+        emitFinishedWithError(Job::Canceled, tr("Missing package manager core engine."));
         return; // We can't do anything here without core, so avoid tons of !m_core checks.
     }
+    const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
+    if (!m_addCompressedPackages) {
+        reset();
+        emit infoMessage(this, tr("Preparing meta information download..."));
+        const bool onlineInstaller = m_core->isInstaller() && !m_core->isOfflineOnly();
 
-    emit infoMessage(this, tr("Preparing meta information download..."));
-    const bool onlineInstaller = m_core->isInstaller() && !m_core->isOfflineOnly();
-    if (onlineInstaller || (m_core->isUpdater() || m_core->isPackageManager())) {
-        QList<FileTaskItem> items;
-        const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
-        foreach (const Repository &repo, m_core->settings().repositories()) {
-            if (repo.isEnabled() && productKeyCheck->isValidRepository(repo)) {
-                QAuthenticator authenticator;
-                authenticator.setUser(repo.username());
-                authenticator.setPassword(repo.password());
+        if (onlineInstaller || m_core->isMaintainer()) {
+            QList<FileTaskItem> items;
+            foreach (const Repository &repo, m_core->settings().repositories()) {
+                if (repo.isEnabled() &&
+                        productKeyCheck->isValidRepository(repo)) {
+                    QAuthenticator authenticator;
+                    authenticator.setUser(repo.username());
+                    authenticator.setPassword(repo.password());
 
-                QString url = repo.url().toString() + QLatin1String("/Updates.xml?");
-                if (!m_core->value(QLatin1String("UrlQueryString")).isEmpty())
-                    url += m_core->value(QLatin1String("UrlQueryString")) + QLatin1Char('&');
+                    if (!repo.isCompressed()) {
+                        QString url = repo.url().toString() + QLatin1String("/Updates.xml?");
+                        if (!m_core->value(scUrlQueryString).isEmpty())
+                            url += m_core->value(scUrlQueryString) + QLatin1Char('&');
 
-                // also append a random string to avoid proxy caches
-                FileTaskItem item(url.append(QString::number(qrand() * qrand())));
-                item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
-                item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
-                items.append(item);
+                        // also append a random string to avoid proxy caches
+                        FileTaskItem item(url.append(QString::number(qrand() * qrand())));
+                        item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
+                        item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
+                        items.append(item);
+                    }
+                    else {
+                        qDebug() << "Trying to parse compressed repo as normal repository."\
+                                  "Check repository syntax.";
+                    }
+                }
+            }
+            if (items.count() > 0) {
+                startXMLTask(items);
+            } else {
+                emitFinished();
+            }
+        } else {
+            emitFinished();
+        }
+    } else {
+        resetCompressedFetch();
+
+        bool repositoriesFound = false;
+        foreach (const Repository &repo, m_core->settings().temporaryRepositories()) {
+            if (repo.isCompressed() && repo.isEnabled() &&
+                    productKeyCheck->isValidRepository(repo)) {
+                repositoriesFound = true;
+                startUnzipRepositoryTask(repo);
+
+                //Set the repository disabled so we don't handle it many times
+                Repository replacement = repo;
+                replacement.setEnabled(false);
+                Settings &s = m_core->settings();
+                QSet<Repository> temporaries = s.temporaryRepositories();
+                if (temporaries.contains(repo)) {
+                    temporaries.remove(repo);
+                    temporaries.insert(replacement);
+                    s.setTemporaryRepositories(temporaries, true);
+                }
             }
         }
-        DownloadFileTask *const xmlTask = new DownloadFileTask(items);
-        xmlTask->setProxyFactory(m_core->proxyFactory());
-        m_xmlTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, xmlTask));
-    } else {
-        emitFinished();
+        if (!repositoriesFound) {
+            emitFinished();
+        }
+        else {
+            setProgressTotalAmount(0);
+            emit infoMessage(this, tr("Unpacking compressed repositories. This may take a while..."));
+        }
     }
+}
+
+void MetadataJob::startXMLTask(const QList<FileTaskItem> items)
+{
+    DownloadFileTask *const xmlTask = new DownloadFileTask(items);
+    xmlTask->setProxyFactory(m_core->proxyFactory());
+    m_xmlTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, xmlTask));
 }
 
 void MetadataJob::doCancel()
 {
     reset();
-    emitFinishedWithError(KDJob::Canceled, tr("Meta data download canceled."));
+    emitFinishedWithError(Job::Canceled, tr("Meta data download canceled."));
+}
+
+void MetadataJob::startUnzipRepositoryTask(const Repository &repo)
+{
+    QTemporaryDir tempRepoDir(QDir::tempPath() + QLatin1String("/compressedRepo-XXXXXX"));
+    if (!tempRepoDir.isValid()) {
+        qDebug() << "Cannot create unique temporary directory.";
+        return;
+    }
+    tempRepoDir.setAutoRemove(false);
+    m_tempDirDeleter.add(tempRepoDir.path());
+    QString url = repo.url().toLocalFile();
+    UnzipArchiveTask *task = new UnzipArchiveTask(url, tempRepoDir.path());
+    QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
+    m_unzipRepositoryTasks.insert(watcher, qobject_cast<QObject*> (task));
+    connect(watcher, &QFutureWatcherBase::finished, this,
+        &MetadataJob::unzipRepositoryTaskFinished);
+    connect(watcher, &QFutureWatcherBase::progressValueChanged, this,
+        &MetadataJob::progressChanged);
+    watcher->setFuture(QtConcurrent::run(&UnzipArchiveTask::doTask, task));
+}
+
+void MetadataJob::unzipRepositoryTaskFinished()
+{
+    QFutureWatcher<void> *watcher = static_cast<QFutureWatcher<void> *>(sender());
+    int error = Job::NoError;
+    QString errorString;
+    try {
+        watcher->waitForFinished();    // trigger possible exceptions
+
+        QHashIterator<QFutureWatcher<void> *, QObject*> i(m_unzipRepositoryTasks);
+        while (i.hasNext()) {
+
+            i.next();
+            if (i.key() == watcher) {
+                UnzipArchiveTask *task = qobject_cast<UnzipArchiveTask*> (i.value());
+                QString url = task->target();
+
+                QUrl targetUrl = targetUrl.fromLocalFile(url);
+                Repository repo(targetUrl, false, true);
+                url = repo.url().toString() + QLatin1String("/Updates.xml");
+                TestRepository testJob(m_core);
+                testJob.setRepository(repo);
+                testJob.start();
+                testJob.waitForFinished();
+                error = testJob.error();
+                errorString = testJob.errorString();
+                if (error == Job::NoError) {
+                    FileTaskItem item(url);
+                    item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
+                    m_unzipRepositoryitems.append(item);
+                } else {
+                    //Repository is not valid, remove it
+                    Repository repository;
+                    repository.setUrl(QUrl(task->archive()));
+                    Settings &s = m_core->settings();
+                    QSet<Repository> temporaries = s.temporaryRepositories();
+                    foreach (Repository repository, temporaries) {
+                        if (repository.url().toLocalFile() == task->archive()) {
+                            temporaries.remove(repository);
+                        }
+                    }
+                    s.setTemporaryRepositories(temporaries, false);
+                }
+            }
+        }
+        delete m_unzipRepositoryTasks.value(watcher);
+        m_unzipRepositoryTasks.remove(watcher);
+        delete watcher;
+
+        //One can specify many zipped repository items at once. As the repositories are
+        //unzipped one by one, we collect here all items before parsing xml files from those.
+        if (m_unzipRepositoryitems.count() > 0 && m_unzipRepositoryTasks.isEmpty()) {
+            startXMLTask(m_unzipRepositoryitems);
+        } else {
+            if (error != Job::NoError) {
+                emitFinishedWithError(QInstaller::DownloadError, errorString);
+            }
+        }
+
+    } catch (const UnzipArchiveException &e) {
+        reset();
+        emitFinishedWithError(QInstaller::ExtractionError, e.message());
+    } catch (const QUnhandledException &e) {
+        reset();
+        emitFinishedWithError(QInstaller::DownloadError, QLatin1String(e.what()));
+    } catch (...) {
+        reset();
+        emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during extracting."));
+    }
 }
 
 void MetadataJob::xmlTaskFinished()
@@ -124,7 +264,7 @@ void MetadataJob::xmlTaskFinished()
         if (e.type() == AuthenticationRequiredException::Type::Proxy) {
             const QNetworkProxy proxy = e.proxy();
             ProxyCredentialsDialog proxyCredentials(proxy);
-            qDebug() << e.message();
+            qDebug().noquote() << e.message();
 
             if (proxyCredentials.exec() == QDialog::Accepted) {
                 qDebug() << "Retrying with new credentials ...";
@@ -139,7 +279,7 @@ void MetadataJob::xmlTaskFinished()
                 emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
             }
         } else if (e.type() == AuthenticationRequiredException::Type::Server) {
-            qDebug() << e.message();
+            qDebug().noquote() << e.message();
             ServerAuthenticationDialog dlg(e.message(), e.taskItem());
             if (dlg.exec() == QDialog::Accepted) {
                 Repository original = e.taskItem().value(TaskRole::UserRole)
@@ -160,7 +300,7 @@ void MetadataJob::xmlTaskFinished()
 
                     if (s.updateDefaultRepositories(update) == Settings::UpdatesApplied
                         || s.updateUserRepositories(update) == Settings::UpdatesApplied) {
-                            if (m_core->isUpdater() || m_core->isPackageManager())
+                            if (m_core->isMaintainer())
                                 m_core->writeMaintenanceConfigFiles();
                     }
                 }
@@ -181,7 +321,7 @@ void MetadataJob::xmlTaskFinished()
         emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during download."));
     }
 
-    if (error() != KDJob::NoError)
+    if (error() != Job::NoError)
         return;
 
     if (status == XmlDownloadSuccess) {
@@ -189,6 +329,7 @@ void MetadataJob::xmlTaskFinished()
         DownloadFileTask *const metadataTask = new DownloadFileTask(m_packages);
         metadataTask->setProxyFactory(m_core->proxyFactory());
         m_metadataTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, metadataTask));
+        setProgressTotalAmount(100);
         emit infoMessage(this, tr("Retrieving meta information from remote repository..."));
     } else if (status == XmlDownloadRetry) {
         QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
@@ -204,17 +345,14 @@ void MetadataJob::unzipTaskFinished()
     try {
         watcher->waitForFinished();    // trigger possible exceptions
     } catch (const UnzipArchiveException &e) {
-        reset();
         emitFinishedWithError(QInstaller::ExtractionError, e.message());
     } catch (const QUnhandledException &e) {
-        reset();
         emitFinishedWithError(QInstaller::DownloadError, QLatin1String(e.what()));
     } catch (...) {
-        reset();
         emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during extracting."));
     }
 
-    if (error() != KDJob::NoError)
+    if (error() != Job::NoError)
         return;
 
     delete m_unzipTasks.value(watcher);
@@ -232,6 +370,11 @@ void MetadataJob::progressChanged(int progress)
     setProcessedAmount(progress);
 }
 
+void MetadataJob::setProgressTotalAmount(int maximum)
+{
+    setTotalAmount(maximum);
+}
+
 void MetadataJob::metadataTaskFinished()
 {
     try {
@@ -246,7 +389,7 @@ void MetadataJob::metadataTaskFinished()
 
                 QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
                 m_unzipTasks.insert(watcher, qobject_cast<QObject*> (task));
-                connect(watcher, SIGNAL(finished()), this, SLOT(unzipTaskFinished()));
+                connect(watcher, &QFutureWatcherBase::finished, this, &MetadataJob::unzipTaskFinished);
                 watcher->setFuture(QtConcurrent::run(&UnzipArchiveTask::doTask, task));
             }
         } else {
@@ -272,13 +415,24 @@ void MetadataJob::reset()
     m_packages.clear();
     m_metadata.clear();
 
-    setError(KDJob::NoError);
+    setError(Job::NoError);
     setErrorString(QString());
     setCapabilities(Cancelable);
 
     try {
         m_xmlTask.cancel();
         m_metadataTask.cancel();
+    } catch (...) {}
+    m_tempDirDeleter.releaseAndDeleteAll();
+}
+
+void MetadataJob::resetCompressedFetch()
+{
+    setError(Job::NoError);
+    setErrorString(QString());
+    m_unzipRepositoryitems.clear();
+
+    try {
         foreach (QFutureWatcher<void> *const watcher, m_unzipTasks.keys()) {
             watcher->cancel();
             watcher->deleteLater();
@@ -286,20 +440,32 @@ void MetadataJob::reset()
         foreach (QObject *const object, m_unzipTasks)
             object->deleteLater();
         m_unzipTasks.clear();
+
+        foreach (QFutureWatcher<void> *const watcher, m_unzipRepositoryTasks.keys()) {
+            watcher->cancel();
+            watcher->deleteLater();
+        }
+        foreach (QObject *const object, m_unzipRepositoryTasks)
+            object->deleteLater();
+        m_unzipRepositoryTasks.clear();
     } catch (...) {}
-    m_tempDirDeleter.releaseAndDeleteAll();
 }
 
 MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &results)
 {
     foreach (const FileTaskResult &result, results) {
-        if (error() != KDJob::NoError)
+        if (error() != Job::NoError)
             return XmlDownloadFailure;
 
+        //If repository is not found, target might be empty. Do not continue parsing the
+        //repository and do not prevent further repositories usage.
+        if (result.target().isEmpty()) {
+            continue;
+        }
         Metadata metadata;
         QTemporaryDir tmp(QDir::tempPath() + QLatin1String("/remoterepo-XXXXXX"));
         if (!tmp.isValid()) {
-            qDebug() << "Could not create unique temporary directory.";
+            qDebug() << "Cannot create unique temporary directory.";
             return XmlDownloadFailure;
         }
 
@@ -309,21 +475,22 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
 
         QFile file(result.target());
         if (!file.rename(metadata.directory + QLatin1String("/Updates.xml"))) {
-            qDebug() << "Could not rename target to Updates.xml. Error:" << file.errorString();
+            qDebug() << "Cannot rename target to Updates.xml:" << file.errorString();
             return XmlDownloadFailure;
         }
 
         if (!file.open(QIODevice::ReadOnly)) {
-            qDebug() << "Could not open Updates.xml for reading. Error:" << file.errorString();
+            qDebug() << "Cannot open Updates.xml for reading:" << file.errorString();
             return XmlDownloadFailure;
         }
 
         QString error;
         QDomDocument doc;
         if (!doc.setContent(&file, &error)) {
-            qDebug() << QString::fromLatin1("Could not fetch a valid version of Updates.xml from "
-                "repository: %1. Error: %2").arg(metadata.repository.displayname(), error);
-            return XmlDownloadFailure;
+            qDebug().nospace() << "Cannot fetch a valid version of Updates.xml from repository "
+                               << metadata.repository.displayname() << ": " << error;
+            //If there are other repositories, try to use those
+            continue;
         }
         file.close();
 
@@ -346,7 +513,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 for (int j = 0; j < c2.count(); ++j) {
                     if (c2.at(j).toElement().tagName() == scName)
                         packageName = c2.at(j).toElement().text();
-                    else if (c2.at(j).toElement().tagName() == scRemoteVersion)
+                    else if (c2.at(j).toElement().tagName() == scVersion)
                         packageVersion = (online ? c2.at(j).toElement().text() : QString());
                     else if ((c2.at(j).toElement().tagName() == QLatin1String("SHA1")) && testCheckSum)
                         packageHash = c2.at(j).toElement().text();
@@ -408,12 +575,12 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     if (ProductKeyCheck::instance()->isValidRepository(newRepository)) {
                         // store the new repository and the one old it replaces
                         repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
-                        qDebug() << "Replace repository:" << oldRepository.displayname() << "with:"
+                        qDebug() << "Replace repository" << oldRepository.displayname() << "with"
                             << newRepository.displayname();
                     }
                 } else {
                     qDebug() << "Invalid additional repositories action set in Updates.xml fetched "
-                        "from:" << metadata.repository.displayname() << "Line:" << el.lineNumber();
+                        "from" << metadata.repository.displayname() << "line:" << el.lineNumber();
                 }
             }
         }
@@ -441,7 +608,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     return XmlDownloadRetry;
                 }
             } else if (s.updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
-                if (m_core->isUpdater() || m_core->isPackageManager())
+                if (m_core->isMaintainer())
                     m_core->writeMaintenanceConfigFiles();
                 QFile::remove(result.target());
                 return XmlDownloadRetry;

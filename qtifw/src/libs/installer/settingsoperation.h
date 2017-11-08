@@ -35,14 +35,14 @@ namespace QInstaller {
 
 class INSTALLER_EXPORT SettingsOperation : public Operation
 {
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::SettingsOperation)
 public:
-    SettingsOperation();
+    explicit SettingsOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation *clone() const;
 
 private:
     bool checkArguments();

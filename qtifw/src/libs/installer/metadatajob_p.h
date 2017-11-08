@@ -29,8 +29,12 @@
 #ifndef METADATAJOB_P_H
 #define METADATAJOB_P_H
 
+#include "lib7z_extract.h"
 #include "lib7z_facade.h"
 #include "metadatajob.h"
+
+#include <QDir>
+#include <QFile>
 
 namespace QInstaller{
 
@@ -60,7 +64,8 @@ public:
     UnzipArchiveTask(const QString &arcive, const QString &target)
         : m_archive(arcive), m_targetDir(target)
     {}
-
+    QString target() { return m_targetDir; }
+    QString archive() { return m_archive; }
     void doTask(QFutureInterface<void> &fi)
     {
         fi.reportStarted();
@@ -77,14 +82,14 @@ public:
                 Lib7z::extractArchive(&archive, m_targetDir);
             } catch (const Lib7z::SevenZipException& e) {
                 fi.reportException(UnzipArchiveException(MetadataJob::tr("Error while extracting "
-                    "'%1': %2").arg(m_archive, e.message())));
+                    "archive \"%1\": %2").arg(QDir::toNativeSeparators(m_archive), e.message())));
             } catch (...) {
                 fi.reportException(UnzipArchiveException(MetadataJob::tr("Unknown exception "
-                    "caught while extracting %1.").arg(m_archive)));
+                    "caught while extracting archive \"%1\".").arg(QDir::toNativeSeparators(m_archive))));
             }
         } else {
-            fi.reportException(UnzipArchiveException(MetadataJob::tr("Could not open %1 for "
-                "reading. Error: %2").arg(m_archive, archive.errorString())));
+            fi.reportException(UnzipArchiveException(MetadataJob::tr("Cannot open file \"%1\" for "
+                "reading: %2").arg(QDir::toNativeSeparators(m_archive), archive.errorString())));
         }
 
         fi.reportFinished();

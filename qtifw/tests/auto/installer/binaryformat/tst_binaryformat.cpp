@@ -30,7 +30,7 @@
 #include <binaryformat.h>
 #include <errors.h>
 #include <fileio.h>
-#include <kdupdaterupdateoperation.h>
+#include <updateoperation.h>
 
 #include <QTest>
 #include <QTemporaryFile>
@@ -51,7 +51,9 @@ struct Layout : public QInstaller::BinaryLayout
 class TestOperation : public KDUpdater::UpdateOperation
 {
 public:
-    TestOperation(const QString &name) { setName(name); }
+    TestOperation(const QString &name)
+        : KDUpdater::UpdateOperation(0)
+    { setName(name); }
 
     virtual void backup() {}
     virtual bool performOperation() { return true; }
@@ -117,8 +119,6 @@ private slots:
 
     void findMagicCookieWithError()
     {
-        QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"No marker found, stopped after 71.00 KiB.\" ");
-
         QTemporaryFile file;
         file.open();
 

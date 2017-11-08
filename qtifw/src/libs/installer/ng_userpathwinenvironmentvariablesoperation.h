@@ -22,23 +22,20 @@
 
 #include "qinstallerglobal.h"
 
-#include <QFile>
-
 namespace QInstaller
 {
 
-class INSTALLER_EXPORT NgUserPathWinEnvironmentVariableOperation: public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT NgUserPathWinEnvironmentVariableOperation: public Operation
 {
-    public:
-     NgUserPathWinEnvironmentVariableOperation();
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::NgUserPathWinEnvironmentVariableOperation)
+public:
+     explicit NgUserPathWinEnvironmentVariableOperation(PackageManagerCore *core);
+
      void backup();
      bool performOperation();
      bool undoOperation();
      bool testOperation();
-     Operation *clone() const;
-    protected:
-     QString readPath ();
-     void rewritePath (QString value);
+
 };
 
 }

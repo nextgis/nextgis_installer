@@ -29,11 +29,13 @@
 
 #include "link.h"
 
+#include <QDir>
 #include <QFileInfo>
 
 using namespace QInstaller;
 
-CreateLinkOperation::CreateLinkOperation()
+CreateLinkOperation::CreateLinkOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("CreateLink"));
 }
@@ -44,22 +46,18 @@ void CreateLinkOperation::backup()
 
 bool CreateLinkOperation::performOperation()
 {
-    QStringList args = arguments();
-
-    if (args.count() != 2) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("exactly 2"), QLatin1String("")));
+    if (!checkArgumentCount(2))
         return false;
-    }
 
+    const QStringList args = arguments();
     const QString& linkPath = args.at(0);
     const QString& targetPath = args.at(1);
     Link link = Link::create(linkPath, targetPath);
 
     if (!link.exists()) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not create link from %1 to %2.").arg(linkPath, targetPath));
+        setErrorString(tr("Cannot create link from \"%1\" to \"%2\".").arg(
+                           QDir::toNativeSeparators(linkPath), QDir::toNativeSeparators(targetPath)));
         return false;
     }
 
@@ -79,7 +77,8 @@ bool CreateLinkOperation::undoOperation()
     }
     if (!link.remove()) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not remove link from %1 to %2.").arg(linkPath, targetPath));
+        setErrorString(tr("Cannot remove link from \"%1\" to \"%2\".").arg(
+                           QDir::toNativeSeparators(linkPath), QDir::toNativeSeparators(targetPath)));
         return false;
     }
 
@@ -89,9 +88,4 @@ bool CreateLinkOperation::undoOperation()
 bool CreateLinkOperation::testOperation()
 {
     return true;
-}
-
-Operation *CreateLinkOperation::clone() const
-{
-    return new CreateLinkOperation();
 }

@@ -51,6 +51,9 @@ const char AddTmpRepository[] = "addTempRepository";
 const char SetTmpRepository[] = "setTempRepository";
 const char StartServer[] = "startserver";
 const char StartClient[] = "startclient";
+const char InstallCompressedRepository[] = "installCompressedRepository";
+const char SilentUpdate[] = "silentUpdate";
+const char Platform[] = "platform";
 
 // NEXTGIS: add options for launch external programs after the work of installer.
 const char Launch[] = "launch";

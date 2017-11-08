@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         RepositoryManager manager;
         manager.setProductionRepository(productionRepo);
         manager.setUpdateRepository(updateRepo);
-        a.connect(&manager, SIGNAL(repositoriesCompared()), &a, SLOT(quit()));
+        a.connect(&manager, &RepositoryManager::repositoriesCompared, &a, &QApplication::quit);
         qDebug() << "Waiting for server reply...";
         a.exec();
         qDebug() << "Writing into " << outputFile;

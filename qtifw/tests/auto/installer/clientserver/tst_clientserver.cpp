@@ -207,7 +207,7 @@ private slots:
 
         QLocalSocket socket;
         socket.connectToServer(socketName);
-        QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
+        QVERIFY2(socket.waitForConnected(), "Cannot connect to server.");
         QCOMPARE(socket.state() == QLocalSocket::ConnectedState, true);
 
         sendCommand(&socket, Protocol::Authorize, QString(Protocol::DefaultAuthorizationKey));
@@ -240,7 +240,7 @@ private slots:
 
         QLocalSocket socket;
         socket.connectToServer(socketName);
-        QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
+        QVERIFY2(socket.waitForConnected(), "Cannot connect to server.");
         QCOMPARE(socket.state() == QLocalSocket::ConnectedState, true);
 
         sendCommand(&socket, Protocol::Authorize, QString::fromLatin1("SomeKey"));
@@ -454,8 +454,7 @@ private slots:
             }
 
             QSignalSpy spy(&wrapper, SIGNAL(started()));
-            QSignalSpy spy2(&wrapper, SIGNAL(finished(int)));
-            QSignalSpy spy3(&wrapper, SIGNAL(finished(int, QProcess::ExitStatus)));
+            QSignalSpy spy2(&wrapper, SIGNAL(finished(int, QProcess::ExitStatus)));
 
 #ifdef Q_OS_WIN
             wrapper.start(fileName);
@@ -473,10 +472,6 @@ private slots:
             QCOMPARE(spy.count(), 1);
             QCOMPARE(spy2.count(), 1);
             QList<QVariant> arguments = spy2.takeFirst();
-            QCOMPARE(arguments.first().toInt(), 0);
-
-            QCOMPARE(spy3.count(), 1);
-            arguments = spy3.takeFirst();
             QCOMPARE(arguments.first().toInt(), 0);
             QCOMPARE(arguments.last().toInt(), int(QProcessWrapper::NormalExit));
 

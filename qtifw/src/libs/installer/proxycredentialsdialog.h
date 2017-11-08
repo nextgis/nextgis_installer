@@ -30,9 +30,7 @@
 
 #include <QDialog>
 
-QT_BEGIN_NAMESPACE
-class QNetworkProxy;
-QT_END_NAMESPACE
+QT_FORWARD_DECLARE_CLASS(QNetworkProxy)
 
 namespace QInstaller {
 

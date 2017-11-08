@@ -401,8 +401,8 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
         messageTypeHash.insert(warningType, QLatin1String("warning"));
     };
 
-    qDebug() << QString::fromLatin1("created %1 message box %2: '%3', %4").arg(messageTypeHash
-        .value(messageType),identifier, title, text);
+    qDebug().nospace() << "Created " << messageTypeHash.value(messageType).toUtf8().constData()
+                       << " message box " << identifier << ": " << title << ", " << text;
 
     if (qobject_cast<QApplication*> (qApp) == 0)
         return defaultButton;

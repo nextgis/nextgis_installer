@@ -56,6 +56,9 @@ public:
 
 private Q_SLOTS:
     void updateRestartPage();
+
+private:
+    bool validRepositoriesAvailable() const;
 };
 
 #endif // INSTALLERBASECOMMONS_H

@@ -36,6 +36,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QIODevice>
 #include <QtCore/QLocale>
+#include <QtCore/QRegExp>
 #include <QtCore/QStack>
 
 #include <QXmlStreamReader>
@@ -708,25 +709,25 @@ bool RCCResourceLibrary::output(QIODevice &outDevice, QIODevice &errorDevice)
     if (m_verbose)
         m_errorDevice->write("Outputting code\n");
     if (!writeHeader()) {
-        m_errorDevice->write("Could not write header\n");
+        m_errorDevice->write("Cannot write header\n");
         return false;
     }
     if (m_root) {
         if (!writeDataBlobs()) {
-            m_errorDevice->write("Could not write data blobs.\n");
+            m_errorDevice->write("Cannot write data blobs.\n");
             return false;
         }
         if (!writeDataNames()) {
-            m_errorDevice->write("Could not write file names\n");
+            m_errorDevice->write("Cannot write file names\n");
             return false;
         }
         if (!writeDataStructure()) {
-            m_errorDevice->write("Could not write data tree\n");
+            m_errorDevice->write("Cannot write data tree\n");
             return false;
         }
     }
     if (!writeInitializer()) {
-        m_errorDevice->write("Could not write footer\n");
+        m_errorDevice->write("Cannot write footer\n");
         return false;
     }
     outDevice.write(m_out.constData(), m_out.size());

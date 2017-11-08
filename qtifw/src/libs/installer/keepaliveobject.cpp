@@ -28,8 +28,8 @@
 
 #include "keepaliveobject.h"
 #include "remoteclient.h"
-#include "localsocket.h"
 
+#include <QLocalSocket>
 #include <QTimer>
 
 namespace QInstaller {
@@ -43,7 +43,7 @@ KeepAliveObject::KeepAliveObject()
 void KeepAliveObject::start()
 {
     m_timer = new QTimer(this);
-    m_socket = new LocalSocket(this);
+    m_socket = new QLocalSocket(this);
 
     connect(m_timer, &QTimer::timeout, [this]() {
         if (m_socket->state() != QLocalSocket::UnconnectedState)

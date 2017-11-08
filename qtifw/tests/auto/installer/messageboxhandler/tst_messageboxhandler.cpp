@@ -12,6 +12,17 @@
 
 using namespace QInstaller;
 
+QT_BEGIN_NAMESPACE
+namespace QTest {
+    template<>
+    char *toString(const QMessageBox::StandardButton &button)
+    {
+        QString buttonAsString(QString::number(button));
+        return qstrdup(buttonAsString.toLatin1().data());
+    }
+}
+QT_END_NAMESPACE
+
 class tst_MessageBoxHandler : public QObject
 {
     Q_OBJECT
@@ -56,8 +67,8 @@ private slots:
 
     void testDefaultAction()
     {
-        const char ignoreMessage[] = "\"created critical message box TestError: 'A test error', "
-            "This is a test error message.\" ";
+        const char ignoreMessage[] = "Created critical message box \"TestError\": \"A test error\", "
+            "\"This is a test error message.\"";
         srand(time(0)); /* initialize random seed: */
 
         int standardButtons = QMessageBox::NoButton;
@@ -85,7 +96,7 @@ private slots:
                     wantedButton = button;
             }
 
-            QVERIFY2(wantedButton != QMessageBox::NoButton, "Could not find a wantedButton.");
+            QVERIFY2(wantedButton != QMessageBox::NoButton, "Cannot find a wantedButton.");
             QCOMPARE(static_cast<QMessageBox::StandardButton>(returnButton), wantedButton);
         } while (standardButtons < m_maxStandardButtons);
     }

@@ -31,6 +31,7 @@
 
 #include <packagemanagercore.h>
 #include <productkeycheck.h>
+#include <testrepository.h>
 
 #include <QtCore/QFile>
 
@@ -221,13 +222,18 @@ SettingsDialog::SettingsDialog(PackageManagerCore *core, QWidget *parent)
     m_ui->m_httpProxy->setText(httpProxy.hostName());
     m_ui->m_httpProxyPort->setValue(httpProxy.port());
 
-    connect(m_ui->m_addRepository, SIGNAL(clicked()), this, SLOT(addRepository()));
-    connect(m_ui->m_showPasswords, SIGNAL(clicked()), this, SLOT(updatePasswords()));
-    connect(m_ui->m_removeRepository, SIGNAL(clicked()), this, SLOT(removeRepository()));
-    connect(m_ui->m_useTmpRepositories, SIGNAL(clicked(bool)), this, SLOT(useTmpRepositoriesOnly(bool)));
-    connect(m_ui->m_repositoriesView, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-        this, SLOT(currentRepositoryChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
-    connect(m_ui->m_testRepository, SIGNAL(clicked()), this, SLOT(testRepository()));
+    connect(m_ui->m_addRepository, &QAbstractButton::clicked,
+            this, &SettingsDialog::addRepository);
+    connect(m_ui->m_showPasswords, &QAbstractButton::clicked,
+            this, &SettingsDialog::updatePasswords);
+    connect(m_ui->m_removeRepository, &QAbstractButton::clicked,
+            this, &SettingsDialog::removeRepository);
+    connect(m_ui->m_useTmpRepositories, &QAbstractButton::clicked,
+            this, &SettingsDialog::useTmpRepositoriesOnly);
+    connect(m_ui->m_repositoriesView, &QTreeWidget::currentItemChanged,
+        this, &SettingsDialog::currentRepositoryChanged);
+    connect(m_ui->m_testRepository, &QAbstractButton::clicked,
+            this, &SettingsDialog::testRepository);
 
     useTmpRepositoriesOnly(settings.hasReplacementRepos());
     m_ui->m_useTmpRepositories->setChecked(settings.hasReplacementRepos());
@@ -319,25 +325,36 @@ void SettingsDialog::testRepository()
         m_ui->tabWidget->setEnabled(false);
         m_ui->buttonBox->setEnabled(false);
 
-        m_testRepository.setRepository(current->repository());
-        m_testRepository.start();
-        m_testRepository.waitForFinished();
-        current->setRepository(m_testRepository.repository());
+        TestRepository testJob(m_core);
+        testJob.setRepository(current->repository());
+        testJob.start();
+        testJob.waitForFinished();
+        current->setRepository(testJob.repository());
 
-        if (m_testRepository.error() > KDJob::NoError) {
-            QMessageBox msgBox(this);
-            msgBox.setIcon(QMessageBox::Question);
-            msgBox.setWindowModality(Qt::WindowModal);
-            msgBox.setDetailedText(m_testRepository.errorString());
-            msgBox.setText(tr("There was an error testing this repository."));
-            msgBox.setInformativeText(tr("Do you want to disable the tested repository?"));
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Question);
+        msgBox.setWindowModality(Qt::WindowModal);
+        msgBox.setDetailedText(testJob.errorString());
 
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setDefaultButton(QMessageBox::Yes);
+        const bool isError = (testJob.error() > Job::NoError);
+        const bool isEnabled = current->data(1, Qt::CheckStateRole).toBool();
 
-            if (msgBox.exec() == QMessageBox::Yes)
-                current->setData(1, Qt::CheckStateRole, Qt::Unchecked);
+        msgBox.setText(isError
+            ? tr("An error occurred while testing this repository.")
+            : tr("The repository was tested successfully."));
+
+        const bool showQuestion = (isError == isEnabled);
+        msgBox.setStandardButtons(showQuestion ? QMessageBox::Yes | QMessageBox::No
+            : QMessageBox::Close);
+        msgBox.setDefaultButton(showQuestion ? QMessageBox::Yes : QMessageBox::Close);
+        if (showQuestion) {
+            msgBox.setInformativeText(isEnabled
+                ? tr("Do you want to disable the repository?")
+                : tr("Do you want to enable the repository?")
+            );
         }
+        if (msgBox.exec() == QMessageBox::Yes)
+            current->setData(1, Qt::CheckStateRole, (!isEnabled) ? Qt::Checked : Qt::Unchecked);
 
         m_ui->tabWidget->setEnabled(true);
         m_ui->buttonBox->setEnabled(true);

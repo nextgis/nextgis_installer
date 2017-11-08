@@ -31,8 +31,7 @@
 #include <scriptengine.h>
 #include <packagemanagerpagefactory.h>
 #include <productkeycheck.h>
-
-#include <ng_authpage.h>
+#include <settings.h>
 
 using namespace QInstaller;
 
@@ -49,11 +48,6 @@ InstallerGui::InstallerGui(PackageManagerCore *core)
             "constructed.").arg(id)));
         setPage(id, page);
     }
-    
-    // NEXTGIS: add NextGIS authentication page.
-#ifdef NG_AUTH_ON
-    setPage(0x500, new NextgisAuthPage(core));
-#endif
 
     setPage(PackageManagerCore::Introduction, new IntroductionPage(core));
     setPage(PackageManagerCore::TargetDirectory, new TargetDirectoryPage(core));
@@ -86,25 +80,26 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
             "constructed.").arg(id)));
         setPage(id, page);
     }
-    
-    // NEXTGIS: add NextGIS authentication page.
-#ifdef NG_AUTH_ON
-    NextgisAuthPage *pageNgAuth = new NextgisAuthPage(core);
-    setPage(0x500, pageNgAuth);
-#endif
 
     IntroductionPage *intro = new IntroductionPage(core);
-    connect(intro, SIGNAL(packageManagerCoreTypeChanged()), this, SLOT(updateRestartPage()));
+    connect(intro, &IntroductionPage::packageManagerCoreTypeChanged,
+            this, &MaintenanceGui::updateRestartPage);
 
-    setPage(PackageManagerCore::Introduction, intro);
-    setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
-    setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
+    if (!core->isOfflineOnly() || validRepositoriesAvailable()) {
+        setPage(PackageManagerCore::Introduction, intro);
+        setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
+        setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
+    } else {
+        core->setUninstaller();
+        core->setCompleteUninstallation(true);
+    }
+
     setPage(PackageManagerCore::ReadyForInstallation, new ReadyForInstallationPage(core));
     setPage(PackageManagerCore::PerformInstallation, new PerformInstallationPage(core));
     setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
 
     RestartPage *p = new RestartPage(core);
-    connect(p, SIGNAL(restart()), this, SIGNAL(gotRestarted()));
+    connect(p, &RestartPage::restart, this, &PackageManagerGui::gotRestarted);
     setPage(PackageManagerCore::InstallationFinished + 1, p);
 
     if (core->isUninstaller())
@@ -121,4 +116,14 @@ void MaintenanceGui::updateRestartPage()
 {
     wizardPageVisibilityChangeRequested((packageManagerCore()->isUninstaller() ? false : true),
         PackageManagerCore::InstallationFinished + 1);
+}
+
+bool MaintenanceGui::validRepositoriesAvailable() const
+{
+    foreach (const Repository &repo, packageManagerCore()->settings().repositories()) {
+        if (repo.isEnabled() && repo.isValid()) {
+            return true;
+        }
+    }
+    return false;
 }

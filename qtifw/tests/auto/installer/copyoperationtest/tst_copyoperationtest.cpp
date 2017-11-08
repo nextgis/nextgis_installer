@@ -27,7 +27,7 @@
 **************************************************************************/
 
 #include <init.h>
-#include <kdupdaterupdateoperations.h>
+#include <updateoperations.h>
 #include <utils.h>
 
 #include <QDir>
@@ -63,7 +63,8 @@ private slots:
         QVERIFY(!op.performOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
-        QCOMPARE(op.errorString(), QString("Invalid arguments: 0 arguments given, 2 expected."));
+        QCOMPARE(op.errorString(), QString("Invalid arguments in Copy: "
+                                           "0 arguments given, exactly 2 arguments expected."));
 
     }
 
@@ -82,17 +83,17 @@ private slots:
         QFETCH(QString, source);
         QFETCH(QString, destination);
 
-        QVERIFY2(QFileInfo(source).exists(), QString("Source '%1' does not exist.").arg(source).toLatin1());
+        QVERIFY2(QFileInfo(source).exists(), QString("Source file \"%1\" does not exist.").arg(source).toLatin1());
         CopyOperation op;
         op.setArguments(QStringList() << source << destination);
         op.backup();
         QVERIFY2(op.performOperation(), op.errorString().toLatin1());
 
-        QVERIFY2(QFileInfo(m_testDestinationFilePath).exists(), QString("Copying from '%1' to '%2' was "
+        QVERIFY2(QFileInfo(m_testDestinationFilePath).exists(), QString("Copying from \"%1\" to \"%2\" was "
             "not working: '%3' does not exist").arg(source, destination, m_testDestinationFilePath).toLatin1());
         QVERIFY2(op.undoOperation(), op.errorString().toLatin1());
-        QVERIFY2(!QFileInfo(m_testDestinationFilePath).exists(), QString("Undo of copying from '%1' to "
-            "'%2' was not working.").toLatin1());
+        QVERIFY2(!QFileInfo(m_testDestinationFilePath).exists(), QString("Undo of copying from \"%1\" to "
+            "\"%2\" was not working.").toLatin1());
     }
 
     void testCopyIfDestinationExist_data()
@@ -114,7 +115,7 @@ private slots:
 
         QByteArray testFileHash = QInstaller::calculateHash(m_testDestinationFilePath, QCryptographicHash::Sha1);
 
-        QVERIFY2(QFileInfo(source).exists(), QString("Source '%1' does not exist.").arg(source).toLatin1());
+        QVERIFY2(QFileInfo(source).exists(), QString("Source file \"%1\" does not exist.").arg(source).toLatin1());
         CopyOperation op;
         op.setArguments(QStringList() << source << destination);
         op.backup();
@@ -125,8 +126,8 @@ private slots:
         QByteArray currentFileHash = QInstaller::calculateHash(m_testDestinationFilePath, QCryptographicHash::Sha1);
         QVERIFY(testFileHash != currentFileHash);
 
-        QVERIFY2(QFileInfo(m_testDestinationFilePath).exists(), QString("Copying from '%1' to '%2' was "
-            "not working: '%3' does not exist").arg(source, destination, m_testDestinationFilePath).toLatin1());
+        QVERIFY2(QFileInfo(m_testDestinationFilePath).exists(), QString("Copying from \"%1\" to \"%2\" was "
+            "not working: \"%3\" does not exist").arg(source, destination, m_testDestinationFilePath).toLatin1());
 
         // undo should replace the new one with the old backuped one
         QVERIFY2(op.undoOperation(), op.errorString().toLatin1());
@@ -135,7 +136,7 @@ private slots:
     }
     void init()
     {
-        QVERIFY2(!QFileInfo(m_testDestinationFilePath).exists(), QString("Destination '%1' should not exist "
+        QVERIFY2(!QFileInfo(m_testDestinationFilePath).exists(), QString("Destination \"%1\" should not exist "
             "to test the copy operation.").arg(m_testDestinationFilePath).toLatin1());
         QDir().mkpath(m_testDestinationPath);
     }

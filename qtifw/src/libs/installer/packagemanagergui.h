@@ -33,6 +33,7 @@
 
 #include <QtCore/QEvent>
 #include <QtCore/QMetaType>
+#include <QtCore/QTimer>
 
 #include <QWizard>
 #include <QWizardPage>
@@ -86,6 +87,11 @@ public:
 
     void updateButtonLayout();
     static QWizard::WizardStyle getStyle(const QString &name);
+
+    void setSilent(bool silent);
+    bool isSilent() const;
+
+    void setTextItems(QObject *object, const QStringList &items);
 
 Q_SIGNALS:
     void interrupted();
@@ -218,6 +224,7 @@ public Q_SLOTS:
     void onCoreNetworkSettingsChanged();
     void setMessage(const QString &msg);
     void onProgressChanged(int progress);
+    void setTotalProgress(int totalProgress);
     void setErrorMessage(const QString &error);
 
 Q_SIGNALS:
@@ -308,6 +315,7 @@ public:
     Q_INVOKABLE void selectDefault();
     Q_INVOKABLE void selectComponent(const QString &id);
     Q_INVOKABLE void deselectComponent(const QString &id);
+    Q_INVOKABLE void allowCompressedRepositoryInstall();
 
 protected:
     void entering();
@@ -352,6 +360,7 @@ private:
 private:
     QLineEdit *m_lineEdit;
     QLabel *m_warningLabel;
+    QTimer m_textChangeTimer;
 };
 
 
@@ -392,9 +401,6 @@ public:
 protected:
     void entering();
     void leaving();
-
-private:
-    bool calculateComponents(QString *displayString);
 
 private:
     QLabel *m_msgLabel;

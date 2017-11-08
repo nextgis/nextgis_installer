@@ -86,7 +86,8 @@ QString InstallIconsOperation::targetDirectory()
     return directory;
 }
 
-InstallIconsOperation::InstallIconsOperation()
+InstallIconsOperation::InstallIconsOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("InstallIcons"));
 }
@@ -103,20 +104,16 @@ void InstallIconsOperation::backup()
 
 bool InstallIconsOperation::performOperation()
 {
-    const QStringList args = arguments();
-    if ((args.count() != 1) && (args.count() != 2)) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("1 or 2"), tr(" (Sourcepath, [Vendorprefix])")));
+    if (!checkArgumentCount(1, 2, tr("<source path> [vendor prefix]")))
         return false;
-    }
 
+    const QStringList args = arguments();
     const QString source = args.at(0);
-    const QString vendor = args.value(1);
+    const QString vendor = args.value(1); // value() used since it's optional
 
     if (source.isEmpty()) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid Argument: source folder must not be empty."));
+        setErrorString(tr("Invalid Argument: source directory must not be empty."));
         return false;
     }
 
@@ -127,7 +124,7 @@ bool InstallIconsOperation::performOperation()
     QStringList backupFiles;
     QStringList createdDirectories;
 
-    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
+    PackageManagerCore *const core = packageManager();
 
     // iterate a second time to get the actual work done
     QDirIterator it(sourceDir.path(), QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot,
@@ -165,7 +162,8 @@ bool InstallIconsOperation::performOperation()
                 QFile bf(target);
                 if (!bf.copy(backup)) {
                     setError(UserDefinedError);
-                    setErrorString(tr("Could not backup file %1: %2").arg(target, bf.errorString()));
+                    setErrorString(tr("Cannot backup file \"%1\": %2").arg(
+                                       QDir::toNativeSeparators(target), bf.errorString()));
                     undoOperation();
                     return false;
                 }
@@ -178,7 +176,8 @@ bool InstallIconsOperation::performOperation()
                 QString errStr;
                 if (!deleteFileNowOrLater(target, &errStr)) {
                     setError(UserDefinedError);
-                    setErrorString(tr("Failed to overwrite %1: %2").arg(target, errStr));
+                    setErrorString(tr("Failed to overwrite \"%1\": %2").arg(
+                                       QDir::toNativeSeparators(target), errStr));
                     undoOperation();
                     return false;
                 }
@@ -189,7 +188,8 @@ bool InstallIconsOperation::performOperation()
             QFile cf(source);
             if (!cf.copy(target)) {
                 setError(UserDefinedError);
-                setErrorString(tr("Failed to copy file %1: %2").arg(target, cf.errorString()));
+                setErrorString(tr("Failed to copy file \"%1\": %2").arg(
+                                   QDir::toNativeSeparators(target), cf.errorString()));
                 undoOperation();
                 return false;
             }
@@ -199,7 +199,8 @@ bool InstallIconsOperation::performOperation()
             setValue(QLatin1String("files"), files);
         } else if (fi.isDir() && !QDir(target).exists()) {
             if (!QDir().mkpath(target)) {
-                setErrorString(tr("Could not create folder at %1: %2").arg(target, qt_error_string()));
+                setErrorString(tr("Cannot create directory \"%1\": %2").arg(
+                                   QDir::toNativeSeparators(target), qt_error_string()));
                 undoOperation();
                 return false;
             }
@@ -231,7 +232,7 @@ bool InstallIconsOperation::undoOperation()
 
         QFile installedTarget(target);
         if (installedTarget.exists() && !(installedTarget.copy(source) && installedTarget.remove())) {
-            warningMessages << QString::fromLatin1("Could not move file from '%1' to '%2', error: %3)").arg(
+            warningMessages << QString::fromLatin1("Cannot move file from \"%1\" to \"%2\": %3)").arg(
                 target, source, installedTarget.errorString());
         }
     }
@@ -247,13 +248,13 @@ bool InstallIconsOperation::undoOperation()
             deleteFileNowOrLater(target);
         // then copy the backup onto the target
         if (!QFile::copy(backup, target)) {
-            warningMessages << QString::fromLatin1("Could not restore the backup '%1' to '%2'").arg(
+            warningMessages << QString::fromLatin1("Cannot restore the backup \"%1\" to \"%2\".").arg(
                 backup, target);
         }
 
         // finally remove the backp
         if (!deleteFileNowOrLater(backup))
-            warningMessages << QString::fromLatin1("Could not remove the backup '%1'").arg(backup);
+            warningMessages << QString::fromLatin1("Cannot remove the backup \"%1\".").arg(backup);
 
     }
 
@@ -263,14 +264,14 @@ bool InstallIconsOperation::undoOperation()
         const QDir dir(*it);
         removeSystemGeneratedFiles(dir.absolutePath());
         if (dir.exists() && !QDir::root().rmdir(dir.path()))
-            warningMessages << QString::fromLatin1("Could not remove directory '%1'").arg(dir.path());
+            warningMessages << QString::fromLatin1("Cannot remove directory \"%1\".").arg(dir.path());
     }
 
     if (!warningMessages.isEmpty()) {
-        qWarning() << QString::fromLatin1("Undo of operation '%1' with arguments '%2' had some problems.").arg(
-            name(), arguments().join(QLatin1String(", ")));
+        qWarning() << "Undo of operation" << name() << "with arguments"
+                   << arguments().join(QLatin1String(", ")) << "had some problems.";
         foreach (const QString &message, warningMessages) {
-            qWarning() << message;
+            qWarning().noquote() << message;
         }
     }
 
@@ -280,9 +281,4 @@ bool InstallIconsOperation::undoOperation()
 bool InstallIconsOperation::testOperation()
 {
     return true;
-}
-
-Operation *InstallIconsOperation::clone() const
-{
-    return new InstallIconsOperation();
 }

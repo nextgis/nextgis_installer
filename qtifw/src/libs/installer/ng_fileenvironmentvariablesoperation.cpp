@@ -17,11 +17,12 @@
 *
 *****************************************************************************/
 
+#include "ng_fileenvironmentvariablesoperation.h"
+
+#include <QDir>
+#include <QFile>
 #include <QTemporaryFile>
 #include <QTextStream>
-#include <QDir>
-
-#include "ng_fileenvironmentvariablesoperation.h"
 
 using namespace QInstaller;
 
@@ -31,8 +32,93 @@ using namespace QInstaller;
     #define NG_ENVVAR_DELIMITER ":"
 #endif
 
+// Return all lines in a text file.
+static QStringList readFile (QFile *file)
+{
+    QStringList fileContents;
+    QTextStream in(file);
+    while (true)
+    {
+        QString line = in.readLine();
+        if (line.isNull())
+            break;
+        else
+            fileContents.append(line);
+    }
+    return fileContents;
+}
 
-NgFileEnvironmentVariableOperation::NgFileEnvironmentVariableOperation ()
+
+
+
+// Return a line number in a given list of system variables (with export commands) or -1 if
+// variable is not found. The returned listValues is an array of values of the given variable.
+static int findExportVariable (QStringList list, QString name, QStringList &listValues)
+{
+    bool found = false;
+
+    int i;
+    for (i = 0; i < list.size(); i++)
+    {
+        QString str = list[i];
+        if (!str.startsWith(QLatin1String("export "))) // will also ignore comments like "#export ..."
+            continue;
+
+        str.remove(0,7); // remove "export "
+        QStringList strs = str.split(QLatin1String("=")); // 0 item will be the name of the variable
+
+        if (strs.isEmpty())
+            continue;
+        if (strs[0] == name)
+        {
+            found = true;
+
+            // Form the list of variable values for returning in parameter.
+            strs.removeFirst();
+            if (strs.isEmpty()) // so listValues will be empty
+                break;
+            listValues = strs.join(QLatin1String("")).split(QLatin1String(NG_ENVVAR_DELIMITER));
+            break;
+        }
+    }
+
+    if (found)
+        return i;
+
+    return -1;
+}
+
+
+// Return the new string with variable assignement.
+static QString getNewAssignement (QString name, QString value)
+{
+    return name + QLatin1String("=\"") + value
+            + QLatin1String(NG_ENVVAR_DELIMITER)
+            + QLatin1String("${") + name + QLatin1String("}\"");
+}
+
+
+// Write to the temp file and than replace the target one.
+static bool rewriteFile (QString targetFilePath, QStringList fileContents)
+{
+    QTemporaryFile tempFile(QDir::tempPath() + QLatin1String("/ng_envvarXXXXXX"));
+    if (!tempFile.open())
+        return false;
+
+    QTextStream out(&tempFile);
+    for (int i = 0; i < fileContents.size(); i++)
+        out << fileContents[i] << QLatin1String("\n");
+
+    // TODO: maybe implement some kind of a transaction here.
+    if (!QFile::remove(targetFilePath) || !tempFile.copy(targetFilePath)) // copy with replacing
+        return false;
+
+    return true;
+}
+
+
+NgFileEnvironmentVariableOperation::NgFileEnvironmentVariableOperation (PackageManagerCore* core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("NgFileEnvironmentVariable"));
 }
@@ -48,18 +134,13 @@ void NgFileEnvironmentVariableOperation::backup ()
 // operations instead!
 bool NgFileEnvironmentVariableOperation::performOperation ()
 {
-    QStringList args = arguments();
-    if (args.count() != 3)
-    {
-        setError(InvalidArguments);
-        setErrorString(tr("[Ng] Invalid arguments: %1 argument(s) given, 3 expected.\n")
-            .arg(arguments().count()));
+    if (!checkArgumentCount(3))
         return false;
-    }
 
-    const QString name = arguments().at(0);
-    const QString value = arguments().at(1);
-    const QString filePath = arguments().at(2);
+    const QStringList args = arguments();
+    const QString name = args.at(0);
+    const QString value = args.at(1);
+    const QString filePath = args.at(2);
 
     // Find/create the file with system variables.
     QFile file(filePath);
@@ -71,13 +152,13 @@ bool NgFileEnvironmentVariableOperation::performOperation ()
     }
 
     // Read/parse file.
-    QStringList fileContents = this->readFile(&file);
+    QStringList fileContents = readFile(&file);
     file.close(); // close in order to replace this file further
 
     // Find the given variable. Append the given value via delimeter if found. Otherwise create
     // a new line with variable and its value.
     QStringList values;
-    int i = this->findExportVariable(fileContents, name, values);
+    int i = findExportVariable(fileContents, name, values);
     if (i == -1) // variable was not found
     {
         // Add new string with export assignement.
@@ -93,7 +174,7 @@ bool NgFileEnvironmentVariableOperation::performOperation ()
         // saving of an old value.
         if (values.isEmpty())
         {
-            QString assignementStr = this->getNewAssignement(name, value);
+            QString assignementStr = getNewAssignement(name, value);
             fileContents.insert(i, assignementStr);
         }
 
@@ -111,7 +192,7 @@ bool NgFileEnvironmentVariableOperation::performOperation ()
     }
 
     // Write back modified file contents.
-    if (!this->rewriteFile(filePath, fileContents))
+    if (!rewriteFile(filePath, fileContents))
     {
         setError(UserDefinedError);
         setErrorString(tr("[Ng] Unable to rewrite the file %1 with modified contents.\n")
@@ -125,13 +206,13 @@ bool NgFileEnvironmentVariableOperation::performOperation ()
 
 bool NgFileEnvironmentVariableOperation::undoOperation ()
 {
-    QStringList args = arguments();
-    if (args.count() != 3)
+    if (!checkArgumentCount(3))
         return false;
 
-    const QString name = arguments().at(0);
-    const QString value = arguments().at(1);
-    const QString filePath = arguments().at(2);
+    const QStringList args = arguments();
+    const QString name = args.at(0);
+    const QString value = args.at(1);
+    const QString filePath = args.at(2);
 
     // Find the file with system variables.
     if (!QFile::exists(filePath))
@@ -141,13 +222,13 @@ bool NgFileEnvironmentVariableOperation::undoOperation ()
         return false;
 
     // Read/parse file.
-    QStringList fileContents = this->readFile(&file);
+    QStringList fileContents = readFile(&file);
     file.close(); // close in order to replace this file further
 
     // Find the given variable. If variable is found and it contains the given value - we delete
     // the value.
     QStringList values;
-    int i = this->findExportVariable(fileContents, name, values);
+    int i = findExportVariable(fileContents, name, values);
     if (i == -1) // variable was not found
         return true;
 
@@ -157,7 +238,7 @@ bool NgFileEnvironmentVariableOperation::undoOperation ()
     {
         // Search for that string and remove it.
         // NOTE: currently we do not suppose that this string was changed by user.
-        QString str = this->getNewAssignement(name, value);
+        QString str = getNewAssignement(name, value);
         fileContents.removeAll(str);
     }
 
@@ -195,7 +276,7 @@ bool NgFileEnvironmentVariableOperation::undoOperation ()
     }
 
     // Write back modified file contents.
-    if (!this->rewriteFile(filePath, fileContents))
+    if (!rewriteFile(filePath, fileContents))
     {
         setError(UserDefinedError);
         setErrorString(tr("[Ng] Unable to rewrite the file %1 with modified contents.\n")
@@ -211,97 +292,3 @@ bool NgFileEnvironmentVariableOperation::testOperation ()
 {
     return true;
 }
-
-
-KDUpdater::UpdateOperation *NgFileEnvironmentVariableOperation::clone () const
-{
-    return new NgFileEnvironmentVariableOperation();
-}
-
-
-// Return all lines in a text file.
-QStringList NgFileEnvironmentVariableOperation::readFile (QFile *file)
-{
-    QStringList fileContents;
-    QTextStream in(file);
-    while (true)
-    {
-        QString line = in.readLine();
-        if (line.isNull())
-            break;
-        else
-            fileContents.append(line);
-    }
-    return fileContents;
-}
-
-
-// Return a line number in a given list of system variables (with export commands) or -1 if
-// variable is not found. The returned listValues is an array of values of the given variable.
-int NgFileEnvironmentVariableOperation::findExportVariable (QStringList list, QString name,
-                                                  QStringList &listValues)
-{
-    bool found = false;
-
-    int i;
-    for (i = 0; i < list.size(); i++)
-    {
-        QString str = list[i];
-        if (!str.startsWith(QLatin1String("export "))) // will also ignore comments like "#export ..."
-            continue;
-
-        str.remove(0,7); // remove "export "
-        QStringList strs = str.split(QLatin1String("=")); // 0 item will be the name of the variable
-
-        if (strs.isEmpty())
-            continue;
-        if (strs[0] == name)
-        {
-            found = true;
-
-            // Form the list of variable values for returning in parameter.
-            strs.removeFirst();
-            if (strs.isEmpty()) // so listValues will be empty
-                break;
-            listValues = strs.join(QLatin1String("")).split(QLatin1String(NG_ENVVAR_DELIMITER));
-            break;
-        }
-    }
-
-    if (found)
-        return i;
-
-    return -1;
-}
-
-
-// Return the new string with variable assignement.
-QString NgFileEnvironmentVariableOperation::getNewAssignement (QString name, QString value)
-{
-    return name + QLatin1String("=\"") + value
-            + QLatin1String(NG_ENVVAR_DELIMITER)
-            + QLatin1String("${") + name + QLatin1String("}\"");
-}
-
-
-// Write to the temp file and than replace the target one.
-bool NgFileEnvironmentVariableOperation::rewriteFile (QString targetFilePath, QStringList fileContents)
-{
-    QTemporaryFile tempFile(QDir::tempPath() + QLatin1String("/ng_envvarXXXXXX"));
-    if (!tempFile.open())
-        return false;
-
-    QTextStream out(&tempFile);
-    for (int i = 0; i < fileContents.size(); i++)
-        out << fileContents[i] << QLatin1String("\n");
-
-    // TODO: maybe implement some kind of a transaction here.
-    if (!QFile::remove(targetFilePath) || !tempFile.copy(targetFilePath)) // copy with replacing
-        return false;
-
-    return true;
-}
-
-
-
-

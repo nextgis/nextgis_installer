@@ -34,7 +34,8 @@
 using namespace KDUpdater;
 using namespace QInstaller;
 
-FakeStopProcessForUpdateOperation::FakeStopProcessForUpdateOperation()
+FakeStopProcessForUpdateOperation::FakeStopProcessForUpdateOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("FakeStopProcessForUpdate"));
 }
@@ -51,15 +52,12 @@ bool FakeStopProcessForUpdateOperation::performOperation()
 bool FakeStopProcessForUpdateOperation::undoOperation()
 {
     setError(KDUpdater::UpdateOperation::NoError);
-    if (arguments().size() != 1) {
-        setError(KDUpdater::UpdateOperation::InvalidArguments, tr("Number of arguments does not "
-            "match: one is required"));
+    if (!checkArgumentCount(1))
         return false;
-    }
 
-    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
+    PackageManagerCore *const core = packageManager();
     if (!core) {
-        setError(KDUpdater::UpdateOperation::UserDefinedError, tr("Could not get package manager "
+        setError(KDUpdater::UpdateOperation::UserDefinedError, tr("Cannot get package manager "
             "core."));
         return false;
     }
@@ -87,9 +85,4 @@ bool FakeStopProcessForUpdateOperation::undoOperation()
 bool FakeStopProcessForUpdateOperation::testOperation()
 {
     return true;
-}
-
-Operation *FakeStopProcessForUpdateOperation::clone() const
-{
-    return new FakeStopProcessForUpdateOperation();
 }

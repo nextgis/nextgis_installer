@@ -83,6 +83,7 @@ public:
     QString installerWindowIcon() const;
     QString systemIconSuffix() const;
     QString wizardStyle() const;
+    QString styleSheet() const;
     QString titleColor() const;
     int wizardDefaultWidth() const;
     int wizardDefaultHeight() const;
@@ -106,6 +107,7 @@ public:
     QString configurationFileName() const;
 
     bool createLocalRepository() const;
+    bool installActionColumnVisible() const;
 
     bool dependsOnLocalInstallerBinary() const;
     bool hasReplacementRepos() const;
@@ -127,6 +129,7 @@ public:
 
     bool allowSpaceInPath() const;
     bool allowNonAsciiCharacters() const;
+    bool disableAuthorizationFallback() const;
 
     bool containsValue(const QString &key) const;
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
@@ -148,6 +151,8 @@ public:
     void setTranslations(const QStringList &translations);
 
     QString controlScript() const;
+
+    bool supportsModify() const;
 
 private:
     class Private;

@@ -33,15 +33,15 @@
 #include "packagemanagercore.h"
 #include "packagemanagercoredata.h"
 #include "packagemanagerproxyfactory.h"
+#include "packagesource.h"
 #include "qinstallerglobal.h"
 
-#include "kdsysinfo.h"
-#include "kdupdaterapplication.h"
-#include "kdupdaterupdatefinder.h"
+#include "sysinfo.h"
+#include "updatefinder.h"
 
 #include <QObject>
 
-class KDJob;
+class Job;
 
 QT_FORWARD_DECLARE_CLASS(QFile)
 QT_FORWARD_DECLARE_CLASS(QFileDevice)
@@ -59,27 +59,6 @@ class TempDirDeleter;
 class InstallerCalculator;
 class UninstallerCalculator;
 class RemoteFileEngineHandler;
-
-/*
-    The default configuration interface implementation does call QSettings to save files for later deletion,
-    though according to QSettings there should nothing be written if QSettings is not setup properly (which
-    we do not in our case). Still, caused by a broken QSettings implementation at least on Linux we write an
-    empty config file which resulted in QTIFW-196. To workaround the issue we now use this empty dummy class.
-*/
-class DummyConfigurationInterface : public KDUpdater::ConfigurationInterface
-{
-public:
-    QVariant value(const QString &key) const
-    {
-        Q_UNUSED(key)
-        return QVariant();
-    }
-    void setValue(const QString &key, const QVariant &value)
-    {
-        if (value.isNull())
-            qDebug() << "DummyConfigurationInterface called with key:" << key << "and value:" << value;
-    }
-};
 
 class PackageManagerCorePrivate : public QObject
 {
@@ -191,7 +170,11 @@ signals:
 
 public:
     UpdateFinder *m_updateFinder;
-    Application m_updaterApplication;
+    UpdateFinder *m_compressedFinder;
+    QSet<PackageSource> m_packageSources;
+    QSet<PackageSource> m_compressedPackageSources;
+    std::shared_ptr<LocalPackageHub> m_localPackageHub;
+    QStringList m_filesForDelayedDeletion;
 
     int m_status;
     QString m_error;
@@ -219,11 +202,15 @@ public:
     bool m_dependsOnLocalInstallerBinary;
 
 private slots:
-    void infoMessage(KDJob *, const QString &message) {
+    void infoMessage(Job *, const QString &message) {
         emit m_core->metaJobInfoMessage(message);
     }
-    void infoProgress(KDJob *, quint64 progress, quint64) {
+    void infoProgress(Job *, quint64 progress, quint64) {
         emit m_core->metaJobProgress(progress);
+    }
+
+    void totalProgress(quint64 total) {
+        emit m_core->metaJobTotalProgress(total);
     }
 
     void handleMethodInvocationRequest(const QString &invokableMethodName);
@@ -241,15 +228,21 @@ private:
         bool adminRightsGained, bool deleteOperation);
 
     PackagesList remotePackages();
+    PackagesList compressedPackages();
     LocalPackagesHash localInstalledPackages();
     bool fetchMetaInformationFromRepositories();
-    bool addUpdateResourcesFromRepositories(bool parseChecksum);
+    bool fetchMetaInformationFromCompressedRepositories();
+    bool addUpdateResourcesFromRepositories(bool parseChecksum, bool compressedRepository = false);
+    void processFilesForDelayedDeletion();
+    void findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result);
+    QStringList runningInstallerProcesses(const QStringList &exludeFiles);
 
 private:
     PackageManagerCore *m_core;
     MetadataJob m_metadataJob;
 
     bool m_updates;
+    bool m_compressedUpdates;
     bool m_repoFetched;
     bool m_updateSourcesAdded;
     qint64 m_magicBinaryMarker;

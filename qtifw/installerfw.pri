@@ -3,8 +3,8 @@
 }
 IFW_PRI_INCLUDED = 1
 
-IFW_VERSION_STR = 2.0.5
-IFW_VERSION = 0x020005
+IFW_VERSION_STR = 3.0.1
+IFW_VERSION = 0x030001
 
 IFW_REPOSITORY_FORMAT_VERSION = 1.0.0
 IFW_NEWLINE = $$escape_expand(\\n\\t)
@@ -77,6 +77,7 @@ win32 {
     QMAKE_BINARY = $${QMAKE_BINARY}.exe
 }
 win32-g++*:QMAKE_CXXFLAGS += -Wno-attributes
+macx:QMAKE_CXXFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 
 INCLUDEPATH += \
     $$IFW_SOURCE_TREE/src/libs/7zip \
@@ -88,7 +89,7 @@ unix:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/unix/CPP
 
 LIBS += -L$$IFW_LIB_PATH
 # The order is important. The linker needs to parse archives in reversed dependency order.
-equals(TEMPLATE, app):LIBS += -linstaller -lngauth
+equals(TEMPLATE, app):LIBS += -linstaller
 win32:equals(TEMPLATE, app) {
     LIBS += -luser32
 }
@@ -116,23 +117,23 @@ exists(".git") {
     GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
 }
 
-# NEXTGIS: Removed because of an error: https://bugreports.qt.io/browse/QTIFW-852
-###isEmpty(GIT_SHA1) {
-###    # Attempt to read the sha1 from alternative location
-###    GIT_SHA1=\"$$cat(.tag)\"
-###}
+isEmpty(GIT_SHA1) {
+    # Attempt to read the sha1 from alternative location
+    GIT_SHA1=\"$$cat(.tag)\"
+}
 
-DEFINES += QT_NO_CAST_FROM_ASCII QT_USE_QSTRINGBUILDER "_GIT_SHA1_=$$GIT_SHA1" \
-            IFW_VERSION_STR=$$IFW_VERSION_STR IFW_VERSION=$$IFW_VERSION
+DEFINES += NOMINMAX QT_NO_CAST_FROM_ASCII QT_STRICT_ITERATORS QT_USE_QSTRINGBUILDER \
+           "_GIT_SHA1_=$$GIT_SHA1" \
+           IFW_VERSION_STR=$$IFW_VERSION_STR IFW_VERSION=$$IFW_VERSION
 DEFINES += IFW_REPOSITORY_FORMAT_VERSION=$$IFW_REPOSITORY_FORMAT_VERSION
 
 static {
-    LIBS += -l7z
+    LIBS += -l7z -lngauth
     win32-g++*: LIBS += -lmpr -luuid
 
     equals(TEMPLATE, app) {
-        win32-msvc*:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib $$IFW_LIB_PATH/ngauth.lib $$IFW_LIB_PATH/7z.lib
-        win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
-        unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
+        msvc:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib $$IFW_LIB_PATH/7z.lib $$IFW_LIB_PATH/ngauth.lib
+        win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a $$IFW_LIB_PATH/libngauth.a
+        unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a $$IFW_LIB_PATH/libngauth.a
     }
 }
