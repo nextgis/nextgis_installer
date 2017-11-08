@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_matplotlib">
+    <mac>
+        <path src="inst/lib/python2.7/site-packages/matplotlib" dst="Library/Python/2.7/site-packages/matplotlib"/>
+    </mac>
+    <win enabled="true">
+        <path src="inst/lib/Python27/site-packages/matplotlib" dst="lib/Python27/site-packages/matplotlib"/>
+    </win>
+</Package>
