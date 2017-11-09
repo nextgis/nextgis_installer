@@ -551,7 +551,7 @@ def create_installer():
     if args.installer_name:
         installer_name = args.installer_name
 
-    run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name) ))
+    run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name), '--sign', mac_sign_identy ))
 
     # Hack as <InstallerApplicationIcon> in config.xml not working
     if sys.platform == 'darwin':
@@ -559,10 +559,6 @@ def create_installer():
         icns_path = os.path.join(repo_target_path, 'nextgis-setup.app', 'Contents', 'Resources', 'nextgis-setup.icns' )
         os.unlink(icns_path)
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
-
-        # TODO: In Qt installer master dmg create and sign are already in binarycreator (see https://github.com/qtproject/installer-framework/blob/master/tools/binarycreator/binarycreator.cpp)
-        # Sign install application
-        run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app') ))
 
         # Build dgm image file
         color_print('Create DMG file ...', True, 'LMAGENTA')

@@ -39,7 +39,8 @@ Component.prototype.createOperations = function()
         component.addOperation( "NgFileEnvironmentVariable",
                                 "QCA_PLUGIN_PATH",
                                 "@TargetDir@/Library/Plugins/Qt4/",
-                                "@HomeDir@/.bash_profile");
+                                "@HomeDir@/.bash_profile",
+                                "single");
         SetEnvMac("QCA_PLUGIN_PATH", "@TargetDir@/Library/Plugins/Qt4/");
     }
 }

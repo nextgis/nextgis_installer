@@ -20,7 +20,7 @@ For example on Mac OS X
 
 For example on Mac OS X
 ```
-> python create_installer.py -q /<path to qt sources>/qtbase/bin -s /Users/Bishop/work/projects/borsch -t /<working directory>/build-dev2 -i nextgis-setup create
+> python create_installer.py -q /<path to qt sources>/qtbase/bin -s /<working directory>/projects/borsch -t /<working directory>/build-dev2 -i nextgis-setup create
 ```
 
 3. Install created installer in some temporary folder to get nextgisupdater

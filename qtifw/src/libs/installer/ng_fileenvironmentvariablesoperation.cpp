@@ -53,7 +53,8 @@ static QStringList readFile (QFile *file)
 
 // Return a line number in a given list of system variables (with export commands) or -1 if
 // variable is not found. The returned listValues is an array of values of the given variable.
-static int findExportVariable (QStringList list, QString name, QStringList &listValues)
+static int findExportVariable (const QStringList &list, const QString &name,
+                               QStringList &listValues)
 {
     bool found = false;
 
@@ -90,7 +91,7 @@ static int findExportVariable (QStringList list, QString name, QStringList &list
 
 
 // Return the new string with variable assignement.
-static QString getNewAssignement (QString name, QString value)
+static QString getNewAssignement (const QString &name, const QString &value)
 {
     return name + QLatin1String("=\"") + value
             + QLatin1String(NG_ENVVAR_DELIMITER)
@@ -99,7 +100,7 @@ static QString getNewAssignement (QString name, QString value)
 
 
 // Write to the temp file and than replace the target one.
-static bool rewriteFile (QString targetFilePath, QStringList fileContents)
+static bool rewriteFile (const QString &targetFilePath, const QStringList &fileContents)
 {
     QTemporaryFile tempFile(QDir::tempPath() + QLatin1String("/ng_envvarXXXXXX"));
     if (!tempFile.open())
@@ -134,13 +135,14 @@ void NgFileEnvironmentVariableOperation::backup ()
 // operations instead!
 bool NgFileEnvironmentVariableOperation::performOperation ()
 {
-    if (!checkArgumentCount(3))
+    if (!checkArgumentCount(3,4))
         return false;
 
     const QStringList args = arguments();
     const QString name = args.at(0);
     const QString value = args.at(1);
     const QString filePath = args.at(2);
+    const bool isSingle = args.count() > 3 ? args.at(3) == QLatin1String("single") : false;
 
     // Find/create the file with system variables.
     QFile file(filePath);
@@ -167,27 +169,29 @@ bool NgFileEnvironmentVariableOperation::performOperation ()
     }
     else
     {
-        // Case 1.
-        // We must consider the case when we have e.g. "export PATH" without any "=". This
-        // means that there is already some variable assignement above this string.
-        // So we must add our own assignement right above the "export" string and also with
-        // saving of an old value.
-        if (values.isEmpty())
-        {
-            QString assignementStr = getNewAssignement(name, value);
-            fileContents.insert(i, assignementStr);
-        }
+        if(!isSingle) {
+            // Case 1.
+            // We must consider the case when we have e.g. "export PATH" without any "=". This
+            // means that there is already some variable assignement above this string.
+            // So we must add our own assignement right above the "export" string and also with
+            // saving of an old value.
+            if (values.isEmpty())
+            {
+                QString assignementStr = getNewAssignement(name, value);
+                fileContents.insert(i, assignementStr);
+            }
 
-        // Case 2.
-        // Otherwise just append the variable.
-        else
-        {
-            // NOTE: if this variable already has the same value - we double it in order to correctly
-            // remove the value in the undoOperation(). This behaviour can be important when user e.g.
-            // for Mac already has a "some-path:$PATH" value in PATH variable and at the same time he
-            // adds "another-path" + "$PATH" values.
-            QString newExportStr = QString(QLatin1String(NG_ENVVAR_DELIMITER)) + value;
-            fileContents[i] += newExportStr;
+            // Case 2.
+            // Otherwise just append the variable.
+            else
+            {
+                // NOTE: if this variable already has the same value - we double it in order to correctly
+                // remove the value in the undoOperation(). This behaviour can be important when user e.g.
+                // for Mac already has a "some-path:$PATH" value in PATH variable and at the same time he
+                // adds "another-path" + "$PATH" values.
+                QString newExportStr = QString(QLatin1String(NG_ENVVAR_DELIMITER)) + value;
+                fileContents[i] += newExportStr;
+            }
         }
     }
 
@@ -206,13 +210,14 @@ bool NgFileEnvironmentVariableOperation::performOperation ()
 
 bool NgFileEnvironmentVariableOperation::undoOperation ()
 {
-    if (!checkArgumentCount(3))
+    if (!checkArgumentCount(3, 4))
         return false;
 
     const QStringList args = arguments();
     const QString name = args.at(0);
     const QString value = args.at(1);
     const QString filePath = args.at(2);
+    const bool isSingle = args.count() > 3 ? args.at(3) == QLatin1String("single") : false;
 
     // Find the file with system variables.
     if (!QFile::exists(filePath))

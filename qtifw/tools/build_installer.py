@@ -47,7 +47,7 @@ def parse_arguments():
 
     parser = argparse.ArgumentParser(description='Build installer for installer framework.')
     parser.add_argument('--clean', dest='clean', action='store_true', help='delete all previous build artifacts')
-    parser.add_argument('--static-qmake', dest='qmake', required=True, help='path to qmake that will be used to build the tools')
+    parser.add_argument('--qtdir', dest='qt_dir', required=True, help='path to qmake that will be used to build the tools')
     parser.add_argument('--doc-qmake', dest='doc_qmake', required=False, help='path to qmake that will be used to generate the documentation')
     parser.add_argument('--make', dest='make', required=True, help='make command')
     parser.add_argument('--targetdir', dest='target_dir', required=True, help='directory the generated installer will be placed in')
@@ -65,6 +65,7 @@ def init():
     global build_dir
     global package_dir
     global target_path
+    global qmake
 
     src_dir = os.path.dirname(os.path.abspath(os.path.dirname(sys.argv[0])))
     root_dir = os.path.dirname(src_dir)
@@ -72,6 +73,7 @@ def init():
     build_dir = os.path.join(root_dir, basename + '_build')
     package_dir = os.path.join(root_dir, basename + '_pkg')
     target_path = os.path.join(args.target_dir, 'Qt Installer Framework')
+    qmake = os.path.join(args.qt_dir, 'qmake')
 
     print 'source dir: ' + src_dir
     print 'build dir: ' + build_dir
@@ -104,7 +106,7 @@ def build_docs():
 def build():
     print 'building sources ...'
     os.chdir(build_dir)
-    run((args.qmake, src_dir))
+    run((qmake, src_dir))
     run((args.make))
 
 def package():
