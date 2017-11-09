@@ -2,6 +2,7 @@
 <Package root="py_exifread">
     <mac>
         <path src="inst/lib/python2.7/site-packages/exifread" dst="Library/Python/2.7/site-packages/exifread"/>
+        <path src="inst/bin" dst="usr/bin/"/>
     </mac>
     <win enabled="true">
         <path src="inst/lib/Python27/site-packages/exifread" dst="lib/Python27/site-packages/exifread"/>

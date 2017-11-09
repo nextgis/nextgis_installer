@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>Nose2</DisplayName>
-    <DisplayName xml:lang="ru_RU">Nose2</DisplayName>
     <Description>Nose2 package</Description>
-    <Description xml:lang="ru_RU">Пакет Nose2</Description>
-    
     <Dependencies>com.nextgis.python.all</Dependencies>
 </Package>

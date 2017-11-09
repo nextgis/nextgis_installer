@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>MarkupSafe</DisplayName>
-    <DisplayName xml:lang="ru_RU">MarkupSafe</DisplayName>
     <Description>MarkupSafe package</Description>
-    <Description xml:lang="ru_RU">Пакет MarkupSafe</Description>
-    
     <Dependencies>com.nextgis.python.all</Dependencies>
 </Package>

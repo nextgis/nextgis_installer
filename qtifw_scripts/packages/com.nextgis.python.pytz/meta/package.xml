@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>Pytz</DisplayName>
-    <DisplayName xml:lang="ru_RU">Pytz</DisplayName>
     <Description>Pytz package</Description>
-    <Description xml:lang="ru_RU">Пакет Pytz</Description>
-    
     <Dependencies>com.nextgis.python.all</Dependencies>
 </Package>
