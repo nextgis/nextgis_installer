@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>VC redistributables</DisplayName>
-    <DisplayName xml:lang="ru_RU">VC redistributables</DisplayName>
     <Description>VC redistributables</Description>
-    <Description xml:lang="ru_RU">VC redistributables</Description>
-    
 </Package>

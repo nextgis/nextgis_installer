@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_gif">
+    <mac>
+        <path src="inst/Library/Frameworks/gif.framework" dst="Library/Frameworks/gif.framework"/>
+    </mac>
+</Package>

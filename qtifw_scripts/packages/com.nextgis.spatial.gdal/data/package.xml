@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_gdal">
-    <UpdateText>Add BigTIFF support</UpdateText>
+    <UpdateText>Add GIF support</UpdateText>
     <mac>
         <path src="inst/Library/Frameworks/gdal.framework" dst="Library/Frameworks/gdal.framework"/>
     </mac>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_qt4">
+    <UpdateText>Add GIF support</UpdateText>
     <mac>
         <path src="inst/lib/QtCore.framework" dst="Library/Frameworks/QtCore.framework"/>
         <path src="inst/lib/QtDeclarative.framework" dst="Library/Frameworks/QtDeclarative.framework"/>
