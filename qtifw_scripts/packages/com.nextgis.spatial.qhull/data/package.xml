@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_qhull">
+    <mac>
+        <path src="inst/Library/Frameworks/qhull.framework" dst="Library/Frameworks/qhull.framework"/>
+    </mac>
+</Package>

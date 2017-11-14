@@ -370,7 +370,6 @@ def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir
     if dependencies_tag is not None:
         # If Mac OS X
         if sys.platform == 'darwin':
-            # TODO: Change to iconv
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.xml2,', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.xml2', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.z,', '')
@@ -381,9 +380,6 @@ def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.python.python2', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.vc,', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.vc', '')
-            # FIXME: Add HDF4 support
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.hdf4,', '')
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.hdf4', '')
 
 
         dependencies_tag.text = dependencies_tag.text.replace('  ', ' ')

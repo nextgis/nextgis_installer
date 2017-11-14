@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_hdf4">
+    <mac>
+        <path src="inst/Library/Frameworks/hdf.framework" dst="Library/Frameworks/hdf.framework"/>
+        <path src="inst/Library/Frameworks/mfhdf.framework" dst="Library/Frameworks/mfhdf.framework"/>
+    </mac>
     <win enabled="true">
         <path src="inst/bin" dst="bin"/>
     </win>
