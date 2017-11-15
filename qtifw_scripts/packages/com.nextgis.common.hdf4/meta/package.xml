@@ -2,4 +2,5 @@
 <Package>
     <DisplayName>HDF4</DisplayName>
     <Description>HDF4 Library</Description>
+    <Dependencies>com.nextgis.common.szip,com.nextgis.common.jpeg</Dependencies>
 </Package>

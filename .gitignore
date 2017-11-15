@@ -55,7 +55,7 @@ inst/
 build/
 
 # create installer python script temp file
-versions.pkl
+versions*.pkl
 
 # build dirs
 qtifw_pkg

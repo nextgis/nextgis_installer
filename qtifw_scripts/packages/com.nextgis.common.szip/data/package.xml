@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_szip">
+    <mac>
+        <path src="inst/Library/Frameworks/szip.framework" dst="Library/Frameworks/szip.framework"/>
+    </mac>
+    <win enabled="true">
+        <path src="inst/bin" dst="bin"/>
+    </win>
+</Package>

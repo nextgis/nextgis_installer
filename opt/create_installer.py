@@ -114,15 +114,15 @@ def run(args):
     subprocess.check_call(args)
 
 
-def load_versions():
-    if os.path.exists('versions.pkl'):
+def load_versions(file_name):
+    if os.path.exists(file_name):
         global libraries_version_dict
-        with open('versions.pkl', 'rb') as f:
+        with open(file_name, 'rb') as f:
             libraries_version_dict = pickle.load(f)
 
 
-def save_versions():
-    with open('versions.pkl', 'wb') as f:
+def save_versions(file_name):
+    with open(file_name, 'wb') as f:
         pickle.dump(libraries_version_dict, f, pickle.HIGHEST_PROTOCOL)
 
 
@@ -138,8 +138,7 @@ def init():
     global repo_new_config_path
     global translate_tool
     global packages_data_source_path
-
-    load_versions()
+    global versions_file_name
 
     repo_root_dir = os.path.dirname(os.path.abspath(os.path.dirname(sys.argv[0])))
 
@@ -152,6 +151,8 @@ def init():
     repo_config_path = os.path.join(scripts_path, 'config')
     repo_source_path = os.path.join(scripts_path, 'packages')
     repo_target_path = os.path.abspath(args.target)
+    versions_file_name = 'versions_' + os.path.basename(repo_target_path) + '.pkl'
+    load_versions(versions_file_name)
     color_print('build path: ' + repo_target_path, True, 'LCYAN')
     repo_new_packages_path = os.path.join(repo_target_path, 'packages')
     repo_new_config_path = os.path.join(repo_target_path, 'config')
@@ -587,4 +588,4 @@ elif args.command == 'update':
     update_istaller()
 else:
     exit('Unsupported command')
-save_versions()
+save_versions(versions_file_name)
