@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>SIP</DisplayName>
-    <DisplayName xml:lang="ru_RU">SIP</DisplayName>
     <Description>SIP package</Description>
-    <Description xml:lang="ru_RU">Пакет SIP</Description>
-    
     <Script>installscript.qs</Script>
     <Dependencies>com.nextgis.python.all</Dependencies>
 </Package>
