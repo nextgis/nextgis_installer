@@ -18,7 +18,7 @@ appname = 'nextgis-setup.app'
 format = defines.get('format', 'UDBZ')
 
 # Volume size (must be large enough for your files)
-size = defines.get('size', '36M')
+size = defines.get('size', '64M')
 
 # Files to include
 files = defines['files']

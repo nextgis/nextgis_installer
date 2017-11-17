@@ -557,6 +557,9 @@ def create_installer():
         os.unlink(icns_path)
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
 
+        # Resign install application as there is some bug in binarycreator --sign
+        run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app') ))
+
         # Build dgm image file
         color_print('Create DMG file ...', True, 'LMAGENTA')
         dmgbuild.build_dmg(
@@ -567,7 +570,7 @@ def create_installer():
                  background=os.path.join(repo_new_config_path, 'bk.png'),
                  files=[os.path.join(repo_target_path, 'nextgis-setup.app')]),
             lookForHiDPI=False)
-
+        
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup'), True, 'LMAGENTA')
 
 
