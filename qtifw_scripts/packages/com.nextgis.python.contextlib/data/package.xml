@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_contextlib">
+    <mac>
+        <path src="inst/lib/python2.7/site-packages/*.py" dst="Library/Python/2.7/site-packages/"/>
+        <path src="inst/bin" dst="usr/bin/"/>
+    </mac>
+    <win enabled="true">
+        <path src="inst/lib/Python27/site-packages/*.py" dst="lib/Python27/site-packages/"/>
+    </win>
+</Package>

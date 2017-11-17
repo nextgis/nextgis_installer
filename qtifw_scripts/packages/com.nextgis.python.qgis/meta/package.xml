@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>PyQGIS</DisplayName>
     <Description>PyQGIS module</Description>
-    <Dependencies>com.nextgis.python.all,com.nextgis.common.qt.qt4,com.nextgis.qgis.libcore,com.nextgis.spatial.gdal,com.nextgis.spatial.geos,com.nextgis.common.qca,com.nextgis.common.qscintilla,com.nextgis.common.qwt,com.nextgis.common.expat,com.nextgis.spatial.proj,com.nextgis.common.sqlite,com.nextgis.spatial.spatialite,com.nextgis.spatial.spatialindex,com.nextgis.common.pq</Dependencies>
+    <Dependencies>com.nextgis.python.all,com.nextgis.common.qt.qt4,com.nextgis.qgis.libcore,com.nextgis.spatial.gdal,com.nextgis.spatial.geos,com.nextgis.common.qca,com.nextgis.common.qscintilla,com.nextgis.common.qwt,com.nextgis.common.expat,com.nextgis.spatial.proj,com.nextgis.common.sqlite,com.nextgis.spatial.spatialite,com.nextgis.spatial.spatialindex,com.nextgis.common.pq,com.nextgis.python.raven,com.nextgis.python.contextlib</Dependencies>
 </Package>
