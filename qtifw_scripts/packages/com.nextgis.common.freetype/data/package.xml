@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_freetype">
+    <mac>
+        <path src="inst/Library/Frameworks/freetype.framework" dst="Library/Frameworks/freetype.framework"/>
+    </mac>
+</Package>

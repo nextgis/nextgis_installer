@@ -26,8 +26,8 @@ function SetEnvMac(name, path)
     component.addOperation("Delete", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist");
     component.addOperation("AppendFile", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist", contentString);
     // Fix permissions
-    component.addOperation("Execute", "{0,1,255}", "chmod", "644", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist");
-    component.addOperation("Execute", "{0,1,255}", "launchctl", "load", "-w", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist");
+    component.addOperation("Execute", "{0,1,255}", "/bin/chmod", "644", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist");
+    component.addOperation("Execute", "{0,1,255}", "/bin/launchctl", "load", "-w", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist");
 }
 
 Component.prototype.createOperations = function()

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_agg">
+    <mac>
+        <path src="inst/Library/Frameworks/agg.framework" dst="Library/Frameworks/agg.framework"/>
+    </mac>
+</Package>
