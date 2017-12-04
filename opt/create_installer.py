@@ -247,19 +247,26 @@ def copyFiles(tag, sources_root_dir, data_path):
         src_path_full = unicode(os.path.join(sources_root_dir, src_path))
         dst_path_full = unicode(os.path.join(data_path, dst_path))
 
-        if os.path.isdir(src_path_full):
-            shutil.copytree(src_path_full, dst_path_full, symlinks=True)
+        if os.path.islink(src_path_full):
+            linkto = os.readlink(src_path_full)
+            parent_dir = os.path.dirname(dst_path_full)
+            if not os.path.exists(parent_dir):
+                os.makedirs(parent_dir)
+            os.symlink(linkto, dst_path_full)
         else:
-            if not os.path.exists(dst_path_full):
-                os.makedirs(dst_path_full)
-
-            if src_path_full.find('*'):
-                # Copy by wildcard.
-                for copy_file in glob.glob(src_path_full):
-                    shutil.copy(copy_file, dst_path_full)
+            if os.path.isdir(src_path_full):
+                shutil.copytree(src_path_full, dst_path_full, symlinks=True)
             else:
-                if os.path.exists(src_path_full):
-                    shutil.copy(src_path_full, dst_path_full)
+                if not os.path.exists(dst_path_full):
+                    os.makedirs(dst_path_full)
+
+                if src_path_full.find('*'):
+                    # Copy by wildcard.
+                    for copy_file in glob.glob(src_path_full):
+                        shutil.copy(copy_file, dst_path_full)
+                else:
+                    if os.path.exists(src_path_full):
+                        shutil.copy(src_path_full, dst_path_full)
     return
 
 
@@ -570,7 +577,7 @@ def create_installer():
                  background=os.path.join(repo_new_config_path, 'bk.png'),
                  files=[os.path.join(repo_target_path, 'nextgis-setup.app')]),
             lookForHiDPI=False)
-        
+
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup'), True, 'LMAGENTA')
 
 
