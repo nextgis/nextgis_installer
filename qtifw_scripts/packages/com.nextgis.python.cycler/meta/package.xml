@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>Nose2</DisplayName>
-    <Description>Nose2 package</Description>
+    <DisplayName>Cycler</DisplayName>
+    <Description>Cycler package</Description>
     <Dependencies>com.nextgis.python.all,com.nextgis.python.six</Dependencies>
 </Package>

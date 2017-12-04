@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>DateUtil</DisplayName>
     <Description>DateUtil package</Description>
-    <Dependencies>com.nextgis.python.all</Dependencies>
+    <Dependencies>com.nextgis.python.all,com.nextgis.python.six</Dependencies>
 </Package>

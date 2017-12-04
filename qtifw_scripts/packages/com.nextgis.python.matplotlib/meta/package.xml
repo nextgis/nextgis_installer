@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>Matplotlib</DisplayName>
     <Description>Matplotlib package</Description>
-    <Dependencies>com.nextgis.python.all,com.nextgis.spatial.qhull,com.nextgis.common.png,com.nextgis.common.agg,com.nextgis.common.freetype,com.nextgis.python.numpy,com.nextgis.python.six,com.nextgis.python.dateutil,com.nextgis.python.pytz,com.nextgis.python.cycler,com.nextgis.python.subprocess32,com.nextgis.python.pyparsing,com.nextgis.python.functools_lru_cache</Dependencies>
+    <Dependencies>com.nextgis.python.all,com.nextgis.spatial.qhull,com.nextgis.common.png,com.nextgis.common.agg,com.nextgis.common.freetype,com.nextgis.python.numpy,com.nextgis.python.six,com.nextgis.python.dateutil,com.nextgis.python.pytz,com.nextgis.python.cycler,com.nextgis.python.subprocess32,com.nextgis.python.parsing,com.nextgis.python.functools_lru_cache</Dependencies>
 </Package>

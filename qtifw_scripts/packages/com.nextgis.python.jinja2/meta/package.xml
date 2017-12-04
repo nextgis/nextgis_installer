@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>Jinja2</DisplayName>
-    <DisplayName xml:lang="ru_RU">Jinja2</DisplayName>
     <Description>Jinja2 package</Description>
-    <Description xml:lang="ru_RU">Пакет Jinja2</Description>
-    
-    <Dependencies>com.nextgis.python.all</Dependencies>
+    <Dependencies>com.nextgis.python.all,com.nextgis.python.markupsafe</Dependencies>
 </Package>

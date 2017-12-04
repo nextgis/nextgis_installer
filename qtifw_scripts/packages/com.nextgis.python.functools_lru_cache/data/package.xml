@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_functools_lru_cache">
+    <mac>
+        <path src="inst/lib/python2.7/site-packages/backports/" dst="Library/Python/2.7/site-packages/backports"/>
+    </mac>
+</Package>

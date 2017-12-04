@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>OWSLib</DisplayName>
-    <DisplayName xml:lang="ru_RU">OWSLib</DisplayName>
     <Description>OWSLib package</Description>
-    <Description xml:lang="ru_RU">Пакет OWSLib</Description>
-    
-    <Dependencies>com.nextgis.python.all</Dependencies>
+    <Dependencies>com.nextgis.python.all,com.nextgis.python.dateutil,com.nextgis.python.pytz,com.nextgis.python.requests</Dependencies>
 </Package>

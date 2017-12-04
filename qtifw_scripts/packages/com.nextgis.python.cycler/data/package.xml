@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_cycler">
+    <mac>
+        <path src="inst/lib/python2.7/site-packages/*.py" dst="Library/Python/2.7/site-packages/"/>
+    </mac>
+    <win enabled="true">
+        <path src="inst/lib/Python27/site-packages/*.py" dst="lib/Python27/site-packages/"/>
+    </win>
+</Package>
