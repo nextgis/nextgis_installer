@@ -1,11 +1,39 @@
 # Introduction
 
-# Create installer framework
+The installer is set of NextGIS software and it dependencies. It use Qt InstallerFramework.
+Installer build for **Windows** (from 7 and higher 32 and 64 bit) and
+**Mac OS X** (from El Capitan 64 bit).
+Software install by network. No registration required.
+
+# 1. Create installer
+
+## New workflow
+
+Software distributed via installer stored on github.com.
+
+Each repository periodically polled by buildbot. After push to repository,
+buildbot get latest changes, build and test them, create ZIP package and download
+it to github release page of repository.
+This ZIP packages used for building other software, dependent on them.
+
+Also the task trigger rebuild test version of installer. This separate buildbot
+task create installer repository (developer version) and download it to nextgis.com.
+
+Maintenance tool automatically check changes and show end user dialog to parser_update
+NextGIS software. If everything is Ok, the release version of installer repository
+may be started manually.
+
+Installer itself build and stored as ZIP package in release page of this repository.
+
+* [Buildbot](https://buildbot.nextgis.com)
+* [Borsch v2](https://github.com/nextgis-borsch/borsch/blob/master/README.md)
+
+## Old workflow
 
 Notes to create installer via Qt InstallerFramework modified for NextGIS
 authentication:
 
-## 1. Build OpenSSL from NextGIS Borsch statically
+### 1.1. Build OpenSSL from NextGIS Borsch statically
 
 ```bash
 > git clone https://github.com/nextgis-borsch/lib_openssl.git
@@ -16,9 +44,9 @@ authentication:
 > cmake --build . -- -j 4
 ```
 
-## 2. Build Qt (5.6.0 strictly required on Windows due the UAC bug) statically with OpenSSL linked
+### 1.2. Build Qt (5.6.0 strictly required on Windows due the UAC bug) statically with OpenSSL linked
 
-### Windows
+#### Windows
 
 Example of configure string:
 
@@ -26,7 +54,7 @@ Example of configure string:
 > configure -prefix %CD%\qtbase -debug-and-release -static -static-runtime -opensource -platform win32-msvc2013 -target xp -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtsensors -skip qtxmlpatterns -skip qtquickcontrols -skip qtquickcontrols2 -skip qt3d -openssl -openssl-linked -I <path to lib_openssl>\include -L <path to lib_openssl>\lib -L "C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib" -l Gdi32 -l User32
 ```
 
-### Mac OS X
+#### Mac OS X
 
 Example of configure string:
 
@@ -34,7 +62,7 @@ Example of configure string:
 > OPENSSL_LIBS='-L<path to lib_openssl>/build/ssl -L<path to lib_openssl>/lib_openssl/build/crypto -lsslstatic -lcryptostatic' ./configure -prefix $PWD/qtbase -release -static -opensource -confirm-license -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtsensors -skip qtxmlpatterns -skip qtquickcontrols -skip qtquickcontrols2 -skip qt3d -openssl-linked -I <path to lib_openssl>/lib_openssl/build/include -L<path to lib_openssl>/lib_openssl/build/ssl -L<path to lib_openssl>/lib_openssl/build/crypto
 ```
 
-## 3. Build InstallerFramework
+### 1.3. Build InstallerFramework
 
 Note: To build installer framework via build_installer script python required.
 
@@ -47,9 +75,10 @@ Note:
 it may be necessary to fix (add LIBS += -lngauth)
 https://github.com/nextgis/nextgis_installer/blob/master/qtifw/src/libs/installer/installer.pro#L215
 for windows
-## 4. Create NextGIS installer
 
-### 4.1 Generating installer:
+# 2. Create NextGIS installer repository
+
+## 2.1 Generating installer:
 
 Note: To create installer via create_installer script python required.
 
@@ -58,7 +87,7 @@ Note: To create installer via create_installer script python required.
 > python create_installer.py create -t <output path> -q <path to Qt bin files> -s <path to packages sources root (borsch root)> -r http://<path to network folder> -n
 ```
 
-### 4.2 Updating existing packages:
+## 2.2 Updating existing packages:
 
 ```bash
 > cd <path to this repo>/opt
