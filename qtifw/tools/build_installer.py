@@ -51,8 +51,8 @@ def parse_arguments():
     parser.add_argument('--doc-qmake', dest='doc_qmake', required=False, help='path to qmake that will be used to generate the documentation')
     parser.add_argument('--make', dest='make', required=True, help='make command')
     parser.add_argument('--targetdir', dest='target_dir', required=True, help='directory the generated installer will be placed in')
-    if sys.platform == 'darwin':
-        parser.add_argument('--qt_menu_nib', dest='menu_nib', required=True, help='location of qt_menu.nib (usually src/gui/mac/qt_menu.nib)')
+    # if sys.platform == 'darwin':
+    #     parser.add_argument('--qt_menu_nib', dest='menu_nib', required=True, help='location of qt_menu.nib (usually src/gui/mac/qt_menu.nib)')
 
     args = parser.parse_args()
 
@@ -73,7 +73,14 @@ def init():
     build_dir = os.path.join(root_dir, basename + '_build')
     package_dir = os.path.join(root_dir, basename + '_pkg')
     target_path = os.path.join(args.target_dir, 'Qt Installer Framework')
-    qmake = os.path.join(args.qt_dir, 'qmake')
+    if "qtbase" in args.qt_dir:
+        qmake = os.path.join(args.qt_dir, 'qmake')
+    else:
+        for subdir in os.listdir(args.qt_dir):
+            test_path = os.path.join(args.qt_dir, subdir, "qtbase")
+            if os.isdir(test_path):
+                qmake = os.path.join(test_path, 'qmake')
+                break
 
     print 'source dir: ' + src_dir
     print 'build dir: ' + build_dir
@@ -134,8 +141,8 @@ def package():
     package_dir = os.path.join(src_dir, 'dist', 'packages')
     installer_path = os.path.join(src_dir, 'dist', 'packages')
     run((binary_creator, '--offline-only', '-c', config_file, '-p', package_dir, target_path))
-    if sys.platform == 'darwin':
-        shutil.copytree(args.menu_nib, target_path + '.app/Contents/Resources/qt_menu.nib')
+    # if sys.platform == 'darwin':
+    #     shutil.copytree(args.menu_nib, target_path + '.app/Contents/Resources/qt_menu.nib')
 
 
 parse_arguments()

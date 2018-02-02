@@ -14,17 +14,3 @@ development and support for this software.
 [Contact us](http://nextgis.ru/en/contact/) to discuss options!
 
 [![http://nextgis.com](http://nextgis.ru/img/nextgis.png)](http://nextgis.com)
-
-# Updates
-
-| Software | Description | Windows | Mac | Linux |
-|---|---|---|---|---|
-| NextGIS QGIS | Самообновление | + | + | - |
-| NextGIS QGIS | Поддержка HDF4 | + | - | - |
-| NextGIS QGIS | .bat файлы для  инструментов GDAL | + | N/A | N/A |
-| NextGIS QGIS | Обновление до 2.18 | + | - | + |
-| NextGIS QGIS | Инструмент привязки растров | + | + | - |
-| NextGIS QGIS | Изменения поведения полей ввода SQL (переключение на английский) | - | + | - |
-| Libraries | Обновление GDAL до 2.2.2 | - | + | - |
-| Installer | New package with nextgisupdater.exe app | - | + | - |
-| Installer | Network settings button added | + | + | - |
