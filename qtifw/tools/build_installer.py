@@ -75,11 +75,13 @@ def init():
     basename = os.path.basename(src_dir)
     build_dir = os.path.join(root_dir, basename + '_build')
     package_dir = os.path.join(root_dir, basename + '_pkg')
-    target_path = os.path.join(args.target_dir, 'Qt Installer Framework')
+    target_path = os.path.join(build_dir, 'Qt Installer Framework')
+    if args.target_dir is not None:
+        target_path = os.path.join(args.target_dir, 'Qt Installer Framework')
+
     if "qtbase" in args.qt_dir:
         qmake = os.path.join(args.qt_dir, 'qmake')
     else:
-        target_path = os.path.join(build_dir, 'Qt Installer Framework')
         # This is buildbot run. Get absolute path.
         qt_dir = os.path.dirname(os.path.dirname(root_dir))
         qt_dir = os.path.join(qt_dir, args.qt_dir)
