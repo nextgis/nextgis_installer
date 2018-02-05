@@ -50,7 +50,7 @@ def parse_arguments():
     parser.add_argument('--qtdir', dest='qt_dir', required=True, help='path to qmake that will be used to build the tools')
     parser.add_argument('--doc-qmake', dest='doc_qmake', required=False, help='path to qmake that will be used to generate the documentation')
     parser.add_argument('--make', dest='make', required=True, help='make command')
-    parser.add_argument('--targetdir', dest='target_dir', required=True, help='directory the generated installer will be placed in')
+    parser.add_argument('--targetdir', dest='target_dir', required=False, help='directory the generated installer will be placed in')
     # if sys.platform == 'darwin':
     #     parser.add_argument('--qt_menu_nib', dest='menu_nib', required=True, help='location of qt_menu.nib (usually src/gui/mac/qt_menu.nib)')
 
@@ -79,6 +79,7 @@ def init():
     if "qtbase" in args.qt_dir:
         qmake = os.path.join(args.qt_dir, 'qmake')
     else:
+        target_path = os.path.join(build_dir, 'Qt Installer Framework')
         # This is buildbot run. Get absolute path.
         qt_dir = os.path.dirname(os.path.dirname(root_dir))
         qt_dir = os.path.join(qt_dir, args.qt_dir)

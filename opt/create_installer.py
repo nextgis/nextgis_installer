@@ -549,7 +549,7 @@ def create_installer():
     if args.network:
         key_only = '--online-only'
 
-    '--sign', mac_sign_identy
+    # '--sign', mac_sign_identy
 
     installer_name = 'nextgis-setup'
     if args.installer_name:
