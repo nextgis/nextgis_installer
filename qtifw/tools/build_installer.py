@@ -104,10 +104,10 @@ def init():
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
 
-    if os.path.exists(args.target_dir):
+    if os.path.exists(target_path):
         print 'delete existing target dir ...'
-        shutil.rmtree(args.target_dir)
-    os.makedirs(args.target_dir)
+        shutil.rmtree(target_path)
+    os.makedirs(target_path)
 
     if os.path.exists(package_dir):
         print 'delete existing package dir ...'
