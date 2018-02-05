@@ -67,7 +67,9 @@ def init():
     global target_path
     global qmake
 
-    src_dir = os.path.dirname(os.path.abspath(os.path.dirname(sys.argv[0])))
+    src_dir = os.path.dirname(os.getcwd())
+    if sys.argv[0] is not None and sys.argv[0] != '':
+        src_dir = os.path.dirname(os.path.abspath(os.path.dirname(sys.argv[0])))
     root_dir = os.path.dirname(src_dir)
     basename = os.path.basename(src_dir)
     build_dir = os.path.join(root_dir, basename + '_build')
