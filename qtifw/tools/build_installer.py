@@ -68,8 +68,11 @@ def init():
     global qmake
 
     src_dir = os.path.dirname(os.getcwd())
+    print 'source dir1: ' + src_dir
     if sys.argv[0] is not None and sys.argv[0] != '':
         src_dir = os.path.dirname(os.path.abspath(os.path.dirname(sys.argv[0])))
+
+    print 'source dir2: ' + src_dir
     root_dir = os.path.dirname(src_dir)
     basename = os.path.basename(src_dir)
     build_dir = os.path.join(root_dir, basename + '_build')
@@ -79,7 +82,8 @@ def init():
         qmake = os.path.join(args.qt_dir, 'qmake')
     else:
         # This is buildbot run. Get absolute path.
-        qt_dir = os.path.join(src_dir, '/../../../', args.qt_dir)
+        qt_dir = os.path.dirname(os.path.dirname(root_dir))
+        qt_dir = os.path.join(qt_dir, args.qt_dir)
         print 'qt_dir: ' + qt_dir
         abs_qt_dir = os.path.abspath(qt_dir)
         print 'abs_qt_dir: ' + abs_qt_dir
