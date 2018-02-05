@@ -76,8 +76,10 @@ def init():
     if "qtbase" in args.qt_dir:
         qmake = os.path.join(args.qt_dir, 'qmake')
     else:
-        for subdir in os.listdir(args.qt_dir):
-            test_path = os.path.join(args.qt_dir, subdir, "qtbase")
+        # This is buildbot run. Get absolute path.
+        abs_qt_dir = os.path.abspath(os.path.join(src_dir, /../../../, args.qt_dir))
+        for subdir in os.listdir(abs_qt_dir):
+            test_path = os.path.join(abs_qt_dir, subdir, "qtbase")
             if os.isdir(test_path):
                 qmake = os.path.join(test_path, 'qmake')
                 break
