@@ -40,7 +40,6 @@ src_dir = ''
 build_dir = ''
 package_dir = ''
 archive_file = ''
-target_path = ''
 
 def parse_arguments():
     global args
@@ -49,8 +48,6 @@ def parse_arguments():
     parser.add_argument('--clean', dest='clean', action='store_true', help='delete all previous build artifacts')
     parser.add_argument('--qtdir', dest='qt_dir', required=True, help='path to qmake that will be used to build the tools')
     parser.add_argument('--make', dest='make', required=True, help='make command')
-    # if sys.platform == 'darwin':
-    #     parser.add_argument('--qt_menu_nib', dest='menu_nib', required=True, help='location of qt_menu.nib (usually src/gui/mac/qt_menu.nib)')
 
     args = parser.parse_args()
 
@@ -62,7 +59,6 @@ def init():
     global src_dir
     global build_dir
     global package_dir
-    global target_path
     global qmake
 
     src_dir = os.path.dirname(os.getcwd())
@@ -70,7 +66,6 @@ def init():
     basename = os.path.basename(src_dir)
     build_dir = os.path.join(root_dir, basename + '_build')
     package_dir = os.path.join(root_dir, basename + '_pkg')
-    target_path = os.path.join(build_dir, 'Qt Installer Framework')
 
     # This is buildbot run. Get absolute path.
     qt_dir = os.path.dirname(os.path.dirname(root_dir))
@@ -87,18 +82,12 @@ def init():
     print 'source dir: ' + src_dir
     print 'build dir: ' + build_dir
     print 'package dir: ' + package_dir
-    print 'target path: ' + target_path
 
     if args.clean and os.path.exists(build_dir):
         print 'delete existing build dir ...'
         shutil.rmtree(build_dir)
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
-
-    if os.path.exists(target_path):
-        print 'delete existing target dir ...'
-        shutil.rmtree(target_path)
-    os.makedirs(target_path)
 
     if os.path.exists(package_dir):
         print 'delete existing package dir ...'
@@ -111,38 +100,6 @@ def build():
     run((qmake, src_dir))
     run((args.make))
 
-def package():
-    global package_dir
-    print 'package ...'
-    os.chdir(package_dir)
-    shutil.copytree(os.path.join(build_dir, 'bin'), os.path.join(package_dir, 'bin'), ignore = shutil.ignore_patterns("*.exe.manifest","*.exp","*.lib"))
-    if sys.platform == 'linux2':
-        run(('strip',os.path.join(package_dir, 'bin/archivegen')))
-        run(('strip',os.path.join(package_dir, 'bin/binarycreator')))
-        run(('strip',os.path.join(package_dir, 'bin/devtool')))
-        run(('strip',os.path.join(package_dir, 'bin/installerbase')))
-        run(('strip',os.path.join(package_dir, 'bin/repogen')))
-    # shutil.copytree(os.path.join(build_dir, 'doc'), os.path.join(package_dir, 'doc'))
-    # shutil.copytree(os.path.join(src_dir, 'examples'), os.path.join(package_dir, 'examples'))
-    shutil.copy(os.path.join(src_dir, 'README'), package_dir)
-    # create 7z
-    archive_file = os.path.join(src_dir, 'dist', 'packages', 'org.qtproject.ifw.binaries', 'data', 'data.7z')
-    if not os.path.exists(os.path.dirname(archive_file)):
-        os.makedirs(os.path.dirname(archive_file))
-    run((os.path.join(package_dir, 'bin', 'archivegen'), archive_file, '*'))
-    # run installer
-    binary_creator = os.path.join(build_dir, 'bin', 'binarycreator')
-    config_file = os.path.join(src_dir, 'dist', 'config', 'config.xml')
-    package_dir = os.path.join(src_dir, 'dist', 'packages')
-    installer_path = os.path.join(src_dir, 'dist', 'packages')
-    run((binary_creator, '--offline-only', '-c', config_file, '-p', package_dir, target_path))
-    # if sys.platform == 'darwin':
-    #     shutil.copytree(args.menu_nib, target_path + '.app/Contents/Resources/qt_menu.nib')
-
-
 parse_arguments()
 init()
 build()
-package()
-
-print 'DONE, installer is at ' + target_path
