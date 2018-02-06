@@ -80,7 +80,7 @@ def init():
     for subdir in os.listdir(abs_qt_dir):
         test_path = os.path.join(abs_qt_dir, subdir, "qtbase")
         if os.path.isdir(test_path):
-            qmake = os.path.join(test_path, 'qmake')
+            qmake = os.path.join(test_path, 'bin', 'qmake')
             break
 
     print 'source dir: ' + src_dir
