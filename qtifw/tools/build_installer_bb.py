@@ -52,6 +52,10 @@ def parse_arguments():
     args = parser.parse_args()
 
 def run(args):
+    if sys.platform == 'win32' and vcvars is not None and vcvars != '':
+        args.insert(0, '&&')
+        args.insert(0, vcvars)
+
     print 'calling ' + string.join(args)
     subprocess.check_call(args)
 
@@ -60,6 +64,7 @@ def init():
     global build_dir
     global package_dir
     global qmake
+    global vcvars
 
     src_dir = os.path.dirname(os.getcwd())
     root_dir = os.path.dirname(src_dir)
@@ -93,6 +98,25 @@ def init():
         print 'delete existing package dir ...'
         shutil.rmtree(package_dir)
     os.makedirs(package_dir)
+
+    if sys.platform == 'win32':
+        # find vcvars script
+        vcvars_paths [
+            'C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\Common7\\Tools',
+            'C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\Common7\\Tools',
+            'C:\\Program Files (x86)\\Microsoft Visual Studio 11.0\\Common7\\Tools',
+            'C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\Common7\\Tools',
+            'C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\Tools',
+            'C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools',
+        ]
+
+        for vcvars_path in vcvars_paths:
+            if os.path.exists(vcvars_path + '\\vsdevcmd.bat'):
+                vcvars = vcvars_path + '\\vsdevcmd.bat'
+                break
+            elif os.path.exists(vcvars_path + '\\vcvarsall.bat'):
+                vcvars = vcvars_path + '\\vcvarsall.bat'
+                break
 
 def build():
     print 'building sources ...'

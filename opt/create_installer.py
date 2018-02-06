@@ -458,6 +458,10 @@ def delete_path(path_to_delete):
     color_print('Delete existing build dir ...', True, 'LRED')
     shutil.rmtree(path_to_delete, ignore_errors=True)
 
+def download(ftp_user, ftp, suffix):
+    repositories = ['lib_z', 'lib_openssl','lib_curl', ]
+    # 1.
+
 
 def prepare():
     color_print('Preparing ...', True, 'LYELLOW')
