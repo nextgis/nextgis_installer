@@ -78,11 +78,12 @@ def init():
     abs_qt_dir = os.path.abspath(qt_dir)
     print 'abs_qt_dir: ' + abs_qt_dir
     for subdir in os.listdir(abs_qt_dir):
-        test_path = os.path.join(abs_qt_dir, subdir, "qtbase")
+        test_path = os.path.join(abs_qt_dir, subdir) #, "qtbase")
         if os.path.isdir(test_path):
             qmake = os.path.join(test_path, 'bin', 'qmake')
             break
 
+    print 'qmake: ' + qmake
     print 'source dir: ' + src_dir
     print 'build dir: ' + build_dir
     print 'package dir: ' + package_dir
