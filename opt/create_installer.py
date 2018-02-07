@@ -102,7 +102,12 @@ def parse_arguments():
 
     subparsers = parser.add_subparsers(help='command help', dest='command')
     parser_prepare = subparsers.add_parser('prepare')
+    parser_prepare.add_argument('--ftp_user', dest='ftp_user', required=False, help='FTP user name and password to fetch package.zip anv version.str files')
+    parser_prepare.add_argument('--ftp', dest='ftp', required=False, help='FTP address with directories to fetch package.zip anv version.str files')
+    parser_prepare.add_argument('--target_dir', dest='target_dir', required=False, help='Relative path from current working directory (CWD) to extract archive content')
+
     parser_create = subparsers.add_parser('create')
+
     parser_update = subparsers.add_parser('update')
     parser_update.add_argument('--force', dest='packages', required=False, help='Force update specified packages even not any changes exists', nargs='+')
     parser_update.add_argument('--force_all', dest='force_all', action='store_true', help='Force update all packages even not any changes exists')
@@ -139,6 +144,7 @@ def init():
     global translate_tool
     global packages_data_source_path
     global versions_file_name
+    global repo_remote_path
 
     repo_root_dir = os.path.dirname(os.path.abspath(os.path.dirname(sys.argv[0])))
 
@@ -158,7 +164,6 @@ def init():
     repo_new_config_path = os.path.join(repo_target_path, 'config')
 
     if args.network:
-        global repo_remote_path
         repo_remote_path = args.remote
         print 'remote repository URL: ' + repo_remote_path
 
@@ -329,7 +334,7 @@ def process_files_in_meta_dir(path_meta, new_meta_path):
 
 def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir, repo_new_package_path, data_root_tag, path_meta):
 
-    # If not install under current system - don;t create directory
+    # If not install under current system - don't create directory
     is_dir_maked = False
     new_data_path = os.path.join(repo_new_package_path, 'data')
     if sys.platform == 'darwin':
@@ -458,9 +463,44 @@ def delete_path(path_to_delete):
     color_print('Delete existing build dir ...', True, 'LRED')
     shutil.rmtree(path_to_delete, ignore_errors=True)
 
-def download(ftp_user, ftp, suffix):
+def download(ftp_user, ftp, target_dir):
+    if ftp is None:
+        return
+
+    tmp_dir = os.path.join(os.getcwd(), 'tmp')
+    if not os.path.exists(tmp_dir):
+        os.makedirs(tmp_dir)
+
+    target_dir = os.path.join(os.getcwd(), target_dir)
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+
     repositories = ['lib_z', 'lib_openssl','lib_curl', ]
-    # 1.
+    suffixes = ['nix']
+    if sys.platform == 'darwin':
+        suffixes = ['mac']
+    elif sys.platform == 'win32':
+        suffixes = ['win32', 'win64']
+
+    # 1. Get archive to tmp directory
+    for suffix in suffixes:
+        for repository in repositories:
+            ftp_dir = repository + '_' + suffix
+            if ftp[-1:] != '/':
+                ftp += '/'
+            out_zip = os.path.join(tmp_dir, 'package.zip')
+            run(('curl', '-u', ftp_user, ftp + ftp_dir + '/package.zip', '-o', out_zip))
+
+    # 2. Extract archive
+            run(('cmake', '-E', 'tar', 'xzf', out_zip))
+
+    # 3. Move archive with new name to target_dir
+            for o in os.listdir(tmp_dir)
+                if os.path.isdir(os.path.join(tmp_dir,o):
+                    os.path.join(target_dir, repository)
+                    break
+
+
 
 
 def prepare():
@@ -596,6 +636,7 @@ if args.command == 'create':
     prepare()
     create_installer()
 elif args.command == 'prepare':
+    download(args.ftp_user, args.ftp, args.target_dir)
     prepare()
 elif args.command == 'update':
     update(args.packages, args.force_all)

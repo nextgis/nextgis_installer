@@ -53,8 +53,7 @@ def parse_arguments():
 
 def run(args):
     if sys.platform == 'win32' and vcvars is not None and vcvars != '':
-        args.insert(0, '&&')
-        args.insert(0, vcvars)
+        args = (vcvars, '&&',) + args
 
     print 'calling ' + string.join(args)
     subprocess.check_call(args)
