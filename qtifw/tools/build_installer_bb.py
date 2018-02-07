@@ -121,7 +121,7 @@ def run(args):
 def build():
     print 'building sources ...'
     os.chdir(build_dir)
-    run(qmake + ' ' + src_dir))
+    run(qmake + ' ' + src_dir)
     run(args.make)
 
 parse_arguments()
