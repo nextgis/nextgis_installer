@@ -51,13 +51,6 @@ def parse_arguments():
 
     args = parser.parse_args()
 
-def run(args):
-    if sys.platform == 'win32' and vcvars is not None and vcvars != '':
-        args = (vcvars, '&&',) + args
-
-    print 'calling ' + string.join(args)
-    subprocess.check_call(args)
-
 def init():
     global src_dir
     global build_dir
@@ -116,6 +109,17 @@ def init():
             elif os.path.exists(vcvars_path + '\\vcvarsall.bat'):
                 vcvars = vcvars_path + '\\vcvarsall.bat'
                 break
+
+
+def run(args):
+    if sys.platform == 'win32' and vcvars is not None and vcvars != '':
+        args = list(args)
+        args.insert(0, '&&')
+        args.insert(0, vcvars)
+        args = tuple(args)
+
+    print 'calling ' + string.join(args)
+    subprocess.check_call(args)
 
 def build():
     print 'building sources ...'
