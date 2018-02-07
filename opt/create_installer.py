@@ -109,8 +109,7 @@ def parse_arguments():
     parser_create = subparsers.add_parser('create')
 
     parser_update = subparsers.add_parser('update')
-    parser_update.add_argument('--force', dest='packages', required=False, help='Force update specified packages even not any changes exists', nargs='+')
-    parser_update.add_argument('--force_all', dest='force_all', action='store_true', help='Force update all packages even not any changes exists')
+    parser_update.add_argument('--force', dest='packages', required=False, help='Force update specified packages even not any changes exists. If all specified force update all packages', nargs='+')
     args = parser.parse_args()
 
 
@@ -475,7 +474,7 @@ def download(ftp_user, ftp, target_dir):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
-    repositories = ['lib_z', 'lib_openssl','lib_curl', ]
+    repositories = ['lib_z', 'lib_openssl', 'lib_curl', ]
     suffixes = ['nix']
     if sys.platform == 'darwin':
         suffixes = ['mac']
@@ -485,23 +484,28 @@ def download(ftp_user, ftp, target_dir):
     # 1. Get archive to tmp directory
     for suffix in suffixes:
         for repository in repositories:
+            color_print('Download ' + repository + '_' + suffix, True, 'LGREEN')
             ftp_dir = repository + '_' + suffix
             if ftp[-1:] != '/':
                 ftp += '/'
             out_zip = os.path.join(tmp_dir, 'package.zip')
-            run(('curl', '-u', ftp_user, ftp + ftp_dir + '/package.zip', '-o', out_zip))
+            run(('curl', '-u', ftp_user, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
 
     # 2. Extract archive
+            color_print('Extract ' + out_zip, False, 'LGREEN')
             run(('cmake', '-E', 'tar', 'xzf', out_zip))
 
     # 3. Move archive with new name to target_dir
+            target_repo_dir = os.path.join(target_dir, repository)
             for o in os.listdir(tmp_dir)
-                if os.path.isdir(os.path.join(tmp_dir,o):
-                    os.path.join(target_dir, repository)
+                archive_dir = os.path.join(tmp_dir,o)
+                if os.path.isdir(archive_dir):
+                    shutil.move(archive_dir, target_repo_dir)
                     break
 
-
-
+    # 4. Download version.str
+            color_print('Download ' + repository + '_' + suffix + '/version.str', True, 'LGREEN')
+            run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
 
 def prepare():
     color_print('Preparing ...', True, 'LYELLOW')
@@ -570,9 +574,13 @@ def update_directory(dir_name, force):
     color_print('... package updated', True, 'LBLUE')
 
 
-def update(packages, force_all):
+def update(packages):
+    force_all = False
     if packages:
-        source_dirs = packages
+        if 'all' in packages:
+            force_all = True
+        else:
+            source_dirs = packages
     else:
         # Scan for directories and files
         packages = []
@@ -639,7 +647,7 @@ elif args.command == 'prepare':
     download(args.ftp_user, args.ftp, args.target_dir)
     prepare()
 elif args.command == 'update':
-    update(args.packages, args.force_all)
+    update(args.packages)
     update_istaller()
 else:
     exit('Unsupported command')
