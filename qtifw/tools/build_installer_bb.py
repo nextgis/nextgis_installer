@@ -101,7 +101,7 @@ def init():
 
     if sys.platform == 'win32':
         # find vcvars script
-        vcvars_paths [
+        vcvars_paths = [
             'C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\Common7\\Tools',
             'C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\Common7\\Tools',
             'C:\\Program Files (x86)\\Microsoft Visual Studio 11.0\\Common7\\Tools',
