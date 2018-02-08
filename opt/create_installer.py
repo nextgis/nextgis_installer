@@ -498,7 +498,7 @@ def download(ftp_user, ftp, target_dir):
 
     # 3. Move archive with new name to target_dir
             target_repo_dir = os.path.join(target_dir, repository)
-            for o in os.listdir(tmp_dir)
+            for o in os.listdir(tmp_dir):
                 archive_dir = os.path.join(tmp_dir,o)
                 if os.path.isdir(archive_dir):
                     shutil.move(archive_dir, target_repo_dir)
