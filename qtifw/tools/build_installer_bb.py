@@ -38,8 +38,8 @@ args = {}
 
 src_dir = ''
 build_dir = ''
-package_dir = ''
-archive_file = ''
+qmake = ''
+vcvars = ''
 
 def parse_arguments():
     global args
@@ -54,7 +54,6 @@ def parse_arguments():
 def init():
     global src_dir
     global build_dir
-    global package_dir
     global qmake
     global vcvars
 
@@ -62,7 +61,6 @@ def init():
     root_dir = os.path.dirname(src_dir)
     basename = os.path.basename(src_dir)
     build_dir = os.path.join(root_dir, basename + '_build')
-    package_dir = os.path.join(root_dir, basename + '_pkg')
 
     # This is buildbot run. Get absolute path.
     qt_dir = os.path.dirname(os.path.dirname(root_dir))
@@ -78,18 +76,12 @@ def init():
     print 'qmake: ' + qmake
     print 'source dir: ' + src_dir
     print 'build dir: ' + build_dir
-    print 'package dir: ' + package_dir
 
     if args.clean and os.path.exists(build_dir):
         print 'delete existing build dir ...'
         shutil.rmtree(build_dir)
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
-
-    if os.path.exists(package_dir):
-        print 'delete existing package dir ...'
-        shutil.rmtree(package_dir)
-    os.makedirs(package_dir)
 
     if sys.platform == 'win32':
         # find vcvars script
@@ -103,23 +95,23 @@ def init():
         ]
 
         for vcvars_path in vcvars_paths:
-            if os.path.exists(vcvars_path + '\\vsdevcmd.bat'):
-                vcvars = vcvars_path + '\\vsdevcmd.bat'
+            if os.path.exists(vcvars_path + '\\VsDevCmd.bat'):
+                vcvars = '\"' + vcvars_path + '\\VsDevCmd.bat\" -arch=x86'
                 break
             elif os.path.exists(vcvars_path + '\\vcvarsall.bat'):
-                vcvars = vcvars_path + '\\vcvarsall.bat'
+                vcvars = '\"' + vcvars_path + '\\vcvarsall.bat\" amd64_x86'
                 break
 
 
 def run(args):
     if sys.platform == 'win32' and vcvars is not None and vcvars != '':
-        args = '\"' + vcvars + '\" && ' + args
+        args = vcvars + ' && ' + args
 
     print 'calling ' + args
     subprocess.check_call(args, shell=True)
 
 def build():
-    print 'building sources ...'
+    print 'building sources ... in ' + build_dir
     os.chdir(build_dir)
     run('\"' + qmake + '\" \"' + src_dir + '\"')
     run(args.make)
