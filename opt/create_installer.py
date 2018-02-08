@@ -96,7 +96,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='Create NextGIS desktop software installer.')
     parser.add_argument('-q', dest='qt_bin', required=True, help='Qt binary path (path to lrelease)')
     parser.add_argument('-t', dest='target', required=True, help='Target path')
-    parser.add_argument('-s', dest='source', required=True, help='Packages data source path (i.e. borsch root directory)')
+    parser.add_argument('-s', dest='source', required=True, help='Relative path from current working directory (CWD) to packages data source  (i.e. borsch root directory)')
     parser.add_argument('-se', dest='source_ext', required=False, help='Extended packages data source path (i.e. qgis directory)')
     parser.add_argument('-r', dest='remote', required=False, help='Repositry remote url')
     parser.add_argument('-n', dest='network', action='store_true', help='Online installer (the -r key should be present)')
@@ -106,7 +106,6 @@ def parse_arguments():
     parser_prepare = subparsers.add_parser('prepare')
     parser_prepare.add_argument('--ftp_user', dest='ftp_user', required=False, help='FTP user name and password to fetch package.zip anv version.str files')
     parser_prepare.add_argument('--ftp', dest='ftp', required=False, help='FTP address with directories to fetch package.zip anv version.str files')
-    parser_prepare.add_argument('--target_dir', dest='target_dir', required=False, help='Relative path from current working directory (CWD) to extract archive content')
 
     parser_create = subparsers.add_parser('create')
 
@@ -172,10 +171,17 @@ def init():
     if sys.platform == 'win32':
         translate_tool += '.exe'
 
+    is_releative = False
+
     if not os.path.exists(translate_tool):
-        sys.exit('No translate tool exists')
+        translate_tool = os.path.join(os.getcwd(), translate_tool)
+        is_releative = True
+        if not os.path.exists(translate_tool):
+            sys.exit('No translate tool exists')
 
     packages_data_source_path = os.path.abspath(args.source)
+    if is_releative:
+        packages_data_source_path = os.path.join(os.getcwd(), packages_data_source_path)
     if not os.path.exists(packages_data_source_path):
         sys.exit('Invalid packages data source path')
 
@@ -645,7 +651,7 @@ if args.command == 'create':
     prepare()
     create_installer()
 elif args.command == 'prepare':
-    download(args.ftp_user, args.ftp, args.target_dir)
+    download(args.ftp_user, args.ftp, args.source)
     prepare()
 elif args.command == 'update':
     update(args.packages)

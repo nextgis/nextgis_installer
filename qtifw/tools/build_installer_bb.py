@@ -113,7 +113,7 @@ def init():
 
 def run(args):
     if sys.platform == 'win32' and vcvars is not None and vcvars != '':
-        args = vcvars + ' && ' + args
+        args = '\"' + vcvars + '\" && ' + args
 
     print 'calling ' + args
     subprocess.check_call(args, shell=True)
@@ -121,7 +121,7 @@ def run(args):
 def build():
     print 'building sources ...'
     os.chdir(build_dir)
-    run(qmake + ' ' + src_dir)
+    run('\"' + qmake + '\" \"' + src_dir + '\"')
     run(args.make)
 
 parse_arguments()
