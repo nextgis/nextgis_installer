@@ -174,14 +174,15 @@ def init():
     is_releative = False
 
     if not os.path.exists(translate_tool):
-        translate_tool = os.path.join(os.getcwd(), translate_tool)
+        translate_tool = os.path.join(repo_root_dir, translate_tool)
         is_releative = True
         if not os.path.exists(translate_tool):
             sys.exit('No translate tool exists')
 
-    packages_data_source_path = os.path.abspath(args.source)
     if is_releative:
-        packages_data_source_path = os.path.join(os.getcwd(), packages_data_source_path)
+        packages_data_source_path = os.path.join(repo_root_dir, args.source)
+    else:
+        packages_data_source_path = os.path.abspath(args.source)
     if not os.path.exists(packages_data_source_path):
         sys.exit('Invalid packages data source path')
 
