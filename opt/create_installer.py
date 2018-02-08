@@ -37,6 +37,8 @@ translate_tool = ''
 packages_data_source_path = ''
 mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 
+repositories = ['lib_z', 'lib_openssl', 'lib_curl', ]
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -474,7 +476,6 @@ def download(ftp_user, ftp, target_dir):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
-    repositories = ['lib_z', 'lib_openssl', 'lib_curl', ]
     suffixes = ['nix']
     if sys.platform == 'darwin':
         suffixes = ['mac']

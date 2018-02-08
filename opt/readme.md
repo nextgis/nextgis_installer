@@ -51,3 +51,10 @@ For example on Windows for standalone installer
 1. Only one update for installer received.
 
 2. Force to update package com.nextgis.nextgis_updater      
+
+# Add new package
+
+1. Add package description to qtifw_scripts
+2. Add package repository name to opt/create_installer.py
+3. Add package repository name and build arguments to buildbot/makeborsch.py
+4. Force update in build bot. Add package name in update page
