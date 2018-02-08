@@ -25,6 +25,9 @@
 ##
 ## $QT_END_LICENSE$
 ##
+## Modified by NextGIS for buildbot
+## Copyright (C) 2018 NextGIS, <info@nextgis.com>
+## Copyright (C) 2018 Dmitry Baryshnikov, <dmitry.baryshnikov@nextgis.com>
 #############################################################################
 
 import argparse
@@ -113,7 +116,7 @@ def run(args):
 def build():
     print 'building sources ... in ' + build_dir
     os.chdir(build_dir)
-    run('\"' + qmake + '\" \"' + src_dir + '\"')
+    run('\"' + qmake + '\" CONFIG+=release DESTDIR=\"' + build_dir + '\" \"' + src_dir + '\"')
     run(args.make)
 
 parse_arguments()
