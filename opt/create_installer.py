@@ -514,7 +514,7 @@ def download(ftp_user, ftp, target_dir):
                     break
 
     # 4. Download version.str
-            if os.path.exist(target_repo_dir):
+            if os.path.exists(target_repo_dir):
                 color_print('Download ' + repository + '_' + suffix + '/version.str', True, 'LGREEN')
                 run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
 

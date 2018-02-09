@@ -120,7 +120,7 @@ def build():
     run(args.make)
     if sys.platform == 'win32':
         test_path = os.path.join(os.getenv("USERPROFILE"), 'source', 'bin')
-        if os.path.exist(test_path):
+        if os.path.exists(test_path):
             print 'It must not happen, but though qmake not honor DESTDIR, let\'s move directory there'
             shutil.move(test_path, build_dir)
 
