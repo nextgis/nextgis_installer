@@ -489,6 +489,8 @@ def download(ftp_user, ftp, target_dir):
     elif sys.platform == 'win32':
         suffixes = ['win32', 'win64']
 
+    os.chdir( tmp_dir )
+
     # 1. Get archive to tmp directory
     for suffix in suffixes:
         for repository in repositories:
@@ -512,8 +514,9 @@ def download(ftp_user, ftp, target_dir):
                     break
 
     # 4. Download version.str
-            color_print('Download ' + repository + '_' + suffix + '/version.str', True, 'LGREEN')
-            run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
+            if os.path.exist(target_repo_dir):
+                color_print('Download ' + repository + '_' + suffix + '/version.str', True, 'LGREEN')
+                run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
 
 def prepare():
     color_print('Preparing ...', True, 'LYELLOW')
