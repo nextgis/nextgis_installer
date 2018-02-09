@@ -37,7 +37,7 @@ translate_tool = ''
 packages_data_source_path = ''
 mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 
-repositories = ['lib_z', 'lib_openssl', } #'lib_curl', ]
+repositories = ['lib_z', 'lib_openssl', ] #'lib_curl', ]
 
 class bcolors:
     HEADER = '\033[95m'
