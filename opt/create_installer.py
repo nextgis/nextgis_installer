@@ -25,7 +25,7 @@ libraries_version_dict = {}
 
 repogen_file = ''
 binarycreator_file = ''
-
+versions_file_name = ''
 repo_config_path = ''
 repo_target_path = ''
 repo_source_path = ''
@@ -37,7 +37,7 @@ translate_tool = ''
 packages_data_source_path = ''
 mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 
-repositories = ['lib_z', 'lib_openssl', 'lib_curl', ]
+repositories = ['lib_z', 'lib_openssl', } #'lib_curl', ]
 
 class bcolors:
     HEADER = '\033[95m'
@@ -101,6 +101,7 @@ def parse_arguments():
     parser.add_argument('-r', dest='remote', required=False, help='Repositry remote url')
     parser.add_argument('-n', dest='network', action='store_true', help='Online installer (the -r key should be present)')
     parser.add_argument('-i', dest='installer_name', required=False, help='Installer name')
+    parser.add_argument('-w64', dest='win64', action='store_true', help='Flag to build Windows 64bit repository')
 
     subparsers = parser.add_subparsers(help='command help', dest='command')
     parser_prepare = subparsers.add_parser('prepare')
@@ -157,8 +158,7 @@ def init():
     repo_config_path = os.path.join(scripts_path, 'config')
     repo_source_path = os.path.join(scripts_path, 'packages')
     repo_target_path = os.path.abspath(args.target)
-    versions_file_name = 'versions_' + os.path.basename(repo_target_path) + '.pkl'
-    load_versions(versions_file_name)
+
     color_print('build path: ' + repo_target_path, True, 'LCYAN')
     repo_new_packages_path = os.path.join(repo_target_path, 'packages')
     repo_new_config_path = os.path.join(repo_target_path, 'config')
@@ -183,8 +183,9 @@ def init():
         packages_data_source_path = os.path.join(repo_root_dir, args.source)
     else:
         packages_data_source_path = os.path.abspath(args.source)
-    if not os.path.exists(packages_data_source_path):
-        os.makedirs(packages_data_source_path)
+
+    versions_file_name = os.path.join(packages_data_source_path, 'versions.pkl')
+    load_versions(versions_file_name)
 
 def get_sources_dir_path(sources_root_dir):
     if args.source_ext:
@@ -202,7 +203,10 @@ def get_repository_path():
         if sys.platform == 'darwin':
             out_path += '-mac'
         elif sys.platform == 'win32':
-            out_path += '-win'
+            if args.win64:
+                out_path += '-win32'
+            else:
+                out_path += '-win64'
         else: # This should never happened
             out_path += '-nix'
     return out_path
@@ -393,8 +397,6 @@ def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir
         if sys.platform == 'darwin':
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.xml2,', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.xml2', '')
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.z,', '')
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.z', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.qt.all,', '') # Only install qt.conf which installed in separate app folder on Mac OS X
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.qt.all', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.python.python2,', '') # Python 2 is default application in Mac OS X
@@ -445,7 +447,7 @@ def process_directory(dir_name):
     if updatetext_tag is not None:
         updatetext_text = updatetext_tag.text
 
-    # Avoid creating package if disabled. Temporary only for Windows.
+    # TODO: Is this needed? Avoid creating package if disabled. Temporary only for Windows.
     if sys.platform == 'win32':
         tag_os = root.find('win')
         if tag_os is not None:
