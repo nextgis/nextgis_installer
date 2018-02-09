@@ -184,7 +184,7 @@ def init():
     else:
         packages_data_source_path = os.path.abspath(args.source)
     if not os.path.exists(packages_data_source_path):
-        sys.exit('Invalid packages data source path')
+        os.makedirs(packages_data_source_path)
 
 def get_sources_dir_path(sources_root_dir):
     if args.source_ext:
