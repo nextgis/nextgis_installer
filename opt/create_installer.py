@@ -121,6 +121,7 @@ def run(args):
 
 
 def load_versions(file_name):
+    color_print('load versions from ' + file_name, True, 'LYELLOW')
     if os.path.exists(file_name):
         global libraries_version_dict
         with open(file_name, 'rb') as f:
@@ -128,6 +129,7 @@ def load_versions(file_name):
 
 
 def save_versions(file_name):
+    color_print('save versions to ' + file_name, True, 'LGREEN')
     with open(file_name, 'wb') as f:
         pickle.dump(libraries_version_dict, f, pickle.HIGHEST_PROTOCOL)
 
@@ -179,10 +181,16 @@ def init():
         if not os.path.exists(translate_tool):
             sys.exit('No translate tool exists')
 
+    translate_tool = os.path.abspath(translate_tool)
+    color_print('lrelease path: ' + translate_tool, True, 'LCYAN')
+
     if is_releative:
         packages_data_source_path = os.path.join(repo_root_dir, args.source)
     else:
         packages_data_source_path = os.path.abspath(args.source)
+
+
+    color_print('packages path: ' + packages_data_source_path, True, 'LCYAN')
 
     versions_file_name = os.path.join(packages_data_source_path, 'versions.pkl')
     load_versions(versions_file_name)
