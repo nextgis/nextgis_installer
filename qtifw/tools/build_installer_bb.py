@@ -116,8 +116,13 @@ def run(args):
 def build():
     print 'building sources ... in ' + build_dir
     os.chdir(build_dir)
-    run('\"' + qmake + '\" CONFIG+=release DESTDIR=\"' + build_dir + '\" \"' + src_dir + '\"')
+    run('\"' + qmake + '\" CONFIG+=release \"' + src_dir + '\"')
     run(args.make)
+    if sys.platform == 'win32'
+        test_path = os.path.join(os.getenv("USERPROFILE"), 'source', 'bin')
+        if os.path.exist(test_path):
+            print 'It must not happen, but though qmake not honor DESTDIR, let\'s move directory there'
+            shutil.move(test_path, build_dir)
 
 parse_arguments()
 init()
