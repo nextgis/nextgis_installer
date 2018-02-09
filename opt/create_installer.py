@@ -192,7 +192,7 @@ def init():
 
     color_print('packages path: ' + packages_data_source_path, True, 'LCYAN')
 
-    versions_file_name = os.path.join(packages_data_source_path, 'versions.pkl')
+    versions_file_name = os.path.join(repo_root_dir, 'versions.pkl')
     load_versions(versions_file_name)
 
 def get_sources_dir_path(sources_root_dir):
