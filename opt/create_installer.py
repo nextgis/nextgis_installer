@@ -634,7 +634,7 @@ def create_installer():
     # Hack as <InstallerApplicationIcon> in config.xml not working
     if sys.platform == 'darwin':
         import dmgbuild
-        icns_path = os.path.join(repo_target_path, 'nextgis-setup.app', 'Contents', 'Resources', 'nextgis-setup.icns' )
+        icns_path = os.path.join(repo_target_path, installer_name + '.app', 'Contents', 'Resources', installer_name + '.icns' )
         os.unlink(icns_path)
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
 
