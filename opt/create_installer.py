@@ -639,6 +639,8 @@ def create_installer():
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
 
         # Resign install application as there is some bug in binarycreator --sign
+        run(('security', 'default-keychain', '-s', 'codesign.keychain'))
+        run(('security', 'unlock-keychain', '-p', 'none', 'codesign.keychain'))
         run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, installer_name + '.app') ))
 
         # Build dgm image file
