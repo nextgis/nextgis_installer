@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_openssl">
     <mac>
-        <path src="inst/Library/Frameworks/openssl.framework" dst="Library/Frameworks/openssl.framework"/>
+        <path src="Library/Frameworks/openssl.framework" dst="Library/Frameworks/openssl.framework"/>
     </mac>
     <win enabled="true">
         <path src="inst/bin/openssl*.dll" dst="bin"/>
