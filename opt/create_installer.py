@@ -323,9 +323,11 @@ def check_version(version_str, version_file_date, component_name, force):
 
 def get_version_text(sources_root_dir, component_name, force):
     has_changes = False
-    version_file_path = os.path.join(get_sources_dir_path(sources_root_dir), 'build', 'version.str')
+    version_file_path = os.path.join(get_sources_dir_path(sources_root_dir), 'version.str')
     if not os.path.exists(version_file_path):
-        return "0.0.0", has_changes
+        version_file_path = os.path.join(get_sources_dir_path(sources_root_dir), 'build', 'version.str')
+        if not os.path.exists(version_file_path):
+            return "0.0.0", has_changes
 
     with open(version_file_path) as f:
         content = f.readlines()
@@ -622,13 +624,12 @@ def create_installer():
     if args.network:
         key_only = '--online-only'
 
-    # '--sign', mac_sign_identy
-
     installer_name = 'nextgis-setup'
     if args.installer_name:
         installer_name = args.installer_name
 
-    run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name), '--sign', mac_sign_identy ))
+    run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name) ))
+    # '--sign', mac_sign_identy
 
     # Hack as <InstallerApplicationIcon> in config.xml not working
     if sys.platform == 'darwin':
@@ -638,25 +639,25 @@ def create_installer():
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
 
         # Resign install application as there is some bug in binarycreator --sign
-        run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app') ))
+        run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, installer_name + '.app') ))
 
         # Build dgm image file
         color_print('Create DMG file ...', True, 'LMAGENTA')
         dmgbuild.build_dmg(
-            os.path.join(repo_target_path, 'nextgis-setup.dmg'),
+            os.path.join(repo_target_path, installer_name + '.dmg'),
             'NextGIS Setup',
             os.path.join(repo_root_dir, 'opt', 'dmg_settings.py'),
             defines=dict(badge_icon=os.path.join(repo_new_config_path, 'nextgis-setup.icns'),
                  background=os.path.join(repo_new_config_path, 'bk.png'),
-                 files=[os.path.join(repo_target_path, 'nextgis-setup.app')]),
+                 files=[os.path.join(repo_target_path, installer_name + '.app')]),
             lookForHiDPI=False)
 
-    color_print('DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup'), True, 'LMAGENTA')
+    color_print('DONE, installer is at ' + os.path.join(repo_target_path, installer_name), True, 'LMAGENTA')
 
 
 def update_istaller():
     run((repogen_file, '--update-new-components', '-v', '-p', repo_new_packages_path, get_repository_path()))
-    color_print('DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup'), True, 'LMAGENTA')
+    color_print('DONE, installer is at ' + os.path.join(repo_target_path, args.installer_name), True, 'LMAGENTA')
 
 
 parse_arguments()
