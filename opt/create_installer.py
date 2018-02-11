@@ -657,7 +657,7 @@ def create_installer():
         run_shell('security list-keychains -d user -s cs.keychain /Library/Keychains/System.keychain')
         run_shell('security list-keychains -d system -s cs.keychain /Library/Keychains/System.keychain')
         run_shell('security list-keychains -d common -s cs.keychain /Library/Keychains/System.keychain')
-        run_shell('security list-keychains -d dynamic -s cs.keychain /Library/Keychains/System.keychain')
+        # run_shell('security list-keychains -d dynamic -s cs.keychain /Library/Keychains/System.keychain')
         run_shell('security import ./dev.p12 -k cs.keychain -P \"\" -A')
         run_shell('security set-key-partition-list -S apple-tool:,apple:,codesign: -k {} -s cs.keychain'.format(args.keychain_password))
         run_shell('security list-keychains')
