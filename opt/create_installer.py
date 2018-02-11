@@ -668,6 +668,7 @@ def create_installer():
         # run_shell('security set-key-partition-list -S apple-tool:,apple:,codesign: -k {} -s \"/Users/admin/Library/Keychains/cs3.keychain-db\"'.format(args.keychain_password))
         # run_shell('security list-keychains')
         run_shell('security find-identity -v -p codesigning')
+        run_shell('security find-identity -v -p codesigning ~/Library/Keychains/ios-build.keychain-db')
 
         run_shell('codesign --deep --force --verify --verbose --keychain \"~/Library/Keychains/ios-build.keychain-db\" --sign \"{}\" {}'.format(mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app')))
 
