@@ -122,6 +122,10 @@ def run(args):
     print 'calling ' + string.join(args)
     subprocess.check_call(args)
 
+def run_shell(args):
+    print 'calling ' + args
+    subprocess.check_call(args, shell=True)
+
 
 def load_versions(file_name):
     color_print('load versions from ' + file_name, True, 'LYELLOW')
@@ -627,8 +631,8 @@ def create_installer():
     if args.network:
         key_only = '--online-only'
 
-    if sys.platform == 'darwin' and args.keychain_password is not None:
-        run(('security', 'unlock-keychain', '-p', args.keychain_password, 'login.keychain'))
+    # if sys.platform == 'darwin' and args.keychain_password is not None:
+    #     run(('security', 'unlock-keychain', '-p', args.keychain_password, 'login.keychain'))
 
     run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, 'nextgis-setup') )) # , '--sign', mac_sign_identy
 
@@ -640,7 +644,8 @@ def create_installer():
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
 
         # Resign install application as there is some bug in binarycreator --sign
-        # run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, nextgis-setup.app') ))
+        run_shell('security unlock-keychain -p {} login.keychain && codesign --deep --force --verify --verbose --sign {} {}'.format(args.keychain_password, mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app')))
+        # run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app') ))
 
         # Build dgm image file
         color_print('Create DMG file ...', True, 'LMAGENTA')
