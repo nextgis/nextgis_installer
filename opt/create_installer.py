@@ -651,12 +651,11 @@ def create_installer():
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
 
         # Resign install application as there is some bug in binarycreator --sign
-        run_shell('security create-keychain -p {} ~/Library/Keychains/ios-build.keychain-db'.format(args.keychain_password))
-        run_shell('echo {} | sudo -S \"security list-keychains -s ~/Library/Keychains/ios-build.keychain-db\"'.format(args.keychain_password))
-        run_shell('security default-keychain -s ~/Library/Keychains/ios-build.keychain-db')
-        run_shell('security unlock-keychain -p {} ~/Library/Keychains/ios-build.keychain-db'.format(args.keychain_password))
-        run_shell('security import dev.p12 -k ~/Library/Keychains/ios-build.keychain-db -T /usr/bin/codesign -P \"\"')
-        run_shell('security set-key-partition-list -S apple-tool:,apple: -k{} ~/Library/Keychains/ios-build.keychain-db'.format(args.keychain_password))
+        # run_shell('security create-keychain -p {} ~/Library/Keychains/ios-build.keychain-db'.format(args.keychain_password))
+        # run_shell('security default-keychain -s ~/Library/Keychains/ios-build.keychain-db')
+        # run_shell('security unlock-keychain -p {} ~/Library/Keychains/ios-build.keychain-db'.format(args.keychain_password))
+        # run_shell('security import dev.p12 -k ~/Library/Keychains/ios-build.keychain-db -T /usr/bin/codesign -P \"\"')
+        # run_shell('security set-key-partition-list -S apple-tool:,apple: -k{} ~/Library/Keychains/ios-build.keychain-db'.format(args.keychain_password))
 
         # run_shell('security create-keychain -p {} \"/Users/admin/Library/Keychains/cs3.keychain-db\"'.format(args.keychain_password))
         # run_shell('security default-keychain -s \"/Users/admin/Library/Keychains/cs3.keychain-db\"')
@@ -668,9 +667,10 @@ def create_installer():
         # run_shell('security set-key-partition-list -S apple-tool:,apple:,codesign: -k {} -s \"/Users/admin/Library/Keychains/cs3.keychain-db\"'.format(args.keychain_password))
         # run_shell('security list-keychains')
         run_shell('security find-identity -v -p codesigning')
-        run_shell('security find-identity -v -p codesigning ~/Library/Keychains/ios-build.keychain-db')
+        # run_shell('security find-identity -v -p codesigning ~/Library/Keychains/ios-build.keychain-db')
+        # --keychain \"~/Library/Keychains/ios-build.keychain-db\"
 
-        run_shell('codesign --deep --force --verify --verbose --keychain \"~/Library/Keychains/ios-build.keychain-db\" --sign \"{}\" {}'.format(mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app')))
+        run_shell('codesign --deep --force --verify --verbose --sign \"{}\" {}'.format(mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app')))
 
         # run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app') ))
 
