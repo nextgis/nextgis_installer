@@ -101,7 +101,10 @@ def parse_arguments():
     parser.add_argument('-r', dest='remote', required=False, help='Repositry remote url')
     parser.add_argument('-n', dest='network', action='store_true', help='Online installer (the -r key should be present)')
     parser.add_argument('-i', dest='installer_name', required=False, help='Installer name')
-    parser.add_argument('-w64', dest='win64', action='store_true', help='Flag to build Windows 64bit repository')
+    if sys.platform == 'win32':
+        parser.add_argument('-w64', dest='win64', action='store_true', help='Flag to build Windows 64bit repository')
+    if sys.platform == 'darwin':
+        parser.add_argument('-k', dest='keychain_password', required=True, help='Keychain unlock password')
 
     subparsers = parser.add_subparsers(help='command help', dest='command')
     parser_prepare = subparsers.add_parser('prepare')
@@ -628,7 +631,10 @@ def create_installer():
     if args.installer_name:
         installer_name = args.installer_name
 
-    run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name) )) #, '--sign', mac_sign_identy
+    if sys.platform == 'darwin':
+        run(('security', 'unlock-keychain', '-p', args.keychain_password, 'login.keychain'))
+
+    run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name), '--sign', mac_sign_identy ))
 
     # Hack as <InstallerApplicationIcon> in config.xml not working
     if sys.platform == 'darwin':
