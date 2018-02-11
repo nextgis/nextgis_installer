@@ -652,7 +652,7 @@ def create_installer():
 
         # Resign install application as there is some bug in binarycreator --sign
         run_shell('security create-keychain -p {} ~/Library/Keychains/ios-build.keychain-db'.format(args.keychain_password))
-        run_shell('security list-keychains -s ~/Library/Keychains/ios-build.keychain-db')
+        run_shell('echo {} | sudo -S \"security list-keychains -s ~/Library/Keychains/ios-build.keychain-db\"'.format(args.keychain_password))
         run_shell('security default-keychain -s ~/Library/Keychains/ios-build.keychain-db')
         run_shell('security unlock-keychain -p {} ~/Library/Keychains/ios-build.keychain-db'.format(args.keychain_password))
         run_shell('security import dev.p12 -k ~/Library/Keychains/ios-build.keychain-db -T /usr/bin/codesign -P \"\"')
