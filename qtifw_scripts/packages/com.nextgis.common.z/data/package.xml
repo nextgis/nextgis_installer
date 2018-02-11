@@ -3,7 +3,7 @@
     <mac>
         <path src="Library/Frameworks/z.framework" dst="Library/Frameworks/z.framework"/>
     </mac>
-    <win enabled="true">
-        <path src="inst/bin" dst="bin"/>
+    <win>
+        <path src="bin" dst="bin"/>
     </win>
 </Package>

@@ -38,6 +38,7 @@ packages_data_source_path = ''
 mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 
 repositories = ['lib_z', 'lib_openssl', ] #'lib_curl', ]
+repositories_not_stored = ['py_exifread', ]
 
 class bcolors:
     HEADER = '\033[95m'
@@ -472,12 +473,12 @@ def process_directory(dir_name):
     if updatetext_tag is not None:
         updatetext_text = updatetext_tag.text
 
-    # TODO: Is this needed? Avoid creating package if disabled. Temporary only for Windows.
+    # Avoid creating package if disabled. Temporary only for Windows.
     if sys.platform == 'win32':
         tag_os = root.find('win')
         if tag_os is not None:
             attr_enabled = tag_os.get('enabled')
-            if attr_enabled is None or attr_enabled != 'true':
+            if attr_enabled is not None and attr_enabled == 'false':
                 color_print('... not add because package data config has not enabled attr in <win> tag', True, 'LBLUE')
                 return
     repo_new_package_path = os.path.join(repo_new_packages_path, dir_name)
@@ -509,6 +510,20 @@ def download(ftp_user, ftp, target_dir):
     target_dir = os.path.join(os.getcwd(), target_dir)
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
+
+    #if sys.platform == 'win32':
+        # TODO: Copy run_ng_env.bat and ng.bat to target_dir/all/
+
+    # Download and install not compile repositories (i.e. py)
+    for repository in repositories_not_stored:
+        target_repo_dir = os.path.join(target_dir, repository)
+        run(('git', 'clone', '--depth', '1', 'git://github.com/nextgis-borsch/{}.git'.format(repository), os.path.join(target_dir, repository) ))
+        build_dir = os.path.join(target_repo_dir, 'build')
+        os.makedirs(build_dir)
+        os.chdir( build_dir )
+        run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + target_repo_dir, '..'))
+        run(('cmake', '--build', '.', '--config', 'release'))
+        run(('cmake', '--build', '.', '--config', 'release', '--target', 'install'))
 
     suffixes = ['nix']
     if sys.platform == 'darwin':
@@ -606,7 +621,7 @@ def update_directory(dir_name, force):
         tag_os = root.find('win')
         if tag_os is not None:
             attr_enabled = tag_os.get('enabled')
-            if attr_enabled is None or attr_enabled != 'true':
+            if attr_enabled is not None and attr_enabled == 'false':
                 return
     create_dest_package_dir(dir_name, version_text, updatetext_text, get_sources_dir_path(sources_root_dir), repo_new_package_path, root, path_meta)
     color_print('... package updated', True, 'LBLUE')
