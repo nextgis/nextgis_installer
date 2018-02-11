@@ -653,7 +653,8 @@ def create_installer():
         # Resign install application as there is some bug in binarycreator --sign
         run_shell('security default-keychain -s cs.keychain')
         run_shell('security -v unlock-keychain -p {} cs.keychain'.format(args.keychain_password))
-        run_shell('security list-keychains -d user -s /Library/Keychains/System.keychain ~/Library/Keychains/cs.keychain cs.keychain cs.keychain-db ~/Library/Keychains/cs.keychain-db')
+
+        run_shell('security list-keychains -d user -s \"/Users/admin/Library/Keychains/login.keychain\" \"/Library/Keychains/System.keychain\" \"/Users/admin/Library/Keychains/cs.keychain\"')
         run_shell('security list-keychains -d user')
         run_shell('security import ./dev.p12 -k cs.keychain -P \"\" -A')
         run_shell('security set-key-partition-list -S apple-tool:,apple:,codesign: -k {} -s cs.keychain'.format(args.keychain_password))
