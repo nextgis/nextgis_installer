@@ -631,7 +631,7 @@ def create_installer():
     if args.installer_name:
         installer_name = args.installer_name
 
-    if sys.platform == 'darwin' and keychain_password is not None:
+    if sys.platform == 'darwin' and args.keychain_password is not None:
         run(('security', 'unlock-keychain', '-p', args.keychain_password, 'login.keychain'))
 
     run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name), '--sign', mac_sign_identy ))
