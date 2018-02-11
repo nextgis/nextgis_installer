@@ -651,7 +651,7 @@ def create_installer():
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
 
         # Resign install application as there is some bug in binarycreator --sign
-        run_shell('security create-keychain -p {} \"/Users/admin/Library/Keychains/cs1.keychain-db\"'.format(args.keychain_password))
+        run_shell('security create-keychain -p {} \"/Users/admin/Library/Keychains/cs2.keychain-db\"'.format(args.keychain_password))
         run_shell('security default-keychain -s \"/Users/admin/Library/Keychains/cs1.keychain-db\"')
         run_shell('security -v unlock-keychain -p {} \"/Users/admin/Library/Keychains/cs1.keychain-db\"'.format(args.keychain_password))
 
