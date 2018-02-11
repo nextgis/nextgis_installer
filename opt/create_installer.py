@@ -628,8 +628,8 @@ def create_installer():
     if args.installer_name:
         installer_name = args.installer_name
 
-    if sys.platform == 'darwin':
-        run(('security', 'default-keychain', '-s', 'codesign.keychain'))
+    # if sys.platform == 'darwin':
+    #     run(('security', 'default-keychain', '-s', 'codesign.keychain'))
 
     run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name), '--sign', mac_sign_identy ))
 
