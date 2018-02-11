@@ -644,7 +644,7 @@ def create_installer():
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
 
         # Resign install application as there is some bug in binarycreator --sign
-        run_shell('security unlock-keychain -p {} login.keychain && codesign --deep --force --verify --verbose --sign {} {}'.format(args.keychain_password, mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app')))
+        run_shell('security unlock-keychain -p {} login.keychain && codesign --deep --force --verify --verbose --sign \"{}\" {}'.format(args.keychain_password, mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app')))
         # run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app') ))
 
         # Build dgm image file
@@ -660,6 +660,8 @@ def create_installer():
                  background=os.path.join(repo_new_config_path, 'bk.png'),
                  files=[os.path.join(repo_target_path, 'nextgis-setup.app')]),
             lookForHiDPI=False)
+    else:
+        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, 'nextgis-setup') ))
 
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, installer_name), True, 'LMAGENTA')
 
