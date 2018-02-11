@@ -634,7 +634,7 @@ def create_installer():
     if sys.platform == 'darwin' and args.keychain_password is not None:
         run(('security', 'unlock-keychain', '-p', args.keychain_password, 'login.keychain'))
 
-    run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name), '--sign', mac_sign_identy ))
+    run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name) )) # , '--sign', mac_sign_identy
 
     # Hack as <InstallerApplicationIcon> in config.xml not working
     if sys.platform == 'darwin':
@@ -644,7 +644,7 @@ def create_installer():
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
 
         # Resign install application as there is some bug in binarycreator --sign
-        run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, installer_name + '.app') ))
+        # run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, installer_name + '.app') ))
 
         # Build dgm image file
         color_print('Create DMG file ...', True, 'LMAGENTA')
