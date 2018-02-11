@@ -124,7 +124,17 @@ def run(args):
 
 def run_shell(args):
     print 'calling ' + args
-    subprocess.check_call(args, shell=True)
+    # subprocess.check_call(args, shell=True)
+
+    p = subprocess.Popen(args, , shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    output, err = p.communicate()
+    rc = p.returncode
+
+    print 'o: ' + output
+    print 'e: ' + err
+
+    if rc != 0:
+        sys.exit('Failed to call')
 
 
 def load_versions(file_name):
@@ -631,13 +641,10 @@ def create_installer():
     if args.network:
         key_only = '--online-only'
 
-    # if sys.platform == 'darwin' and args.keychain_password is not None:
-    #     run(('security', 'unlock-keychain', '-p', args.keychain_password, 'login.keychain'))
-
-    run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, 'nextgis-setup') )) # , '--sign', mac_sign_identy
-
     # Hack as <InstallerApplicationIcon> in config.xml not working
     if sys.platform == 'darwin':
+        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, 'nextgis-setup') )) # , '--sign', mac_sign_identy
+
         import dmgbuild
         icns_path = os.path.join(repo_target_path, 'nextgis-setup.app', 'Contents', 'Resources', 'nextgis-setup.icns' )
         os.unlink(icns_path)
