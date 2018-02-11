@@ -653,17 +653,15 @@ def create_installer():
         # Resign install application as there is some bug in binarycreator --sign
         run_shell('security default-keychain -s cs.keychain')
         run_shell('security -v unlock-keychain -p {} cs.keychain'.format(args.keychain_password))
-        run_shell('security list-keychains -s /Library/Keychains/System.keychain ~/Library/Keychains/cs.keychain cs.keychain cs.keychain-db ~/Library/Keychains/cs.keychain-db')
-        run_shell('security list-keychains -s /Library/Keychains/System.keychain ~/Library/Keychains/cs.keychain cs.keychain cs.keychain-db ~/Library/Keychains/cs.keychain-db && security find-identity -v -p codesigning')
+        run_shell('security list-keychains -d user -s /Library/Keychains/System.keychain ~/Library/Keychains/cs.keychain cs.keychain cs.keychain-db ~/Library/Keychains/cs.keychain-db')
+        run_shell('security list-keychains -d user')
         run_shell('security import ./dev.p12 -k cs.keychain -P \"\" -A')
         run_shell('security set-key-partition-list -S apple-tool:,apple:,codesign: -k {} -s cs.keychain'.format(args.keychain_password))
         run_shell('security list-keychains')
         run_shell('security list-keychains -d user ')
-        run_shell('security list-keychains -d system')
-        run_shell('security list-keychains -d common')
         run_shell('security find-identity -v -p codesigning')
 
-        run_shell('codesign --deep --force --verify --verbose --sign \"{}\" {}'.format(mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app')))
+        run_shell('codesign --deep --force --verify --verbose --keychain cs.keychain --sign \"{}\" {}'.format(mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app')))
 
         # run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app') ))
 
