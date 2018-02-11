@@ -651,13 +651,14 @@ def create_installer():
         shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
 
         # Resign install application as there is some bug in binarycreator --sign
-        run_shell('security -v list-keychains -s cs.keychain login.keychain')
+        run_shell('security -v unlock-keychain -p {} /Library/Keychains/System.keychain'.format(args.keychain_password))
+        run_shell('security import ./dev.p12 -k /Library/Keychains/System.keychain -P \"\" -A')
+        run_shell('security set-key-partition-list -S apple-tool:,apple:,codesign: -k {} -s /Library/Keychains/System.keychain'.format(args.keychain_password))
         run_shell('security list-keychains')
         run_shell('security find-identity -v -p codesigning')
-        run_shell('security default-keychain -s cs.keychain')
-        run_shell('security find-identity -v -p codesigning')
 
-        run_shell('security -v unlock-keychain -p {} cs.keychain && security find-identity -v -p codesigning && codesign --deep --force --verify --verbose --sign \"{}\" {}'.format(args.keychain_password, mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app')))
+        run_shell('codesign --deep --force --verify --verbose --sign \"{}\" {}'.format(mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app')))
+        
         # run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app') ))
 
         # Build dgm image file
