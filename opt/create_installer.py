@@ -38,8 +38,8 @@ packages_data_source_path = ''
 mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 
 repositories = ['lib_z', 'lib_openssl', ] #'lib_curl', ]
-repositories_not_stored = ['py_exifread', 'py_functools_lru_cache', 
-                            'py_cycler', 'py_parsing', 'py_markupsafe', 'py_contextlib',
+repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
+                            'py_cycler', 'py_parsing', 'py_contextlib',
                             'py_raven', 'py_future', 'py_requests', 'py_pytz',
                             'py_nose', 'py_jinja', 'py_httplib', 'py_ows', 'py_dateutil',
                             'py_pygments', 'py_setuptools', 'py_six', ]
