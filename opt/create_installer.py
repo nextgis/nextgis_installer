@@ -520,7 +520,7 @@ def download(ftp_user, ftp, target_dir):
         copy_dir = os.path.join(data_dir, f)
         if os.path.isdir(copy_dir):
             color_print('Process ' + f, True, 'LGREEN')
-            shutil.copytree(copy_dir, os.path.join(target_repo_dir, f), symlinks=True)
+            shutil.copytree(copy_dir, os.path.join(target_dir, f), symlinks=True)
 
     # Download and install not compile repositories (i.e. py)
     for repository in repositories_not_stored:
