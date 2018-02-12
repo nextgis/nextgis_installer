@@ -38,7 +38,11 @@ packages_data_source_path = ''
 mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 
 repositories = ['lib_z', 'lib_openssl', ] #'lib_curl', ]
-repositories_not_stored = ['py_exifread', ]
+repositories_not_stored = ['py_exifread', 'py_functools_lru_cache', 'py_subprocess32',
+                            'py_cycler', 'py_parsing', 'py_markupsafe', 'py_contextlib',
+                            'py_raven', 'py_future', 'py_requests', 'py_pytz',
+                            'py_nose', 'py_jinja', 'py_httplib', 'py_ows', 'py_dateutil',
+                            'py_pygments', 'py_setuptools', 'py_six', ]
 
 class bcolors:
     HEADER = '\033[95m'
@@ -524,6 +528,7 @@ def download(ftp_user, ftp, target_dir):
         run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + target_repo_dir, '..'))
         run(('cmake', '--build', '.', '--config', 'release'))
         run(('cmake', '--build', '.', '--config', 'release', '--target', 'install'))
+        shutil.copyfile(os.path.join(build_dir, 'version.str'), os.path.join(target_repo_dir, 'version.str'))
 
     suffixes = ['nix']
     if sys.platform == 'darwin':
