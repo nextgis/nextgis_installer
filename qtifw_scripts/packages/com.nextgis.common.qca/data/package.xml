@@ -4,7 +4,7 @@
         <path src="inst/Library/Frameworks/qca.framework" dst="Library/Frameworks/qca.framework"/>
         <path src="inst/Library/plugins/Qt4/crypto" dst="Library/Plugins/Qt4/crypto"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/bin/qca.dll" dst="bin"/>
         <path src="inst/lib/qca/crypto/*.dll" dst="lib/qt4/plugins/crypto"/>
     </win>

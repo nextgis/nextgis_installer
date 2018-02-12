@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/gsl.framework" dst="Library/Frameworks/gsl.framework"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/bin/gsl.dll" dst="bin"/>
     </win>
 </Package>

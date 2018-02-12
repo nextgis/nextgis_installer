@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/geotiff.framework" dst="Library/Frameworks/geotiff.framework"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/bin" dst="bin"/>
     </win>
 </Package>

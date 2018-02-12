@@ -4,7 +4,7 @@
         <path src="inst/Library/Python/2.7/site-packages/PyQt4" dst="Library/Python/2.7/site-packages/PyQt4"/>
         <path src="inst/share/sip/Qsci" dst="usr/share/sip/Qsci"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/lib/Python27/site-packages/PyQt4/Qsci*" dst="lib/Python27/site-packages/PyQt4"/>
     </win>
 </Package>

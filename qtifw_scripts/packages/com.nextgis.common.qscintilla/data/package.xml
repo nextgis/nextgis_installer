@@ -4,7 +4,7 @@
         <path src="inst/Library/Frameworks/qscintilla.framework" dst="Library/Frameworks/qscintilla.framework"/>
         <path src="inst/Library/Translations/Qt4" dst="Library/Translations/Qt4"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/bin/qscintilla.dll" dst="bin"/>
     </win>
 </Package>

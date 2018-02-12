@@ -2,7 +2,7 @@
 **
 ** Project: NextGIS online/offline installer
 ** Author: Dmitry Baryshnikov <dmitry.baryshnikov@nextgis.com>
-** Copyright (c) 2016 NextGIS <info@nextgis.com>
+** Copyright (c) 2016-2018 NextGIS <info@nextgis.com>
 ** License: GPL v.2
 **
 *******************************************************************************/
@@ -40,20 +40,20 @@ Component.prototype.createOperations = function()
                                 "@TargetDir@/nextgisupdater.exe",
                                 "@StartMenuDir@/NextGIS Maintenance Tool.lnk",
                                 " --updater");
-                                
-        component.addOperation( "Replace", 
+
+        component.addOperation( "Replace",
                                 "@TargetDir@/run_ng_env.bat",
                                 "TargetDir",
                                 "@TargetDir@" );
 
         component.addOperation( "CreateShortcut",
                                 "@TargetDir@/run_ng_env.bat",
-                                "@StartMenuDir@/NextGIS Command Prompt.lnk" );    
+                                "@StartMenuDir@/NextGIS Command Prompt.lnk" );
 
         component.addOperation( "NgUserPathWinEnvironmentVariable",
-                                "@TargetDir@" );                               
+                                "@TargetDir@" );
     }
-    
+
     if ( installer.value("os") == "mac")
     {
         component.addOperation( "NgCopyOnly",

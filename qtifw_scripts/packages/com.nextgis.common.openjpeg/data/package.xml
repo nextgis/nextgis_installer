@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/openjpeg.framework" dst="Library/Frameworks/openjpeg.framework"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/bin/openjpeg.dll" dst="bin"/>
     </win>
 </Package>

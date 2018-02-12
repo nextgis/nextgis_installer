@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_qt5">
-    <win enabled="true">
+    <win>
         <path src="inst/bin/Qt5Core.dll" dst="bin"/>
         <path src="inst/bin/Qt5Gui.dll" dst="bin"/>
         <path src="inst/bin/Qt5Network.dll" dst="bin"/>

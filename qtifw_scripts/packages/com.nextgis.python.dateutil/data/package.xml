@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/lib/python2.7/site-packages/dateutil" dst="Library/Python/2.7/site-packages/dateutil"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/lib/Python27/site-packages/dateutil" dst="lib/Python27/site-packages/dateutil"/>
     </win>
 </Package>

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>ZIP</DisplayName>
-    <DisplayName xml:lang="ru_RU">ZIP</DisplayName>
     <Description>ZIP Library</Description>
-    <Description xml:lang="ru_RU">Библиотека ZIP</Description>
-    <Dependencies>com.nextgis.common.z</Dependencies>
-    
+    <Dependencies>com.nextgis.common.z</Dependencies>    
 </Package>

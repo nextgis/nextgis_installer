@@ -26,7 +26,7 @@
         <path src="inst/bin/gdal_pansharpen.py" dst="usr/bin/"/>
         <path src="inst/bin/gdal_edit.py" dst="usr/bin/"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/lib/Python27/site-packages/osgeo" dst="lib/Python27/site-packages/osgeo"/>
         <path src="inst/bin/epsg_tr.py" dst="bin"/>
         <path src="inst/bin/esri2wkt.py" dst="bin"/>

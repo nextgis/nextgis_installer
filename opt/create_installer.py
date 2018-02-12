@@ -515,17 +515,22 @@ def download(ftp_user, ftp, target_dir):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
-    #if sys.platform == 'win32':
-        # TODO: Copy run_ng_env.bat and ng.bat to target_dir/all/
+    data_dir = os.path.join(repo_root_dir, 'data')
+    for f in os.listdir(data_dir):
+        copy_dir = os.path.join(data_dir, f)
+        if os.path.isdir(copy_dir):
+            color_print('Process ' + f, True, 'LGREEN')
+            shutil.copytree(copy_dir, os.path.join(target_repo_dir, f), symlinks=True)
 
     # Download and install not compile repositories (i.e. py)
     for repository in repositories_not_stored:
+        color_print('Process ' + repository, True, 'LGREEN')
         target_repo_dir = os.path.join(target_dir, repository)
         run(('git', 'clone', '--depth', '1', 'git://github.com/nextgis-borsch/{}.git'.format(repository), os.path.join(target_dir, repository) ))
         build_dir = os.path.join(target_repo_dir, 'build')
         os.makedirs(build_dir)
         os.chdir( build_dir )
-        run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + target_repo_dir, '..'))
+        run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '..'))
         run(('cmake', '--build', '.', '--config', 'release'))
         run(('cmake', '--build', '.', '--config', 'release', '--target', 'install'))
 
@@ -537,6 +542,7 @@ def download(ftp_user, ftp, target_dir):
 
     os.chdir( tmp_dir )
 
+    # Download and install already compiled repositories (i.e. lib)
     # 1. Get archive to tmp directory
     for suffix in suffixes:
         for repository in repositories:

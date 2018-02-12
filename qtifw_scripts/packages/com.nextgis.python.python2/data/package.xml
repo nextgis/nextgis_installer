@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="python2">
-    <win enabled="true">
+    <win>
         <path src="inst/bin" dst="bin"/>
         <path src="inst/Lib" dst="lib"/>
     </win>

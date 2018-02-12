@@ -3,7 +3,7 @@
     <mac>
         <path src="inst/Library/Frameworks/expat.framework" dst="Library/Frameworks/expat.framework"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/bin" dst="bin"/>
     </win>
 </Package>

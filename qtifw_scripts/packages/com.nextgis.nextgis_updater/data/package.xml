@@ -3,7 +3,7 @@
     <mac>
         <path src="inst" dst=""/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/nextgisupdater.dat" dst=""/>
         <path src="inst/nextgisupdater.exe" dst=""/>
         <path src="inst/nextgisupdater.ini" dst=""/>

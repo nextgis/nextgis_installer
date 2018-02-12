@@ -4,7 +4,7 @@
         <path src="inst/lib/python2.7/site-packages" dst="Library/Python/2.7/site-packages/"/>
         <path src="inst/bin" dst="usr/bin/"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/lib/Python27/site-packages/" dst="lib/Python27/site-packages/"/>
     </win>
 </Package>

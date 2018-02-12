@@ -12,7 +12,7 @@
         <path src="inst/Applications/ngqgis.app/Contents/Resources/resources" dst="Applications/ngqgis.app/Contents/Resources/resources"/>
         <path src="inst/Applications/ngqgis.app/Contents/Resources/svg" dst="Applications/ngqgis.app/Contents/Resources/svg"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/bin/ngqgis.exe" dst="bin"/>
         <path src="inst/share/ngqgis/*.conf" dst="share/ngqgis"/>
         <path src="inst/share/ngqgis/composer_templates" dst="share/ngqgis/composer_templates"/>

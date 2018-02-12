@@ -4,7 +4,7 @@
         <path src="inst/Applications/ngqgis.app/Contents/Frameworks/ngqgis_app.framework" dst="Applications/ngqgis.app/Contents/Frameworks/ngqgis_app.framework"/>
         <path src="inst/Library/Frameworks/ngqgis_app.framework" dst="Library/Frameworks/ngqgis_app.framework"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/bin/ngqgis_app.dll" dst="bin"/>
     </win>
 </Package>

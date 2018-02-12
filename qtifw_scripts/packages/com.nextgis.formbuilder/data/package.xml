@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="fb">
-    <win enabled="true">
+    <win>
         <path src="inst/bin/fb.exe" dst="bin"/>
         <path src="inst/bin/libeay32.dll" dst="bin"/>
         <path src="inst/bin/ssleay32.dll" dst="bin"/>

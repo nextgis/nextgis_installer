@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="qt_all">
-    <win enabled="true">
+    <win>
         <path src="inst/qt.conf" dst="bin"/>
     </win>
 </Package>

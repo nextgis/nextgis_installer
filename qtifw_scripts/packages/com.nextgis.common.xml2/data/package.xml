@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_xml2">
-    <win enabled="true">
+    <win>
         <path src="inst/bin" dst="bin"/>
     </win>
 </Package>

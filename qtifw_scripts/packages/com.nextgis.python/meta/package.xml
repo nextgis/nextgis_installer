@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>Python</DisplayName>
-    <DisplayName xml:lang="ru_RU">Python</DisplayName>
     <Description>Python framework</Description>
-    <Description xml:lang="ru_RU">Python фреймворк</Description>
     <Virtual>true</Virtual>
 </Package>

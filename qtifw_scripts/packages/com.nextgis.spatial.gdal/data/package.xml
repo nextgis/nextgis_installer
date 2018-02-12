@@ -4,7 +4,7 @@
     <mac>
         <path src="inst/Library/Frameworks/gdal.framework" dst="Library/Frameworks/gdal.framework"/>
     </mac>
-    <win enabled="true">
+    <win>
         <path src="inst/bin/gdal2*.dll" dst="bin"/>
         <path src="inst/share/gdal" dst="share/gdal"/>
     </win>
