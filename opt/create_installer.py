@@ -42,7 +42,7 @@ repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
                             'py_cycler', 'py_parsing', 'py_contextlib',
                             'py_raven', 'py_future', 'py_requests', 'py_pytz',
                             'py_nose', 'py_jinja', 'py_httplib', 'py_ows', 'py_dateutil',
-                            'py_pygments', 'py_setuptools', 'py_six', ]
+                            'py_pygments', 'py_six', ]
 
 class bcolors:
     HEADER = '\033[95m'
