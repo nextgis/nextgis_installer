@@ -528,7 +528,6 @@ def download(ftp_user, ftp, target_dir):
         run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + target_repo_dir, '..'))
         run(('cmake', '--build', '.', '--config', 'release'))
         run(('cmake', '--build', '.', '--config', 'release', '--target', 'install'))
-        shutil.copyfile(os.path.join(build_dir, 'version.str'), os.path.join(target_repo_dir, 'version.str'))
 
     suffixes = ['nix']
     if sys.platform == 'darwin':
