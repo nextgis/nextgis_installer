@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_sqlite">
     <mac>
-        <path src="inst/Library/Frameworks/sqlite3.framework" dst="Library/Frameworks/sqlite3.framework"/>
+        <path src="Library/Frameworks/sqlite3.framework" dst="Library/Frameworks/sqlite3.framework"/>
     </mac>
     <win>
-        <path src="inst/bin" dst="bin"/>
+        <path src="bin/*" dst="bin"/>
     </win>
 </Package>
