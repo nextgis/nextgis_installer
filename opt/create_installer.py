@@ -642,6 +642,8 @@ def update(packages):
     if packages:
         if 'all' in packages:
             force_all = True
+            packages = []
+            source_dirs = os.listdir(repo_source_path)
         else:
             source_dirs = packages
     else:
