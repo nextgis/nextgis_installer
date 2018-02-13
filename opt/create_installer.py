@@ -39,7 +39,7 @@ mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 
 repositories = ['lib_z', 'lib_openssl', 'lib_curl',
                 ]
-                
+
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
                             'py_cycler', 'py_parsing', 'py_contextlib',
                             'py_raven', 'py_future', 'py_requests', 'py_pytz',
@@ -235,9 +235,9 @@ def get_repository_path():
             out_path += '-mac'
         elif sys.platform == 'win32':
             if args.win64:
-                out_path += '-win32'
-            else:
                 out_path += '-win64'
+            else:
+                out_path += '-win32'
         else: # This should never happened
             out_path += '-nix'
     return out_path
@@ -539,41 +539,43 @@ def download(ftp_user, ftp, target_dir):
         run(('cmake', '--build', '.', '--config', 'release'))
         run(('cmake', '--build', '.', '--config', 'release', '--target', 'install'))
 
-    suffixes = ['nix']
+    suffix = 'nix'
     if sys.platform == 'darwin':
-        suffixes = ['mac']
+        suffix = 'mac'
     elif sys.platform == 'win32':
-        suffixes = ['win32', 'win64']
+        if args.win64:
+            suffix = 'win64'
+        else:
+            suffix = 'win32'
 
     os.chdir( tmp_dir )
 
     # Download and install already compiled repositories (i.e. lib)
     # 1. Get archive to tmp directory
-    for suffix in suffixes:
-        for repository in repositories:
-            color_print('Download ' + repository + '_' + suffix, True, 'LGREEN')
-            ftp_dir = repository + '_' + suffix
-            if ftp[-1:] != '/':
-                ftp += '/'
-            out_zip = os.path.join(tmp_dir, 'package.zip')
-            run(('curl', '-u', ftp_user, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
+    for repository in repositories:
+        color_print('Download ' + repository + '_' + suffix, True, 'LGREEN')
+        ftp_dir = repository + '_' + suffix
+        if ftp[-1:] != '/':
+            ftp += '/'
+        out_zip = os.path.join(tmp_dir, 'package.zip')
+        run(('curl', '-u', ftp_user, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
 
-    # 2. Extract archive
-            color_print('Extract ' + out_zip, False, 'LGREEN')
-            run(('cmake', '-E', 'tar', 'xzf', out_zip))
+# 2. Extract archive
+        color_print('Extract ' + out_zip, False, 'LGREEN')
+        run(('cmake', '-E', 'tar', 'xzf', out_zip))
 
-    # 3. Move archive with new name to target_dir
-            target_repo_dir = os.path.join(target_dir, repository)
-            for o in os.listdir(tmp_dir):
-                archive_dir = os.path.join(tmp_dir,o)
-                if os.path.isdir(archive_dir):
-                    shutil.move(archive_dir, target_repo_dir)
-                    break
+# 3. Move archive with new name to target_dir
+        target_repo_dir = os.path.join(target_dir, repository)
+        for o in os.listdir(tmp_dir):
+            archive_dir = os.path.join(tmp_dir,o)
+            if os.path.isdir(archive_dir):
+                shutil.move(archive_dir, target_repo_dir)
+                break
 
-    # 4. Download version.str
-            if os.path.exists(target_repo_dir):
-                color_print('Download ' + repository + '_' + suffix + '/version.str', True, 'LGREEN')
-                run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
+# 4. Download version.str
+        if os.path.exists(target_repo_dir):
+            color_print('Download ' + repository + '_' + suffix + '/version.str', True, 'LGREEN')
+            run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
 
 def prepare():
     color_print('Preparing ...', True, 'LYELLOW')

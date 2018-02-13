@@ -57,4 +57,22 @@ For example on Windows for standalone installer
 1. Add package description to qtifw_scripts
 2. Add package repository name to opt/create_installer.py
 3. Add package repository name and build arguments to buildbot/makeborsch.py
-4. Force update in build bot. Add package name in update page
+4. Force update in Buildbot. Add package name in update page.
+
+**NOTE**: git push start update installer repository automatically if 1-4 steps
+completed.
+
+Buildbot has 3 builders:
+
+* create_installer_mac
+* create_installer_win32
+* create_installer_win64
+
+Each builder has ``Create installer`` and ``Update installer`` buttons to force
+build or update installer. In force dialog you can choose installer and repository
+suffix (default is ``-dev``, empty string also permitted). You can add specific
+packages to update (space is delimiter) or ``all`` to force all packages.
+
+# TODO
+
+Add create standalone installer option to ``Create installer`` force button dialog. 
