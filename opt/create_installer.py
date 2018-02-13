@@ -666,6 +666,10 @@ def create_installer():
     if args.network:
         key_only = '--online-only'
 
+    installer_name = 'nextgis-setup'
+    if args.installer_name:
+        installer_name = args.installer_name
+
     # Hack as <InstallerApplicationIcon> in config.xml not working
     if sys.platform == 'darwin':
         run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, 'nextgis-setup'), '--sign', mac_sign_identy))
@@ -682,9 +686,6 @@ def create_installer():
 
         # Build dgm image file
         color_print('Create DMG file ...', True, 'LMAGENTA')
-        installer_name = 'nextgis-setup'
-        if args.installer_name:
-            installer_name = args.installer_name
         dmgbuild.build_dmg(
             os.path.join(repo_target_path, installer_name + '.dmg'),
             'NextGIS Setup',
@@ -694,7 +695,7 @@ def create_installer():
                  files=[os.path.join(repo_target_path, 'nextgis-setup.app')]),
             lookForHiDPI=False)
     else:
-        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, 'nextgis-setup') ))
+        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name) ))
 
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, installer_name), True, 'LMAGENTA')
 
