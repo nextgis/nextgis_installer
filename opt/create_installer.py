@@ -512,6 +512,8 @@ def download(ftp_user, ftp, target_dir):
         os.makedirs(tmp_dir)
 
     target_dir = os.path.join(os.getcwd(), target_dir)
+    if os.path.exists(target_dir):
+        shutil.rmtree(target_dir)
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
