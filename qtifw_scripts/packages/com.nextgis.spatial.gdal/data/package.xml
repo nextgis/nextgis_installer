@@ -2,10 +2,10 @@
 <Package root="lib_gdal">
     <UpdateText>Add GIF support</UpdateText>
     <mac>
-        <path src="inst/Library/Frameworks/gdal.framework" dst="Library/Frameworks/gdal.framework"/>
+        <path src="Library/Frameworks/gdal.framework" dst="Library/Frameworks/gdal.framework"/>
     </mac>
     <win>
-        <path src="inst/bin/gdal2*.dll" dst="bin"/>
-        <path src="inst/share/gdal" dst="share/gdal"/>
+        <path src="bin/gdal*.dll" dst="bin"/>
+        <path src="share/gdal" dst="share/gdal"/>
     </win>
 </Package>
