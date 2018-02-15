@@ -3,4 +3,8 @@
     <mac>
         <path src="inst/bin" dst="usr/bin/"/>
     </mac>
+    <win>
+        <path src="bin/q*.exe" dst="bin"/>
+        <path src="bin/r*.exe" dst="bin"/>
+    </win>
 </Package>
