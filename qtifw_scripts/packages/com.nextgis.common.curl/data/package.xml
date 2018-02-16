@@ -4,6 +4,6 @@
         <path src="Library/Frameworks/curl.framework" dst="Library/Frameworks/curl.framework"/>
     </mac>
     <win>
-        <path src="bin/curl*.dll" dst="bin"/>
+        <path src="bin/*.dll" dst="bin"/>
     </win>
 </Package>

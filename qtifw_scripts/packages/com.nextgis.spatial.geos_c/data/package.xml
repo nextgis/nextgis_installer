@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_geos">
     <mac>
-        <path src="inst/Library/Frameworks/geos.framework" dst="Library/Frameworks/geos.framework"/>
+        <path src="Library/Frameworks/geos.framework" dst="Library/Frameworks/geos.framework"/>
     </mac>
     <win>
-        <path src="inst/bin/geos_c.dll" dst="bin"/>
+        <path src="bin/geos_c.dll" dst="bin"/>
     </win>
 </Package>
