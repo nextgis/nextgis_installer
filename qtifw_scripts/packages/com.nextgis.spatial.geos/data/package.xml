@@ -4,6 +4,6 @@
         <path src="Library/Frameworks/geos.framework" dst="Library/Frameworks/geos.framework"/>
     </mac>
     <win>
-        <path src="bin/geos.dll" dst="bin"/>
+        <path src="bin/*.dll" dst="bin"/>
     </win>
 </Package>
