@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_qhull">
     <mac>
-        <path src="inst/bin" dst="usr/bin/"/>
+        <path src="bin" dst="usr/bin/"/>
     </mac>
     <win>
         <path src="bin/q*.exe" dst="bin"/>

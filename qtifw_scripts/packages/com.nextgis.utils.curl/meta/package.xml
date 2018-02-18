@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>CURL utilities</DisplayName>
-    <Description>CURL command line utilities</Description>
-    
+    <Description>CURL command line utilities</Description>    
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

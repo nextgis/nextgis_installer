@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_expat">
     <mac>
-        <path src="inst/Library/Frameworks/expat.framework" dst="Library/Frameworks/expat.framework"/>
+        <path src="Library/Frameworks/expat.framework" dst="Library/Frameworks/expat.framework"/>
     </mac>
     <win>
-        <path src="inst/bin" dst="bin"/>
+        <path src="bin/*.dll" dst="bin"/>
     </win>
 </Package>
