@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_tiff">
     <mac>
-        <path src="inst/Library/Frameworks/tiff.framework" dst="Library/Frameworks/tiff.framework"/>
+        <path src="Library/Frameworks/tiff.framework" dst="Library/Frameworks/tiff.framework"/>
     </mac>
     <win>
-        <path src="inst/bin" dst="bin"/>
+        <path src="bin/*.dll" dst="bin"/>
     </win>
 </Package>

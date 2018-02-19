@@ -2,53 +2,11 @@
 <Package root="lib_gdal">
     <UpdateText>Add BigTIFF support</UpdateText>
     <mac>
-        <path src="inst/Library/Python/2.7/site-packages/osgeo" dst="Library/Python/2.7/site-packages/osgeo"/>
-        <path src="inst/bin/epsg_tr.py" dst="usr/bin/"/>
-        <path src="inst/bin/esri2wkt.py" dst="usr/bin/"/>
-        <path src="inst/bin/gcps2vec.py" dst="usr/bin/"/>
-        <path src="inst/bin/gcps2wld.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdal2tiles.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdal2xyz.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_fillnodata.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_merge.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_polygonize.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_proximity.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_retile.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_sieve.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdalchksum.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdalident.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdalimport.py" dst="usr/bin/"/>
-        <path src="inst/bin/mkgraticule.py" dst="usr/bin/"/>
-        <path src="inst/bin/pct2rgb.py" dst="usr/bin/"/>
-        <path src="inst/bin/rgb2pct.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_calc.py" dst="usr/bin/"/>
-        <path src="inst/bin/ogrmerge.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_pansharpen.py" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_edit.py" dst="usr/bin/"/>
+        <path src="Library/Python/2.7/site-packages/osgeo" dst="Library/Python/2.7/site-packages/osgeo"/>
+        <path src="bin/*.py" dst="usr/bin/"/>
     </mac>
     <win>
-        <path src="inst/lib/Python27/site-packages/osgeo" dst="lib/Python27/site-packages/osgeo"/>
-        <path src="inst/bin/epsg_tr.py" dst="bin"/>
-        <path src="inst/bin/esri2wkt.py" dst="bin"/>
-        <path src="inst/bin/gcps2vec.py" dst="bin"/>
-        <path src="inst/bin/gcps2wld.py" dst="bin"/>
-        <path src="inst/bin/gdal2tiles.py" dst="bin"/>
-        <path src="inst/bin/gdal2xyz.py" dst="bin"/>
-        <path src="inst/bin/gdal_fillnodata.py" dst="bin"/>
-        <path src="inst/bin/gdal_merge.py" dst="bin"/>
-        <path src="inst/bin/gdal_polygonize.py" dst="bin"/>
-        <path src="inst/bin/gdal_proximity.py" dst="bin"/>
-        <path src="inst/bin/gdal_retile.py" dst="bin"/>
-        <path src="inst/bin/gdal_sieve.py" dst="bin"/>
-        <path src="inst/bin/gdalchksum.py" dst="bin"/>
-        <path src="inst/bin/gdalident.py" dst="bin"/>
-        <path src="inst/bin/gdalimport.py" dst="bin"/>
-        <path src="inst/bin/mkgraticule.py" dst="bin"/>
-        <path src="inst/bin/pct2rgb.py" dst="bin"/>
-        <path src="inst/bin/rgb2pct.py" dst="bin"/>
-        <path src="inst/bin/gdal_calc.py" dst="bin"/>
-        <path src="inst/bin/ogrmerge.py" dst="bin"/>
-        <path src="inst/bin/gdal_pansharpen.py" dst="bin"/>
-        <path src="inst/bin/gdal_edit.py" dst="bin"/>
+        <path src="lib/Python27/site-packages/osgeo" dst="lib/Python27/site-packages/osgeo"/>
+        <path src="bin/*.py" dst="bin"/>
     </win>
 </Package>

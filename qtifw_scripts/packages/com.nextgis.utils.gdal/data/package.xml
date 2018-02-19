@@ -1,28 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_gdal">
     <mac>
-        <path src="inst/bin/gdaladdo" dst="usr/bin/"/>
-        <path src="inst/bin/gdalbuildvrt" dst="usr/bin/"/>
-        <path src="inst/bin/gdaldem" dst="usr/bin/"/>
-        <path src="inst/bin/gdalenhance" dst="usr/bin/"/>
-        <path src="inst/bin/gdalinfo" dst="usr/bin/"/>
-        <path src="inst/bin/gdallocationinfo" dst="usr/bin/"/>
-        <path src="inst/bin/gdalmanage" dst="usr/bin/"/>
-        <path src="inst/bin/gdalserver" dst="usr/bin/"/>
-        <path src="inst/bin/gdalsrsinfo" dst="usr/bin/"/>
-        <path src="inst/bin/gdaltindex" dst="usr/bin/"/>
-        <path src="inst/bin/gdaltransform" dst="usr/bin/"/>
-        <path src="inst/bin/gdalwarp" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_contour" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_grid" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_rasterize" dst="usr/bin/"/>
-        <path src="inst/bin/gdal_translate" dst="usr/bin/"/>
-        <path src="inst/bin/nearblack" dst="usr/bin/"/>
-        <path src="inst/bin/ogr*" dst="usr/bin/"/>
-        <path src="inst/bin/gnm*" dst="usr/bin/"/>
-        <path src="inst/bin/testepsg" dst="usr/bin/"/>
+        <path src="bin/gdal*" dst="usr/bin/"/>
+        <path src="bin/nearblack" dst="usr/bin/"/>
+        <path src="bin/ogr*" dst="usr/bin/"/>
+        <path src="bin/gnm*" dst="usr/bin/"/>
+        <path src="bin/testepsg" dst="usr/bin/"/>
     </mac>
     <win>
-        <path src="inst/bin/*.exe" dst="bin"/>
+        <path src="bin/*.exe" dst="bin"/>
     </win>
 </Package>
