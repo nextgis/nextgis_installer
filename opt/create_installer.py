@@ -43,6 +43,9 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
                 'lib_proj',
                 ]
 
+repositories_win = ['lib_iconv',
+                ]
+
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
                             'py_cycler', 'py_parsing', 'py_contextlib',
                             'py_raven', 'py_future', 'py_requests', 'py_pytz',
@@ -555,6 +558,10 @@ def download(ftp_user, ftp, target_dir):
 
     # Download and install already compiled repositories (i.e. lib)
     # 1. Get archive to tmp directory
+
+    if sys.platform == 'win32':
+        repositories.extend(repositories_win)
+
     for repository in repositories:
         color_print('Download ' + repository + '_' + suffix, True, 'LGREEN')
         ftp_dir = repository + '_' + suffix
