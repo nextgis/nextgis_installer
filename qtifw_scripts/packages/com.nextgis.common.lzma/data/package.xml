@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_lzma">
     <mac>
-        <path src="Library/Frameworks/lzma.framework" dst="Library/Frameworks/lzma.framework"/>
+        <path src="Library/Frameworks/liblzma.framework" dst="Library/Frameworks/liblzma.framework"/>
     </mac>
     <win>
         <path src="bin/*.dll" dst="bin"/>

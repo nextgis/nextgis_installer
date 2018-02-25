@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_xml2">
+    <mac>
+        <path src="Library/Frameworks/xml2.framework" dst="Library/Frameworks/xml2.framework"/>
+    </mac>
     <win>
         <path src="bin/*.dll" dst="bin"/>
     </win>
