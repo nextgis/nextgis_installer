@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>XML2</DisplayName>
     <Description>XML2 Library</Description>
-    <Dependencies>com.nextgis.common.z,com.nextgis.common.iconv,com.nextgis.common.lzma</Dependencies>
+    <Dependencies>com.nextgis.common.z,com.nextgis.common.lzma</Dependencies>
 </Package>

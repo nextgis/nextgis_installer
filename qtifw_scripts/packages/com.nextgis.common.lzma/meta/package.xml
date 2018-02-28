@@ -2,4 +2,5 @@
 <Package>
     <DisplayName>LZMA</DisplayName>
     <Description>LZMA Library</Description>
+    <Dependencies>com.nextgis.common.iconv</Dependencies>
 </Package>
