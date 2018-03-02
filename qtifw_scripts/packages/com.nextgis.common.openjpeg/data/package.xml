@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_openjpeg">
     <mac>
-        <path src="inst/Library/Frameworks/openjpeg.framework" dst="Library/Frameworks/openjpeg.framework"/>
+        <path src="Library/Frameworks/openjpeg.framework" dst="Library/Frameworks/openjpeg.framework"/>
     </mac>
     <win>
-        <path src="inst/bin/openjpeg.dll" dst="bin"/>
+        <path src="bin/*.dll" dst="bin"/>
     </win>
 </Package>
