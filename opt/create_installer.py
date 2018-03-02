@@ -41,7 +41,7 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
                 'lib_qhull', 'lib_png', 'lib_freetype', 'lib_agg', 'lib_geos',
                 'lib_expat', 'lib_jsonc', 'lib_opencad', 'lib_jpeg', 'lib_pq',
                 'lib_proj', 'lib_lzma', 'lib_jbig', 'lib_szip', 'lib_xml2',
-                'lib_spatialite', 'lib_openjpeg',
+                'lib_spatialite', 'lib_openjpeg', 'lib_tiff',
                 ]
 
 repositories_win = ['lib_iconv',

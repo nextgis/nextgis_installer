@@ -4,6 +4,6 @@
         <path src="Library/Frameworks/tiff.framework" dst="Library/Frameworks/tiff.framework"/>
     </mac>
     <win>
-        <path src="bin/*.dll" dst="bin"/>
+        <path src="bin/tiff.dll" dst="bin"/>
     </win>
 </Package>
