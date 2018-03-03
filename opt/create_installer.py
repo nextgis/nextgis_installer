@@ -602,6 +602,7 @@ def download(ftp_user, ftp, target_dir):
 
     if sys.platform == 'win32':
         repositories.extend(repositories_win)
+        prepare_win_redist(target_dir)
 
     for repository in repositories:
         color_print('Download ' + repository + '_' + suffix, True, 'LGREEN')
