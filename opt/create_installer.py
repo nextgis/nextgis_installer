@@ -551,6 +551,9 @@ def download(ftp_user, ftp, target_dir):
             color_print('Process ' + f, True, 'LGREEN')
             shutil.copytree(copy_dir, os.path.join(target_dir, f), symlinks=True)
 
+    if sys.platform == 'win32':
+        prepare_win_redist(target_dir)
+
     # Download and install not compile repositories (i.e. py)
     for repository in repositories_not_stored:
         color_print('Process ' + repository, True, 'LGREEN')
@@ -579,7 +582,6 @@ def download(ftp_user, ftp, target_dir):
 
     if sys.platform == 'win32':
         repositories.extend(repositories_win)
-        prepare_win_redist(target_dir)
 
     for repository in repositories:
         color_print('Download ' + repository + '_' + suffix, True, 'LGREEN')
