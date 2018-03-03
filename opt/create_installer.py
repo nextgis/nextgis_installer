@@ -4,7 +4,7 @@
 ##
 ## Project: NextGIS online/offline installer
 ## Author: Dmitry Baryshnikov <dmitry.baryshnikov@nextgis.com>
-## Copyright (c) 2016 NextGIS <info@nextgis.com>
+## Copyright (c) 2016-2018 NextGIS <info@nextgis.com>
 ## License: GPL v.2
 ##
 ################################################################################
@@ -53,6 +53,12 @@ repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
                             'py_nose', 'py_jinja', 'py_httplib', 'py_ows', 'py_dateutil',
                             'py_pygments', 'py_six',
                         ]
+
+cmake_generators = [
+    {'version': '11.0', 'generator': 'Visual Studio 11 2012'},
+    {'version': '12.0', 'generator': 'Visual Studio 12 2013'},
+    {'version': '14.0', 'generator': 'Visual Studio 14 2015'},
+    {'version': '15.0', 'generator': 'Visual Studio 15 2017'},
 
 class bcolors:
     HEADER = '\033[95m'
@@ -435,8 +441,6 @@ def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir
     if dependencies_tag is not None:
         # If Mac OS X
         if sys.platform == 'darwin':
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.xml2,', '')
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.xml2', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.qt.all,', '') # Only install qt.conf which installed in separate app folder on Mac OS X
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.qt.all', '')
             dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.python.python2,', '') # Python 2 is default application in Mac OS X
@@ -508,6 +512,42 @@ def prepare_packages():
         if os.path.isdir(os.path.join(repo_source_path, subdir)):
             process_directory(subdir)
 
+def prepare_win_redist(target_dir):
+    # Check installed VS version
+    installed_versions = []
+
+    import _winreg
+    key = "SOFTWARE\\Microsoft\\VisualStudio\\{}\Setup\\vs"
+
+    for v in cmake_generators:
+        try:
+            _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, key.format(v['version']), 0, _winreg.KEY_ALL_ACCESS)
+            installed_versions.append(v['generator'])
+        except Exception, e:
+            if e.winerror == 5:
+                installed_versions.append(v['generator'])
+            pass
+
+    if not installed_versions
+        return
+    generator = installed_versions[-1]
+    if args.win64:
+        generator += ' Win64'
+
+    # Create build/inst dircetory for vc_redist
+    target_repo_dir = os.path.join(target_dir, 'vc_redist')
+    target_repo_build_dir = os.path.join(target_repo_dir, 'build')
+    if not os.path.exists(target_repo_build_dir):
+        os.makedirs(target_repo_build_dir)
+
+    # Copy CMakeLists to this dir
+    src_cmake = os.path.join(repo_root_dir, 'opt', 'CMakeLists.txt')
+    shutil.copyfile(src_cmake, target_repo_dir)
+
+    # Build and Install
+    os.chdir( target_repo_build_dir )
+    run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '-G', generator, '..'))
+    run(('cmake', '--build', '.', '--config', 'release', '--target', 'install'))
 
 def delete_path(path_to_delete):
     color_print('Delete existing build dir ...', True, 'LRED')

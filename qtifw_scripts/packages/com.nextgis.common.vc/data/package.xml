@@ -3,5 +3,6 @@
     <win>
         <path src="bin/msvcr*.dll" dst="bin"/>
 		<path src="bin/msvcp*.dll" dst="bin"/>
+		<path src="bin/vcruntime*.dll" dst="bin"/>
     </win>
 </Package>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>VC redistributables</DisplayName>
-    <Description>VC redistributables</Description>
+    <Description>Microsoft Visual C++ Redistributable Packages</Description>
 </Package>
