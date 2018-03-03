@@ -59,6 +59,7 @@ cmake_generators = [
     {'version': '12.0', 'generator': 'Visual Studio 12 2013'},
     {'version': '14.0', 'generator': 'Visual Studio 14 2015'},
     {'version': '15.0', 'generator': 'Visual Studio 15 2017'},
+]
 
 class bcolors:
     HEADER = '\033[95m'
