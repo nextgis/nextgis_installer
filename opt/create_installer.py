@@ -54,13 +54,6 @@ repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
                             'py_pygments', 'py_six',
                         ]
 
-cmake_generators = [
-    {'version': '11.0', 'generator': 'Visual Studio 11 2012'},
-    {'version': '12.0', 'generator': 'Visual Studio 12 2013'},
-    {'version': '14.0', 'generator': 'Visual Studio 14 2015'},
-    {'version': '15.0', 'generator': 'Visual Studio 15 2017'},
-]
-
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -125,6 +118,7 @@ def parse_arguments():
     parser.add_argument('-i', dest='installer_name', required=False, help='Installer name')
     if sys.platform == 'win32':
         parser.add_argument('-w64', dest='win64', action='store_true', help='Flag to build Windows 64bit repository')
+        parser.add_argument('-g', dest='generator', required=False, help='Visual Studio generator')
 
     subparsers = parser.add_subparsers(help='command help', dest='command')
     parser_prepare = subparsers.add_parser('prepare')
@@ -514,28 +508,10 @@ def prepare_packages():
             process_directory(subdir)
 
 def prepare_win_redist(target_dir):
-    # Check installed VS version
-    installed_versions = []
+    color_print('Create Microsoft Visual C++ Redistributable Packages', True, 'LCYAN')
+    generator = args.generator
 
-    import _winreg
-    key = "SOFTWARE\\Microsoft\\VisualStudio\\{}\Setup\\vs"
-
-    for v in cmake_generators:
-        try:
-            _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, key.format(v['version']), 0, _winreg.KEY_ALL_ACCESS)
-            installed_versions.append(v['generator'])
-        except Exception, e:
-            if e.winerror == 5: # Access denied so path exists
-                installed_versions.append(v['generator'])
-            pass
-
-    if not installed_versions:
-        return
-    generator = installed_versions[-1]
-    if args.win64:
-        generator += ' Win64'
-
-    # Create build/inst dircetory for vc_redist
+    # Create build/inst directory for vc_redist
     target_repo_dir = os.path.join(target_dir, 'vc_redist')
     target_repo_build_dir = os.path.join(target_repo_dir, 'build')
     if not os.path.exists(target_repo_build_dir):
