@@ -519,7 +519,7 @@ def prepare_win_redist(target_dir):
 
     # Copy CMakeLists to this dir
     src_cmake = os.path.join(repo_root_dir, 'opt', 'CMakeLists.txt')
-    shutil.copyfile(src_cmake, target_repo_dir)
+    shutil.copy(src_cmake, target_repo_dir)
 
     # Build and Install
     os.chdir( target_repo_build_dir )
