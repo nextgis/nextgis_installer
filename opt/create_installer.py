@@ -525,11 +525,11 @@ def prepare_win_redist(target_dir):
             _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, key.format(v['version']), 0, _winreg.KEY_ALL_ACCESS)
             installed_versions.append(v['generator'])
         except Exception, e:
-            if e.winerror == 5:
+            if e.winerror == 5: # Access denied so path exists
                 installed_versions.append(v['generator'])
             pass
 
-    if not installed_versions
+    if not installed_versions:
         return
     generator = installed_versions[-1]
     if args.win64:
