@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>GeoTIFF</DisplayName>
     <Description>GeoTIFF Library</Description>
-    <Dependencies>com.nextgis.common.tiff,com.nextgis.common.jpeg,com.nextgis.common.jpeg12</Dependencies>
+    <Dependencies>com.nextgis.common.tiff,com.nextgis.common.jpeg,com.nextgis.common.z,com.nexgis.spatial.proj</Dependencies>
 </Package>
