@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>TIFF C++</DisplayName>
-    <Description>TIFF C++ Library</Description>
-    <Dependencies>com.nextgis.common.tiff</Dependencies>
-</Package>
