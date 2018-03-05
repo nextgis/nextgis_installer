@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_gsl">
     <mac>
-        <path src="inst/Library/Frameworks/gsl.framework" dst="Library/Frameworks/gsl.framework"/>
+        <path src="Library/Frameworks/gsl.framework" dst="Library/Frameworks/gsl.framework"/>
     </mac>
     <win>
-        <path src="inst/bin/gsl.dll" dst="bin"/>
+        <path src="bin/*.dll" dst="bin"/>
     </win>
 </Package>
