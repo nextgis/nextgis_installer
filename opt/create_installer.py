@@ -525,7 +525,7 @@ def prepare_win_redist(target_dir):
     # Build and Install
     os.chdir( target_repo_build_dir )
     run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '-G', generator, '..'))
-    run(('cmake', '--build', '.', '--config', 'release', '--target', 'install'))
+    run(('cmake', '--build', '.', '--config', 'Release', '--target', 'install'))
 
 def delete_path(path_to_delete):
     color_print('Delete existing build dir ...', True, 'LRED')
@@ -564,8 +564,8 @@ def download(ftp_user, ftp, target_dir):
         os.makedirs(build_dir)
         os.chdir( build_dir )
         run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '..'))
-        run(('cmake', '--build', '.', '--config', 'release'))
-        run(('cmake', '--build', '.', '--config', 'release', '--target', 'install'))
+        run(('cmake', '--build', '.', '--config', 'Release'))
+        run(('cmake', '--build', '.', '--config', 'Release', '--target', 'install'))
 
     suffix = 'nix'
     if sys.platform == 'darwin':
