@@ -26,11 +26,7 @@ function(get_cpack_filename ver name)
         set(STATIC_PREFIX "static-")
     endif()
 
-    if(BUILD_SHARED_LIBS OR OSX_FRAMEWORK)
-        set(${name} ${PROJECT_NAME}-${STATIC_PREFIX}${ver}-${COMPILER} PARENT_SCOPE)
-    else()
-        set(${name} ${PROJECT_NAME}-${STATIC_PREFIX}${ver}-STATIC-${COMPILER} PARENT_SCOPE)
-    endif()
+    set(${name} ${PROJECT_NAME}-${STATIC_PREFIX}${ver}-${COMPILER} PARENT_SCOPE)
 endfunction()
 
 function(get_compiler_version ver)
@@ -58,7 +54,7 @@ set(VERSION ${CMAKE_C_COMPILER_VERSION})
 set(PACKAGE_NAME ${PROJECT_NAME})
 string(TOUPPER ${PACKAGE_NAME} PACKAGE_UPPER_NAME)
 
-file(TIMESTAMP ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt VERSION_DATETIME "%Y-%m-%d %H:%M:%S" UTC)
+file(TIMESTAMP ${CMAKE_C_COMPILER} VERSION_DATETIME "%Y-%m-%d %H:%M:%S" UTC)
 get_cpack_filename(${VERSION} PROJECT_CPACK_FILENAME)
 file(WRITE ${CMAKE_BINARY_DIR}/version.str "${VERSION}\n${VERSION_DATETIME}\n${PROJECT_CPACK_FILENAME}")
 
