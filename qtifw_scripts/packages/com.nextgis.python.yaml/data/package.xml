@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_yaml">
     <mac>
-        <path src="inst/lib/python2.7/site-packages/yaml" dst="Library/Python/2.7/site-packages/yaml"/>
-        <path src="inst/lib/python2.7/site-packages/_yaml.so" dst="Library/Python/2.7/site-packages/"/>
+        <path src="Library/lib/python2.7/site-packages/yaml" dst="Library/Python/2.7/site-packages/yaml"/>
+        <path src="Library/lib/python2.7/site-packages/_yaml.so" dst="Library/Python/2.7/site-packages/"/>
     </mac>
     <win>
-        <path src="inst/lib/python27/site-packages" dst="lib/Python27/site-packages"/>
+        <path src="lib/python27/site-packages" dst="lib/Python27/site-packages"/>
     </win>
 </Package>
