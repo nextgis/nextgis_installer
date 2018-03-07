@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Name>com.nextgis.python.numpy</Name>
     <DisplayName>Numpy</DisplayName>
-    <DisplayName xml:lang="ru_RU">Numpy</DisplayName>
     <Description>Numpy package</Description>
-    <Description xml:lang="ru_RU">Пакет Numpy</Description>
-    
     <Dependencies>com.nextgis.python.all</Dependencies>
 </Package>
