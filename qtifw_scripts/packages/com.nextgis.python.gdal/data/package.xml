@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_gdal">
-    <UpdateText>Add BigTIFF support</UpdateText>
     <mac>
-        <path src="Library/Python/2.7/site-packages/osgeo" dst="Library/Python/2.7/site-packages/osgeo"/>
+        <path src="Library/Frameworks/lib/python2.7/site-packages/osgeo" dst="Library/Python/2.7/site-packages/osgeo"/>
         <path src="bin/*.py" dst="usr/bin/"/>
     </mac>
     <win>
