@@ -5,6 +5,6 @@
         <path src="inst/bin" dst="usr/bin/"/>
     </mac>
     <win>
-        <path src="inst/lib/Python27/site-packages/jinja2" dst="lib/Python27/site-packages/jinja2"/>
+        <path src="inst/lib/Python27/site-packages/jinja2" dst="lib/python27/site-packages/jinja2"/>
     </win>
 </Package>

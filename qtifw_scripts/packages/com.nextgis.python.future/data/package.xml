@@ -5,6 +5,6 @@
         <path src="inst/bin" dst="usr/bin/"/>
     </mac>
     <win>
-        <path src="inst/lib/Python27/site-packages/" dst="lib/Python27/site-packages/"/>
+        <path src="inst/lib/Python27/site-packages/" dst="lib/python27/site-packages/"/>
     </win>
 </Package>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <Name>com.nextgis.python.main</Name>    
-    <DisplayName>Python core</DisplayName>
-    <Description>Python core</Description>
-    <Version>2.7.4</Version>
-    <ReleaseDate>2016-11-10</ReleaseDate>
-    <Dependencies>com.nextgis.python.all</Dependencies>
-</Package>

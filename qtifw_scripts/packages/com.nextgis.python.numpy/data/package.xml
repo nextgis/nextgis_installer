@@ -4,6 +4,6 @@
         <path src="Library/lib/python2.7/site-packages/numpy" dst="Library/Python/2.7/site-packages/numpy"/>
     </mac>
     <win enabled="true">
-        <path src="Lib/site-packages/numpy" dst="lib/Python27/site-packages/numpy"/>
+        <path src="Lib/site-packages/numpy" dst="lib/python27/site-packages/numpy"/>
     </win>
 </Package>
