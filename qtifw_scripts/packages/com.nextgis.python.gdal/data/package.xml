@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_gdal">
     <mac>
-        <path src="Library/Frameworks/python2.7/site-packages/osgeo" dst="Library/Python/2.7/site-packages/osgeo"/>
+        <path src="Library/python2.7/site-packages/osgeo" dst="Library/Python/2.7/site-packages/osgeo"/>
         <path src="bin/*.py" dst="usr/bin/"/>
     </mac>
     <win>
