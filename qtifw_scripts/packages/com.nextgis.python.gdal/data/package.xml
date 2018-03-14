@@ -5,7 +5,7 @@
         <path src="bin/*.py" dst="usr/bin/"/>
     </mac>
     <win>
-        <path src="lib/Python27/site-packages/osgeo" dst="lib/python27/site-packages/osgeo"/>
+        <path src="lib/site-packages/osgeo" dst="lib/python27/site-packages/osgeo"/>
         <path src="bin/*.py" dst="bin"/>
     </win>
 </Package>
