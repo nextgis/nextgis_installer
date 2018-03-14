@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_markupsafe">
     <mac>
-        <path src="inst/lib/python2.7/site-packages/markupsafe" dst="Library/Python/2.7/site-packages/markupsafe"/>
+        <path src="Library/lib/python2.7/site-packages/markupsafe" dst="Library/Python/2.7/site-packages/markupsafe"/>
     </mac>
     <win>
-        <path src="inst/lib/Python27/site-packages/markupsafe" dst="lib/python27/site-packages/markupsafe"/>
+        <path src="lib/Python27/site-packages/markupsafe" dst="lib/python27/site-packages/markupsafe"/>
     </win>
 </Package>
