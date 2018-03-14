@@ -689,6 +689,7 @@ def update(packages):
         # Scan for directories and files
         packages = []
         source_dirs = os.listdir(repo_source_path)
+
     for subdir in source_dirs:
         if os.path.isdir(os.path.join(repo_source_path, subdir)):
             update_directory(subdir, len(packages) > 0 or force_all)
@@ -754,12 +755,13 @@ elif args.command == 'prepare':
     prepare()
 elif args.command == 'update':
     packages = []
-    if len(args.packages) == 1:
-        packages = args.packages[0].split()
+    if args.packages:
+        if len(args.packages) == 1:
+            packages = args.packages[0].split()
+        else:
+            packages = args.packages
     else:
-        packages = args.packages
-    # Debug
-    print packages
+        packages = None
     update(packages)
     update_istaller()
 else:
