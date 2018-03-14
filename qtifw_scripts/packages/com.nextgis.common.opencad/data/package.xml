@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_opencad">
     <mac>
-        <path src="inst/Library/Frameworks/opencad.framework" dst="Library/Frameworks/opencad.framework"/>
+        <path src="Library/Frameworks/opencad.framework" dst="Library/Frameworks/opencad.framework"/>
     </mac>
     <win>
-        <path src="inst/bin" dst="bin"/>
+        <path src="bin/*.dll" dst="bin"/>
     </win>
 </Package>
