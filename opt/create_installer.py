@@ -129,7 +129,7 @@ def parse_arguments():
     parser_create = subparsers.add_parser('create')
 
     parser_update = subparsers.add_parser('update')
-    parser_update.add_argument('--force', dest='packages', required=False, help='Force update specified packages even not any changes exists. If all specified force update all packages', nargs='+')
+    parser_update.add_argument('--force', dest='packages', required=False, nargs='+', help='Force update specified packages even not any changes exists. If all specified force update all packages', nargs='+')
     args = parser.parse_args()
 
 
@@ -753,9 +753,8 @@ elif args.command == 'prepare':
     download(args.ftp_user, args.ftp, args.source)
     prepare()
 elif args.command == 'update':
-    update(args.packages)
-    print "Update packages: "
     print args.packages
+    update(args.packages)
     update_istaller()
 else:
     exit('Unsupported command')
