@@ -753,10 +753,9 @@ elif args.command == 'prepare':
     download(args.ftp_user, args.ftp, args.source)
     prepare()
 elif args.command == 'update':
-    if args.packages:
-        update(args.packages.split())
-    else:
-        update(['all'])
+    update(args.packages)
+    print "Update packages: "
+    print args.packages
     update_istaller()
 else:
     exit('Unsupported command')
