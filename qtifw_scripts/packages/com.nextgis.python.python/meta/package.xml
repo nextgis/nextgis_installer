@@ -2,5 +2,4 @@
 <Package>
     <DisplayName>Python27</DisplayName>
     <Description>Python27</Description>
-    <Dependencies>com.nextgis.python.all</Dependencies>
 </Package>
