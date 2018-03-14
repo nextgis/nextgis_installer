@@ -43,7 +43,7 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
                 'lib_proj', 'lib_lzma', 'lib_jbig', 'lib_szip', 'lib_xml2',
                 'lib_spatialite', 'lib_openjpeg', 'lib_tiff', 'lib_geotiff',
                 'lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml', 'numpy', 'lib_gdal',
-                'py_markupsafe',
+                'py_markupsafe', 'py_subprocess32',
                 ]
 
 repositories_win = ['lib_iconv', 'python',
