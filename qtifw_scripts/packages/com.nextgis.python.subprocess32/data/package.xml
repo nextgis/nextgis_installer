@@ -5,6 +5,6 @@
         <path src="Library/lib/python2.7/site-packages/*.so" dst="Library/Python/2.7/site-packages/"/>
     </mac>
     <win>
-        <path src="lib/Python27/site-packages/lib/*" dst="lib/python27/site-packages"/>
+        <path src="Lib/site-packages/*.py" dst="lib/python27/site-packages"/>
     </win>
 </Package>

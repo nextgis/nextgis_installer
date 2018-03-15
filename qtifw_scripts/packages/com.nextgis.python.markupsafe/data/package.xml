@@ -4,6 +4,6 @@
         <path src="Library/lib/python2.7/site-packages/markupsafe" dst="Library/Python/2.7/site-packages/markupsafe"/>
     </mac>
     <win>
-        <path src="lib/Python27/site-packages/markupsafe" dst="lib/python27/site-packages/markupsafe"/>
+        <path src="Lib/site-packages/markupsafe" dst="lib/python27/site-packages/markupsafe"/>
     </win>
 </Package>

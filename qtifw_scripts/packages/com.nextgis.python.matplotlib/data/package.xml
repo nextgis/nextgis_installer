@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_matplotlib">
     <mac>
-        <path src="inst/lib/python2.7/site-packages/matplotlib/" dst="Library/Python/2.7/site-packages/matplotlib"/>
-        <path src="inst/lib/python2.7/site-packages/mpl_toolkits/" dst="Library/Python/2.7/site-packages/mpl_toolkits"/>
-        <path src="inst/lib/python2.7/site-packages/*.py" dst="Library/Python/2.7/site-packages/"/>
-        <path src="inst/lib/python2.7/site-packages/*.pth" dst="Library/Python/2.7/site-packages/"/>
+        <path src="Library/lib/python2.7/site-packages/matplotlib/" dst="Library/Python/2.7/site-packages/matplotlib"/>
+        <path src="Library/lib/python2.7/site-packages/mpl_toolkits/" dst="Library/Python/2.7/site-packages/mpl_toolkits"/>
+        <path src="Library/lib/python2.7/site-packages/*.py" dst="Library/Python/2.7/site-packages/"/>
+        <path src="Library/lib/python2.7/site-packages/*.pth" dst="Library/Python/2.7/site-packages/"/>
     </mac>
     <win>
-        <path src="inst/lib/Python27/site-packages/matplotlib" dst="lib/python27/site-packages/matplotlib"/>
-        <path src="inst/lib/Python27/site-packages/mpl_toolkits" dst="lib/python27/site-packages/mpl_toolkits"/>
-        <path src="inst/lib/Python27/site-packages/*.py" dst="lib/python27/site-packages/"/>
-        <path src="inst/lib/Python27/site-packages/*.pth" dst="lib/python27/site-packages/"/>
+        <path src="Lib/site-packages/matplotlib" dst="lib/python27/site-packages/matplotlib"/>
+        <path src="Lib/site-packages/mpl_toolkits" dst="lib/python27/site-packages/mpl_toolkits"/>
+        <path src="Lib/site-packages/*.py" dst="lib/python27/site-packages/"/>
+        <path src="Lib/site-packages/*.pth" dst="lib/python27/site-packages/"/>
     </win>
 </Package>
