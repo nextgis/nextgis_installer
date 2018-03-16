@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Package root="qt_all">
-    <win>
-        <path src="inst/qt.conf" dst="bin"/>
-    </win>
+<Package>
+    <Version>1.0.0</Version>
 </Package>

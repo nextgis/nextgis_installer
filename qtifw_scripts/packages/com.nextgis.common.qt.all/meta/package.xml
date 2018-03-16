@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Name>com.nextgis.common.qt.all</Name>
     <DisplayName>qt all</DisplayName>
-    <DisplayName xml:lang="ru_RU">qt all</DisplayName>
     <Description>common actions for all qt packages</Description>
-    <Description xml:lang="ru_RU">common actions for all qt packages</Description>
-    <Version>1.0.0</Version>
     <ReleaseDate>2017-03-01</ReleaseDate>
-    
     <Script>script.qs</Script>
 </Package>
