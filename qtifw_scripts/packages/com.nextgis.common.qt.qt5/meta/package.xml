@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Name>com.nextgis.common.qt.qt5</Name>
     <DisplayName>Qt5</DisplayName>
-    <DisplayName xml:lang="ru_RU">Qt5</DisplayName>
     <Description>Qt5 libraries</Description>
-    <Description xml:lang="ru_RU">Библиотеки Qt5</Description>
-    <Version>5.9.1</Version>
-    <ReleaseDate>2017-09-25</ReleaseDate>
-    
-    <Dependencies>com.nextgis.common.qt.all</Dependencies>
+    <Dependencies>com.nextgis.common.qt.all,com.nextgis.common.jpeg,com.nextgis.common.png,com.nextgis.common.sqlite,com.nextgis.common.pq,com.nextgis.common.freetype,com.nextgis.common.openssl</Dependencies>
 </Package>

@@ -33,7 +33,15 @@
     </mac>
     <win>
         <path src="bin/*.dll" dst="bin"/>
-        <path src="plugins" dst="lib/qt4/plugins"/>
+        <path src="plugins/accessible" dst="lib/qt4/plugins/accessible"/>
+        <path src="plugins/bearer" dst="lib/qt4/plugins/bearer"/>
+        <path src="plugins/codecs" dst="lib/qt4/plugins/codecs"/>
+        <path src="plugins/graphicssystems" dst="lib/qt4/plugins/graphicssystems"/>
+        <path src="plugins/iconengines" dst="lib/qt4/plugins/iconengines"/>
+        <path src="plugins/imageformats" dst="lib/qt4/plugins/imageformats"/>
+        <path src="plugins/qmltooling" dst="lib/qt4/plugins/qmltooling"/>
+        <path src="plugins/sqldrivers" dst="lib/qt4/plugins/sqldrivers"/>
+        <path src="plugins/webkit" dst="lib/qt4/plugins/webkit"/>
         <path src="translations/qt_*.qm" dst="share/qt4/translations"/>
         <path src="translations/qtconfig_*.qm" dst="share/qt4/translations"/>
         <path src="translations/qvfb_*.qm" dst="share/qt4/translations"/>
