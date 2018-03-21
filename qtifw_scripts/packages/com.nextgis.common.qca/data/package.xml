@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_qca">
     <mac>
-        <path src="inst/Library/Frameworks/qca.framework" dst="Library/Frameworks/qca.framework"/>
-        <path src="inst/Library/plugins/Qt4/crypto" dst="Library/Plugins/Qt4/crypto"/>
+        <path src="Library/Frameworks/qca.framework" dst="Library/Frameworks/qca.framework"/>
+        <path src="Library/Frameworks/qca/crypto" dst="Library/Plugins/Qt4/crypto"/>
     </mac>
     <win>
-        <path src="inst/bin/qca.dll" dst="bin"/>
-        <path src="inst/lib/qca/crypto/*.dll" dst="lib/qt4/plugins/crypto"/>
+        <path src="bin/*.dll" dst="bin"/>
+        <path src="lib/qca/crypto/*.dll" dst="lib/qt4/plugins/crypto"/>
     </win>
 </Package>
