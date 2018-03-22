@@ -44,7 +44,8 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
                 'lib_spatialite', 'lib_openjpeg', 'lib_tiff', 'lib_geotiff',
                 'lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml', 'numpy', 'lib_gdal',
                 'py_markupsafe', 'py_subprocess32', 'py_psycopg', 'py_spatialite',
-                'py_matplotlib', 'lib_qt4', 'lib_qt5', 'lib_qca', 
+                'py_matplotlib', 'lib_qt4', 'lib_qt5', 'lib_qca',
+                'lib_spatialindex', 
                 ]
 
 repositories_win = ['lib_iconv', 'python',
