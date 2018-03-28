@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_qscintilla">
     <mac>
-        <path src="inst/Library/Python/2.7/site-packages/PyQt4" dst="Library/Python/2.7/site-packages/PyQt4"/>
-        <path src="inst/share/sip/Qsci" dst="usr/share/sip/Qsci"/>
+        <path src="Library/Python/2.7/site-packages/PyQt4" dst="Library/Python/2.7/site-packages/PyQt4"/>
+        <path src="share/sip/Qsci" dst="usr/share/sip/Qsci"/>
     </mac>
     <win>
-        <path src="inst/lib/Python27/site-packages/PyQt4/Qsci*" dst="lib/python27/site-packages/PyQt4"/>
+        <path src="Lib/Python27/site-packages/PyQt4/Qsci*" dst="lib/python27/site-packages/PyQt4"/>
     </win>
 </Package>

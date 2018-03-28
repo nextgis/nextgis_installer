@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_sip">
-    <UpdateText>Add include directory</UpdateText>
     <mac>
-        <path src="inst/sip.so" dst="Library/Python/2.7/site-packages/"/>
-        <path src="inst/*.py" dst="Library/Python/2.7/site-packages/"/>
-        <path src="inst/include" dst="usr/include/"/>
-        <path src="inst/bin/sip" dst="usr/bin/"/>
+        <path src="Library/Python/2.7/site-packages" dst="Library/Python/2.7/site-packages"/>
+        <path src="include" dst="usr/include/"/>
+        <path src="bin/sip" dst="usr/bin/"/>
     </mac>
     <win>
-        <path src="inst/sip.*" dst="lib/python27/site-packages"/>
-        <path src="inst/*.py" dst="lib/python27/site-packages"/>
-        <path src="inst/include" dst="include"/>
-        <path src="inst/bin/sip.exe" dst="bin"/>
+        <path src="lib" dst="lib"/>
+        <path src="include" dst="include"/>
+        <path src="bin/*.exe" dst="bin"/>
     </win>
 </Package>

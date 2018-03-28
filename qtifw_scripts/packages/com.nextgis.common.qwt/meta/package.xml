@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>QWT</DisplayName>
-    <DisplayName xml:lang="ru_RU">QWT</DisplayName>
     <Description>QWT Library</Description>
-    <Description xml:lang="ru_RU">Библиотека QWT</Description>
-    
     <Dependencies>com.nextgis.common.qt.qt4</Dependencies>
 </Package>

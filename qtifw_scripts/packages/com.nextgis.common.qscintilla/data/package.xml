@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_qscintilla">
     <mac>
-        <path src="inst/Library/Frameworks/qscintilla.framework" dst="Library/Frameworks/qscintilla.framework"/>
-        <path src="inst/Library/Translations/Qt4" dst="Library/Translations/Qt4"/>
+        <path src="Library/Frameworks/qscintilla.framework" dst="Library/Frameworks/qscintilla.framework"/>
+        <path src="Library/Translations/Qt4" dst="Library/Translations/Qt4"/>
     </mac>
     <win>
-        <path src="inst/bin/qscintilla.dll" dst="bin"/>
+        <path src="bin/*.dll" dst="bin"/>
     </win>
 </Package>

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>QScintilla</DisplayName>
-    <DisplayName xml:lang="ru_RU">QScintilla</DisplayName>
     <Description>QScintilla Library</Description>
-    <Description xml:lang="ru_RU">Библиотека QScintilla</Description>
-    
     <Dependencies>com.nextgis.common.qt.qt4</Dependencies>
 </Package>

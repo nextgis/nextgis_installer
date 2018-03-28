@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>PyQScintilla</DisplayName>
-    <DisplayName xml:lang="ru_RU">PyQScintilla</DisplayName>
+    <DisplayName>PyQSci</DisplayName>
     <Description>PyQScintilla package</Description>
-    <Description xml:lang="ru_RU">Пакет PyQScintilla</Description>
-    <Dependencies>com.nextgis.common.qscintilla</Dependencies>
-    
-    <Dependencies>com.nextgis.python.all,com.nextgis.python.qt4</Dependencies>
+    <Dependencies>com.nextgis.common.qscintilla,com.nextgis.python.qt4</Dependencies>
 </Package>
