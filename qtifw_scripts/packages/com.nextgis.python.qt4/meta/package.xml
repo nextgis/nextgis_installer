@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>PyQt4</DisplayName>
-    <DisplayName xml:lang="ru_RU">PyQt4</DisplayName>
     <Description>PyQt4 package</Description>
-    <Description xml:lang="ru_RU">Пакет PyQt4</Description>
-    <Dependencies>com.nextgis.common.qt.qt4</Dependencies>
-    
-    <Dependencies>com.nextgis.python.all</Dependencies>
+    <Dependencies>com.nextgis.python.all,com.nextgis.common.qt.qt4</Dependencies>
 </Package>
