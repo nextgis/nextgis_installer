@@ -5,6 +5,7 @@
         <path src="share/sip/Qsci" dst="usr/share/sip/Qsci"/>
     </mac>
     <win>
-        <path src="Lib/Python27/site-packages/PyQt4/Qsci*" dst="lib/python27/site-packages/PyQt4"/>
+        <path src="lib/Python27/site-packages/PyQt4" dst="lib/python27/site-packages/PyQt4"/>
+        <path src="share/sip/Qsci" dst="share/sip/Qsci"/>
     </win>
 </Package>
