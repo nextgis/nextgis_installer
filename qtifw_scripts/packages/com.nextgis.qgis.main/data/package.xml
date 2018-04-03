@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Package root="qgis">
+<Package root="nextgisqgis">
     <mac>
-        <path src="inst/Applications/ngqgis.app/Contents/MacOS" dst="Applications/ngqgis.app/Contents/MacOS"/>
-        <path src="inst/Applications/ngqgis.app/Contents/Info.plist" dst="Applications/ngqgis.app/Contents"/>
-        <path src="inst/Applications/ngqgis.app/Contents/Resources/*.icns" dst="Applications/ngqgis.app/Contents/Resources"/>
-        <path src="inst/Applications/ngqgis.app/Contents/Resources/*.conf" dst="Applications/ngqgis.app/Contents/Resources"/>
-        <path src="inst/Applications/ngqgis.app/Contents/Resources/composer_templates" dst="Applications/ngqgis.app/Contents/Resources/composer_templates"/>
-        <path src="inst/Applications/ngqgis.app/Contents/Resources/fonts" dst="Applications/ngqgis.app/Contents/Resources/fonts"/>
-        <path src="inst/Applications/ngqgis.app/Contents/Resources/i18n" dst="Applications/ngqgis.app/Contents/Resources/i18n"/>
-        <path src="inst/Applications/ngqgis.app/Contents/Resources/images" dst="Applications/ngqgis.app/Contents/Resources/images"/>
-        <path src="inst/Applications/ngqgis.app/Contents/Resources/resources" dst="Applications/ngqgis.app/Contents/Resources/resources"/>
-        <path src="inst/Applications/ngqgis.app/Contents/Resources/svg" dst="Applications/ngqgis.app/Contents/Resources/svg"/>
+        <path src="Applications/ngqgis.app/Contents/MacOS" dst="Applications/ngqgis.app/Contents/MacOS"/>
+        <path src="Applications/ngqgis.app/Contents/Info.plist" dst="Applications/ngqgis.app/Contents"/>
+        <path src="Applications/ngqgis.app/Contents/Resources/*.icns" dst="Applications/ngqgis.app/Contents/Resources"/>
+        <path src="Applications/ngqgis.app/Contents/Resources/*.conf" dst="Applications/ngqgis.app/Contents/Resources"/>
+        <path src="Applications/ngqgis.app/Contents/Resources/composer_templates" dst="Applications/ngqgis.app/Contents/Resources/composer_templates"/>
+        <path src="Applications/ngqgis.app/Contents/Resources/fonts" dst="Applications/ngqgis.app/Contents/Resources/fonts"/>
+        <path src="Applications/ngqgis.app/Contents/Resources/i18n" dst="Applications/ngqgis.app/Contents/Resources/i18n"/>
+        <path src="Applications/ngqgis.app/Contents/Resources/images" dst="Applications/ngqgis.app/Contents/Resources/images"/>
+        <path src="Applications/ngqgis.app/Contents/Resources/resources" dst="Applications/ngqgis.app/Contents/Resources/resources"/>
+        <path src="Applications/ngqgis.app/Contents/Resources/svg" dst="Applications/ngqgis.app/Contents/Resources/svg"/>
     </mac>
     <win>
-        <path src="inst/bin/ngqgis.exe" dst="bin"/>
-        <path src="inst/share/ngqgis/*.conf" dst="share/ngqgis"/>
-        <path src="inst/share/ngqgis/composer_templates" dst="share/ngqgis/composer_templates"/>
-        <path src="inst/share/ngqgis/fonts" dst="share/ngqgis/fonts"/>
-        <path src="inst/share/ngqgis/i18n" dst="share/ngqgis/i18n"/>
-        <path src="inst/share/ngqgis/images" dst="share/ngqgis/images"/>
-        <path src="inst/share/ngqgis/resources" dst="share/ngqgis/resources"/>
-        <path src="inst/share/ngqgis/svg" dst="share/ngqgis/svg"/>
+        <path src="bin/ngqgis.exe" dst="bin"/>
+        <path src="share/ngqgis/*.conf" dst="share/ngqgis"/>
+        <path src="share/ngqgis/composer_templates" dst="share/ngqgis/composer_templates"/>
+        <path src="share/ngqgis/fonts" dst="share/ngqgis/fonts"/>
+        <path src="share/ngqgis/i18n" dst="share/ngqgis/i18n"/>
+        <path src="share/ngqgis/images" dst="share/ngqgis/images"/>
+        <path src="share/ngqgis/resources" dst="share/ngqgis/resources"/>
+        <path src="share/ngqgis/svg" dst="share/ngqgis/svg"/>
     </win>
 </Package>

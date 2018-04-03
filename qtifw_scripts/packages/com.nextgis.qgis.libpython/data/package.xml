@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Package root="qgis">
+<Package root="nextgisqgis">
     <mac>
-        <path src="inst/Applications/ngqgis.app/Contents/Frameworks/ngqgis_python.framework" dst="Applications/ngqgis.app/Contents/Frameworks/ngqgis_python.framework"/>
-        <path src="inst/Library/Frameworks/ngqgis_python.framework" dst="Library/Frameworks/ngqgis_python.framework"/>
+        <path src="Applications/ngqgis.app/Contents/Frameworks/ngqgis_python.framework" dst="Applications/ngqgis.app/Contents/Frameworks/ngqgis_python.framework"/>
+        <path src="Library/Frameworks/ngqgis_python.framework" dst="Library/Frameworks/ngqgis_python.framework"/>
     </mac>
     <win>
-        <path src="inst/bin/ngqgis_python.dll" dst="bin"/>
+        <path src="bin/ngqgis_python.dll" dst="bin"/>
     </win>
 </Package>

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>Gui library</DisplayName>
-    <DisplayName xml:lang="ru_RU">Gui library</DisplayName>
     <Description>Gui library</Description>
-    <Description xml:lang="ru_RU">Gui library</Description>
-    <Virtual>true</Virtual>
-    
+    <Virtual>true</Virtual>    
     <Dependencies>com.nextgis.qgis.libanalysis</Dependencies>
 </Package>

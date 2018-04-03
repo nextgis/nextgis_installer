@@ -3,9 +3,7 @@
     <DisplayName>QGIS</DisplayName>
     <Description>QGIS Application</Description>
     <Default>true</Default>
-    
-    <Dependencies>com.nextgis.nextgis_updater</Dependencies>
-    
+    <Dependencies>com.nextgis.nextgis_updater</Dependencies>    
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

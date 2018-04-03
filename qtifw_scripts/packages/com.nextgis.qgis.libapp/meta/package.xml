@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
     <DisplayName>App library</DisplayName>
-    <DisplayName xml:lang="ru_RU">App library</DisplayName>
     <Description>App library</Description>
-    <Description xml:lang="ru_RU">App library</Description>
-    <Virtual>true</Virtual>
-    
+    <Virtual>true</Virtual>    
     <Dependencies>com.nextgis.qgis.libgui</Dependencies>
 </Package>
