@@ -3,17 +3,17 @@
     <mac>
         <path src="lib/QtCore.framework" dst="Library/Frameworks/QtCore.framework"/>
         <path src="lib/QtDeclarative.framework" dst="Library/Frameworks/QtDeclarative.framework"/>
-        <!--path src="lib/QtDesigner.framework" dst="Library/Frameworks/QtDesigner.framework"/>
-        <path src="lib/QtDesignerComponents.framework" dst="Library/Frameworks/QtDesignerComponents.framework"/-->
+        <path src="lib/QtDesigner.framework" dst="Library/Frameworks/QtDesigner.framework"/>
+        <path src="lib/QtMultimedia.framework" dst="Library/Frameworks/QtMultimedia.framework"/>
         <path src="lib/QtGui.framework" dst="Library/Frameworks/QtGui.framework"/>
         <path src="lib/QtHelp.framework" dst="Library/Frameworks/QtHelp.framework"/>
         <path src="lib/QtNetwork.framework" dst="Library/Frameworks/QtNetwork.framework"/>
         <path src="lib/QtOpenGL.framework" dst="Library/Frameworks/QtOpenGL.framework"/>
         <path src="lib/QtScript.framework" dst="Library/Frameworks/QtScript.framework"/>
-        <!--path src="inst/lib/QtScriptTools.framework" dst="Library/Frameworks/QtScriptTools.framework"/-->
+        <path src="lib/QtScriptTools.framework" dst="Library/Frameworks/QtScriptTools.framework"/>
         <path src="lib/QtSql.framework" dst="Library/Frameworks/QtSql.framework"/>
         <path src="lib/QtSvg.framework" dst="Library/Frameworks/QtSvg.framework"/>
-        <!--path src="inst/lib/QtTest.framework" dst="Library/Frameworks/QtTest.framework"/-->
+        <path src="lib/QtTest.framework" dst="Library/Frameworks/QtTest.framework"/>
         <path src="lib/QtWebKit.framework" dst="Library/Frameworks/QtWebKit.framework"/>
         <path src="lib/QtXml.framework" dst="Library/Frameworks/QtXml.framework"/>
         <path src="lib/QtXmlPatterns.framework" dst="Library/Frameworks/QtXmlPatterns.framework"/>
