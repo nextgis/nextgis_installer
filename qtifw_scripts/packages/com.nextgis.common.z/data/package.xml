@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_z">
     <mac>
-        <path src="Library/Frameworks/z.framework" dst="Library/Frameworks/z.framework"/>
+        <path src="Library/Frameworks/zlib.framework" dst="Library/Frameworks/zlib.framework"/>
     </mac>
     <win>
-        <path src="bin" dst="bin"/>
+        <path src="bin/*.dll" dst="bin"/>
     </win>
 </Package>
