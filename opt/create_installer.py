@@ -59,6 +59,10 @@ repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
                             'py_pygments', 'py_six',
                         ]
 
+skip_osx_dependencies = ['com.nextgis.common.qt.all', 'com.nextgis.python.python',
+                         'com.nextgis.common.vc', 'com.nextgis.common.iconv',
+                        ]
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -441,13 +445,9 @@ def create_dest_package_dir(dir_name, version_text, updatetext_text, sources_dir
     if dependencies_tag is not None:
         # If Mac OS X
         if sys.platform == 'darwin':
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.qt.all,', '') # Only install qt.conf which installed in separate app folder on Mac OS X
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.qt.all', '')
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.python.python,', '') # Python 2 is default application in Mac OS X
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.python.python', '')
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.vc,', '')
-            dependencies_tag.text = dependencies_tag.text.replace('com.nextgis.common.vc', '')
-
+            for skip_dependency in skip_osx_dependencies:
+                dependencies_tag.text = dependencies_tag.text.replace(skip_dependency + ',', '')
+                dependencies_tag.text = dependencies_tag.text.replace(skip_dependency, '')
 
         dependencies_tag.text = dependencies_tag.text.replace('  ', ' ')
         dependencies_tag.text = dependencies_tag.text.replace(', ', ',')
