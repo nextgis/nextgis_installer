@@ -358,6 +358,13 @@ def check_version(version_str, version_file_date, component_name, force):
         version_str += '-0'
         has_changes = True
 
+    # Special hack for tiff version (previous version was 5.2.5, correct version is 4.0.9)
+    # Add 1 at the beginning of version 5.2.5 < 14.0.9
+    if component_name == 'com.nextgis.common.tiff':
+        version_num = version_str.split('.')
+        if int(version_num[0]) < 5:
+            version_str = '1' + version_str
+
     return version_str, has_changes
 
 
