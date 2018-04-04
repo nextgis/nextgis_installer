@@ -362,7 +362,7 @@ def check_version(version_str, version_file_date, component_name, force):
     # Add 1 at the beginning of version 5.2.5 < 14.0.9
     if component_name == 'com.nextgis.common.tiff':
         version_num = version_str.split('.')
-        if int(version_num[0]) < 5:
+        if int(version_num[0]) < 6:
             version_str = '1' + version_str
 
     return version_str, has_changes
