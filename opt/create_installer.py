@@ -757,6 +757,7 @@ def create_installer():
     if sys.platform == 'darwin':
         installer_exe_name = 'nextgis-setup.app/Contents/MacOS/nextgis-setup'
     installer_exe = os.path.join(repo_target_path, installer_exe_name)
+    silent_install_dir = os.path.join(repo_root_dir, 'tmp', 'ng')
     script_content = """
 function Controller() {
     installer.autoRejectMessageBoxes();
@@ -809,7 +810,7 @@ Controller.prototype.ReadyForInstallationPageCallback = function() {
 Controller.prototype.FinishedPageCallback = function() {
     gui.clickButton(buttons.FinishButton);
 }
-    """.replace('install_path', os.path.join(repo_root_dir, 'tmp', 'ng'))
+    """.replace('install_path', silent_install_dir)
     script_path = os.path.join(repo_new_config_path, 'install.qs')
     with open(script_path, "w") as text_file:
         text_file.write(script_content)
@@ -817,11 +818,11 @@ Controller.prototype.FinishedPageCallback = function() {
     run((installer_exe, '--script', script_path))
     # 2. Pack nextgisupdater files to zip
     cmd = ('cmake', '-E', 'tar', 'cfv', os.path.join(repo_target_path, 'package.zip'), '--format=zip')
-    cmd = cmd + (os.path.join(repo_root_dir, 'tmp', 'ng', 'nextgisupdater.ini', os.path.join(repo_root_dir, 'tmp', 'ng', 'nextgisupdater.dat',))
+    cmd = cmd + (os.path.join(silent_install_dir, 'nextgisupdater.ini'), os.path.join(silent_install_dir, 'nextgisupdater.dat'),)
     if sys.platform == 'darwin':
-        cmd = cmd + (os.path.join(repo_root_dir, 'tmp', 'ng', 'nextgisupdater.app',)
+        cmd = cmd + (os.path.join(silent_install_dir, 'nextgisupdater.app'),)
     else:
-        cmd = cmd + (os.path.join(repo_root_dir, 'tmp', 'ng', 'nextgisupdater.exe',)
+        cmd = cmd + (os.path.join(silent_install_dir, 'nextgisupdater.exe'),)
     run(cmd)
 
     # 3. Create version.str with increment version
