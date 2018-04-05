@@ -23,6 +23,7 @@ import glob
 args = {}
 libraries_version_dict = {}
 
+archivegen_file = ''
 repogen_file = ''
 binarycreator_file = ''
 versions_file_name = ''
@@ -192,6 +193,7 @@ def init():
     repo_root_dir = os.path.dirname(os.path.abspath(os.path.dirname(sys.argv[0])))
 
     bin_dir = os.path.join(repo_root_dir, 'qtifw_pkg', 'bin')
+    archivegen_file = os.path.join(bin_dir, 'archivegen')
     repogen_file = os.path.join(bin_dir, 'repogen')
     color_print('repogen path: ' + repogen_file, True, 'LCYAN')
     binarycreator_file = os.path.join(bin_dir, 'binarycreator')
@@ -748,10 +750,98 @@ def create_installer():
 
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, installer_name), True, 'LMAGENTA')
 
-    # TODO: Create maintance tool package
-    # 1. Slent install created installer to temp folder (https://stackoverflow.com/a/34032216/2901140)
+    color_print('Create updater package', False, 'LBLUE')
+    # Create maintance tool package
+    # 1. Silent install created installer to temp folder (https://stackoverflow.com/a/34032216/2901140)
+    installer_exe_name = 'nextgis-setup.exe'
+    if sys.platform == 'darwin':
+        installer_exe_name = 'nextgis-setup.app/Contents/MacOS/nextgis-setup'
+    installer_exe = os.path.join(repo_target_path, installer_exe_name)
+    script_content = '''
+function Controller() {
+    installer.autoRejectMessageBoxes();
+    installer.installationFinished.connect(function() {
+        gui.clickButton(buttons.NextButton);
+    })
+}
+
+Controller.prototype.WelcomePageCallback = function() {
+    gui.clickButton(buttons.NextButton);
+}
+
+Controller.prototype.CredentialsPageCallback = function() {
+    gui.clickButton(buttons.NextButton);
+}
+
+Controller.prototype.IntroductionPageCallback = function() {
+    gui.clickButton(buttons.NextButton);
+}
+
+Controller.prototype.TargetDirectoryPageCallback = function()
+{
+    gui.currentPageWidget().TargetDirectoryLineEdit.setText("{}");
+    gui.clickButton(buttons.NextButton);
+}
+
+Controller.prototype.ComponentSelectionPageCallback = function() {
+    // var widget = gui.currentPageWidget();
+
+    // widget.deselectAll();
+    // widget.selectComponent("qt.55.gcc_64");
+    // widget.selectComponent("qt.55.qtquickcontrols");
+
+    // widget.deselectComponent("qt.tools.qtcreator");
+    // widget.deselectComponent("qt.55.qt3d");
+    // widget.deselectComponent("qt.55.qtcanvas3d");
+    // widget.deselectComponent("qt.55.qtlocation");
+    // widget.deselectComponent("qt.55.qtquick1");
+    // widget.deselectComponent("qt.55.qtscript");
+    // widget.deselectComponent("qt.55.qtwebengine");
+    // widget.deselectComponent("qt.extras");
+    // widget.deselectComponent("qt.tools.doc");
+    // widget.deselectComponent("qt.tools.examples");
+
+    gui.clickButton(buttons.NextButton);
+}
+
+Controller.prototype.LicenseAgreementPageCallback = function() {
+    gui.currentPageWidget().AcceptLicenseRadioButton.setChecked(true);
+    gui.clickButton(buttons.NextButton);
+}
+
+Controller.prototype.StartMenuDirectoryPageCallback = function() {
+    gui.clickButton(buttons.NextButton);
+}
+
+Controller.prototype.ReadyForInstallationPageCallback = function() {
+    gui.clickButton(buttons.NextButton);
+}
+
+Controller.prototype.FinishedPageCallback = function() {
+var checkBoxForm = gui.currentPageWidget().LaunchQtCreatorCheckBoxForm
+if (checkBoxForm && checkBoxForm.launchQtCreatorCheckBox) {
+    checkBoxForm.launchQtCreatorCheckBox.checked = false;
+}
+    gui.clickButton(buttons.FinishButton);
+}
+    '''.format(os.path.join(repo_root_dir, 'ng_tmp'))
+    script_path = os.path.join(repo_new_config_path, 'install.qs')
+    with open(script_path, "w") as text_file:
+        text_file.write(script_content)
+
+    run((installer_exe, '--script', script_path))
     # 2. Pack nextgisupdater files to zip
+    run(('cmake', '-E', 'tar', 'cfv', os.path.join(repo_target_path, 'package.zip'), '--format=zip', updater_files))
     # 3. Create version.str with increment version
+    with open(os.path.join(repo_target_path, 'version.str'), "w") as text_file:
+        import datetime
+        now = datetime.datetime.now()
+        # get qtifw version
+        libraries_version_dict['com.nextgis.nextgis_updater']['count'] + 1
+        ifw_version = subprocess.check_check_output([archivegen_file, '--version'])
+        # archivegen 3.0.1
+        ifw_version = ifw_version[11:]
+        text_file.write('{}\n{}\nupdater'.format(ifw_version, now.strftime("%Y-%m-%d %h:%M:%S")))
 
 def update_istaller():
     run((repogen_file, '--update-new-components', '-v', '-p', repo_new_packages_path, get_repository_path()))
