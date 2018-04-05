@@ -843,7 +843,7 @@ if (checkBoxForm && checkBoxForm.launchQtCreatorCheckBox) {
         ifw_version = ifw_version[11:]
         text_file.write('{}\n{}\nupdater'.format(ifw_version, now.strftime("%Y-%m-%d %h:%M:%S")))
 
-def update_istaller():
+def update_installer():
     run((repogen_file, '--update-new-components', '-v', '-p', repo_new_packages_path, get_repository_path()))
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup'), True, 'LMAGENTA')
 
@@ -851,6 +851,7 @@ def update_istaller():
 parse_arguments()
 init()
 if args.command == 'create':
+    update(None)
     create_installer()
 elif args.command == 'prepare':
     download(args.ftp_user, args.ftp, args.source)
@@ -865,7 +866,7 @@ elif args.command == 'update':
     else:
         packages = None
     update(packages)
-    update_istaller()
+    update_installer()
 else:
     exit('Unsupported command')
 save_versions(versions_file_name)
