@@ -832,7 +832,7 @@ Controller.prototype.FinishedPageCallback = function() {
         # get qtifw version
         component_name = 'com.nextgis.nextgis_updater'
         version_file_date = now.strftime("%Y-%m-%d %h:%M:%S")
-        version_str = subprocess.check_check_output([archivegen_file, '--version'])
+        version_str = subprocess.check_output([archivegen_file, '--version'])
         # archivegen 3.0.1
         version_str = version_str[11:]
         if component_name in libraries_version_dict:
