@@ -851,7 +851,6 @@ def update_istaller():
 parse_arguments()
 init()
 if args.command == 'create':
-    prepare()
     create_installer()
 elif args.command == 'prepare':
     download(args.ftp_user, args.ftp, args.source)
