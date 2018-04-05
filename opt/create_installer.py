@@ -784,9 +784,10 @@ Controller.prototype.TargetDirectoryPageCallback = function()
 }
 
 Controller.prototype.ComponentSelectionPageCallback = function() {
-    // var widget = gui.currentPageWidget();
+    var widget = gui.currentPageWidget();
 
-    // widget.deselectAll();
+    widget.deselectAll();
+    widget.selectComponent("com.nextgis.utils.sqlite");
     // widget.deselectComponent("qt.tools.examples");
 
     gui.clickButton(buttons.NextButton);
@@ -808,14 +809,21 @@ Controller.prototype.ReadyForInstallationPageCallback = function() {
 Controller.prototype.FinishedPageCallback = function() {
     gui.clickButton(buttons.FinishButton);
 }
-    """.replace('install_path', os.path.join(repo_root_dir, 'tmp'))
+    """.replace('install_path', os.path.join(repo_root_dir, 'tmp', 'ng'))
     script_path = os.path.join(repo_new_config_path, 'install.qs')
     with open(script_path, "w") as text_file:
         text_file.write(script_content)
 
     run((installer_exe, '--script', script_path))
     # 2. Pack nextgisupdater files to zip
-    run(('cmake', '-E', 'tar', 'cfv', os.path.join(repo_target_path, 'package.zip'), '--format=zip', updater_files))
+    cmd = ('cmake', '-E', 'tar', 'cfv', os.path.join(repo_target_path, 'package.zip'), '--format=zip')
+    cmd = cmd + (os.path.join(repo_root_dir, 'tmp', 'ng', 'nextgisupdater.ini', os.path.join(repo_root_dir, 'tmp', 'ng', 'nextgisupdater.dat',))
+    if sys.platform == 'darwin':
+        cmd = cmd + (os.path.join(repo_root_dir, 'tmp', 'ng', 'nextgisupdater.app',)
+    else:
+        cmd = cmd + (os.path.join(repo_root_dir, 'tmp', 'ng', 'nextgisupdater.exe',)
+    run(cmd)
+
     # 3. Create version.str with increment version
     with open(os.path.join(repo_target_path, 'version.str'), "w") as text_file:
         import datetime
