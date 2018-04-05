@@ -757,7 +757,7 @@ def create_installer():
     if sys.platform == 'darwin':
         installer_exe_name = 'nextgis-setup.app/Contents/MacOS/nextgis-setup'
     installer_exe = os.path.join(repo_target_path, installer_exe_name)
-    silent_install_dir = os.path.join(repo_root_dir, 'tmp', 'ng')
+    silent_install_dir = os.path.join(repo_root_dir, 'nextgis_updater')
     script_content = """
 function Controller() {
     installer.autoRejectMessageBoxes();
@@ -830,11 +830,17 @@ Controller.prototype.FinishedPageCallback = function() {
         import datetime
         now = datetime.datetime.now()
         # get qtifw version
-        libraries_version_dict['com.nextgis.nextgis_updater']['count'] + 1
-        ifw_version = subprocess.check_check_output([archivegen_file, '--version'])
+        component_name = 'com.nextgis.nextgis_updater'
+        version_file_date = now.strftime("%Y-%m-%d %h:%M:%S")
+        version_str = subprocess.check_check_output([archivegen_file, '--version'])
         # archivegen 3.0.1
-        ifw_version = ifw_version[11:]
-        text_file.write('{}\n{}\npackage'.format(ifw_version, now.strftime("%Y-%m-%d %h:%M:%S")))
+        version_str = version_str[11:]
+        if component_name in libraries_version_dict:
+            count = libraries_version_dict[component_name]['count'] + 1
+            libraries_version_dict[component_name]['count'] = count
+        else:
+            libraries_version_dict[component_name] = dict(count = 0, date = version_file_date, version = version_str)
+        text_file.write('{}\n{}\npackage'.format(version_str, version_file_date))
 
 def update_installer():
     run((repogen_file, '--update-new-components', '-v', '-p', repo_new_packages_path, get_repository_path()))
