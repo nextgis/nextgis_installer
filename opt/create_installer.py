@@ -757,7 +757,7 @@ def create_installer():
     if sys.platform == 'darwin':
         installer_exe_name = 'nextgis-setup.app/Contents/MacOS/nextgis-setup'
     installer_exe = os.path.join(repo_target_path, installer_exe_name)
-    script_content = '''
+    script_content = """
 function Controller() {
     installer.autoRejectMessageBoxes();
     installer.installationFinished.connect(function() {
@@ -779,7 +779,7 @@ Controller.prototype.IntroductionPageCallback = function() {
 
 Controller.prototype.TargetDirectoryPageCallback = function()
 {
-    gui.currentPageWidget().TargetDirectoryLineEdit.setText("{}");
+    gui.currentPageWidget().TargetDirectoryLineEdit.setText("install_path");
     gui.clickButton(buttons.NextButton);
 }
 
@@ -787,18 +787,6 @@ Controller.prototype.ComponentSelectionPageCallback = function() {
     // var widget = gui.currentPageWidget();
 
     // widget.deselectAll();
-    // widget.selectComponent("qt.55.gcc_64");
-    // widget.selectComponent("qt.55.qtquickcontrols");
-
-    // widget.deselectComponent("qt.tools.qtcreator");
-    // widget.deselectComponent("qt.55.qt3d");
-    // widget.deselectComponent("qt.55.qtcanvas3d");
-    // widget.deselectComponent("qt.55.qtlocation");
-    // widget.deselectComponent("qt.55.qtquick1");
-    // widget.deselectComponent("qt.55.qtscript");
-    // widget.deselectComponent("qt.55.qtwebengine");
-    // widget.deselectComponent("qt.extras");
-    // widget.deselectComponent("qt.tools.doc");
     // widget.deselectComponent("qt.tools.examples");
 
     gui.clickButton(buttons.NextButton);
@@ -818,13 +806,9 @@ Controller.prototype.ReadyForInstallationPageCallback = function() {
 }
 
 Controller.prototype.FinishedPageCallback = function() {
-var checkBoxForm = gui.currentPageWidget().LaunchQtCreatorCheckBoxForm
-if (checkBoxForm && checkBoxForm.launchQtCreatorCheckBox) {
-    checkBoxForm.launchQtCreatorCheckBox.checked = false;
-}
     gui.clickButton(buttons.FinishButton);
 }
-    '''.format(os.path.join(repo_root_dir, 'ng_tmp'))
+    """.replace('install_path', os.path.join(repo_root_dir, 'tmp'))
     script_path = os.path.join(repo_new_config_path, 'install.qs')
     with open(script_path, "w") as text_file:
         text_file.write(script_content)
@@ -841,7 +825,7 @@ if (checkBoxForm && checkBoxForm.launchQtCreatorCheckBox) {
         ifw_version = subprocess.check_check_output([archivegen_file, '--version'])
         # archivegen 3.0.1
         ifw_version = ifw_version[11:]
-        text_file.write('{}\n{}\nupdater'.format(ifw_version, now.strftime("%Y-%m-%d %h:%M:%S")))
+        text_file.write('{}\n{}\npackage'.format(ifw_version, now.strftime("%Y-%m-%d %h:%M:%S")))
 
 def update_installer():
     run((repogen_file, '--update-new-components', '-v', '-p', repo_new_packages_path, get_repository_path()))
