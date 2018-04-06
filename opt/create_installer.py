@@ -194,7 +194,7 @@ def init():
 
     bin_dir = os.path.join(repo_root_dir, 'qtifw_pkg', 'bin')
     archivegen_file = os.path.join(bin_dir, 'archivegen')
-    aver = subprocess.check_output([archivegen_file, '--version'])
+    aver = subprocess.check_output([archivegen_file, '--version']).rstrip()
     color_print('archivegen path: ' + archivegen_file + ' (' + aver + ')', True, 'LCYAN')
     repogen_file = os.path.join(bin_dir, 'repogen')
     color_print('repogen path: ' + repogen_file, True, 'LCYAN')
@@ -834,7 +834,7 @@ Controller.prototype.FinishedPageCallback = function() {
         # get qtifw version
         component_name = 'com.nextgis.nextgis_updater'
         version_file_date = now.strftime("%Y-%m-%d %h:%M:%S")
-        version_str = subprocess.check_output([archivegen_file, '--version'])
+        version_str = subprocess.check_output([archivegen_file, '--version']).rstrip()
         # archivegen 3.0.1
         version_str = version_str[11:]
         if component_name in libraries_version_dict:
