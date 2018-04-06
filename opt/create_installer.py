@@ -195,6 +195,7 @@ def init():
     bin_dir = os.path.join(repo_root_dir, 'qtifw_pkg', 'bin')
     archivegen_file = os.path.join(bin_dir, 'archivegen')
     aver = subprocess.check_output([archivegen_file, '--version']).rstrip()
+    aver = aver[11:]
     color_print('archivegen path: ' + archivegen_file + ' (' + aver + ')', True, 'LCYAN')
     repogen_file = os.path.join(bin_dir, 'repogen')
     color_print('repogen path: ' + repogen_file, True, 'LCYAN')
