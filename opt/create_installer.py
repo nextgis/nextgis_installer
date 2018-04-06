@@ -816,7 +816,7 @@ Controller.prototype.FinishedPageCallback = function() {
     with open(script_path, "w") as text_file:
         text_file.write(script_content)
 
-    run_shell((installer_exe, '--verbose', '--script', script_path))
+    run((installer_exe, '--script', script_path))
     # 2. Pack nextgisupdater files to zip
     cmd = ('cmake', '-E', 'tar', 'cfv', os.path.join(repo_target_path, 'package.zip'), '--format=zip')
     cmd = cmd + (os.path.join(silent_install_dir, 'nextgisupdater.ini'), os.path.join(silent_install_dir, 'nextgisupdater.dat'),)
