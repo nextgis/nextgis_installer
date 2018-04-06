@@ -177,6 +177,7 @@ def save_versions(file_name):
 
 def init():
     color_print('Initializing ...', True, 'LYELLOW')
+    global archivegen_file
     global repogen_file
     global binarycreator_file
     global repo_config_path
