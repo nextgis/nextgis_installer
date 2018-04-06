@@ -147,7 +147,7 @@ def run(args):
     subprocess.check_call(args)
 
 def run_shell(args):
-    print 'calling ' + args
+    print 'calling ' + string.join(args)
     # subprocess.check_call(args, shell=True)
 
     p = subprocess.Popen(args, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
