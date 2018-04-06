@@ -194,9 +194,7 @@ def init():
 
     bin_dir = os.path.join(repo_root_dir, 'qtifw_pkg', 'bin')
     archivegen_file = os.path.join(bin_dir, 'archivegen')
-    aver = subprocess.check_output([archivegen_file, '--version']).rstrip()
-    aver = aver[11:]
-    color_print('archivegen path: ' + archivegen_file + ' (' + aver + ')', True, 'LCYAN')
+    color_print('archivegen path: ' + archivegen_file, True, 'LCYAN')
     repogen_file = os.path.join(bin_dir, 'repogen')
     color_print('repogen path: ' + repogen_file, True, 'LCYAN')
     binarycreator_file = os.path.join(bin_dir, 'binarycreator')
@@ -818,7 +816,7 @@ Controller.prototype.FinishedPageCallback = function() {
     with open(script_path, "w") as text_file:
         text_file.write(script_content)
 
-    run((installer_exe, '--script', script_path))
+    run((installer_exe, '--verbose', '--script', script_path))
     # 2. Pack nextgisupdater files to zip
     cmd = ('cmake', '-E', 'tar', 'cfv', os.path.join(repo_target_path, 'package.zip'), '--format=zip')
     cmd = cmd + (os.path.join(silent_install_dir, 'nextgisupdater.ini'), os.path.join(silent_install_dir, 'nextgisupdater.dat'),)
