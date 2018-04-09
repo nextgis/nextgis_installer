@@ -4,6 +4,6 @@
         <path src="inst/lib/python2.7/site-packages/backports/" dst="Library/Python/2.7/site-packages/backports"/>
     </mac>
     <win>
-        <path src="inst/lib/Python27/site-packages/backports" dst="lib/python27/site-packages/backports"/>
+        <path src="inst/Lib/site-packages/backports" dst="lib/python27/site-packages/backports"/>
     </win>
 </Package>

@@ -4,6 +4,6 @@
         <path src="inst/lib/python2.7/site-packages/*.py" dst="Library/Python/2.7/site-packages/"/>
     </mac>
     <win>
-        <path src="inst/lib/Python27/site-packages/*.py" dst="lib/python27/site-packages/"/>
+        <path src="inst/Lib/site-packages/*.py" dst="lib/python27/site-packages/"/>
     </win>
 </Package>

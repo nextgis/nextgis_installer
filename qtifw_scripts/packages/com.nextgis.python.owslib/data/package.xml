@@ -4,6 +4,6 @@
         <path src="inst/lib/python2.7/site-packages/owslib" dst="Library/Python/2.7/site-packages/owslib"/>
     </mac>
     <win>
-        <path src="inst/lib/Python27/site-packages/owslib" dst="lib/python27/site-packages/owslib"/>
+        <path src="inst/Lib/site-packages/owslib" dst="lib/python27/site-packages/owslib"/>
     </win>
 </Package>
