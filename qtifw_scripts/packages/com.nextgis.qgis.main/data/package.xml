@@ -14,7 +14,7 @@
     </mac>
     <win>
         <path src="bin/ngqgis.exe" dst="bin"/>
-        <path src="share/ngqgis/*.conf" dst="share/ngqgis"/>
+        <!--path src="share/ngqgis/*.conf" dst="share/ngqgis"/-->
         <path src="share/ngqgis/composer_templates" dst="share/ngqgis/composer_templates"/>
         <path src="share/ngqgis/fonts" dst="share/ngqgis/fonts"/>
         <path src="share/ngqgis/i18n" dst="share/ngqgis/i18n"/>
