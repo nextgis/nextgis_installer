@@ -543,7 +543,7 @@ def prepare_win_redist(target_dir):
         if out_zip.endswith(".zip"):
             os.chdir( target_repo_dir )
             color_print('Extract ' + out_zip, False, 'LGREEN')
-            run(('cmake', '-E', 'tar', 'xzf', out_zip))
+            run(('cmake', '-E', 'tar', 'xzf', os.path.join(target_repo_build_dir, out_zip)))
             # rename
             base=os.path.basename(out_zip)
             original_name = os.path.splitext(base)[0]
