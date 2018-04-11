@@ -538,7 +538,18 @@ def prepare_win_redist(target_dir):
     # Build and Install
     os.chdir( target_repo_build_dir )
     run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '-G', generator, '..'))
-    run(('cmake', '--build', '.', '--config', 'Release', '--target', 'install'))
+    run(('cpack'))
+    for out_zip in os.listdir(target_repo_build_dir):
+        if out_zip.endswith(".zip"):
+            os.chdir( target_repo_dir )
+            color_print('Extract ' + out_zip, False, 'LGREEN')
+            run(('cmake', '-E', 'tar', 'xzf', out_zip))
+            # rename
+            base=os.path.basename(out_zip)
+            original_name = os.path.splitext(base)[0]
+            os.rename(os.path.join(target_repo_dir, original_name), os.path.join(target_repo_dir,'inst'))
+
+    #run(('cmake', '--build', '.', '--config', 'Release', '--target', 'install'))
 
 def delete_path(path_to_delete):
     color_print('Delete existing build dir ...', True, 'LRED')

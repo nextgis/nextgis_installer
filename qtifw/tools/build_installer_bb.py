@@ -119,6 +119,9 @@ def build():
     run('\"' + qmake + '\" CONFIG+=release \"' + src_dir + '\"')
     run(args.make)
     if sys.platform == 'win32':
+        # execute mt.exe to embed a manifest inside the application to avoid error such as missing MSVCP90.dll when the application is started on other computers
+        # os.chdir(os.path.joint(build_dir, 'release'))
+        # run('mt.exe -manifest Hello.exe.manifest -outputresource: Hello.exe')
         test_path = os.path.join(os.getenv("USERPROFILE"), 'source', 'bin')
         if os.path.exists(test_path):
             print 'It must not happen, but though qmake not honor DESTDIR, let\'s move directory there'
