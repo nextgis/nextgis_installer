@@ -766,7 +766,7 @@ def create_installer():
     color_print('Create updater package', False, 'LBLUE')
     # Create maintance tool package
     # 1. Silent install created installer to temp folder (https://stackoverflow.com/a/34032216/2901140)
-    installer_exe_name = 'nextgis-setup.exe'
+    installer_exe_name = installer_name + '.exe'
     if sys.platform == 'darwin':
         installer_exe_name = 'nextgis-setup.app/Contents/MacOS/nextgis-setup'
     installer_exe = os.path.join(repo_target_path, installer_exe_name)
