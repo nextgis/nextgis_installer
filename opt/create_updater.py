@@ -204,4 +204,5 @@ with open(ver_str, "w") as text_file:
 # 6 Send to ftp
 ftp = ftp + 'src/' + updater_repo + '_' + suffix
 
-run(('curl', '-u', args.ftp_user, '-T', "{" + pack_zip + "," + ver_str + "}", '-s', '--ftp-create-dirs', ftp))
+os.chdir(tmp_dir)
+run(('curl', '-u', args.ftp_user, '-T', "{package.zip,version.str}", '-s', '--ftp-create-dirs', ftp))
