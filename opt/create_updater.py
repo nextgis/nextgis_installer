@@ -202,7 +202,7 @@ with open(ver_str, "w") as text_file:
     text_file.write('{}\n{}\npackage'.format(version_str, version_file_date))
 
 # 6 Send to ftp
-ftp = ftp + 'src/' + updater_repo + '_' + suffix
+ftp = ftp + 'src/' + updater_repo + '_' + suffix + '/'
 
 os.chdir(tmp_dir)
 run(('curl', '-u', args.ftp_user, '-T', "{package.zip,version.str}", '-s', '--ftp-create-dirs', ftp))
