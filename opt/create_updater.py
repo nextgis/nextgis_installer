@@ -172,7 +172,7 @@ Controller.prototype.FinishedPageCallback = function() {
     gui.clickButton(buttons.FinishButton);
 }
         """.replace('install_path', silent_install_dir)
-script_path = os.path.join(repo_new_config_path, 'install.qs')
+script_path = os.path.join(tmp_dir, 'install.qs')
 with open(script_path, "w") as text_file:
     text_file.write(script_content)
 
