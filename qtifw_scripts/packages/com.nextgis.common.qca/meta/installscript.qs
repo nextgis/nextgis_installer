@@ -23,6 +23,9 @@ function SetEnvMac(name, path)
     contentString += path;
     contentString += "</string>\n        </array>\n        <key>RunAtLoad</key>\n        <true/>\n        <key>ServiceIPC</key>\n        <false/>\n    </dict>\n    </plist>";
 
+    // Try to create directory
+    component.addOperation( "Execute", "{0,1,255}", "/bin/mkdir", "@HomeDir@/Library/LaunchAgents" )
+    
     component.addOperation("Delete", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist");
     component.addOperation("AppendFile", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist", contentString);
     // Fix permissions

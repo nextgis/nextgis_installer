@@ -2,6 +2,5 @@
 <Package>
     <DisplayName>operation for all utils</DisplayName>
     <Virtual>true</Virtual>
-    
     <Script>script.qs</Script>
 </Package>
