@@ -39,11 +39,11 @@ Component.prototype.createOperations = function()
         component.addOperation( "NgFileEnvironmentVariable",
                                 "PATH",
                                 "@TargetDir@/usr/bin",
-                                "@HomeDir@/.bash_profile" );
+                                "@HomeDir@/.profile;@HomeDir@/.bash_profile" );
         component.addOperation( "NgFileEnvironmentVariable",
                                 "PATH",
                                 "$PATH",
-                                "@HomeDir@/.bash_profile" );
+                                "@HomeDir@/.profile;@HomeDir@/.bash_profile" );
 
         // Not work in GUI App - SetEnvMac("PATH", "@TargetDir@/usr/bin");
     }

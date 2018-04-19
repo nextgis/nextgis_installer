@@ -129,62 +129,76 @@ void NgFileEnvironmentVariableOperation::backup ()
 {
 }
 
-
 // Add persistant environment variable to the system.
 // WARNING. Do not use this operation to add more than one variable (via delimiter). Use several
 // operations instead!
 bool NgFileEnvironmentVariableOperation::performOperation ()
 {
-    if (!checkArgumentCount(3,4))
+    if (!checkArgumentCount(3,4)) {
         return false;
+    }
 
     const QStringList args = arguments();
     const QString name = args.at(0);
     const QString value = args.at(1);
-    const QString filePath = args.at(2);
-    const bool isSingle = args.count() > 3 ? args.at(3) == QLatin1String("single") : false;
-
-    // Find/create the file with system variables.
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
-    {
+    const QString filePathListStr = args.at(2);
+    const QStringList filePathList = filePathListStr.split(QLatin1String(";"));
+    if(filePathList.isEmpty()) {
         setError(UserDefinedError);
-        setErrorString(tr("[Ng] File %1 not found or can not be opened.\n").arg(filePath));
+        setErrorString(tr("[Ng] Paths list is empty.\n"));
         return false;
     }
 
-    // Read/parse file.
-    QStringList fileContents = readFile(&file);
-    file.close(); // close in order to replace this file further
+    const bool isSingle = args.count() > 3 ? args.at(3) == QLatin1String("single") : false;
+
+    QStringList fileContents;
+    QString filePath;
+    // Check if file from list exists
+    foreach(filePath, filePathList) {
+        QFile file(filePath);
+        if(file.exists()) {
+            if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                fileContents = readFile(&file);
+                break;
+            }
+        }
+    }
+
+    // If file exists - add variable, else create first file from list
+    if(fileContents.isEmpty()) {
+        filePath = filePathList.first();
+        QFile file(filePath);
+        if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+            setError(UserDefinedError);
+            setErrorString(tr("[Ng] File %1 not found or can not be opened.\n").arg(filePath));
+            return false;
+        }
+        fileContents = readFile(&file);
+    }
 
     // Find the given variable. Append the given value via delimeter if found. Otherwise create
     // a new line with variable and its value.
     QStringList values;
     int i = findExportVariable(fileContents, name, values);
-    if (i == -1) // variable was not found
-    {
+    if (-1 == i) { // variable was not found
         // Add new string with export assignement.
         QString newVariableStr = QLatin1String("export ") + name + QLatin1String("=") + value;
         fileContents.append(newVariableStr);
     }
-    else
-    {
+    else {
         if(!isSingle) {
             // Case 1.
             // We must consider the case when we have e.g. "export PATH" without any "=". This
             // means that there is already some variable assignement above this string.
             // So we must add our own assignement right above the "export" string and also with
             // saving of an old value.
-            if (values.isEmpty())
-            {
+            if (values.isEmpty())  {
                 QString assignementStr = getNewAssignement(name, value);
                 fileContents.insert(i, assignementStr);
             }
-
             // Case 2.
             // Otherwise just append the variable.
-            else
-            {
+            else {
                 // NOTE: if this variable already has the same value - we double it in order to correctly
                 // remove the value in the undoOperation(). This behaviour can be important when user e.g.
                 // for Mac already has a "some-path:$PATH" value in PATH variable and at the same time he
@@ -196,8 +210,7 @@ bool NgFileEnvironmentVariableOperation::performOperation ()
     }
 
     // Write back modified file contents.
-    if (!rewriteFile(filePath, fileContents))
-    {
+    if (!rewriteFile(filePath, fileContents)) {
         setError(UserDefinedError);
         setErrorString(tr("[Ng] Unable to rewrite the file %1 with modified contents.\n")
                        .arg(filePath));
@@ -210,21 +223,42 @@ bool NgFileEnvironmentVariableOperation::performOperation ()
 
 bool NgFileEnvironmentVariableOperation::undoOperation ()
 {
-    if (!checkArgumentCount(3, 4))
+    if (!checkArgumentCount(3, 4)) {
         return false;
+    }
 
     const QStringList args = arguments();
     const QString name = args.at(0);
     const QString value = args.at(1);
-    const QString filePath = args.at(2);
+    const QString filePathListStr = args.at(2);
+    const QStringList filePathList = filePathListStr.split(QLatin1String(";"));
+    if(filePathList.isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("[Ng] Paths list is empty.\n"));
+        return false;
+    }
+
     const bool isSingle = args.count() > 3 ? args.at(3) == QLatin1String("single") : false;
 
     // Find the file with system variables.
-    if (!QFile::exists(filePath))
+    QString filePath;
+    bool isFound = false;
+    // Check if file from list exists
+    foreach(filePath, filePathList) {
+        if (QFile::exists(filePath)) {
+            isFound = true;
+            break;
+        }
+    }
+
+    if(!isFound) {
         return true; // ok if there is no file but this is unusual
+    }
+
     QFile file(filePath);
-    if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
+    if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
         return false;
+    }
 
     // Read/parse file.
     QStringList fileContents = readFile(&file);
@@ -234,13 +268,13 @@ bool NgFileEnvironmentVariableOperation::undoOperation ()
     // the value.
     QStringList values;
     int i = findExportVariable(fileContents, name, values);
-    if (i == -1) // variable was not found
+    if (-1 == i) { // variable was not found
         return true;
+    }
 
     // Case 1: string with the void export (e.g. when we have "export PATH" without "=").
     // Delete the added string with an assignement which is placed above the "export" string.
-    if (values.isEmpty())
-    {
+    if (values.isEmpty()) {
         // Search for that string and remove it.
         // NOTE: currently we do not suppose that this string was changed by user.
         QString str = getNewAssignement(name, value);
@@ -249,31 +283,27 @@ bool NgFileEnvironmentVariableOperation::undoOperation ()
 
     // Case 2: string with export assignement. Look for the added value inside the "export"
     // string.
-    else
-    {
+    else {
         int k;
         bool valueFound = false;
 
-        for (k = 0; k < values.size(); k++)
-        {
-            if (values[k] == value) // value of the variable was found
-            {
+        for (k = 0; k < values.size(); k++) {
+            if (values[k] == value) { // value of the variable was found
                 valueFound = true;
                 break;
             }
         }
 
-        if (!valueFound)
+        if (!valueFound) {
             return true;
+        }
 
         // If a variable becomes void after deletion of the value - we delete the whole variable.
         values.removeAt(k);
-        if (values.size() == 0)
-        {
+        if (values.size() == 0) {
             fileContents.removeAt(i);
         }
-        else
-        {
+        else {
             QString newVariableStr = QLatin1String("export ") + name + QLatin1String("=")
                     + values.join(QLatin1String(NG_ENVVAR_DELIMITER));
             fileContents[i] = newVariableStr;
@@ -281,8 +311,7 @@ bool NgFileEnvironmentVariableOperation::undoOperation ()
     }
 
     // Write back modified file contents.
-    if (!rewriteFile(filePath, fileContents))
-    {
+    if (!rewriteFile(filePath, fileContents)) {
         setError(UserDefinedError);
         setErrorString(tr("[Ng] Unable to rewrite the file %1 with modified contents.\n")
                        .arg(filePath));

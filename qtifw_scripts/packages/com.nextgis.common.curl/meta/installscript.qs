@@ -45,7 +45,7 @@ Component.prototype.createOperations = function()
         component.addOperation( "NgFileEnvironmentVariable",
                                 "CURL_CA_BUNDLE",
                                 "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem",
-                                "@HomeDir@/.bash_profile",
+                                "@HomeDir@/.profile;@HomeDir@/.bash_profile",
                                 "single");
         SetEnvMac("CURL_CA_BUNDLE", "@TargetDir@/Library/Frameworks/openssl.framework/Resources/ssl/certs/cert.pem");
     }

@@ -45,7 +45,7 @@ Component.prototype.createOperations = function()
         component.addOperation( "NgFileEnvironmentVariable",
                                 "GDAL_DATA",
                                 "@TargetDir@/Library/Frameworks/gdal.framework/Resources/data",
-                                "@HomeDir@/.bash_profile",
+                                "@HomeDir@/.profile;@HomeDir@/.bash_profile",
                                 "single");
         SetEnvMac("GDAL_DATA", "@TargetDir@/Library/Frameworks/gdal.framework/Resources/data");
     }
