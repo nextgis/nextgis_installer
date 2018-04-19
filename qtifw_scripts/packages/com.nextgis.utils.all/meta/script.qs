@@ -36,6 +36,9 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "mac")
     {
+        // Try to create directory
+        component.addOperation( "Execute", "{0,1,255}", "/bin/mkdir", "@HomeDir@/Library/LaunchAgents" )
+
         component.addOperation( "NgFileEnvironmentVariable",
                                 "PATH",
                                 "@TargetDir@/usr/bin",
