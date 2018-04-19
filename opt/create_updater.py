@@ -111,7 +111,7 @@ installer_exe = ''
 
 if sys.platform == 'darwin':
     subprocess.check_output(['hdiutil', 'attach', os.path.join(os.getcwd(), installer_name)])
-    installer_exe = os.path.join('Volumes', 'NextGIS Setup', 'nextgis-setup.app', 'Contents', 'MacOS', 'nextgis-setup')
+    installer_exe = os.path.join('/Volumes', 'NextGIS Setup', 'nextgis-setup.app', 'Contents', 'MacOS', 'nextgis-setup')
 elif sys.platform == 'win32':
     installer_exe = os.path.join(os.getcwd(), installer_name)
 
