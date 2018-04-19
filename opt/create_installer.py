@@ -22,7 +22,6 @@ import glob
 
 args = {}
 libraries_version_dict = {}
-create_updater_package = False
 
 archivegen_file = ''
 repogen_file = ''
@@ -592,29 +591,20 @@ def download(ftp_user, ftp, target_dir):
         run(('cmake', '--build', '.', '--config', 'Release'))
         run(('cmake', '--build', '.', '--config', 'Release', '--target', 'install'))
 
-    suffix = 'nix'
-    if sys.platform == 'darwin':
-        suffix = 'mac'
-    elif sys.platform == 'win32':
-        if args.win64:
-            suffix = 'win64'
-        else:
-            suffix = 'win32'
-
     os.chdir( tmp_dir )
+    out_zip = os.path.join(tmp_dir, 'package.zip')
 
-    # Download and install already compiled repositories (i.e. lib)
-    # 1. Get archive to tmp directory
-
-    if sys.platform == 'win32':
-        repositories.extend(repositories_win)
-
-    for repository in repositories:
-        color_print('Download ' + repository + '_' + suffix, True, 'LGREEN')
-        ftp_dir = repository + '_' + suffix
-        if ftp[-1:] != '/':
-            ftp += '/'
-        out_zip = os.path.join(tmp_dir, 'package.zip')
+    # Try to get nextgis_update package
+    repository = 'nextgis_updater'
+    if ftp[-1:] != '/':
+        ftp += '/'
+    try:
+        if sys.platform == 'darwin':
+            suffix_u = 'mac'
+        elif sys.platform == 'win32':
+            suffix_u = 'win'
+        ftp_dir = repository + '_' + suffix_u
+        color_print('Download ' + ftp_dir + '/package.zip', True, 'LGREEN')
         run(('curl', '-u', ftp_user, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
 
 # 2. Extract archive
@@ -631,7 +621,46 @@ def download(ftp_user, ftp, target_dir):
 
 # 4. Download version.str
         if os.path.exists(target_repo_dir):
-            color_print('Download ' + repository + '_' + suffix + '/version.str', True, 'LGREEN')
+            color_print('Download ' + ftp_dir + '/version.str', True, 'LGREEN')
+            run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
+    except:
+        pass
+
+    suffix = 'nix'
+    if sys.platform == 'darwin':
+        suffix = 'mac'
+    elif sys.platform == 'win32':
+        if args.win64:
+            suffix = 'win64'
+        else:
+            suffix = 'win32'
+
+    # Download and install already compiled repositories (i.e. lib)
+    # 1. Get archive to tmp directory
+
+    if sys.platform == 'win32':
+        repositories.extend(repositories_win)
+
+    for repository in repositories:
+        ftp_dir = repository + '_' + suffix
+        color_print('Download ' + ftp_dir + '/package.zip', True, 'LGREEN')
+        run(('curl', '-u', ftp_user, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
+
+# 2. Extract archive
+        color_print('Extract ' + out_zip, False, 'LGREEN')
+        run(('cmake', '-E', 'tar', 'xzf', out_zip))
+
+# 3. Move archive with new name to target_dir
+        target_repo_dir = os.path.join(target_dir, repository)
+        for o in os.listdir(tmp_dir):
+            archive_dir = os.path.join(tmp_dir,o)
+            if os.path.isdir(archive_dir):
+                shutil.move(archive_dir, target_repo_dir)
+                break
+
+# 4. Download version.str
+        if os.path.exists(target_repo_dir):
+            color_print('Download ' + ftp_dir + '/version.str', True, 'LGREEN')
             run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
 
 def prepare():
@@ -763,100 +792,6 @@ def create_installer():
         run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name) ))
 
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, installer_name), True, 'LMAGENTA')
-
-    if create_updater_package:
-
-        color_print('Create updater package', False, 'LBLUE')
-        # Create maintance tool package
-        # 1. Silent install created installer to temp folder (https://stackoverflow.com/a/34032216/2901140)
-        installer_exe_name = installer_name + '.exe'
-        if sys.platform == 'darwin':
-            installer_exe_name = 'nextgis-setup.app/Contents/MacOS/nextgis-setup'
-        installer_exe = os.path.join(repo_target_path, installer_exe_name)
-        silent_install_dir = os.path.join(repo_root_dir, 'nextgis_updater')
-        script_content = """
-function Controller() {
-    installer.autoRejectMessageBoxes();
-    installer.installationFinished.connect(function() {
-        gui.clickButton(buttons.NextButton);
-    })
-}
-
-Controller.prototype.WelcomePageCallback = function() {
-    gui.clickButton(buttons.NextButton);
-}
-
-Controller.prototype.CredentialsPageCallback = function() {
-    gui.clickButton(buttons.NextButton);
-}
-
-Controller.prototype.IntroductionPageCallback = function() {
-    gui.clickButton(buttons.NextButton);
-}
-
-Controller.prototype.TargetDirectoryPageCallback = function()
-{
-    gui.currentPageWidget().TargetDirectoryLineEdit.setText("install_path");
-    gui.clickButton(buttons.NextButton);
-}
-
-Controller.prototype.ComponentSelectionPageCallback = function() {
-    var widget = gui.currentPageWidget();
-
-    widget.deselectAll();
-    widget.selectComponent("com.nextgis.utils.sqlite");
-    // widget.deselectComponent("qt.tools.examples");
-
-    gui.clickButton(buttons.NextButton);
-}
-
-Controller.prototype.LicenseAgreementPageCallback = function() {
-    gui.currentPageWidget().AcceptLicenseRadioButton.setChecked(true);
-    gui.clickButton(buttons.NextButton);
-}
-
-Controller.prototype.StartMenuDirectoryPageCallback = function() {
-    gui.clickButton(buttons.NextButton);
-}
-
-Controller.prototype.ReadyForInstallationPageCallback = function() {
-    gui.clickButton(buttons.NextButton);
-}
-
-Controller.prototype.FinishedPageCallback = function() {
-    gui.clickButton(buttons.FinishButton);
-}
-        """.replace('install_path', silent_install_dir)
-        script_path = os.path.join(repo_new_config_path, 'install.qs')
-        with open(script_path, "w") as text_file:
-            text_file.write(script_content)
-
-        run((installer_exe, '--script', script_path))
-        # 2. Pack nextgisupdater files to zip
-        cmd = ('cmake', '-E', 'tar', 'cfv', os.path.join(repo_target_path, 'package.zip'), '--format=zip')
-        cmd = cmd + (os.path.join(silent_install_dir, 'nextgisupdater.ini'), os.path.join(silent_install_dir, 'nextgisupdater.dat'),)
-        if sys.platform == 'darwin':
-            cmd = cmd + (os.path.join(silent_install_dir, 'nextgisupdater.app'),)
-        else:
-            cmd = cmd + (os.path.join(silent_install_dir, 'nextgisupdater.exe'),)
-        run(cmd)
-
-        # 3. Create version.str with increment version
-        with open(os.path.join(repo_target_path, 'version.str'), "w") as text_file:
-            import datetime
-            now = datetime.datetime.now()
-            # get qtifw version
-            component_name = 'com.nextgis.nextgis_updater'
-            version_file_date = now.strftime("%Y-%m-%d %H:%M:%S")
-            version_str = subprocess.check_output([archivegen_file, '--version']).rstrip()
-            # archivegen 3.0.1
-            version_str = version_str[11:]
-            if component_name in libraries_version_dict:
-                count = libraries_version_dict[component_name]['count'] + 1
-                libraries_version_dict[component_name]['count'] = count
-            else:
-                libraries_version_dict[component_name] = dict(count = 0, date = version_file_date, version = version_str)
-            text_file.write('{}\n{}\npackage'.format(version_str, version_file_date))
 
 def update_installer():
     run((repogen_file, '--update-new-components', '-v', '-p', repo_new_packages_path, get_repository_path()))
