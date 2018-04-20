@@ -119,6 +119,10 @@ elif sys.platform == 'win32':
 # 1. Silent install created installer to temp folder (https://stackoverflow.com/a/34032216/2901140)
 
 silent_install_dir = os.path.join(tmp_dir, 'nextgis_updater')
+silent_install_dir_replacestr = silent_install_dir
+if sys.platform == 'win32':
+    silent_install_dir_replacestr = silent_install_dir.replace("\\", "\\\\")
+
 script_content = """
 function Controller() {
     installer.autoRejectMessageBoxes();
@@ -171,7 +175,7 @@ Controller.prototype.ReadyForInstallationPageCallback = function() {
 Controller.prototype.FinishedPageCallback = function() {
     gui.clickButton(buttons.FinishButton);
 }
-        """.replace('install_path', silent_install_dir)
+        """.replace('install_path', silent_install_dir_replacestr)
 script_path = os.path.join(tmp_dir, 'install.qs')
 with open(script_path, "w") as text_file:
     text_file.write(script_content)
