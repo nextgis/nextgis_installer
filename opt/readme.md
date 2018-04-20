@@ -9,7 +9,30 @@ Some software distributed via installer and network repository.
 
 ## Steps
 
-1. Build installer (in QtCreator or command line tool)
+### New
+
+1. Build new installer via buildbot
+2. Start virtual PS
+3. Clone installer repository
+
+```
+> git clone --depth 1 https://github.com/nextgis/nextgis_installer
+> cd nextgis_installer
+```
+
+4. Execute script
+
+```
+> python opt/create_updater.py -i nextgis-setup-<mac | win>-dev -v '3.0.1' --ftp_user <name:password> --ftp ftp://192.168.255.51/software/installer
+```
+
+5. Update installer via buildbot. In force field add ``com.nextgis.nextgis_installer`` package name.
+
+**NOTE:** Working directory is important!
+
+### Old
+
+1. Build new installer (via buildbot, in QtCreator or command line tool)
 
 For example on Mac OS X
 ```
@@ -75,4 +98,4 @@ packages to update (space is delimiter) or ``all`` to force all packages.
 
 # TODO
 
-Add create standalone installer option to ``Create installer`` force button dialog. 
+Add create standalone installer option to ``Create installer`` force button dialog.

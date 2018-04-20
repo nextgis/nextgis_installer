@@ -182,6 +182,7 @@ run((installer_exe, '--script', script_path))
 color_print('Create updater package', False, 'LBLUE')
 # 4 Pack nextgisupdater files to zip
 pack_zip = os.path.join(tmp_dir, 'package.zip')
+os.chdir(tmp_dir)
 cmd = ('cmake', '-E', 'tar', 'cfv', pack_zip, '--format=zip')
 cmd = cmd + (os.path.join(silent_install_dir, 'nextgisupdater.ini'), os.path.join(silent_install_dir, 'nextgisupdater.dat'),)
 if sys.platform == 'darwin':
@@ -204,5 +205,4 @@ with open(ver_str, "w") as text_file:
 # 6 Send to ftp
 ftp = ftp + 'src/' + updater_repo + '_' + suffix + '/'
 
-os.chdir(tmp_dir)
 run(('curl', '-u', args.ftp_user, '-T', "{package.zip,version.str}", '-s', '--ftp-create-dirs', ftp))
