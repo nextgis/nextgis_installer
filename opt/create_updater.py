@@ -204,6 +204,8 @@ with open(ver_str, "w") as text_file:
     component_name = 'com.nextgis.nextgis_updater'
     version_file_date = now.strftime("%Y-%m-%d %H:%M:%S")
     version_str = args.version
+    version_str = version_str.replace("\'", "")
+    version_str = version_str.replace("\"", "")
     text_file.write('{}\n{}\npackage'.format(version_str, version_file_date))
 
 # 6 Send to ftp
