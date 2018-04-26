@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>operation for all utils</DisplayName>
+    <DisplayName>Operation for all utils</DisplayName>
     <Virtual>true</Virtual>
     <Script>script.qs</Script>
 </Package>

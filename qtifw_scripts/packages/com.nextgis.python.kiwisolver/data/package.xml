@@ -6,5 +6,6 @@
     </mac>
     <win>
         <path src="Lib/site-packages/*.py" dst="lib/python27/site-packages"/>
+        <path src="Lib/site-packages/*.pyd" dst="lib/python27/site-packages"/>
     </win>
 </Package>
