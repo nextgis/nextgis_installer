@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Dependencies>com.nextgis.common.qt.qt5,com.nextgis.common.vc,com.nextgis.spatial.gdal,com.nextgis.nextgis_updater</Dependencies>
+    <Dependencies>com.nextgis.common.vc,com.nextgis.common.ngstd5</Dependencies>
     <DisplayName>Formbuilder</DisplayName>
     <Description>Forms builder for NextGIS Mobile</Description>
-    <Version>2.2.0</Version>
     <Default>true</Default>
     <Script>afterinstall.qs</Script>
     <Translations>

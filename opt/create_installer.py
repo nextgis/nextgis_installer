@@ -47,7 +47,7 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
                 'py_markupsafe', 'py_subprocess32', 'py_psycopg', 'py_spatialite',
                 'py_matplotlib', 'lib_qt4', 'lib_qt5', 'lib_qca',
                 'lib_spatialindex', 'lib_qwt', 'py_sip', 'py_qt4', 'lib_qscintilla',
-                'nextgisqgis', 'py_kiwisolver',
+                'nextgisqgis', 'py_kiwisolver', 'lib_ngstd', 'formbuilder'
                 ]
 
 repositories_win = ['lib_iconv', 'python',
