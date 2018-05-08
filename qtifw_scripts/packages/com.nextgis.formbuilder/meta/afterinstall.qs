@@ -6,8 +6,8 @@ function Component()
 
 Component.prototype.componentLoaded = function ()
 {
-    component.setValue("DisplayName",qsTranslate("afterinstall","Formbuilder"));
-    component.setValue("Description",qsTranslate("afterinstall","Forms builder for NextGIS Mobile"));
+    component.setValue("DisplayName",qsTranslate("script","Formbuilder"));
+    component.setValue("Description",qsTranslate("script","Forms builder for NextGIS Mobile"));
 }
 
 Component.prototype.createOperations = function()
@@ -17,9 +17,9 @@ Component.prototype.createOperations = function()
     if (systemInfo.productType === "windows")
     {
         component.addOperation("CreateShortcut",
-            "@TargetDir@/bin/fb.exe", "@DesktopDir@/NextGIS Formbuilder.lnk", "workingDirectory=@TargetDir@/bin");
+            "@TargetDir@/bin/fb.exe", "@DesktopDir@/NextGIS Formbuilder.lnk", "workingDirectory=@TargetDir@/bin", "iconPath=@TargetDir@/bin/fb.exe");
         component.addOperation("CreateShortcut",
-            "@TargetDir@/bin/fb.exe", "@StartMenuDir@/NextGIS Formbuilder.lnk", "workingDirectory=@TargetDir@/bin");
+            "@TargetDir@/bin/fb.exe", "@StartMenuDir@/NextGIS Formbuilder.lnk", "workingDirectory=@TargetDir@/bin", "iconPath=@TargetDir@/bin/fb.exe");
     }
 
     if (installer.value("os") == "mac")
