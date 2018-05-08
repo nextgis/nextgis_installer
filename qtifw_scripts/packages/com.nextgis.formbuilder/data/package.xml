@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="formbuilder">
     <mac>
-        <path src="Applications/fb.app" dst="Applications"/>
+        <path src="Applications/fb.app" dst="Applications/fb.app"/>
     </mac>
     <win>
         <path src="bin/*.exe" dst="bin"/>
