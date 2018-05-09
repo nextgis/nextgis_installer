@@ -5,7 +5,7 @@
         <path src="Library/Frameworks/ngstd_framework5.framework" dst="Library/Frameworks/ngstd_framework5.framework"/>
     </mac>
     <win>
-        <path src="bin/*5.dll" dst="bin"/>
-		<path src="share/nextgis/translations/*.qm" dst="share/nextgis/translations"/>
+        <path src="bin/*.dll" dst="bin"/>
+		<path src="share/translations/ngstd*.qm" dst="share/translations"/>
     </win>
 </Package>
