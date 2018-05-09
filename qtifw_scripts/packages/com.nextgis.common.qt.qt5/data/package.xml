@@ -39,6 +39,7 @@
         <path src="bin/Qt5Network.dll" dst="bin"/>
         <path src="bin/Qt5NetworkAuth.dll" dst="bin"/>
         <path src="bin/Qt5Widgets.dll" dst="bin"/>
+        <path src="bin/libGLESv2.dll" dst="bin"/>
         <path src="plugins/platforms" dst="lib/qt5/plugins/platforms"/>
         <path src="plugins/imageformats" dst="lib/qt5/plugins/imageformats"/>
         <path src="translations/qt_*.qm" dst="share/qt5/translations"/>
