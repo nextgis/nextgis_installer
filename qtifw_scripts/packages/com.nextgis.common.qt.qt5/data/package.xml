@@ -37,7 +37,7 @@
         <path src="bin/Qt5Core.dll" dst="bin"/>
         <path src="bin/Qt5Gui.dll" dst="bin"/>
         <path src="bin/Qt5Network.dll" dst="bin"/>
-        <path src="bin/Qt5NetworkAuth.dll" dst="bin"/>
+        <path src="bin/Qt5Svg.dll" dst="bin"/>
         <path src="bin/Qt5Widgets.dll" dst="bin"/>
         <path src="bin/libGLESv2.dll" dst="bin"/>
         <path src="plugins/platforms" dst="lib/qt5/plugins/platforms"/>
