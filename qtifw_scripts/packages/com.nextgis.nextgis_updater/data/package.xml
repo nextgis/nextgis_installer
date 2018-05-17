@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="nextgis_updater">
     <mac>
-        <path src="inst" dst=""/>
+        <path src="nextgisupdater.*" dst=""/>
     </mac>
     <win>
-        <path src="inst/nextgisupdater.dat" dst=""/>
-        <path src="inst/nextgisupdater.exe" dst=""/>
-        <path src="inst/nextgisupdater.ini" dst=""/>
+        <path src="nextgisupdater.*" dst=""/>
     </win>
 </Package>
