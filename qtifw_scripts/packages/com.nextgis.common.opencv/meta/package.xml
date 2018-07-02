@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>OpenCV</DisplayName>
+    <Description>OpenCV Library</Description>
+    <Dependencies>com.nextgis.common.z,com.nextgis.common.png,com.nextgis.common.jpeg,com.nextgis.spatial.gdal</Dependencies>
+</Package>

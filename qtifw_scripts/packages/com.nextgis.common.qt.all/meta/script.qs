@@ -19,6 +19,8 @@ Component.prototype.createOperations = function()
     {
 		var strTargetDir = installer.value("TargetDir");
 		var strTargetDirRepl = strTargetDir.replace(/\\/g,'/');
+        // make dir
+        component.addOperation( "Mkdir", "@TargetDir@/bin" );
         component.addOperation( "AppendFile",
                                 "@TargetDir@/bin/qt.conf",
 								"[Paths]\n" +
@@ -26,12 +28,11 @@ Component.prototype.createOperations = function()
 								"4/Translations = share/qt4/translations\n" +
 								"4/Plugins = lib/qt4/plugins\n" +
 								"Translations = share/qt5/translations\n" +
-								"Plugins = lib/qt5/plugins" );								
+								"Plugins = lib/qt5/plugins" );
     }
-	
-    else if (installer.value("os") == "mac")
+
+    if (installer.value("os") == "mac")
     {
 
     }
 }
-
