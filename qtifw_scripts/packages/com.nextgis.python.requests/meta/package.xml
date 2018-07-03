@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>Requests</DisplayName>
     <Description>Requests package</Description>
-    <Dependencies>com.nextgis.python.all</Dependencies>
+    <Dependencies>com.nextgis.python.all,com.nextgis.python.urllib3</Dependencies>
 </Package>
