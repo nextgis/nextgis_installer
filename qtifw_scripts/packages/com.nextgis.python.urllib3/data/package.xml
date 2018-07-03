@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Package root="py_httplib">
+<Package root="py_urllib3">
     <mac>
         <path src="inst/lib/python2.7/site-packages/urllib3" dst="Library/Python/2.7/site-packages/urllib3"/>
     </mac>
