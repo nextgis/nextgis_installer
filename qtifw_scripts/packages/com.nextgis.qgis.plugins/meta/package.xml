@@ -7,5 +7,5 @@
         <Translation>ru.qm</Translation>
     </Translations>
     <Script>script.qs</Script>
-    <Dependencies>com.nextgis.qgis.main,com.nextgis.common.gsl</Dependencies>
+    <Dependencies>com.nextgis.qgis.main,com.nextgis.common.gsl,com.nextgis.common.opencv</Dependencies>
 </Package>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Package root="lib_opencad">
+<Package root="lib_opencv">
     <mac>
         <path src="bin/*" dst="usr/bin"/>
     </mac>
