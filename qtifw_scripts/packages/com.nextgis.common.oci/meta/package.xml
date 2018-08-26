@@ -3,6 +3,6 @@
     <DisplayName>Oracle client interface</DisplayName>
     <Description>Oracle client interface Library</Description>
     <Licenses>
-        <License name="License Agreement for Oracle Instant Client software" file="license.txt" />
+        <License name="License Agreement for Oracle Instant Client software" file="oci_license.txt" />
     </Licenses>
 </Package>
