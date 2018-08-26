@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Name>com.nextgis.common.qt.qt4</Name>
     <DisplayName>Qt4</DisplayName>
     <Description>Qt4 libraries</Description>
     <Dependencies>com.nextgis.common.qt.all,com.nextgis.common.tiff,com.nextgis.common.jpeg,com.nextgis.common.png,com.nextgis.common.sqlite,com.nextgis.common.pq,com.nextgis.common.freetype,com.nextgis.common.openssl</Dependencies>

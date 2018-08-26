@@ -401,7 +401,7 @@ def process_files_in_meta_dir(path_meta, new_meta_path):
             # Create translation
             output_translation_path = os.path.join(new_meta_path, filename) + '.qm'
             run((translate_tool, meta_file_path, '-qm', output_translation_path))
-        elif file_extension == '.qs':
+        elif file_extension == '.qs' or file_extension == '.txt': # Extensions to copy
             shutil.copy(meta_file_path, new_meta_path)
 
 
