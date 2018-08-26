@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_opencad">
+    <mac>
+        <path src="Library/Frameworks/*.dylib" dst="Library/Frameworks"/>
+        <path src="Library/Frameworks/*.dylib.*" dst="Library/Frameworks"/>
+    </mac>
+    <win>
+        <path src="bin/*.dll" dst="bin"/>
+    </win>
+</Package>

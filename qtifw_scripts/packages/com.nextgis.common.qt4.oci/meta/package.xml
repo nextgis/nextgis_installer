@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>OCI plugin</DisplayName>
+    <Description>Oracle connecton plugin</Description>
+    <Dependencies>com.nextgis.common.oci</Dependencies>
+</Package>
