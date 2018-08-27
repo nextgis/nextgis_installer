@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_oci">
     <mac>
-        <path src="Library/Frameworks/*.dylib" dst="Library/Frameworks"/>
+        <path src="Library/Frameworks/libnnz12.dylib" dst="Library/Frameworks"/>
+        <path src="Library/Frameworks/libons.dylib" dst="Library/Frameworks"/>
         <path src="Library/Frameworks/*.dylib.*" dst="Library/Frameworks"/>
     </mac>
     <win>
