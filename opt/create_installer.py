@@ -695,14 +695,19 @@ def update_directory(dir_name, force):
     tree = ET.parse(package_xml)
     root = tree.getroot()
 
+    # Don't force updater
+    local_force = force
+    if dir_name == 'com.nextgis.nextgis_updater' or dir_name == 'com.nextgis.python' or dir_name == 'com.nextgis.common' or dir_name == 'com.nextgis.common.qt' or dir_name == 'com.nextgis.utils' or dir_name == 'com.nextgis.spatial':
+        local_force = false
+
     sources_root_dir = ''
     if 'root' in root.attrib:
         sources_root_dir = root.attrib['root']
-        version_text, has_changes = get_version_text(sources_root_dir, dir_name, force)
+        version_text, has_changes = get_version_text(sources_root_dir, dir_name, local_force)
     else:
         mtime = time.gmtime(os.path.getmtime(package_xml))
         version_date = time.strftime('%Y-%m-%d %H:%M:%S', mtime)
-        version_text, has_changes = check_version(root.find('Version').text, version_date, dir_name, force)
+        version_text, has_changes = check_version(root.find('Version').text, version_date, dir_name, local_force)
 
     repo_new_package_path = os.path.join(repo_new_packages_path, dir_name)
     if not has_changes:
