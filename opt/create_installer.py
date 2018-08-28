@@ -697,7 +697,7 @@ def update_directory(dir_name, force):
 
     # Don't force updater
     local_force = force
-    if dir_name == 'com.nextgis.nextgis_updater' or dir_name == 'com.nextgis.python' or dir_name == 'com.nextgis.common' or dir_name == 'com.nextgis.common.qt' or dir_name == 'com.nextgis.utils' or dir_name == 'com.nextgis.spatial':
+    if dir_name == 'com.nextgis.nextgis_updater' or dir_name == 'com.nextgis.python' or dir_name == 'com.nextgis.common' or dir_name == 'com.nextgis.common.qt' or dir_name == 'com.nextgis.utils' or dir_name == 'com.nextgis.spatial' or dir_name ==  'com.nextgis.python.all' or dir_name == 'com.nextgis.utils.all':
         local_force = False
 
     sources_root_dir = ''
