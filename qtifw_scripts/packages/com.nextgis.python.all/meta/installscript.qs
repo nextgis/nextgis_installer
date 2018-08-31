@@ -17,10 +17,6 @@ Component.prototype.createOperations = function()
 
     if (installer.value("os") == "win")
     {
-        // TODO: Use pth file too
-        //component.addOperation( "EnvironmentVariable",
-        //                        "PYTHONPATH",
-        //                        "@TargetDir@\\lib\\Python27\\site-packages" );
     }
     else if (installer.value("os") == "mac")
     {
@@ -30,6 +26,6 @@ Component.prototype.createOperations = function()
                                 "@HomeDir@/Library/Python/2.7/lib/python/site-packages/NextGIS.pth" );
         component.addOperation( "AppendFile",
                                 "@HomeDir@/Library/Python/2.7/lib/python/site-packages/NextGIS.pth",
-                                "@TargetDir@/Library/Python/2.7/site-packages" );
+                                "@TargetDir@/Library/Python/2.7/site-packages\n@TargetDir@/Library/Python/2.7/site-packages/osgeo" );
     }
 }
