@@ -64,6 +64,7 @@ repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
 
 skip_osx_dependencies = ['com.nextgis.common.qt.all', 'com.nextgis.python.python',
                          'com.nextgis.common.vc', 'com.nextgis.common.iconv',
+                         'com.nextgis.common.z',
                         ]
 
 class bcolors:
