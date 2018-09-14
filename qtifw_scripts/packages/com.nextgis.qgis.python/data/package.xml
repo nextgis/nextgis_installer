@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="nextgisqgis">
     <mac>
-        <path src="Applications/ngqgis.app/Contents/Resources/python/console" dst="Applications/ngqgis.app/Contents/Resources/python/console"/>
-        <path src="Applications/ngqgis.app/Contents/Resources/python/pyplugin_installer" dst="Applications/ngqgis.app/Contents/Resources/python/pyplugin_installer"/>
-        <path src="Applications/ngqgis.app/Contents/Resources/python/plugins" dst="Applications/ngqgis.app/Contents/Resources/python/plugins"/>
-        <path src="Applications/ngqgis.app/Contents/Resources/python/qsci_apis" dst="Applications/ngqgis.app/Contents/Resources/python/qsci_apis"/>
+        <path src="Applications/qgis-ng.app/Contents/Resources/python/console" dst="Applications/qgis-ng.app/Contents/Resources/python/console"/>
+        <path src="Applications/qgis-ng.app/Contents/Resources/python/pyplugin_installer" dst="Applications/qgis-ng.app/Contents/Resources/python/pyplugin_installer"/>
+        <path src="Applications/qgis-ng.app/Contents/Resources/python/plugins" dst="Applications/qgis-ng.app/Contents/Resources/python/plugins"/>
+        <path src="Applications/qgis-ng.app/Contents/Resources/python/qsci_apis" dst="Applications/qgis-ng.app/Contents/Resources/python/qsci_apis"/>
     </mac>
     <win>
         <path src="share/ngqgis/python" dst="share/ngqgis/python" />

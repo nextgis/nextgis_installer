@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="nextgisqgis">
     <mac>
-        <path src="Applications/ngqgis.app/Contents/Frameworks/ngqgis_core.framework" dst="Applications/ngqgis.app/Contents/Frameworks/ngqgis_core.framework"/>
+        <path src="Applications/qgis-ng.app/Contents/Frameworks/ngqgis_core.framework" dst="Applications/qgis-ng.app/Contents/Frameworks/ngqgis_core.framework"/>
         <path src="Library/Frameworks/ngqgis_core.framework" dst="Library/Frameworks/ngqgis_core.framework"/>
     </mac>
     <win>

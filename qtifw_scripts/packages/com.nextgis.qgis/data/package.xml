@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="nextgisqgis">
     <mac>
-        <path src="Applications/ngqgis.app/Contents/Resources/doc/COPYING" dst="Applications/ngqgis.app/Contents/Resources/doc"/>
-        <path src="Applications/ngqgis.app/Contents/Resources/doc/NEWS" dst="Applications/ngqgis.app/Contents/Resources/doc"/>
+        <path src="Applications/qgis-ng.app/Contents/Resources/doc/COPYING" dst="Applications/qgis-ng.app/Contents/Resources/doc"/>
+        <path src="Applications/qgis-ng.app/Contents/Resources/doc/NEWS" dst="Applications/qgis-ng.app/Contents/Resources/doc"/>
     </mac>
     <win>
         <path src="share/doc/qgis/COPYING" dst="share/doc/ngqgis"/>

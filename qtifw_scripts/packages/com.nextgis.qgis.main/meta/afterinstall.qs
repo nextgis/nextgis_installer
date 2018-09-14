@@ -25,8 +25,8 @@ Component.prototype.createOperations = function()
     if (installer.value("os") == "mac")
     {
         component.addOperation("LineReplace",
-            "@TargetDir@/Applications/ngqgis.app/Contents/Resources/qt.conf",
+            "@TargetDir@/Applications/qgis-ng.app/Contents/Resources/qt.conf",
             "Prefix = ", "Prefix = @TargetDir@");
-        component.addOperation("CreateLink", "@HomeDir@/Applications/NextGIS QGIS.app", "@TargetDir@/Applications/ngqgis.app" );
+        component.addOperation("CreateLink", "@HomeDir@/Applications/NextGIS QGIS.app", "@TargetDir@/Applications/qgis-ng.app" );
     }
 }
