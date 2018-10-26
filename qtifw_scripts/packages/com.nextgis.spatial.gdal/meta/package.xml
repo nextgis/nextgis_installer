@@ -2,6 +2,6 @@
 <Package>
     <DisplayName>GDAL</DisplayName>
     <Description>GDAL library</Description>
-    <Dependencies>com.nextgis.common.jsonc,com.nextgis.common.jpeg,com.nextgis.common.png,com.nextgis.common.gif,com.nextgis.common.pq,com.nextgis.common.curl,com.nextgis.common.expat,com.nextgis.common.xml2, com.nextgis.spatial.geotiff,com.nextgis.spatial.proj,com.nextgis.spatial.geos,com.nextgis.common.sqlite,com.nextgis.spatial.spatialite,com.nextgis.common.opencad,com.nextgis.common.openjpeg,com.nextgis.common.hdf4,com.nextgis.spatial.qhull,com.nextgis.common.oci</Dependencies>
+    <Dependencies>com.nextgis.common.jsonc,com.nextgis.common.jpeg,com.nextgis.common.png,com.nextgis.common.gif,com.nextgis.common.pq,com.nextgis.common.curl,com.nextgis.common.expat,com.nextgis.common.xml2, com.nextgis.spatial.geotiff,com.nextgis.spatial.proj,com.nextgis.spatial.geos,com.nextgis.common.sqlite,com.nextgis.spatial.spatialite,com.nextgis.common.opencad,com.nextgis.common.openjpeg,com.nextgis.common.hdf4,com.nextgis.spatial.qhull,com.nextgis.common.oci,com.nextgis.spatial.kml</Dependencies>
     <Script>installscript.qs</Script>
 </Package>
