@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>LibKML</DisplayName>
     <Description>LibKML Library</Description>
-    <Dependencies>com.nextgis.common.uriparser,com.nexgis.common.expat</Dependencies>
+    <Dependencies>com.nextgis.common.uriparser,com.nextgis.common.expat</Dependencies>
 </Package>
