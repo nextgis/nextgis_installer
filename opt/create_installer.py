@@ -49,7 +49,7 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
                 'lib_spatialindex', 'lib_qwt', 'py_sip', 'py_qt4', 'lib_qscintilla',
                 'nextgisqgis', 'py_kiwisolver', 'lib_ngstd', 'formbuilder',
                 'lib_opencv', 'manuscript', 'lib_oci', 'py_shapely', 'lib_uriparser',
-                'lib_kml', 
+                'lib_kml',
                 ]
 
 repositories_win = ['lib_iconv', 'python',
@@ -60,7 +60,7 @@ repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
                             'py_raven', 'py_future', 'py_requests', 'py_pytz',
                             'py_nose', 'py_jinja', 'py_httplib', 'py_ows', 'py_dateutil',
                             'py_pygments', 'py_six', 'py_urllib3','py_idna','py_chardet',
-                            'py_certifi',
+                            'py_certifi', 'geojson',
                         ]
 
 skip_osx_dependencies = ['com.nextgis.common.qt.all', 'com.nextgis.python.python',
