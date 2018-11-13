@@ -60,7 +60,8 @@ repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
                             'py_raven', 'py_future', 'py_requests', 'py_pytz',
                             'py_nose', 'py_jinja', 'py_httplib', 'py_ows', 'py_dateutil',
                             'py_pygments', 'py_six', 'py_urllib3','py_idna','py_chardet',
-                            'py_certifi', 'py_geojson', 'py_tqdm',
+                            'py_certifi', 'py_geojson', 'py_tqdm', 'py_beautifulsoup',
+                            'py_geographiclib',
                         ]
 
 skip_osx_dependencies = ['com.nextgis.common.qt.all', 'com.nextgis.python.python',
@@ -800,7 +801,7 @@ def create_installer():
     else:
         run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name) ))
 
-    # TODO: run xcrun altool -t osx -f os.path.join(repo_target_path, installer_name) --primary-bundle-id 'com.yourcompany.installerbase' --notarize-app --user someuser --pssword somepassword      
+    # TODO: run xcrun altool -t osx -f os.path.join(repo_target_path, installer_name) --primary-bundle-id 'com.yourcompany.installerbase' --notarize-app --user someuser --pssword somepassword
 
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, installer_name), True, 'LMAGENTA')
 
