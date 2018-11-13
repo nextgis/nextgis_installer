@@ -800,6 +800,8 @@ def create_installer():
     else:
         run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name) ))
 
+    # TODO: run xcrun altool -t osx -f os.path.join(repo_target_path, installer_name) --primary-bundle-id 'com.yourcompany.installerbase' --notarize-app --user someuser --pssword somepassword      
+
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, installer_name), True, 'LMAGENTA')
 
 def update_installer():
