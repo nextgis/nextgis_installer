@@ -1,47 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="numpy">
     <mac>
-        <path src="Lib/site-packages/numpy/*.p*" dst="Library/Python/2.7/site-packages/numpy"/>
-        <path src="Lib/site-packages/numpy/compat/*.p*" dst="Library/Python/2.7/site-packages/numpy/compat"/>
-        <path src="Lib/site-packages/numpy/core/*.p*" dst="Library/Python/2.7/site-packages/numpy/core"/>
-        <path src="Lib/site-packages/numpy/core/include/numpy" dst="Library/Python/2.7/site-packages/numpy/core/include/numpy"/>
-        <path src="Lib/site-packages/numpy/core/lib" dst="Library/Python/2.7/site-packages/numpy/core/lib"/>
-        <path src="Lib/site-packages/numpy/distutils/*.p*" dst="Library/Python/2.7/site-packages/numpy/distutils"/>
-        <path src="Lib/site-packages/numpy/distutils/command/*.p*" dst="Library/Python/2.7/site-packages/numpy/distutils/command"/>
-        <path src="Lib/site-packages/numpy/distutils/fcompiler/*.p*" dst="Library/Python/2.7/site-packages/numpy/distutils/fcompiler"/>
-        <path src="Lib/site-packages/numpy/distutils/*.cfg*" dst="Library/Python/2.7/site-packages/numpy/distutils"/>
-        <path src="Lib/site-packages/numpy/doc/*.p*" dst="Library/Python/2.7/site-packages/numpy/doc"/>
-        <path src="Lib/site-packages/numpy/f2py/*.p*" dst="Library/Python/2.7/site-packages/numpy/f2py"/>
-        <path src="Lib/site-packages/numpy/f2py/src" dst="Library/Python/2.7/site-packages/numpy/f2py/src"/>
-        <path src="Lib/site-packages/numpy/fft" dst="Library/Python/2.7/site-packages/numpy/fft"/>
-        <path src="Lib/site-packages/numpy/lib/*.p*" dst="Library/Python/2.7/site-packages/numpy/lib"/>
-        <path src="Lib/site-packages/numpy/linalg" dst="Library/Python/2.7/site-packages/numpy/linalg"/>
-        <path src="Lib/site-packages/numpy/ma/*.p*" dst="Library/Python/2.7/site-packages/numpy/ma"/>
-        <path src="Lib/site-packages/numpy/matrixlib/*.p*" dst="Library/Python/2.7/site-packages/numpy/matrixlib"/>
-        <path src="Lib/site-packages/numpy/polynomial/*.p*" dst="Library/Python/2.7/site-packages/numpy/polynomial"/>
-        <path src="Lib/site-packages/numpy/random/*.p*" dst="Library/Python/2.7/site-packages/numpy/random"/>
-        <path src="Lib/site-packages/numpy/testing" dst="Library/Python/2.7/site-packages/numpy/testing"/>
+        <path src="Library/lib/python2.7/site-packages/numpy" dst="Library/Python/2.7/site-packages/numpy"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/numpy/*.p*" dst="lib/python27/site-packages/numpy"/>
-        <path src="Lib/site-packages/numpy/compat/*.p*" dst="lib/python27/site-packages/numpy/compat"/>
-        <path src="Lib/site-packages/numpy/core/*.p*" dst="lib/python27/site-packages/numpy/core"/>
-        <path src="Lib/site-packages/numpy/core/include/numpy" dst="lib/python27/site-packages/numpy/core/include/numpy"/>
-        <path src="Lib/site-packages/numpy/core/lib" dst="lib/python27/site-packages/numpy/core/lib"/>
-        <path src="Lib/site-packages/numpy/distutils/*.p*" dst="lib/python27/site-packages/numpy/distutils"/>
-        <path src="Lib/site-packages/numpy/distutils/command/*.p*" dst="lib/python27/site-packages/numpy/distutils/command"/>
-        <path src="Lib/site-packages/numpy/distutils/fcompiler/*.p*" dst="lib/python27/site-packages/numpy/distutils/fcompiler"/>
-        <path src="Lib/site-packages/numpy/distutils/*.cfg*" dst="lib/python27/site-packages/numpy/distutils"/>
-        <path src="Lib/site-packages/numpy/doc/*.p*" dst="lib/python27/site-packages/numpy/doc"/>
-        <path src="Lib/site-packages/numpy/f2py/*.p*" dst="lib/python27/site-packages/numpy/f2py"/>
-        <path src="Lib/site-packages/numpy/f2py/src" dst="lib/python27/site-packages/numpy/f2py/src"/>
-        <path src="Lib/site-packages/numpy/fft" dst="lib/python27/site-packages/numpy/fft"/>
-        <path src="Lib/site-packages/numpy/lib/*.p*" dst="lib/python27/site-packages/numpy/lib"/>
-        <path src="Lib/site-packages/numpy/linalg" dst="lib/python27/site-packages/numpy/linalg"/>
-        <path src="Lib/site-packages/numpy/ma/*.p*" dst="lib/python27/site-packages/numpy/ma"/>
-        <path src="Lib/site-packages/numpy/matrixlib/*.p*" dst="lib/python27/site-packages/numpy/matrixlib"/>
-        <path src="Lib/site-packages/numpy/polynomial/*.p*" dst="lib/python27/site-packages/numpy/polynomial"/>
-        <path src="Lib/site-packages/numpy/random/*.p*" dst="lib/python27/site-packages/numpy/random"/>
-        <path src="Lib/site-packages/numpy/testing" dst="lib/python27/site-packages/numpy/testing"/>
+        <path src="Lib/site-packages/numpy" dst="lib/python27/site-packages/numpy"/>
     </win>
 </Package>
