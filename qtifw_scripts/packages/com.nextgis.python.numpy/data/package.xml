@@ -45,5 +45,3 @@
         <path src="Lib/site-packages/numpy/testing" dst="lib/python27/site-packages/numpy/testing"/>
     </win>
 </Package>
-
-TODO: Remove tests
