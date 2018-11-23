@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_sci">
+    <win>
+        <path src="Lib/site-packages/scipy/cluster/*.p*" dst="lib/python27/site-packages/scipy/cluster"/>
+        <path src="Lib/site-packages/scipy/*.p*" dst="lib/python27/site-packages/scipy"/>
+        <path src="Lib/site-packages/scipy/constants/*.p*" dst="lib/python27/site-packages/scipy/constants"/>
+        <path src="Lib/site-packages/scipy/fftpack/*.p*" dst="lib/python27/site-packages/scipy/fftpack"/>
+        <path src="Lib/site-packages/scipy/integrate/*.p*" dst="lib/python27/site-packages/scipy/integrate"/>
+        <path src="Lib/site-packages/scipy/interpolate/*.p*" dst="lib/python27/site-packages/scipy/interpolate"/>
+        <path src="Lib/site-packages/scipy/io/*.p*" dst="lib/python27/site-packages/scipy/io"/>
+        <path src="Lib/site-packages/scipy/io/arff/*.p*" dst="lib/python27/site-packages/scipy/io/arff"/>
+        <path src="Lib/site-packages/scipy/io/harwell_boeing/*.p*" dst="lib/python27/site-packages/scipy/io/harwell_boeing"/>
+        <path src="Lib/site-packages/scipy/io/matlab/*.p*" dst="lib/python27/site-packages/scipy/io/matlab"/>
+        <path src="Lib/site-packages/scipy/linalg/*.p*" dst="lib/python27/site-packages/scipy/linalg"/>
+        <path src="Lib/site-packages/scipy/linalg/src/*.p*" dst="lib/python27/site-packages/scipy/linalg/src"/>
+        <path src="Lib/site-packages/scipy/linalg/src/id_dist/*.p*" dst="lib/python27/site-packages/scipy/linalg/src/id_dist"/>
+        <path src="Lib/site-packages/scipy/misc/*.p*" dst="lib/python27/site-packages/scipy/misc"/>
+        <path src="Lib/site-packages/scipy/misc/*.dat" dst="lib/python27/site-packages/scipy/misc"/>
+        <path src="Lib/site-packages/scipy/ndimage/*.p*" dst="lib/python27/site-packages/scipy/ndimage"/>
+        <path src="Lib/site-packages/scipy/odr/*.p*" dst="lib/python27/site-packages/scipy/odr"/>
+        <path src="Lib/site-packages/scipy/optimize/*.p*" dst="lib/python27/site-packages/scipy/optimize"/>
+        <path src="Lib/site-packages/scipy/optimize/_lsq/*.p*" dst="lib/python27/site-packages/scipy/optimize/_lsq"/>
+        <path src="Lib/site-packages/scipy/optimize/_trlib/*.p*" dst="lib/python27/site-packages/scipy/optimize/_trlib"/>
+        <path src="Lib/site-packages/scipy/optimize/_trustregion_constr/*.p*" dst="lib/python27/site-packages/scipy/optimize/_trustregion_constr"/>
+        <path src="Lib/site-packages/scipy/signal/*.p*" dst="lib/python27/site-packages/scipy/signal"/>
+        <path src="Lib/site-packages/scipy/signal/windows/*.p*" dst="lib/python27/site-packages/scipy/signal/windows"/>
+        <path src="Lib/site-packages/scipy/sparse/*.p*" dst="lib/python27/site-packages/scipy/sparse"/>
+        <path src="Lib/site-packages/scipy/sparse/csgraph/*.p*" dst="lib/python27/site-packages/scipy/sparse/csgraph"/>
+        <path src="Lib/site-packages/scipy/sparse/linalg/*.p*" dst="lib/python27/site-packages/scipy/sparse/linalg"/>
+        <path src="Lib/site-packages/scipy/sparse/linalg/dsolve/*.p*" dst="lib/python27/site-packages/scipy/sparse/linalg/dsolve"/>
+        <path src="Lib/site-packages/scipy/sparse/linalg/eigen/*.p*" dst="lib/python27/site-packages/scipy/sparse/linalg/eigen"/>
+        <path src="Lib/site-packages/scipy/sparse/linalg/eigen/arpack/*.p*" dst="lib/python27/site-packages/scipy/sparse/linalg/eigen/arpack"/>
+        <path src="Lib/site-packages/scipy/sparse/linalg/eigen/lobpcg/*.p*" dst="lib/python27/site-packages/scipy/sparse/linalg/eigen/lobpcg"/>
+        <path src="Lib/site-packages/scipy/sparse/linalg/isolve/*.p*" dst="lib/python27/site-packages/scipy/sparse/linalg/isolve"/>
+        <path src="Lib/site-packages/scipy/spatial/*.p*" dst="lib/python27/site-packages/scipy/spatial"/>
+        <path src="Lib/site-packages/scipy/spatial/qhull/*.p*" dst="lib/python27/site-packages/scipy/spatial/qhull"/>
+        <path src="Lib/site-packages/scipy/special/*.p*" dst="lib/python27/site-packages/scipy/special"/>
+        <path src="Lib/site-packages/scipy/stats/*.p*" dst="lib/python27/site-packages/scipy/stats"/>
+        <path src="Lib/site-packages/scipy/_build_utils/*.p*" dst="lib/python27/site-packages/scipy/_build_utils"/>
+        <path src="Lib/site-packages/scipy/_lib/*.p*" dst="lib/python27/site-packages/scipy/_lib"/>
+    </win>
+</Package>

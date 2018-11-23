@@ -39,35 +39,32 @@ packages_data_source_path = ''
 mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 
 repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
-                'lib_qhull', 'lib_png', 'lib_freetype', 'lib_agg', 'lib_geos',
-                'lib_expat', 'lib_jsonc', 'lib_opencad', 'lib_jpeg', 'lib_pq',
-                'lib_proj', 'lib_lzma', 'lib_jbig', 'lib_szip', 'lib_xml2',
-                'lib_spatialite', 'lib_openjpeg', 'lib_tiff', 'lib_geotiff',
-                'lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml', 'numpy', 'lib_gdal',
-                'py_markupsafe', 'py_subprocess32', 'py_psycopg', 'py_spatialite',
-                'py_matplotlib', 'lib_qt4', 'lib_qt5', 'lib_qca',
-                'lib_spatialindex', 'lib_qwt', 'py_sip', 'py_qt4', 'lib_qscintilla',
-                'nextgisqgis', 'py_kiwisolver', 'lib_ngstd', 'formbuilder',
-                'lib_opencv', 'manuscript', 'lib_oci', 'py_shapely', 'lib_uriparser',
-                'lib_kml', 'py_proj',
-                ]
+    'lib_qhull', 'lib_png', 'lib_freetype', 'lib_agg', 'lib_geos', 'lib_expat',
+    'lib_jsonc', 'lib_opencad', 'lib_jpeg', 'lib_pq', 'lib_proj', 'lib_lzma',
+    'lib_jbig', 'lib_szip', 'lib_xml2', 'lib_spatialite', 'lib_openjpeg',
+    'lib_tiff', 'lib_geotiff', 'lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml',
+    'numpy', 'lib_gdal', 'py_markupsafe', 'py_subprocess32', 'py_psycopg',
+    'py_spatialite', 'py_matplotlib', 'lib_qt4', 'lib_qt5', 'lib_qca',
+    'lib_spatialindex', 'lib_qwt', 'py_sip', 'py_qt4', 'lib_qscintilla',
+    'nextgisqgis', 'py_kiwisolver', 'lib_ngstd', 'formbuilder', 'lib_opencv',
+    'manuscript', 'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
+    'py_sci',
+]
 
 repositories_win = ['lib_iconv', 'python',
-                ]
+]
 
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
-                            'py_cycler', 'py_parsing', 'py_contextlib',
-                            'py_raven', 'py_future', 'py_requests', 'py_pytz',
-                            'py_nose', 'py_jinja', 'py_httplib', 'py_ows', 'py_dateutil',
-                            'py_pygments', 'py_six', 'py_urllib3','py_idna','py_chardet',
-                            'py_certifi', 'py_geojson', 'py_tqdm', 'py_beautifulsoup',
-                            'py_geographiclib',
-                        ]
+    'py_cycler', 'py_parsing', 'py_contextlib', 'py_raven', 'py_future',
+    'py_requests', 'py_pytz', 'py_nose', 'py_jinja', 'py_httplib', 'py_ows',
+    'py_dateutil', 'py_pygments', 'py_six', 'py_urllib3','py_idna','py_chardet',
+    'py_certifi', 'py_geojson', 'py_tqdm', 'py_beautifulsoup', 'py_geographiclib',
+]
 
 skip_osx_dependencies = ['com.nextgis.common.qt.all', 'com.nextgis.python.python',
-                         'com.nextgis.common.vc', 'com.nextgis.common.iconv',
-                         'com.nextgis.common.z',
-                        ]
+    'com.nextgis.common.vc', 'com.nextgis.common.iconv', 'com.nextgis.common.z',
+    'com.nextgis.python.sci',
+]
 
 class bcolors:
     HEADER = '\033[95m'
