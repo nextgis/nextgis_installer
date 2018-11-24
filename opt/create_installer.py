@@ -48,10 +48,9 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
     'lib_spatialindex', 'lib_qwt', 'py_sip', 'py_qt4', 'lib_qscintilla',
     'nextgisqgis', 'py_kiwisolver', 'lib_ngstd', 'formbuilder', 'lib_opencv',
     'manuscript', 'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
-    'py_sci',
 ]
 
-repositories_win = ['lib_iconv', 'python',
+repositories_win = ['lib_iconv', 'python', 'py_sci',
 ]
 
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
