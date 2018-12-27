@@ -24,7 +24,7 @@ function SetEnvMac(name, path)
 
     // Try to create directory
     component.addOperation( "Execute", "{0,1,255}", "/bin/mkdir", "@HomeDir@/Library/LaunchAgents" )
-    
+
     component.addOperation("Delete", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist");
     component.addOperation("AppendFile", "@HomeDir@/Library/LaunchAgents/setenv." + name + ".plist", contentString);
     // Fix permissions
@@ -46,9 +46,9 @@ Component.prototype.createOperations = function()
     {
         component.addOperation( "NgFileEnvironmentVariable",
                                 "PROJ_LIB",
-                                "@TargetDir@/Library/Frameworks/proj.framework/Resources/proj",
+                                "@TargetDir@/Library/Frameworks/proj4.framework/Resources/proj",
                                 "@HomeDir@/.profile;@HomeDir@/.bash_profile",
                                 "single");
-        SetEnvMac("PROJ_LIB", "@TargetDir@/Library/Frameworks/proj.framework/Resources/proj");
+        SetEnvMac("PROJ_LIB", "@TargetDir@/Library/Frameworks/proj4.framework/Resources/proj");
     }
 }
