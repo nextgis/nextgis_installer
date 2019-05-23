@@ -127,6 +127,9 @@ def parse_arguments():
     parser.add_argument('-r', dest='remote', required=False, help='Repositry remote url')
     parser.add_argument('-n', dest='network', action='store_true', help='Online installer (the -r key should be present)')
     parser.add_argument('-i', dest='installer_name', required=False, help='Installer name')
+    parser.add_argument('-vd', dest='valid_date', required=False, help='Validity end date')
+    parser.add_argument('-vu', dest='valid_user', required=False, help='Validity end date')
+    parser.add_argument('-p', dest='qgis_plugins', required=False, help='QGIS Additional python plugins to include into installer. Plugin names separeted by comma')
     if sys.platform == 'win32':
         parser.add_argument('-w64', dest='win64', action='store_true', help='Flag to build Windows 64bit repository')
         parser.add_argument('-g', dest='generator', required=False, help='Visual Studio generator')
@@ -722,8 +725,7 @@ def update_directory(dir_name, force):
         updatetext_text = updatetext_tag.text
 
     if os.path.exists(repo_new_package_path):
-        color_print('Delete existing dir ' + repo_new_package_path, True, 'LRED')
-        shutil.rmtree(repo_new_package_path, ignore_errors=True)
+        delete_path(repo_new_package_path)
 
     # Avoid creating package if disabled. Temporary only for Windows.
     if sys.platform == 'win32':
