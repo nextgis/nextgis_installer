@@ -129,7 +129,6 @@ def parse_arguments():
     parser.add_argument('-i', dest='installer_name', required=False, help='Installer name')
     parser.add_argument('-vd', dest='valid_date', required=False, help='Validity end date')
     parser.add_argument('-vu', dest='valid_user', required=False, help='Validity end date')
-    parser.add_argument('-p', dest='qgis_plugins', required=False, help='QGIS Additional python plugins to include into installer. Plugin names separeted by comma')
     if sys.platform == 'win32':
         parser.add_argument('-w64', dest='win64', action='store_true', help='Flag to build Windows 64bit repository')
         parser.add_argument('-g', dest='generator', required=False, help='Visual Studio generator')
@@ -138,6 +137,7 @@ def parse_arguments():
     parser_prepare = subparsers.add_parser('prepare')
     parser_prepare.add_argument('--ftp_user', dest='ftp_user', required=False, help='FTP user name and password to fetch package.zip anv version.str files')
     parser_prepare.add_argument('--ftp', dest='ftp', required=False, help='FTP address with directories to fetch package.zip anv version.str files')
+    parser_prepare.add_argument('-p', dest='qgis_plugins', required=False, help='QGIS Additional python plugins to include into installer. Plugin names separeted by comma')
 
     parser_create = subparsers.add_parser('create')
 
