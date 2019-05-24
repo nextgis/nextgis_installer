@@ -559,7 +559,7 @@ def delete_path(path_to_delete):
     color_print('Delete existing build dir ...', True, 'LRED')
     shutil.rmtree(path_to_delete, ignore_errors=True)
 
-def download(ftp_user, ftp, target_dir):
+def download(ftp_user, ftp, target_dir, plugins):
     if ftp is None:
         return
 
@@ -659,6 +659,17 @@ def download(ftp_user, ftp, target_dir):
         for o in os.listdir(tmp_dir):
             archive_dir = os.path.join(tmp_dir,o)
             if os.path.isdir(archive_dir):
+                # Add additional plugins
+                if 'nextgisqgis' == repository:
+                    import qgis
+                    plugin_list = plugins.split(',')
+                    if sys.platform == 'darwin':
+                        extract_path = os.path.join(archive_dir, 'Applications/qgis-ng.app/Contents/Resources/python/plugins')
+                    elif sys.platform == 'win32':
+                        extract_path = os.path.join(archive_dir, 'share/ngqgis/python/plugins')
+                    os.makedirs(extract_path)
+                    qgis.install_plugins(plugin_list, extract_path)
+
                 shutil.move(archive_dir, target_repo_dir)
                 break
 
@@ -667,7 +678,7 @@ def download(ftp_user, ftp, target_dir):
             color_print('Download ' + ftp_dir + '/version.str', True, 'LGREEN')
             run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
 
-def prepare():
+def prepare(qgis_plugins):
     color_print('Preparing ...', True, 'LYELLOW')
 
     if os.path.exists(repo_target_path):
@@ -761,7 +772,6 @@ def update(packages):
             if not subdir in source_dirs:
                 delete_path(os.path.join(repo_source_path, subdir))
 
-
 def create_installer():
     run((repogen_file, '--remove', '-v', '-p', repo_new_packages_path, get_repository_path()))
     key_only = '--offline-only'
@@ -815,7 +825,7 @@ if args.command == 'create':
     create_installer()
 elif args.command == 'prepare':
     download(args.ftp_user, args.ftp, args.source)
-    prepare()
+    prepare(args.qgis_plugins)
 elif args.command == 'update':
     packages = []
     if args.packages:
