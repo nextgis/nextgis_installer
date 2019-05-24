@@ -660,7 +660,7 @@ def download(ftp_user, ftp, target_dir, plugins):
             archive_dir = os.path.join(tmp_dir,o)
             if os.path.isdir(archive_dir):
                 # Add additional plugins
-                if 'nextgisqgis' == repository:
+                if 'nextgisqgis' == repository and plugins:
                     import qgis
                     plugin_list = plugins.split(',')
                     if sys.platform == 'darwin':
