@@ -677,7 +677,7 @@ def download(ftp_user, ftp, target_dir, plugins):
             color_print('Download ' + ftp_dir + '/version.str', True, 'LGREEN')
             run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
 
-def prepare(qgis_plugins):
+def prepare():
     color_print('Preparing ...', True, 'LYELLOW')
 
     if os.path.exists(repo_target_path):
