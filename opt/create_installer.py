@@ -824,8 +824,8 @@ if args.command == 'create':
     update(None)
     create_installer()
 elif args.command == 'prepare':
-    download(args.ftp_user, args.ftp, args.source)
-    prepare(args.qgis_plugins)
+    download(args.ftp_user, args.ftp, args.source, args.qgis_plugins)
+    prepare()
 elif args.command == 'update':
     packages = []
     if args.packages:
