@@ -666,8 +666,7 @@ def download(ftp_user, ftp, target_dir, plugins):
                     if sys.platform == 'darwin':
                         extract_path = os.path.join(archive_dir, 'Applications/qgis-ng.app/Contents/Resources/python/plugins')
                     elif sys.platform == 'win32':
-                        extract_path = os.path.join(archive_dir, 'share/ngqgis/python/plugins')
-                    os.makedirs(extract_path)
+                        extract_path = os.path.join(archive_dir, 'share\\ngqgis\\python\\plugins')
                     qgis.install_plugins(plugin_list, extract_path)
 
                 shutil.move(archive_dir, target_repo_dir)
