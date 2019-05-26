@@ -2,6 +2,7 @@
 import datetime
 import json
 import urllib2
+import os
 
 def install_license(valid_user, valid_date, out_dir):
     today = datetime.date.today()
