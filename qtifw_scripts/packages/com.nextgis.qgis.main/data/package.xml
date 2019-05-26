@@ -21,5 +21,6 @@
         <path src="share/ngqgis/images" dst="share/ngqgis/images"/>
         <path src="share/ngqgis/resources" dst="share/ngqgis/resources"/>
         <path src="share/ngqgis/svg" dst="share/ngqgis/svg"/>
+        <path src="share/license" dst="share/license"/>
     </win>
 </Package>

@@ -127,8 +127,6 @@ def parse_arguments():
     parser.add_argument('-r', dest='remote', required=False, help='Repositry remote url')
     parser.add_argument('-n', dest='network', action='store_true', help='Online installer (the -r key should be present)')
     parser.add_argument('-i', dest='installer_name', required=False, help='Installer name')
-    parser.add_argument('-vd', dest='valid_date', required=False, help='Validity end date')
-    parser.add_argument('-vu', dest='valid_user', required=False, help='Validity end date')
     if sys.platform == 'win32':
         parser.add_argument('-w64', dest='win64', action='store_true', help='Flag to build Windows 64bit repository')
         parser.add_argument('-g', dest='generator', required=False, help='Visual Studio generator')
@@ -138,6 +136,8 @@ def parse_arguments():
     parser_prepare.add_argument('--ftp_user', dest='ftp_user', required=False, help='FTP user name and password to fetch package.zip anv version.str files')
     parser_prepare.add_argument('--ftp', dest='ftp', required=False, help='FTP address with directories to fetch package.zip anv version.str files')
     parser_prepare.add_argument('-p', dest='qgis_plugins', required=False, help='QGIS Additional python plugins to include into installer. Plugin names separeted by comma')
+    parser_prepare.add_argument('-vd', dest='valid_date', required=False, help='Validity end date')
+    parser_prepare.add_argument('-vu', dest='valid_user', required=False, help='Authorised user')
 
     parser_create = subparsers.add_parser('create')
 
@@ -559,7 +559,7 @@ def delete_path(path_to_delete):
     color_print('Delete existing build dir ...', True, 'LRED')
     shutil.rmtree(path_to_delete, ignore_errors=True)
 
-def download(ftp_user, ftp, target_dir, plugins):
+def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date):
     if ftp is None:
         return
 
@@ -660,14 +660,22 @@ def download(ftp_user, ftp, target_dir, plugins):
             archive_dir = os.path.join(tmp_dir,o)
             if os.path.isdir(archive_dir):
                 # Add additional plugins
-                if 'nextgisqgis' == repository and plugins:
-                    import qgis
-                    plugin_list = plugins.split(',')
-                    if sys.platform == 'darwin':
-                        extract_path = os.path.join(archive_dir, 'Applications/qgis-ng.app/Contents/Resources/python/plugins')
-                    elif sys.platform == 'win32':
-                        extract_path = os.path.join(archive_dir, 'share\\ngqgis\\python\\plugins')
-                    qgis.install_plugins(plugin_list, extract_path)
+                if 'nextgisqgis' == repository:
+                    if plugins:
+                        import qgis
+                        plugin_list = plugins.split(',')
+                        if sys.platform == 'darwin':
+                            extract_path = os.path.join(archive_dir, 'Applications/qgis-ng.app/Contents/Resources/python/plugins')
+                        elif sys.platform == 'win32':
+                            extract_path = os.path.join(archive_dir, 'share\\ngqgis\\python\\plugins')
+                        qgis.install_plugins(plugin_list, extract_path)
+                    if valid_user and valid_date:
+                        import sign
+                        if sys.platform == 'darwin':
+                            extract_path = os.path.join(archive_dir, 'usr/share/license')
+                        elif sys.platform == 'win32':
+                            extract_path = os.path.join(archive_dir, 'share\\license')
+                        sign.install_license(valid_user, valid_date, extract_path)
 
                 shutil.move(archive_dir, target_repo_dir)
                 break
@@ -823,7 +831,7 @@ if args.command == 'create':
     update(None)
     create_installer()
 elif args.command == 'prepare':
-    download(args.ftp_user, args.ftp, args.source, args.qgis_plugins)
+    download(args.ftp_user, args.ftp, args.source, args.qgis_plugins, args.valid_user, args.valid_date)
     prepare()
 elif args.command == 'update':
     packages = []
