@@ -36,6 +36,8 @@ def install_license(valid_user, valid_date, out_dir):
         'end_date': valid_date,
     }
 
+    if not os.path.exists(lic_path):
+        os.makedirs(lic_path) 
     lic_path = os.path.join(out_dir, 'license.json')
     with open(lic_path, 'w') as outfile:
         json.dump(license_data, outfile)
