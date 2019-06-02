@@ -47,7 +47,8 @@ def install_plugins(plugins_list, out_dir):
         urllib.urlretrieve(metadata_xml_url, os.path.join(repos_dir, str(counter) + ".repo.xml"))
         counter += 1
     for plugin in plugins_list:
-        plugin_name = plugin.replace(' ', '_')
+        plugin_name1 = plugin
+        plugin_name2 = plugin.replace(' ', '_')
         output_url = ''
         version = '0.0.0'
         # list all xml files
@@ -56,7 +57,7 @@ def install_plugins(plugins_list, out_dir):
                 tree = ET.parse(os.path.join(repos_dir, repo_xml))
                 root = tree.getroot()
                 for pyqgis_plugin in root.findall('pyqgis_plugin'):
-                    if plugin_name == pyqgis_plugin.get('name'):
+                    if plugin_name1 == pyqgis_plugin.get('name') or plugin_name2 = pyqgis_plugin.get('name'):
                         currentVersion = pyqgis_plugin.get('version').replace('-', '.')
                         if LooseVersion(currentVersion) > LooseVersion(version):
                             version = currentVersion
