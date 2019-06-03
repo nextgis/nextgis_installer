@@ -66,7 +66,7 @@ def install_plugins(plugins_list, out_dir):
                 pass
 
         if output_url:
-            out_zip = os.path.join(plugins_dir, plugin_name + '.zip')
+            out_zip = os.path.join(plugins_dir, plugin_name2 + '.zip')
             urllib.urlretrieve(output_url, out_zip)
 
             # Extract zip to specific folder
