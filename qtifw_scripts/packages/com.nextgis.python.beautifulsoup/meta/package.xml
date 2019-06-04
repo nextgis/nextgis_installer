@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>Beautiful Soup</DisplayName>
     <Description>Beautiful Soup package</Description>
-    <Dependencies>com.nextgis.python.all</Dependencies>
+    <Dependencies>com.nextgis.python.soupsieve</Dependencies>
 </Package>
