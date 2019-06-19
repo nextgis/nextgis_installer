@@ -2,4 +2,5 @@
 <Package>
     <DisplayName>Freetype</DisplayName>
     <Description>Freetype Library</Description>
+    <Dependencies>com.nextgis.common.harfbuzz</Dependencies>
 </Package>
