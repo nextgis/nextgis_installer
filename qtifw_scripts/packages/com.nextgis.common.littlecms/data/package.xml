@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_littlecms">
+    <mac>
+        <path src="Library/Frameworks/lcms.framework" dst="Library/Frameworks/lcms.framework"/>
+    </mac>
+    <win>
+        <path src="bin/*.dll" dst="bin"/>
+    </win>
+</Package>

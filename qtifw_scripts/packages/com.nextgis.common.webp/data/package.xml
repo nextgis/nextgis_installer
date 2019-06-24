@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_webp">
+    <mac>
+        <path src="Library/Frameworks/webp.framework" dst="Library/Frameworks/webp.framework"/>
+        <path src="Library/Frameworks/webpdecoder.framework" dst="Library/Frameworks/webpdecoder.framework"/>
+        <path src="Library/Frameworks/webpdemux.framework" dst="Library/Frameworks/webpdemux.framework"/>
+        <path src="Library/Frameworks/webpmux.framework" dst="Library/Frameworks/webpmux.framework"/>
+    </mac>
+    <win>
+        <path src="bin/*.dll" dst="bin"/>
+    </win>
+</Package>
