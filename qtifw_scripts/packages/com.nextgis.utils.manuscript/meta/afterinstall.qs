@@ -21,4 +21,11 @@ Component.prototype.createOperations = function()
         component.addOperation("CreateShortcut",
             "@TargetDir@/bin/manuscript.exe", "@StartMenuDir@/NextGIS Manuscript.lnk", "workingDirectory=@TargetDir@/bin", "iconPath=@TargetDir@/bin/manuscript.exe");
     }
+
+    if (installer.value("os") == "mac")
+    {
+        component.addOperation("LineReplace",
+            "@TargetDir@/Applications/fb.app/Contents/Resources/qt.conf",
+            "Prefix = ", "Prefix = @TargetDir@");
+    }
 }
