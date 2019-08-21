@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -52,6 +52,9 @@ CommandLineParser::CommandLineParser()
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Proxy),
         QLatin1String("Use system proxy on Windows and Linux. This option has no effect on OS X.")));
+
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoProxy),
+        QLatin1String("Do not use system proxy.")));
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Script),
         QLatin1String("Execute the script given as argument."), QLatin1String("file")));
@@ -119,6 +122,13 @@ CommandLineParser::CommandLineParser()
         QLatin1String("Use the specified platform plugin."), QLatin1String("plugin")));
     m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::KeyValue),
         QLatin1String("Key Value pair to be set."));
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::SquishPort),
+        QLatin1String("Give a port where Squish can connect to. If no port is given, default "
+        "port 11233 is used. Note: To enable Squish support you first need to build IFW with "
+        "SQUISH_PATH parameter where SQUISH_PATH is pointing to your Squish installation folder: "
+        "<path_to_qt>/bin/qmake -r SQUISH_PATH=<pat_to_squish>"),
+        QLatin1String("port number")));
+
 
     // NEXTGIS: add options for launch external programs after the work of the installer.
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Launch),

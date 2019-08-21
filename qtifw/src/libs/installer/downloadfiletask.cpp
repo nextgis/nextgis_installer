@@ -37,9 +37,6 @@
 #include <QNetworkProxyFactory>
 #include <QSslError>
 #include <QTemporaryFile>
-#include <QTimer>
-
-#include "ngauth/ngaccess.h"
 
 namespace QInstaller {
 
@@ -52,12 +49,6 @@ AuthenticationRequiredException::AuthenticationRequiredException(Type type, cons
 Downloader::Downloader()
     : m_finished(0)
 {
-    // NEXTGIS: add copying of cookies with auth data.
-#ifdef NG_AUTH_ON
-    QNetworkCookieJar* newCookieJar = NgAuthenticator::copyCookie();
-    m_nam.setCookieJar(newCookieJar); // cookie object will be deleted with this NAM
-#endif
-
     connect(&m_timer, &QTimer::timeout, this, &Downloader::onTimeout);
     connect(&m_nam, &QNetworkAccessManager::finished, this, &Downloader::onFinished);
 }
@@ -234,13 +225,13 @@ void Downloader::onFinished(QNetworkReply *reply)
     }
 
     const QByteArray expectedCheckSum = data.taskItem.value(TaskRole::Checksum).toByteArray();
+    bool checksumMismatch = false;
     if (!expectedCheckSum.isEmpty()) {
-        if (expectedCheckSum != data.observer->checkSum().toHex()) {
-            m_futureInterface->reportException(TaskException(tr("Checksum mismatch detected for \"%1\".")
-                .arg(reply->url().toString())));
-        }
+        if (expectedCheckSum != data.observer->checkSum().toHex())
+            checksumMismatch = true;
     }
-    m_futureInterface->reportResult(FileTaskResult(filename, data.observer->checkSum(), data.taskItem));
+    m_futureInterface->reportResult(FileTaskResult(filename, data.observer->checkSum(), data.taskItem,
+                                                  checksumMismatch));
 
     m_downloads.erase(reply);
     m_redirects.remove(reply);

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -58,9 +58,13 @@
 #include <QUuid>
 #include <QLoggingCategory>
 
+#ifdef ENABLE_SQUISH
+#include <qtbuiltinhook.h>
+#endif
+
 InstallerBase::InstallerBase(int &argc, char *argv[])
     : SDKApp<QApplication>(argc, argv)
-    , m_core(0)
+    , m_core(nullptr)
 {
     QInstaller::init(); // register custom operations
 }
@@ -83,7 +87,7 @@ int InstallerBase::run()
         // just silently ignore the fact that we could not create the lock file
         // and check the running processes.
         if (runCheck.isRunning(RunOnceChecker::ConditionFlag::ProcessList)) {
-            QInstaller::MessageBoxHandler::information(0, QLatin1String("AlreadyRunning"),
+            QInstaller::MessageBoxHandler::information(nullptr, QLatin1String("AlreadyRunning"),
                 tr("Waiting for %1").arg(qAppName()),
                 tr("Another %1 instance is already running. Wait "
                 "until it finishes, close it, or restart your system.").arg(qAppName()));
@@ -164,7 +168,14 @@ int InstallerBase::run()
             + m_core->settings().controlScript();
     }
 
-    if (parser.isSet(QLatin1String(CommandLineOptions::Proxy))) {
+    // From Qt5.8 onwards a separate command line option --proxy is not needed as system
+    // proxy is used by default. If Qt is built with QT_USE_SYSTEM_PROXIES false
+    // then system proxies are not used by default.
+    if ((parser.isSet(QLatin1String(CommandLineOptions::Proxy))
+#if QT_VERSION > 0x050800
+            || QNetworkProxyFactory::usesSystemConfiguration()
+#endif
+            ) && !parser.isSet(QLatin1String(CommandLineOptions::NoProxy))) {
         m_core->settings().setProxyType(QInstaller::Settings::SystemProxy);
         KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
     }
@@ -239,13 +250,11 @@ int InstallerBase::run()
         .isSet(QLatin1String(CommandLineOptions::CreateLocalRepository))
         || m_core->settings().createLocalRepository());
 
-    QHash<QString, QString> params;
     const QStringList positionalArguments = parser.positionalArguments();
     foreach (const QString &argument, positionalArguments) {
         if (argument.contains(QLatin1Char('='))) {
             const QString name = argument.section(QLatin1Char('='), 0, 0);
             const QString value = argument.section(QLatin1Char('='), 1, 1);
-            params.insert(name, value);
             m_core->setValue(name, value);
         }
     }
@@ -264,7 +273,7 @@ int InstallerBase::run()
                     QCoreApplication::instance()->installTranslator(qtTranslator.take());
 
                 QScopedPointer<QTranslator> ifwTranslator(new QTranslator(QCoreApplication::instance()));
-                if (ifwTranslator->load(locale, QString(), QString(), directory))
+                if (ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), directory))
                     QCoreApplication::instance()->installTranslator(ifwTranslator.take());
 
                 // To stop loading other translations it's sufficient that
@@ -301,46 +310,54 @@ int InstallerBase::run()
         m_core->updateComponentsSilently();
     }
     else {
-    //create the wizard GUI
-    TabController controller(0);
-    controller.setManager(m_core);
-    controller.setManagerParams(params);
-    controller.setControlScript(controlScript);
-        if (m_core->isInstaller()) {
-        controller.setGui(new InstallerGui(m_core));
-        }
-        else {
-        controller.setGui(new MaintenanceGui(m_core));
-            //Start listening to setValue changes that newly installed components might have
-            connect(m_core, &QInstaller::PackageManagerCore::valueChanged, &controller,
-                &TabController::updateManagerParams);
-        }
+        //create the wizard GUI
+        TabController controller(nullptr);
+        controller.setManager(m_core);
+        controller.setControlScript(controlScript);
+        if (m_core->isInstaller())
+            controller.setGui(new InstallerGui(m_core));
+        else
+            controller.setGui(new MaintenanceGui(m_core));
 
-    QInstaller::PackageManagerCore::Status status =
-        QInstaller::PackageManagerCore::Status(controller.init());
-    if (status != QInstaller::PackageManagerCore::Success)
-        return status;
-
-    const int result = QCoreApplication::instance()->exec();
-    if (result != 0)
-        return result;
-
-    if (m_core->finishedWithSuccess())  
-        return QInstaller::PackageManagerCore::Success;
-
-    status = m_core->status();
-    switch (status) {
-        case QInstaller::PackageManagerCore::Success:
+        QInstaller::PackageManagerCore::Status status =
+            QInstaller::PackageManagerCore::Status(controller.init());
+        if (status != QInstaller::PackageManagerCore::Success)
             return status;
 
-        case QInstaller::PackageManagerCore::Canceled:
-            return status;
+#ifdef ENABLE_SQUISH
+        int squishPort = 11233;
+        if (parser.isSet(QLatin1String(CommandLineOptions::SquishPort))) {
+            squishPort = parser.value(QLatin1String(CommandLineOptions::SquishPort)).toInt();
+        }
+        if (squishPort != 0) {
+            if (Squish::allowAttaching(squishPort))
+                qDebug() << "Attaching to squish port " << squishPort << " succeeded";
+            else
+                qDebug() << "Attaching to squish failed.";
+        } else {
+            qWarning() << "Invalid squish port number: " << squishPort;
+        }
+#endif
+        const int result = QCoreApplication::instance()->exec();
+        if (result != 0)
+            return result;
 
-        default:
-            break;
+        if (m_core->finishedWithSuccess())
+            return QInstaller::PackageManagerCore::Success;
+
+        status = m_core->status();
+        switch (status) {
+            case QInstaller::PackageManagerCore::Success:
+                return status;
+
+            case QInstaller::PackageManagerCore::Canceled:
+                return status;
+
+            default:
+                break;
+        }
+        return QInstaller::PackageManagerCore::Failure;
     }
-    return QInstaller::PackageManagerCore::Failure;
-}
     return QInstaller::PackageManagerCore::Success;
 }
 

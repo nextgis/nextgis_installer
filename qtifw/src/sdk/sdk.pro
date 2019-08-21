@@ -1,8 +1,13 @@
 TEMPLATE = app
-INCLUDEPATH += . ..
+INCLUDEPATH += . .. 
 TARGET = installerbase
 
 include(../../installerfw.pri)
+
+!isEmpty(SQUISH_PATH) {
+    DEFINES += ENABLE_SQUISH
+    include($$SQUISH_PATH/qtbuiltinhook.pri)
+}
 
 QT += network qml xml widgets
 # add the minimal plugin in static build to be able to start the installer headless with:
@@ -22,68 +27,32 @@ CONFIG(static, static|shared) {
 DESTDIR = $$IFW_APP_PATH
 
 exists($$LRELEASE) {
-    IB_TRANSLATIONS = $$files($$PWD/translations/??.ts) $$files($$PWD/translations/??_??.ts)
-    IB_TRANSLATIONS -= $$PWD/translations/en.ts
-
-    wd = $$toNativeSeparators($$IFW_SOURCE_TREE)
-    sources = src
-    lupdate_opts = -locations relative -no-ui-lines -no-sort
-
-    IB_ALL_TRANSLATIONS = $$IB_TRANSLATIONS $$PWD/translations/untranslated.ts
-    for(file, IB_ALL_TRANSLATIONS) {
-        lang = $$replace(file, .*/([^/]*)\\.ts, \\1)
-        v = ts-$${lang}.commands
-        $$v = cd $$wd && $$LUPDATE $$lupdate_opts $$sources -ts $$file
-        QMAKE_EXTRA_TARGETS += ts-$$lang
-    }
-    ts-all.commands = cd $$wd && $$LUPDATE $$lupdate_opts $$sources -ts $$IB_ALL_TRANSLATIONS
-    QMAKE_EXTRA_TARGETS += ts-all
-
-    #isEqual(QMAKE_DIR_SEP, /) {
-    #    commit-ts.commands = \
-    #        cd $$wd; \
-    #        git add -N src/sdk/translations/??.ts src/sdk/translations/??_??.ts && \
-    #        for f in `git diff-files --name-only src/sdk/translations/??.ts src/sdk/translations/??_??.ts`; do \
-    #            $$LCONVERT -locations none -i \$\$f -o \$\$f; \
-    #        done; \
-    #        git add src/sdk/translations/??.ts src/sdk/translations/??_??.ts && git commit
-    #} else {
-    #    commit-ts.commands = \
-    #        cd $$wd && \
-    #        git add -N src/sdk/translations/??.ts src/sdk/translations/??_??.ts && \
-    #        for /f usebackq %%f in (`git diff-files --name-only src/sdk/translations/??.ts src/sdk/translations/??_??.ts`) do \
-    #            $$LCONVERT -locations none -i %%f -o %%f $$escape_expand(\\n\\t) \
-    #        cd $$wd && git add src/sdk/translations/??.ts src/sdk/translations/??_??.ts && git commit
-    #}
-    #QMAKE_EXTRA_TARGETS += commit-ts
+    IB_TRANSLATIONS = $$files($$PWD/translations/*_??.ts)
+    IB_TRANSLATIONS -= $$PWD/translations/ifw_en.ts
 
     empty_ts = "<TS></TS>"
-    write_file($$OUT_PWD/translations/en.ts, empty_ts)|error("Aborting.")
-    IB_TRANSLATIONS += $$OUT_PWD/translations/en.ts
-    QMAKE_DISTCLEAN += translations/en.ts
+    write_file($$OUT_PWD/translations/ifw_en.ts, empty_ts)|error("Aborting.")
+    IB_TRANSLATIONS += $$OUT_PWD/translations/ifw_en.ts
+    QMAKE_DISTCLEAN += translations/ifw_en.ts
 
     qrc_cont = \
         "<RCC>" \
         "    <qresource prefix=\"/\">"
     for (file, IB_TRANSLATIONS) {
-        lang = $$replace(file, .*/([^/]*)\\.ts, \\1)
-        !exists($$PWD/translations/qtbase_$${lang}.ts) {
-            warning("No Qt translation for '$$lang'; skipping.")
-            next()
+        lang = $$replace(file, .*_([^/]*)\\.ts, \\1)
+        qfile = $$[QT_INSTALL_TRANSLATIONS]/qtbase_$${lang}.qm
+        !exists($$qfile) {
+            qfile = $$[QT_INSTALL_TRANSLATIONS]/qt_$${lang}.qm
+            !exists($$qfile) {
+                warning("No Qt translation for '$$lang'; skipping.")
+                next()
+            }
         }
-        #qfile = $$[QT_INSTALL_TRANSLATIONS]/qtbase_$${lang}.qm
-        #!exists($$qfile) {
-        #    qfile = $$[QT_INSTALL_TRANSLATIONS]/qt_$${lang}.qm
-        #    !exists($$qfile) {
-        #        warning("No Qt translation for '$$lang'; skipping.")
-        #        next()
-        #    }
-        #}
         qrc_cont += \
-            "        <file>translations/$${lang}.qm</file>" \
-            "        <file alias=\"translations/qt_$${lang}.qm\">translations/qtbase_$${lang}.qm</file>"
-        ACTIVE_IB_TRANSLATIONS += $$file $$PWD/translations/qtbase_$${lang}.ts
-        RESOURCE_DEPS += translations/qtbase_$${lang}.qm translations/$${lang}.qm
+            "        <file>translations/ifw_$${lang}.qm</file>" \
+            "        <file alias=\"translations/qt_$${lang}.qm\">$$qfile</file>"
+        ACTIVE_IB_TRANSLATIONS += $$file
+        RESOURCE_DEPS += $$qfile translations/ifw_$${lang}.qm
     }
     qrc_cont += \
         "    </qresource>" \
@@ -95,7 +64,7 @@ exists($$LRELEASE) {
     !isEmpty(ACTIVE_IB_TRANSLATIONS) {
         updateqm.input = ACTIVE_IB_TRANSLATIONS
         updateqm.output = translations/${QMAKE_FILE_BASE}.qm
-        updateqm.commands = $$LRELEASE -removeidentical ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_OUT}
+        updateqm.commands = $$LRELEASE ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_OUT}
         updateqm.name = LRELEASE ${QMAKE_FILE_IN}
         updateqm.CONFIG += no_link target_predeps
         QMAKE_EXTRA_COMPILERS += updateqm

@@ -41,8 +41,6 @@
 
 #include <iostream>
 
-#include "ngaccess.h"
-
 UpdateChecker::UpdateChecker(int &argc, char *argv[])
     : SDKApp<QCoreApplication>(argc, argv)
 {
@@ -51,31 +49,6 @@ UpdateChecker::UpdateChecker(int &argc, char *argv[])
 
 int UpdateChecker::check()
 {
-    // NEXTGIS: add NextGIS authentication before UpdateChecker::check() in a
-    // command line application.
-    // If we are still not authenticated - the app is in command line mode (any
-    // update checks in installer GUI are possible only after showing authentication
-    // page).
-#ifdef NG_AUTH_ON
-    if (!NgAuthenticator::authenticated)
-    {
-        std::cout << std::endl << "[NG] NextGIS authentication. Connecting ...\n" << std::endl;
-        NgAuthenticator ngAccessPtr;
-        ngAccessPtr.readAuthData(); // read lastly saved credentials
-        QEventLoop eventLoop;
-        QObject::connect(&ngAccessPtr, SIGNAL(authFinished()),
-                         &eventLoop, SLOT(quit()));
-        QString login = QString::fromUtf8(ngAccessPtr.getCurLogin().toUtf8());
-        QString password = QString::fromUtf8(ngAccessPtr.getCurPassword().toUtf8());
-        ngAccessPtr.startAuthetication(login, password);
-        eventLoop.exec(); // wait for the end of the authentication
-        if (NgAuthenticator::authenticated)
-            std::cout << "[NG] Authentication succeded! Checking for updates ...\n" << std::endl;
-        else
-            std::cout << "[NG] Authentication failed! Anyway trying to check for updates ...\n" << std::endl;
-    }
-#endif
-
     RunOnceChecker runCheck(QDir::tempPath()
                             + QLatin1Char('/')
                             + qApp->applicationName()

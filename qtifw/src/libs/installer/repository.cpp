@@ -57,6 +57,7 @@ Repository::Repository(const Repository &other)
     , m_password(other.m_password)
     , m_displayname(other.m_displayname)
     , m_compressed(other.m_compressed)
+    , m_categoryname(other.m_categoryname)
 {
     registerMetaType();
 }
@@ -183,7 +184,7 @@ void Repository::setPassword(const QString &password)
 }
 
 /*!
-    Returns the Name for the repository to be displayed instead of the URL
+    Returns the Name for the repository to be displayed instead of the URL.
 */
 QString Repository::displayname() const
 {
@@ -196,6 +197,22 @@ QString Repository::displayname() const
 void Repository::setDisplayName(const QString &displayname)
 {
     m_displayname = displayname;
+}
+
+/*!
+    Returns the archive name if the repository belongs to an archive.
+*/
+QString Repository::categoryname() const
+{
+    return m_categoryname;
+}
+
+/*!
+    Sets the category name to \a categoryname if the repository belongs to an category.
+*/
+void Repository::setCategoryName(const QString &categoryname)
+{
+    m_categoryname = categoryname;
 }
 
 /*!
@@ -248,6 +265,7 @@ const Repository &Repository::operator=(const Repository &other)
     m_password = other.m_password;
     m_displayname = other.m_displayname;
     m_compressed = other.m_compressed;
+    m_categoryname = other.m_categoryname;
 
     return *this;
 }
@@ -261,7 +279,8 @@ void Repository::registerMetaType()
 QDataStream &operator>>(QDataStream &istream, Repository &repository)
 {
     QByteArray url, username, password, displayname, compressed;
-    istream >> url >> repository.m_default >> repository.m_enabled >> username >> password >> displayname;
+    istream >> url >> repository.m_default >> repository.m_enabled >> username >> password
+            >> displayname >> repository.m_categoryname;
     repository.setUrl(QUrl::fromEncoded(QByteArray::fromBase64(url)));
     repository.setUsername(QString::fromUtf8(QByteArray::fromBase64(username)));
     repository.setPassword(QString::fromUtf8(QByteArray::fromBase64(password)));
@@ -273,7 +292,7 @@ QDataStream &operator<<(QDataStream &ostream, const Repository &repository)
 {
     return ostream << repository.m_url.toEncoded().toBase64() << repository.m_default << repository.m_enabled
         << repository.m_username.toUtf8().toBase64() << repository.m_password.toUtf8().toBase64()
-        << repository.m_displayname.toUtf8().toBase64();
+        << repository.m_displayname.toUtf8().toBase64() << repository.m_categoryname.toUtf8().toBase64();
 }
 
 }

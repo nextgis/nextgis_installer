@@ -41,9 +41,9 @@ namespace QInstaller {
 ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
     : q(qq)
     , m_core(core)
-    , m_parentComponent(0)
-    , m_licenseOperation(0)
-    , m_minimumProgressOperation(0)
+    , m_parentComponent(nullptr)
+    , m_licenseOperation(nullptr)
+    , m_minimumProgressOperation(nullptr)
     , m_newlyInstalled (false)
     , m_operationsCreated(false)
     , m_autoCreateOperations(true)
@@ -98,11 +98,11 @@ int ComponentModelHelper::childCount() const
 Component *ComponentModelHelper::childAt(int index) const
 {
     if (index < 0 && index >= childCount())
-        return 0;
+        return nullptr;
 
     if (m_componentPrivate->m_core->virtualComponentsVisible())
-        return m_componentPrivate->m_allChildComponents.value(index, 0);
-    return m_componentPrivate->m_childComponents.value(index, 0);
+        return m_componentPrivate->m_allChildComponents.value(index, nullptr);
+    return m_componentPrivate->m_childComponents.value(index, nullptr);
 }
 
 /*!
@@ -196,6 +196,22 @@ bool ComponentModelHelper::isSelectable() const
 void ComponentModelHelper::setSelectable(bool selectable)
 {
     changeFlags(selectable, Qt::ItemIsSelectable);
+}
+
+/*!
+    Returns whether the component is expanded by default. The default value is \c false.
+*/
+bool ComponentModelHelper::isExpandedByDefault() const
+{
+    return data(ComponentModelHelper::ExpandedByDefault).value<bool>();
+}
+
+/*!
+    Sets whether the component is expanded by default. The default value is \c false.
+*/
+void ComponentModelHelper::setExpandedByDefault(bool expandedByDefault)
+{
+    setData(QVariant::fromValue<bool>(expandedByDefault), ComponentModelHelper::ExpandedByDefault);
 }
 
 ComponentModelHelper::InstallAction ComponentModelHelper::installAction() const

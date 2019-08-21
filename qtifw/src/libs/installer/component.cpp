@@ -66,6 +66,8 @@ static const QLatin1String scUninstalled("Uninstalled");
 static const QLatin1String scCurrentState("CurrentState");
 static const QLatin1String scForcedInstallation("ForcedInstallation");
 static const QLatin1String scCheckable("Checkable");
+static const QLatin1String scExpandedByDefault("ExpandedByDefault");
+static const QLatin1String scUnstable("Unstable");
 
 /*!
     \inmodule QtInstallerFramework
@@ -262,6 +264,7 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
     setValue(scVirtual, package.virtualComp ? scTrue : scFalse);
     setValue(scCurrentState, scInstalled);
     setValue(scCheckable, package.checkable ? scTrue : scFalse);
+    setValue(scExpandedByDefault, package.expandedByDefault ? scTrue : scFalse);
 }
 
 /*!
@@ -295,6 +298,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scReplaces, package.data(scReplaces).toString());
     setValue(scReleaseDate, package.data(scReleaseDate).toString());
     setValue(scCheckable, package.data(scCheckable).toString());
+    setValue(scExpandedByDefault, package.data(scExpandedByDefault).toString());
 
     QString forced = package.data(scForcedInstallation, scFalse).toString().toLower();
     if (PackageManagerCore::noForceInstallation())
@@ -388,6 +392,8 @@ void Component::setValue(const QString &key, const QString &value)
         d->m_componentName = normalizedValue;
     if (key == scCheckable)
         this->setCheckable(normalizedValue.toLower() == scTrue);
+    if (key == scExpandedByDefault)
+        this->setExpandedByDefault(normalizedValue.toLower() == scTrue);
 
     d->m_vars[key] = normalizedValue;
     emit valueChanged(key, normalizedValue);
@@ -506,9 +512,29 @@ void Component::loadComponentScript(const QString &fileName)
 {
     // introduce the component object as javascript value and call the name to check that it
     // was successful
-    d->m_scriptContext = d->scriptEngine()->loadInContext(QLatin1String("Component"), fileName,
-        QString::fromLatin1("var component = installer.componentByName('%1'); component.name;")
-        .arg(name()));
+    try {
+        d->m_scriptContext = d->scriptEngine()->loadInContext(QLatin1String("Component"), fileName,
+            QString::fromLatin1("var component = installer.componentByName('%1'); component.name;")
+            .arg(name()));
+        if (packageManagerCore()->settings().allowUnstableComponents()) {
+            // Check if component has dependency to a broken component. Dependencies to broken
+            // components are checked if error is thrown but if dependency to a broken
+            // component is added in script, the script might not be loaded yet
+            foreach (QString dependency, dependencies()) {
+                Component *dependencyComponent = packageManagerCore()->componentByName
+                        (PackageManagerCore::checkableName(dependency));
+                if (dependencyComponent && dependencyComponent->isUnstable())
+                    setUnstable(PackageManagerCore::UnstableError::DepencyToUnstable, QLatin1String("Dependent on unstable component"));
+            }
+        }
+    } catch (const Error &error) {
+        if (packageManagerCore()->settings().allowUnstableComponents()) {
+            setUnstable(PackageManagerCore::UnstableError::ScriptLoadingFailed, error.message());
+            qWarning() << error.message();
+        } else {
+            throw error;
+        }
+    }
 
     emit loaded();
     languageChanged();
@@ -1003,6 +1029,21 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
     return operation;
 }
 
+void Component::markComponentUnstable()
+{
+    setValue(scDefault, scFalse);
+    // Mark unstable component unchecked if:
+    // 1. Installer, so the unstable component won't be installed
+    // 2. Maintenancetool, when component is not installed.
+    // 3. Updater, we don't want to update unstable components
+    // Mark unstable component checked if:
+    // 1. Maintenancetool, if component is installed and
+    //    unstable so it won't get uninstalled.
+    if (d->m_core->isInstaller() || !isInstalled() || d->m_core->isUpdater())
+        setCheckState(Qt::Unchecked);
+    setValue(scUnstable, scTrue);
+}
+
 namespace {
 
 inline bool convert(QQmlV4Function *func, QStringList *toArgs)
@@ -1170,6 +1211,22 @@ QStringList Component::dependencies() const
     return d->m_vars.value(scDependencies).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
 }
 
+/*!
+    Adds the component specified by \a newDependOn to the automatic depend-on list.
+
+    \sa {component::addAutoDependOn}{component.addAutoDependOn}
+    \sa dependencies
+*/
+
+void Component::addAutoDependOn(const QString &newDependOn)
+{
+    QString oldDependOn = d->m_vars.value(scAutoDependOn);
+    if (oldDependOn.isEmpty())
+        setValue(scAutoDependOn, newDependOn);
+    else
+        setValue(scAutoDependOn, oldDependOn + QLatin1String(", ") + newDependOn);
+}
+
 QStringList Component::autoDependencies() const
 {
     return d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
@@ -1286,7 +1343,7 @@ void Component::setUpdateAvailable(bool isUpdateAvailable)
 */
 bool Component::updateRequested()
 {
-    return d->m_updateIsAvailable && isSelected();
+    return d->m_updateIsAvailable && isSelected() && !isUnstable();
 }
 
 /*!
@@ -1316,6 +1373,33 @@ void Component::setUninstalled()
 bool Component::isUninstalled() const
 {
     return scUninstalled == d->m_vars.value(scCurrentState);
+}
+
+bool Component::isUnstable() const
+{
+    return scTrue == d->m_vars.value(scUnstable);
+}
+
+void Component::setUnstable(PackageManagerCore::UnstableError error, const QString &errorMessage)
+{
+    QList<Component*> dependencies = d->m_core->dependees(this);
+    // Mark this component unstable
+    markComponentUnstable();
+
+    // Marks all components unstable that depend on the unstable component
+    foreach (Component *dependency, dependencies) {
+        dependency->markComponentUnstable();
+        foreach (Component *descendant, dependency->descendantComponents()) {
+            descendant->markComponentUnstable();
+        }
+    }
+
+    // Marks all child components unstable
+    foreach (Component *descendant, this->descendantComponents()) {
+        descendant->markComponentUnstable();
+    }
+    QMetaEnum metaEnum = QMetaEnum::fromType<PackageManagerCore::UnstableError>();
+    emit packageManagerCore()->unstableComponentFound(QLatin1String(metaEnum.valueToKey(error)), errorMessage, this->name());
 }
 
 /*!
@@ -1403,13 +1487,21 @@ void Component::updateModelData(const QString &key, const QString &data)
 
     const QString &updateInfo = d->m_vars.value(scUpdateText);
     if (!d->m_core->isUpdater() || updateInfo.isEmpty()) {
-        const QString tooltipText
+        QString tooltipText
                 = QString::fromLatin1("<html><body>%1</body></html>").arg(d->m_vars.value(scDescription));
+        if (isUnstable()) {
+            tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
+                                                          "This component can not be installed.");
+        }
         setData(tooltipText, Qt::ToolTipRole);
     } else {
-        const QString tooltipText
+        QString tooltipText
                 = d->m_vars.value(scDescription) + QLatin1String("<br><br>")
                 + tr("Update Info: ") + updateInfo;
+        if (isUnstable()) {
+            tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
+                                                          "This component can not be updated.");
+        }
 
         setData(tooltipText, Qt::ToolTipRole);
     }

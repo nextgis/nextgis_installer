@@ -3,8 +3,8 @@
 }
 IFW_PRI_INCLUDED = 1
 
-IFW_VERSION_STR = 3.0.1
-IFW_VERSION = 0x030001
+IFW_VERSION_STR = 3.1.1
+IFW_VERSION = 0x030101
 
 IFW_REPOSITORY_FORMAT_VERSION = 1.0.0
 IFW_NEWLINE = $$escape_expand(\\n\\t)
@@ -82,8 +82,7 @@ macx:QMAKE_CXXFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 INCLUDEPATH += \
     $$IFW_SOURCE_TREE/src/libs/7zip \
     $$IFW_SOURCE_TREE/src/libs/kdtools \
-    $$IFW_SOURCE_TREE/src/libs/installer \
-    $$IFW_SOURCE_TREE/src/libs/ngauth
+    $$IFW_SOURCE_TREE/src/libs/installer
 win32:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/win/CPP
 unix:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/unix/CPP
 
@@ -127,13 +126,11 @@ DEFINES += NOMINMAX QT_NO_CAST_FROM_ASCII QT_STRICT_ITERATORS QT_USE_QSTRINGBUIL
            IFW_VERSION_STR=$$IFW_VERSION_STR IFW_VERSION=$$IFW_VERSION
 DEFINES += IFW_REPOSITORY_FORMAT_VERSION=$$IFW_REPOSITORY_FORMAT_VERSION
 
-static {
-    LIBS += -l7z -lngauth
-    win32-g++*: LIBS += -lmpr -luuid
+LIBS += -l7z
+win32-g++*: LIBS += -lmpr -luuid
 
-    equals(TEMPLATE, app) {
-        msvc:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib $$IFW_LIB_PATH/7z.lib $$IFW_LIB_PATH/ngauth.lib
-        win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a $$IFW_LIB_PATH/libngauth.a
-        unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a $$IFW_LIB_PATH/libngauth.a
-    }
+equals(TEMPLATE, app) {
+    msvc:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib $$IFW_LIB_PATH/7z.lib
+    win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
+    unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
 }

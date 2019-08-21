@@ -32,6 +32,7 @@
 #include <uninstallercalculator.h>
 #include <componentchecker.h>
 #include <packagemanagercore.h>
+#include <settings.h>
 
 #include <QTest>
 
@@ -156,19 +157,23 @@ private slots:
         componentA->appendComponent(componentAB);
         NamedComponent *componentB = new NamedComponent(core, QLatin1String("B"));
         NamedComponent *componentB_NewVersion = new NamedComponent(core, QLatin1String("B_version"), QLatin1String("2.0.0"));
+        NamedComponent *componentB_Auto = new NamedComponent(core, QLatin1String("B_auto"));
         componentB->addDependency(QLatin1String("A.B"));
         componentAB->addDependency(QLatin1String("B_version->=2.0.0"));
+        componentB_Auto->addAutoDependOn(QLatin1String("B_version"));
         core->appendRootComponent(componentA);
         core->appendRootComponent(componentB);
         core->appendRootComponent(componentB_NewVersion);
+        core->appendRootComponent(componentB_Auto);
 
         QTest::newRow("Installer resolved") << core
                     << (QList<Component *>() << componentB)
-                    << (QList<Component *>() << componentB_NewVersion << componentAB << componentB)
+                    << (QList<Component *>() << componentB_NewVersion << componentAB << componentB << componentB_Auto)
                     << (QList<int>()
                         << InstallerCalculator::Dependent
                         << InstallerCalculator::Dependent
-                        << InstallerCalculator::Resolved);
+                        << InstallerCalculator::Resolved
+                        << InstallerCalculator::Automatic);
     }
 
     void resolveInstaller()
@@ -204,9 +209,16 @@ private slots:
         core->appendRootComponent(componentA);
         core->appendRootComponent(componentB);
 
-        QTest::newRow("Installer resolved") << core
-                    << (QList<Component *>() << componentA)
-                    << (QList<Component *>());
+        if (core->settings().allowUnstableComponents()) {
+            QTest::newRow("Installer resolved") << core
+                        << (QList<Component *>() << componentA)
+                        << (QList<Component *>() << componentA);
+        } else {
+            QTest::newRow("Installer resolved") << core
+                        << (QList<Component *>() << componentA)
+                        << (QList<Component *>());
+        }
+
     }
 
     void unresolvedDependencyVersion()
@@ -299,7 +311,7 @@ private slots:
         NamedComponent *componentA = new NamedComponent(core, QLatin1String("A"));
         NamedComponent *componentB = new NamedComponent(core, QLatin1String("B"));
 
-        componentB->setValue(QLatin1String("AutoDependOn"), QLatin1String("A"));
+        componentB->addAutoDependOn(QLatin1String("A"));
         componentB->setValue(QLatin1String("Default"), QLatin1String("true"));
         core->appendRootComponent(componentA);
         core->appendRootComponent(componentB);

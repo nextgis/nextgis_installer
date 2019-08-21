@@ -48,12 +48,6 @@
 #include "settingsoperation.h"
 #include "consumeoutputoperation.h"
 
-#include "ng_fileenvironmentvariablesoperation.h"
-#include "ng_copyonlyoperation.h"
-#ifdef Q_OS_WIN
-#include "ng_userpathwinenvironmentvariablesoperation.h"
-#endif
-
 #include "lib7z_facade.h"
 #include "utils.h"
 
@@ -136,7 +130,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
         std::cout << qPrintable(ba) << std::endl;
 
     if (type == QtFatalMsg) {
-        QtMessageHandler oldMsgHandler = qInstallMessageHandler(0);
+        QtMessageHandler oldMsgHandler = qInstallMessageHandler(nullptr);
         qt_message_output(type, context, msg);
         qInstallMessageHandler(oldMsgHandler);
     }

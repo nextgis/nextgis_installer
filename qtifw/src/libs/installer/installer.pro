@@ -2,6 +2,8 @@ TEMPLATE = lib
 TARGET = installer
 INCLUDEPATH += . ..
 
+CONFIG += staticlib
+
 include(../7zip/7zip.pri)
 include(../kdtools/kdtools.pri)
 include(../../../installerfw.pri)
@@ -129,8 +131,9 @@ HEADERS += packagemanagercore.h \
     lib7z_guid.h \
     lib7z_create.h \
     lib7z_extract.h \
-    lib7z_list.h \    
-    ng_authpage.h \
+    lib7z_list.h \
+    repositorycategory.h \
+    componentselectionpage_p.h
     ng_fileenvironmentvariablesoperation.h \
     ng_copyonlyoperation.h
 win32 {
@@ -211,7 +214,8 @@ SOURCES += packagemanagercore.cpp \
     keepaliveobject.cpp \
     systeminfo.cpp \
     packagesource.cpp \
-    ng_authpage.cpp \
+    repositorycategory.cpp \
+    componentselectionpage_p.cpp
     ng_fileenvironmentvariablesoperation.cpp \
     ng_copyonlyoperation.cpp
 win32 {
@@ -228,7 +232,7 @@ unix {
     else: SOURCES += adminauthorization_x11.cpp
 }
 
-LIBS += -l7z -lngauth
+LIBS += -l7z
 win32 {
     SOURCES += adminauthorization_win.cpp sysinfo_win.cpp
 

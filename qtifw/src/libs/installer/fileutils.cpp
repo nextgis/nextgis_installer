@@ -130,14 +130,14 @@ QString QInstaller::humanReadableSize(const qint64 &size, int precision)
     static QStringList measures;
     if (measures.isEmpty())
         measures << QCoreApplication::translate("QInstaller", "bytes")
-                 << QCoreApplication::translate("QInstaller", "KiB")
-                 << QCoreApplication::translate("QInstaller", "MiB")
-                 << QCoreApplication::translate("QInstaller", "GiB")
-                 << QCoreApplication::translate("QInstaller", "TiB")
-                 << QCoreApplication::translate("QInstaller", "PiB")
-                 << QCoreApplication::translate("QInstaller", "EiB")
-                 << QCoreApplication::translate("QInstaller", "ZiB")
-                 << QCoreApplication::translate("QInstaller", "YiB");
+                 << QCoreApplication::translate("QInstaller", "KB")
+                 << QCoreApplication::translate("QInstaller", "MB")
+                 << QCoreApplication::translate("QInstaller", "GB")
+                 << QCoreApplication::translate("QInstaller", "TB")
+                 << QCoreApplication::translate("QInstaller", "PB")
+                 << QCoreApplication::translate("QInstaller", "EB")
+                 << QCoreApplication::translate("QInstaller", "ZB")
+                 << QCoreApplication::translate("QInstaller", "YB");
 
     QStringListIterator it(measures);
     QString measure(it.next());
@@ -173,14 +173,23 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
     const QFileInfoList entries = QDir(path).entryInfoList(QDir::AllEntries | QDir::Hidden);
     foreach (const QFileInfo &fi, entries) {
         if (fi.isSymLink() || fi.isFile()) {
-            QFile f(fi.filePath());
-            if (!f.remove()) {
-                const QString errorMessage = QCoreApplication::translate("QInstaller",
-                    "Cannot remove file \"%1\": %2").arg(
-                            QDir::toNativeSeparators(f.fileName()), f.errorString());
-                if (!ignoreErrors)
-                    throw Error(errorMessage);
-                qWarning().noquote() << errorMessage;
+            QString filePath = fi.filePath();
+            QFile f(filePath);
+            bool ok = f.remove();
+            if (!ok) { //ReadOnly can prevent removing in Windows. Change permission and try again.
+                const QFile::Permissions permissions = f.permissions();
+                if (!(permissions & QFile::WriteUser)) {
+                    ok = f.setPermissions(filePath, permissions | QFile::WriteUser)
+                            && f.remove(filePath);
+                }
+                if (!ok) {
+                    const QString errorMessage = QCoreApplication::translate("QInstaller",
+                        "Cannot remove file \"%1\": %2").arg(
+                                QDir::toNativeSeparators(f.fileName()), f.errorString());
+                    if (!ignoreErrors)
+                        throw Error(errorMessage);
+                    qWarning().noquote() << errorMessage;
+                }
             }
         }
     }
@@ -230,7 +239,7 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
 class RemoveDirectoryThread : public QThread
 {
 public:
-    explicit RemoveDirectoryThread(const QString &path, bool ignoreErrors = false, QObject *parent = 0)
+    explicit RemoveDirectoryThread(const QString &path, bool ignoreErrors = false, QObject *parent = nullptr)
         : QThread(parent)
         , p(path)
         , ignore(ignoreErrors)
@@ -402,7 +411,7 @@ QString QInstaller::getShortPathName(const QString &name)
 
     // Determine length, then convert.
     const LPCTSTR nameC = reinterpret_cast<LPCTSTR>(name.utf16()); // MinGW
-    const DWORD length = GetShortPathName(nameC, NULL, 0);
+    const DWORD length = GetShortPathName(nameC, nullptr, 0);
     if (length == 0)
         return name;
     QScopedArrayPointer<TCHAR> buffer(new TCHAR[length]);
@@ -418,7 +427,7 @@ QString QInstaller::getLongPathName(const QString &name)
 
     // Determine length, then convert.
     const LPCTSTR nameC = reinterpret_cast<LPCTSTR>(name.utf16()); // MinGW
-    const DWORD length = GetLongPathName(nameC, NULL, 0);
+    const DWORD length = GetLongPathName(nameC, nullptr, 0);
     if (length == 0)
         return name;
     QScopedArrayPointer<TCHAR> buffer(new TCHAR[length]);

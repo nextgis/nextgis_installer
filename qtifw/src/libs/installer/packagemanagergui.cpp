@@ -39,6 +39,8 @@
 #include "utils.h"
 #include "scriptengine.h"
 #include "productkeycheck.h"
+#include "repositorycategory.h"
+#include "componentselectionpage_p.h"
 
 #include "sysinfo.h"
 
@@ -56,7 +58,6 @@
 #include <QFileDialog>
 #include <QGridLayout>
 #include <QHBoxLayout>
-#include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
@@ -67,18 +68,18 @@
 #include <QRadioButton>
 #include <QStringListModel>
 #include <QTextBrowser>
-#include <QTreeView>
+
 #include <QVBoxLayout>
 #include <QShowEvent>
 #include <QFileDialog>
+#include <QGroupBox>
+#include <QDesktopWidget>
 
 #ifdef Q_OS_WIN
 # include <qt_windows.h>
 # include <QWinTaskbarButton>
 # include <QWinTaskbarProgress>
 #endif
-
-#include "ngaccess.h"
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -94,7 +95,7 @@ class DynamicInstallerPage : public PackageManagerPage
     Q_PROPERTY(bool complete READ isComplete WRITE setComplete)
 
 public:
-    explicit DynamicInstallerPage(QWidget *widget, PackageManagerCore *core = 0)
+    explicit DynamicInstallerPage(QWidget *widget, PackageManagerCore *core = nullptr)
         : PackageManagerPage(core)
         , m_widget(widget)
     {
@@ -382,14 +383,22 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
 
     m_core->setGuiObject(this);
+
+    // We need to create this ugly hack so that the installer doesn't exceed the maximum size of the
+    // screen. The screen size where the widget lies is not available until the widget is visible.
+    QTimer::singleShot(30, this, SLOT(setMaxSize()));
 }
 
+void PackageManagerGui::setMaxSize()
+{
+    setMaximumSize(qApp->desktop()->availableGeometry(this).size());
+}
 /*!
     Destructs a package manager UI.
 */
 PackageManagerGui::~PackageManagerGui()
 {
-    m_core->setGuiObject(0);
+    m_core->setGuiObject(nullptr);
     delete d;
 }
 
@@ -656,7 +665,7 @@ void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
     wizardPageRemovalRequested(widget);
 
     int pageId = static_cast<int>(page) - 1;
-    while (QWizard::page(pageId) != 0)
+    while (QWizard::page(pageId) != nullptr)
         --pageId;
 
     // add it
@@ -670,7 +679,7 @@ void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
 {
     foreach (int pageId, pageIds()) {
         DynamicInstallerPage *const dynamicPage = qobject_cast<DynamicInstallerPage*>(page(pageId));
-        if (dynamicPage == 0)
+        if (dynamicPage == nullptr)
             continue;
         if (dynamicPage->widget() != widget)
             continue;
@@ -701,7 +710,7 @@ void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
 void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
 {
     Q_ASSERT(widget);
-    widget->setParent(0);
+    widget->setParent(nullptr);
     packageManagerCore()->controlScriptEngine()->removeFromGlobalObject(widget);
     packageManagerCore()->componentScriptEngine()->removeFromGlobalObject(widget);
 }
@@ -712,9 +721,9 @@ void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
 */
 void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
 {
-    if (visible && page(p) == 0) {
+    if (visible && page(p) == nullptr) {
         setPage(p, d->m_defaultPages[p]);
-    } else if (!visible && page(p) != 0) {
+    } else if (!visible && page(p) != nullptr) {
         d->m_defaultPages[p] = page(p);
         removePage(p);
     }
@@ -744,7 +753,7 @@ QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
             return p;
     }
     qWarning() << "No page found for object name" << name;
-    return 0;
+    return nullptr;
 }
 
 /*!
@@ -772,7 +781,7 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
         return p;
     }
     qWarning() << "No page found for object name" << name;
-    return 0;
+    return nullptr;
 }
 
 /*!
@@ -1048,7 +1057,7 @@ PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     : m_complete(true)
     , m_needsSettingsButton(false)
     , m_core(core)
-    , validatorComponent(0)
+    , validatorComponent(nullptr)
 {
     if (!m_core->settings().titleColor().isEmpty()) {
         m_titleColor = m_core->settings().titleColor();
@@ -1183,8 +1192,8 @@ bool PackageManagerPage::validatePage()
 void PackageManagerPage::insertWidget(QWidget *widget, const QString &siblingName, int offset)
 {
     QWidget *sibling = findChild<QWidget *>(siblingName);
-    QWidget *parent = sibling ? sibling->parentWidget() : 0;
-    QLayout *layout = parent ? parent->layout() : 0;
+    QWidget *parent = sibling ? sibling->parentWidget() : nullptr;
+    QLayout *layout = parent ? parent->layout() : nullptr;
     QBoxLayout *blayout = qobject_cast<QBoxLayout *>(layout);
 
     if (blayout) {
@@ -1255,13 +1264,13 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , m_updatesFetched(false)
     , m_allPackagesFetched(false)
-    , m_label(0)
-    , m_msgLabel(0)
-    , m_errorLabel(0)
-    , m_progressBar(0)
-    , m_packageManager(0)
-    , m_updateComponents(0)
-    , m_removeAllComponents(0)
+    , m_label(nullptr)
+    , m_msgLabel(nullptr)
+    , m_errorLabel(nullptr)
+    , m_progressBar(nullptr)
+    , m_packageManager(nullptr)
+    , m_updateComponents(nullptr)
+    , m_removeAllComponents(nullptr)
 {
     setObjectName(QLatin1String("IntroductionPage"));
     setColoredTitle(tr("Setup - %1").arg(productName()));
@@ -1277,19 +1286,19 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     QWidget *widget = new QWidget(this);
     QVBoxLayout *boxLayout = new QVBoxLayout(widget);
 
-    m_packageManager = new QRadioButton(tr("Add or remove components"), this);
+    m_packageManager = new QRadioButton(tr("&Add or remove components"), this);
     m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
     boxLayout->addWidget(m_packageManager);
     m_packageManager->setChecked(core->isPackageManager());
     connect(m_packageManager, &QAbstractButton::toggled, this, &IntroductionPage::setPackageManager);
 
-    m_updateComponents = new QRadioButton(tr("Update components"), this);
+    m_updateComponents = new QRadioButton(tr("&Update components"), this);
     m_updateComponents->setObjectName(QLatin1String("UpdaterRadioButton"));
     boxLayout->addWidget(m_updateComponents);
     m_updateComponents->setChecked(core->isUpdater());
     connect(m_updateComponents, &QAbstractButton::toggled, this, &IntroductionPage::setUpdater);
 
-    m_removeAllComponents = new QRadioButton(tr("Remove all components"), this);
+    m_removeAllComponents = new QRadioButton(tr("&Remove all components"), this);
     m_removeAllComponents->setObjectName(QLatin1String("UninstallerRadioButton"));
     boxLayout->addWidget(m_removeAllComponents);
     m_removeAllComponents->setChecked(core->isUninstaller());
@@ -1338,13 +1347,8 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
         connect(core, &PackageManagerCore::metaJobProgress,
                 m_taskButton->progress(), &QWinTaskbarProgress::setValue);
     } else {
-        m_taskButton = 0;
+        m_taskButton = nullptr;
     }
-#endif
-
-    // NEXTGIS: added for page skipping.
-#ifdef NG_AUTH_ON
-    m_visited = false;
 #endif
 }
 
@@ -1628,7 +1632,7 @@ void IntroductionPage::entering()
     showWidgets(false);
     setMessage(QString());
     setErrorMessage(QString());
-    setButtonText(QWizard::CancelButton, tr("Quit"));
+    setButtonText(QWizard::CancelButton, tr("&Quit"));
 
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
@@ -1638,32 +1642,6 @@ void IntroductionPage::entering()
         setMaintenanceToolsEnabled(true);
     }
     setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
-    
-    // NEXTGIS: skip this page if this is an installer.
-#ifdef NG_AUTH_ON
-    if (core->isInstaller())
-    {
-        if (!m_visited)
-        {
-            m_visited = true;
-            this->gui()->clickButton(QWizard::NextButton);
-        }
-        else
-        {
-            m_visited = false;
-            this->gui()->clickButton(QWizard::BackButton);
-        }
-    }
-#endif
-
-    // NEXTGIS: disable update radio buttons so user can at least select uninstalling
-    // when the authorization failed or has not been performed.
-#ifdef NG_AUTH_ON
-    m_packageManager->setEnabled(NgAuthenticator::authenticated);
-    m_updateComponents->setEnabled(NgAuthenticator::authenticated);
-    if (!NgAuthenticator::authenticated)
-        m_removeAllComponents->setChecked(true);
-#endif
 }
 
 /*!
@@ -1880,312 +1858,6 @@ void LicenseAgreementPage::updateUi()
 
 }
 
-
-// -- ComponentSelectionPage::Private
-
-class ComponentSelectionPage::Private : public QObject
-{
-    Q_OBJECT
-
-public:
-    Private(ComponentSelectionPage *qq, PackageManagerCore *core)
-        : q(qq)
-        , m_core(core)
-        , m_treeView(new QTreeView(q))
-        , m_allModel(m_core->defaultComponentModel())
-        , m_updaterModel(m_core->updaterComponentModel())
-        , m_currentModel(m_allModel)
-        , m_compressedButtonVisible(false)
-    {
-        m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
-
-        connect(m_allModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
-            SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
-        connect(m_updaterModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)),
-            this, SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
-
-        QHBoxLayout *hlayout = new QHBoxLayout;
-        hlayout->addWidget(m_treeView, 3);
-
-        m_descriptionLabel = new QLabel(q);
-        m_descriptionLabel->setWordWrap(true);
-        m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
-
-        m_vlayout = new QVBoxLayout;
-        m_vlayout->setObjectName(QLatin1String("VerticalLayout"));
-        m_vlayout->addWidget(m_descriptionLabel);
-
-        m_sizeLabel = new QLabel(q);
-        m_sizeLabel->setWordWrap(true);
-        m_vlayout->addWidget(m_sizeLabel);
-        m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
-
-#ifdef INSTALLCOMPRESSED
-        allowCompressedRepositoryInstall();
-#endif
-        m_vlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
-            QSizePolicy::MinimumExpanding));
-        hlayout->addLayout(m_vlayout, 2);
-
-        QVBoxLayout *layout = new QVBoxLayout(q);
-        layout->addLayout(hlayout, 1);
-
-        m_checkDefault = new QPushButton;
-        connect(m_checkDefault, &QAbstractButton::clicked,
-                this, &ComponentSelectionPage::Private::selectDefault);
-        if (m_core->isInstaller()) {
-            m_checkDefault->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
-            m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+A",
-                "select default components")));
-            m_checkDefault->setText(ComponentSelectionPage::tr("Def&ault"));
-        } else {
-            m_checkDefault->setEnabled(false);
-            m_checkDefault->setObjectName(QLatin1String("ResetComponentsButton"));
-            m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+R",
-                "reset to already installed components")));
-            m_checkDefault->setText(ComponentSelectionPage::tr("&Reset"));
-        }
-        hlayout = new QHBoxLayout;
-        hlayout->addWidget(m_checkDefault);
-
-        m_checkAll = new QPushButton;
-        hlayout->addWidget(m_checkAll);
-        connect(m_checkAll, &QAbstractButton::clicked,
-                this, &ComponentSelectionPage::Private::selectAll);
-        m_checkAll->setObjectName(QLatin1String("SelectAllComponentsButton"));
-        m_checkAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+S",
-            "select all components")));
-        m_checkAll->setText(ComponentSelectionPage::tr("&Select All"));
-
-        m_uncheckAll = new QPushButton;
-        hlayout->addWidget(m_uncheckAll);
-        connect(m_uncheckAll, &QAbstractButton::clicked,
-                this, &ComponentSelectionPage::Private::deselectAll);
-        m_uncheckAll->setObjectName(QLatin1String("DeselectAllComponentsButton"));
-        m_uncheckAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+D",
-            "deselect all components")));
-        m_uncheckAll->setText(ComponentSelectionPage::tr("&Deselect All"));
-
-        hlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
-            QSizePolicy::MinimumExpanding));
-        layout->addLayout(hlayout);
-    }
-
-    void allowCompressedRepositoryInstall()
-    {
-        if (m_compressedButtonVisible) {
-            return;
-        }
-
-        connect(m_core, SIGNAL(metaJobProgress(int)), this, SLOT(onProgressChanged(int)));
-        connect(m_core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
-
-        m_bspLabel = new QLabel(ComponentSelectionPage::tr("To install new "\
-                "compressed repository, browse the repositories from your computer"),q);
-        m_bspLabel->setWordWrap(true);
-        m_bspLabel->setObjectName(QLatin1String("CompressedButtonLabel"));
-
-        m_vlayout->addSpacing(50);
-        m_vlayout->addWidget(m_bspLabel);
-
-        m_progressBar = new QProgressBar();
-        m_progressBar->setRange(0, 0);
-        m_progressBar->hide();
-        m_vlayout->addWidget(m_progressBar);
-        m_progressBar->setObjectName(QLatin1String("CompressedInstallProgressBar"));
-
-        m_installCompressButton = new QPushButton;
-        connect(m_installCompressButton, &QAbstractButton::clicked,
-                this, &ComponentSelectionPage::Private::selectCompressedPackage);
-        m_installCompressButton->setObjectName(QLatin1String("InstallCompressedPackageButton"));
-        m_installCompressButton->setText(ComponentSelectionPage::tr("&Browse QBSP files"));
-        m_vlayout->addWidget(m_installCompressButton);
-        m_compressedButtonVisible = true;
-    }
-
-    void updateTreeView()
-    {
-        m_checkDefault->setVisible(m_core->isInstaller() || m_core->isPackageManager());
-        if (m_treeView->selectionModel()) {
-            disconnect(m_treeView->selectionModel(), &QItemSelectionModel::currentChanged,
-                this, &ComponentSelectionPage::Private::currentSelectedChanged);
-        }
-
-        m_currentModel = m_core->isUpdater() ? m_updaterModel : m_allModel;
-        m_treeView->setModel(m_currentModel);
-        m_treeView->setExpanded(m_currentModel->index(0, 0), true);
-
-        const bool installActionColumnVisible = m_core->settings().installActionColumnVisible();
-        if (!installActionColumnVisible)
-            m_treeView->hideColumn(ComponentModelHelper::ActionColumn);
-
-        m_treeView->header()->setSectionResizeMode(
-                    ComponentModelHelper::NameColumn, QHeaderView::ResizeToContents);
-        if (m_core->isInstaller()) {
-            m_treeView->setHeaderHidden(true);
-            for (int i = ComponentModelHelper::InstalledVersionColumn; i < m_currentModel->columnCount(); ++i)
-                m_treeView->hideColumn(i);
-
-            if (installActionColumnVisible) {
-                m_treeView->header()->setStretchLastSection(false);
-                m_treeView->header()->setSectionResizeMode(
-                            ComponentModelHelper::NameColumn, QHeaderView::Stretch);
-                m_treeView->header()->setSectionResizeMode(
-                            ComponentModelHelper::ActionColumn, QHeaderView::ResizeToContents);
-            }
-        } else {
-            m_treeView->header()->setStretchLastSection(true);
-            if (installActionColumnVisible) {
-                m_treeView->header()->setSectionResizeMode(
-                            ComponentModelHelper::NameColumn, QHeaderView::Interactive);
-                m_treeView->header()->setSectionResizeMode(
-                            ComponentModelHelper::ActionColumn, QHeaderView::Interactive);
-            }
-            for (int i = 0; i < m_currentModel->columnCount(); ++i)
-                m_treeView->resizeColumnToContents(i);
-        }
-
-        bool hasChildren = false;
-        const int rowCount = m_currentModel->rowCount();
-        for (int row = 0; row < rowCount && !hasChildren; ++row)
-            hasChildren = m_currentModel->hasChildren(m_currentModel->index(row, 0));
-        m_treeView->setRootIsDecorated(hasChildren);
-
-        connect(m_treeView->selectionModel(), &QItemSelectionModel::currentChanged,
-            this, &ComponentSelectionPage::Private::currentSelectedChanged);
-
-        m_treeView->setCurrentIndex(m_currentModel->index(0, 0));
-    }
-
-public slots:
-    void currentSelectedChanged(const QModelIndex &current)
-    {
-        if (!current.isValid())
-            return;
-
-        m_sizeLabel->setText(QString());
-        m_descriptionLabel->setText(m_currentModel->data(m_currentModel->index(current.row(),
-            ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString());
-
-        Component *component = m_currentModel->componentFromIndex(current);
-        if ((m_core->isUninstaller()) || (!component))
-            return;
-
-        if (component->isSelected() && (component->value(scUncompressedSizeSum).toLongLong() > 0)) {
-            m_sizeLabel->setText(ComponentSelectionPage::tr("This component "
-                "will occupy approximately %1 on your hard disk drive.")
-                .arg(humanReadableSize(component->value(scUncompressedSizeSum).toLongLong())));
-        }
-    }
-
-    void selectAll()
-    {
-        m_currentModel->setCheckedState(ComponentModel::AllChecked);
-    }
-
-    void deselectAll()
-    {
-        m_currentModel->setCheckedState(ComponentModel::AllUnchecked);
-    }
-
-    void selectCompressedPackage()
-    {
-        QString defaultDownloadDirectory =
-            QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
-        QStringList fileNames = QFileDialog::getOpenFileNames(NULL,
-            ComponentSelectionPage::tr("Open File"),defaultDownloadDirectory,
-            QLatin1String("QBSP or 7z Files (*.qbsp *.7z)"));
-
-        QSet<Repository> set;
-        foreach (QString fileName, fileNames) {
-            Repository repository = Repository::fromUserInput(fileName, true);
-            repository.setEnabled(true);
-            set.insert(repository);
-        }
-        if (set.count() > 0) {
-            m_progressBar->show();
-            m_installCompressButton->hide();
-            QPushButton *const b = qobject_cast<QPushButton *>(q->gui()->button(QWizard::NextButton));
-            b->setEnabled(false);
-            m_core->settings().addTemporaryRepositories(set, false);
-            if (!m_core->fetchCompressedPackagesTree()) {
-                setMessage(m_core->error());
-            }
-            else {
-                updateTreeView();
-                setMessage(ComponentSelectionPage::tr("To install new "\
-                    "compressed repository, browse the repositories from your computer"));
-            }
-
-            m_progressBar->hide();
-            m_installCompressButton->show();
-            b->setEnabled(true);
-        }
-    }
-
-    /*!
-        Updates the value of \a progress on the progress bar.
-    */
-    void onProgressChanged(int progress)
-    {
-        m_progressBar->setValue(progress);
-    }
-
-    /*!
-        Displays the message \a msg on the page.
-    */
-    void setMessage(const QString &msg)
-    {
-        QWizardPage *page = q->gui()->currentPage();
-        if (m_bspLabel && page && page->objectName() == QLatin1String("ComponentSelectionPage"))
-            m_bspLabel->setText(msg);
-    }
-
-    void selectDefault()
-    {
-        m_currentModel->setCheckedState(ComponentModel::DefaultChecked);
-    }
-
-    void onModelStateChanged(QInstaller::ComponentModel::ModelState state)
-    {
-        q->setModified(state.testFlag(ComponentModel::DefaultChecked) == false);
-        // If all components in the checked list are only checkable when run without forced
-        // installation, set ComponentModel::AllUnchecked as well, as we cannot uncheck anything.
-        // Helps to keep the UI correct.
-        if ((!m_core->noForceInstallation())
-            && (m_currentModel->checked() == m_currentModel->uncheckable())) {
-                state |= ComponentModel::AllUnchecked;
-        }
-        // enable the button if the corresponding flag is not set
-        m_checkAll->setEnabled(state.testFlag(ComponentModel::AllChecked) == false);
-        m_uncheckAll->setEnabled(state.testFlag(ComponentModel::AllUnchecked) == false);
-        m_checkDefault->setEnabled(state.testFlag(ComponentModel::DefaultChecked) == false);
-
-        // update the current selected node (important to reflect possible sub-node changes)
-        if (m_treeView->selectionModel())
-            currentSelectedChanged(m_treeView->selectionModel()->currentIndex());
-    }
-
-public:
-    ComponentSelectionPage *q;
-    PackageManagerCore *m_core;
-    QTreeView *m_treeView;
-    ComponentModel *m_allModel;
-    ComponentModel *m_updaterModel;
-    ComponentModel *m_currentModel;
-    QLabel *m_sizeLabel;
-    QLabel *m_descriptionLabel;
-    QPushButton *m_checkAll;
-    QPushButton *m_uncheckAll;
-    QPushButton *m_checkDefault;
-    QPushButton *m_installCompressButton;
-    QLabel *m_bspLabel;
-    QProgressBar *m_progressBar;
-    QVBoxLayout *m_vlayout;
-    bool m_compressedButtonVisible;
-};
-
-
 // -- ComponentSelectionPage
 
 /*!
@@ -2200,7 +1872,7 @@ public:
 */
 ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
-    , d(new Private(this, core))
+    , d(new ComponentSelectionPagePrivate(this, core))
 {
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ComponentSelectionPage"));
@@ -2226,7 +1898,8 @@ void ComponentSelectionPage::entering()
         QT_TR_NOOP("Please select the components you want to update."),
         QT_TR_NOOP("Please select the components you want to install."),
         QT_TR_NOOP("Please select the components you want to uninstall."),
-        QT_TR_NOOP("Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.")
+        QT_TR_NOOP("Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated."),
+        QT_TR_NOOP("Mandatory components need to be updated first before you can select other components to update.")
      };
 
     int index = 0;
@@ -2234,10 +1907,24 @@ void ComponentSelectionPage::entering()
     if (core->isInstaller()) index = 1;
     if (core->isUninstaller()) index = 2;
     if (core->isPackageManager()) index = 3;
+    if (core->foundEssentialUpdate() && core->isUpdater()) index = 4;
     setColoredSubTitle(tr(strings[index]));
 
     d->updateTreeView();
     setModified(isComplete());
+    if (core->settings().repositoryCategories().count() > 0 && !core->isOfflineOnly()
+        && !core->isUpdater()) {
+        d->showCategoryLayout(true);
+        core->settings().setAllowUnstableComponents(true);
+    } else {
+        d->showCategoryLayout(false);
+    }
+    d->showCompressedRepositoryButton();
+}
+
+void ComponentSelectionPage::leaving()
+{
+    d->hideCompressedRepositoryButton();
 }
 
 /*!
@@ -2304,6 +1991,21 @@ void ComponentSelectionPage::deselectComponent(const QString &id)
 void ComponentSelectionPage::allowCompressedRepositoryInstall()
 {
     d->allowCompressedRepositoryInstall();
+}
+
+bool ComponentSelectionPage::addVirtualComponentToUninstall(const QString &name)
+{
+    PackageManagerCore *core = packageManagerCore();
+    const QList<Component *> allComponents = core->components(PackageManagerCore::ComponentType::All);
+    Component *component = PackageManagerCore::componentByName(
+                name, allComponents);
+    if (component && component->isInstalled() && component->isVirtual()) {
+        component->setCheckState(Qt::Unchecked);
+        core->componentsToInstallNeedsRecalculation();
+        qDebug() << "Virtual component " << name << " was selected for uninstall by script.";
+        return true;
+    }
+    return false;
 }
 
 void ComponentSelectionPage::setModified(bool modified)
@@ -2432,7 +2134,6 @@ void TargetDirectoryPage::initializePage()
             targetDir += productName();
         }
     }
-
     // NEXTGIS: change the default dir for Windows. Added in order to allow users without admin
     // permissions install software by default.
     #if defined(Q_OS_WIN)
@@ -2457,7 +2158,7 @@ void TargetDirectoryPage::initializePage()
     {
         targetDir = QDir::homePath() + QLatin1String("\\NextGIS");
     }
-    #endif
+    #endif // Q_OS_WIN
 
     m_lineEdit->setText(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));
 
@@ -2587,7 +2288,7 @@ QString TargetDirectoryPage::targetDirWarning() const
     }
 
     target = target.canonicalPath();
-    if (target == QDir::root() || target == QDir::home()) {
+    if (!target.isEmpty() && (target == QDir::root() || target == QDir::home())) {
         return tr("As the install directory is completely deleted, installing in %1 is forbidden.")
             .arg(QDir::toNativeSeparators(target.path()));
     }
@@ -3006,9 +2707,6 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     m_performInstallationForm->setDetailsWidgetVisible(true);
 
     setCommitPage(true);
-
-    // NEXTGIS: temporary hide details button.
-    m_performInstallationForm->setDetailsWidgetVisible(false);
 }
 
 /*!
@@ -3135,7 +2833,7 @@ void PerformInstallationPage::toggleDetailsWereChanged()
 */
 FinishedPage::FinishedPage(PackageManagerCore *core)
     : PackageManagerPage(core)
-    , m_commitButton(0)
+    , m_commitButton(nullptr)
 {
     setObjectName(QLatin1String("FinishedPage"));
     setColoredTitle(tr("Completing the %1 Wizard").arg(productName()));
@@ -3168,7 +2866,7 @@ void FinishedPage::entering()
 
     if (m_commitButton) {
         disconnect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
-        m_commitButton = 0;
+        m_commitButton = nullptr;
     }
 
     if (packageManagerCore()->isMaintainer()) {
@@ -3228,10 +2926,6 @@ void FinishedPage::entering()
 
     m_runItCheckBox->hide();
     m_runItCheckBox->setChecked(false);
-
-    // NEXTGIS: hide "Restart" button.
-    if (packageManagerCore()->isUpdater() || packageManagerCore()->isPackageManager())
-        gui()->button(QWizard::CommitButton)->hide();
 }
 
 /*!

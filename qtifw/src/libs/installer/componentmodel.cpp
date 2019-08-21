@@ -222,10 +222,14 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
                 return component->data(Qt::UserRole + index.column());
         }
         if (role == Qt::CheckStateRole) {
-            if (!component->isCheckable())
+            if (!component->isCheckable() || !component->autoDependencies().isEmpty() || component->isUnstable())
                 return QVariant();
-            if (!component->autoDependencies().isEmpty())
-                return QVariant();
+        }
+        if (role == ComponentModelHelper::ExpandedByDefault) {
+            return component->isExpandedByDefault();
+        }
+        if (component->isUnstable() && role == Qt::ForegroundRole) {
+            return QVariant(QColor(Qt::darkGray));
         }
         return component->data(role);
     }
@@ -374,7 +378,7 @@ Component *ComponentModel::componentFromIndex(const QModelIndex &index) const
 {
     if (index.isValid())
         return static_cast<Component*>(index.internalPointer());
-    return 0;
+    return nullptr;
 }
 
 
@@ -581,7 +585,7 @@ QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compone
             checkable = false;
         }
 
-        if ((!node->isCheckable() && checkable) || !node->isEnabled() || !node->autoDependencies().isEmpty())
+       if ((!node->isCheckable() && checkable) || !node->isEnabled() || !node->autoDependencies().isEmpty() || node->isUnstable())
             continue;
 
         Qt::CheckState newState = state;

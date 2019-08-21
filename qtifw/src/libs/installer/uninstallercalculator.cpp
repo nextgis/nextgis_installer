@@ -75,7 +75,7 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
     foreach (Component *component, m_installedComponents) {
         // If a components is installed and not yet scheduled for un-installation, check for auto depend.
         if (component->isInstalled() && !m_componentsToUninstall.contains(component)) {
-            QStringList autoDependencies = component->autoDependencies();
+            QStringList autoDependencies = PackageManagerCore::parseNames(component->autoDependencies());
             if (autoDependencies.isEmpty())
                 continue;
 
@@ -99,13 +99,21 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
                 const QString replaces = c->value(scReplaces);
                 const QStringList possibleNames = replaces.split(QInstaller::commaRegExp(),
                                                                  QString::SkipEmptyParts) << c->name();
-                foreach (const QString &possibleName, possibleNames)
-                    autoDependencies.removeAll(possibleName);
+                foreach (const QString &possibleName, possibleNames) {
+
+                    Component *cc = PackageManagerCore::componentByName(possibleName, m_installedComponents);
+                    if (cc && (cc->installAction() != ComponentModelHelper::AutodependUninstallation)) {
+                        autoDependencies.removeAll(possibleName);
+
+                    }
+                }
             }
 
-            // A component requested auto installation, keep it to resolve their dependencies as well.
-            if (!autoDependencies.isEmpty())
+            // A component requested auto uninstallation, keep it to resolve their dependencies as well.
+            if (!autoDependencies.isEmpty()) {
                 autoDependOnList.append(component);
+                component->setInstallAction(ComponentModelHelper::AutodependUninstallation);
+            }
         }
     }
 

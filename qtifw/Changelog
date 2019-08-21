@@ -1,3 +1,76 @@
+3.1.1
+- Add fetch to the same pane with package categories (QTIFW-1284)
+- Change text in Select Components view when selection of components is not possible (QTIFW-1241)
+- Fix long description texts not properly shown by enabling scrolling (QTIFW-1308)
+- Fix install button string having a font name in French translation (QTIFW-1333)
+- Fix maintenancetool size (QTIFW-1322)
+- Update Russian translation
+- Enable links and text selection in component description fields (QTIFW-1292)
+
+3.1.0
+- Fix wizard's maximum size not to exceed screen maximum size (QTIFW-1227)
+- Allow maintenancetool signing in Windows (QTIFW-667)
+- Enable usage of categorized repositories (QTIFW-1147)
+- Add possibility to check/uncheck repositories with one button click (QTIFW-1132)
+- Update danish (da) translation for Qt installer-framework
+- Add attribute to mark parts of install tree unstable (QTIFW-930)
+   -> Setting AllowUnstablecomponents to true in config.xml will
+    * allow installing other components when there are errors in scripts
+    * allow installing other components when there are missing dependencies
+    * allow installing other components when there are sha mismatches in metadata
+    * will mark the 'broken' components uninstallable in treeview
+- Add findFiles method (QTIFW-1094)
+- Enable expanding items by default
+- Add support dash (-) symbol in component name (QTIFW-948)
+- Allow comparing non-numeric versions (QTIFW-948)
+- Add Component::addAutoDependOn method
+- Teach 'binarycreator' and 'repogen' to repack packages from repository (QTIFW-925)
+
+3.0.6
+- Remove 'Your install seems to be corrupted' messagebox (QTIFW-1003)
+- Register virtual component for uninstall (QTIFW-1102)
+- Optimize ExctractArchiveOperation::fileFinished() (QTBUG-51337)
+- Do not reset core data values in restart (QTIFW-504)
+- Fix maintenancetool writing in Windows (QTIFW-1096)
+- Fix environment variables for XDG paths not being recognized (QTIFW-1043)
+- Update german translation file (QTIFW-1084)
+- Fix admin query retry (QTIFW-988, QTIFW-1173)
+- Fix install fail if there is no metadata (QTIFW-1150)
+- Reset meta information download result (QTIFW-1137)
+
+3.0.5
+- Decrease metadata dowload amount (QTIFW-975)
+- Print component warnings only in verbose mode (QTIFW-975)
+- Fix nested autodependency uninstall (QTIFW-1114, QTBUG-67106)
+- Fix crash in updater if component does not exist anymore (QTIFW-1140)
+
+3.0.4
+- Fix infinite wait if downloadable package is missing (QTIFW-1064)
+- Fix the maintenancetool that failing to elevate to admin (QTIFW-1010)
+- Fix devtool's segmentation fault when using operation
+- Update Japanese translation
+- Remove unnecessary warning (QTIFW-1022)
+- Fix Mkdir operation in uninstall (QTIFW-1099)
+- Enable building IFW with Squish support
+
+3.0.3
+- Set correct proxy type (QTBUG-65143)
+- Add no-proxy option (QTIFW-1085)
+- Fix maintenancetool icon visibility in Mac (QTIFW-1074)
+- Fix EnvironmentVariable operation in Windows (QTIFW-794)
+- Fix crash when downloadable package is missing (QTIFW-1064)
+- Documentation fixes
+
+3.0.2
+- Add possibility to reopen admin query (QTIFW-988)
+- Implement package download resume (QTIFW-5)
+- Use QDir::rmdir and not rmpath as that will remove more than it should
+- Enable HighDPI support only in Windows
+- Do not reset core when pressing 'Restart' (QTIFW-1017)
+- Update italian translation
+- Update russian translation
+- Fixed building with dynamically linked Qt (QTIFW-993)
+
 3.0.1
 - Fix install type if --online-only passed to binarycreator
 - Fix install fail if there are missing repositories

@@ -89,7 +89,7 @@ bool RegisterFileTypeOperation::performOperation()
 {
 #ifdef Q_OS_WIN
     ensureOptionalArgumentsRead();
-    if (!checkArgumentCount(2, 5, tr("<extension> <command> [description [contentType [icon]]]")))
+    if (!checkArgumentCount(2, 5, QString::fromLatin1("<extension> <command> [description [contentType [icon]]]")))
         return false;
     QStringList args = arguments();
 
@@ -133,7 +133,7 @@ bool RegisterFileTypeOperation::performOperation()
     setValue(QLatin1String("newType"), readHive(&settings, classesFileType));
 
     // force the shell to invalidate its cache
-    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
 
     return true;
 #else
@@ -192,7 +192,7 @@ bool RegisterFileTypeOperation::undoOperation()
     settings.remove(classesApplications);
 
     // force the shell to invalidate its cache
-    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
 
     return true;
 #else

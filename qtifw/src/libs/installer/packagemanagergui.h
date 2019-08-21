@@ -57,7 +57,7 @@ namespace QInstaller {
 class PackageManagerCore;
 class PackageManagerPage;
 class PerformInstallationForm;
-
+class ComponentSelectionPagePrivate;
 
 // -- PackageManagerGui
 
@@ -106,6 +106,7 @@ public Q_SLOTS:
     void rejectWithoutPrompt();
     void showFinishedPage();
     void setModified(bool value);
+    void setMaxSize();
 
 protected Q_SLOTS:
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
@@ -257,11 +258,6 @@ private:
 #ifdef Q_OS_WIN
     QWinTaskbarButton *m_taskButton;
 #endif
-
-    // NEXTGIS: added for page skipping.
-#ifdef NG_AUTH_ON
-    bool m_visited;
-#endif
 };
 
 
@@ -316,17 +312,19 @@ public:
     Q_INVOKABLE void selectComponent(const QString &id);
     Q_INVOKABLE void deselectComponent(const QString &id);
     Q_INVOKABLE void allowCompressedRepositoryInstall();
+    Q_INVOKABLE bool addVirtualComponentToUninstall(const QString &name);
 
 protected:
     void entering();
+    void leaving();
     void showEvent(QShowEvent *event);
 
 private Q_SLOTS:
     void setModified(bool modified);
 
 private:
-    class Private;
-    Private *d;
+    friend class ComponentSelectionPagePrivate;
+    ComponentSelectionPagePrivate *const d;
 };
 
 

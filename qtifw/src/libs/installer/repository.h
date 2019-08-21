@@ -64,6 +64,9 @@ public:
     QString displayname() const;
     void setDisplayName(const QString &displayname);
 
+    QString categoryname() const;
+    void setCategoryName(const QString &categoryname);
+
     bool isCompressed() const;
     void setCompressed(bool compressed);
     bool operator==(const Repository &other) const;
@@ -82,6 +85,7 @@ private:
     QString m_username;
     QString m_password;
     QString m_displayname;
+    QString m_categoryname;
     bool m_compressed;
 };
 

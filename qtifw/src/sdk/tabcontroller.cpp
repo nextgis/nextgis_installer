@@ -61,8 +61,8 @@ public:
 TabController::Private::Private()
     : m_init(false)
     , m_networkSettingsChanged(false)
-    , m_gui(0)
-    , m_core(0)
+    , m_gui(nullptr)
+    , m_core(nullptr)
 {
 }
 
@@ -102,11 +102,6 @@ void TabController::setManager(QInstaller::PackageManagerCore *core)
     d->m_core = core;
 }
 
-void TabController::setManagerParams(const QHash<QString, QString> &params)
-{
-    d->m_params = params;
-}
-
 // -- public slots
 
 int TabController::init()
@@ -143,7 +138,7 @@ int TabController::init()
 
 void TabController::restartWizard()
 {
-    d->m_core->reset(d->m_params);
+    d->m_core->reset();
     if (d->m_networkSettingsChanged) {
         d->m_networkSettingsChanged = false;
 
@@ -198,9 +193,4 @@ void TabController::onNetworkSettingsChanged(const QInstaller::Settings &setting
 {
     d->m_settings = settings;
     d->m_networkSettingsChanged = true;
-}
-
-void TabController::updateManagerParams(const QString &key, const QString &value)
-{
-    d->m_params.insert(key, value);
 }

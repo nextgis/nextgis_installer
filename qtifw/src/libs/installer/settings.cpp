@@ -30,6 +30,7 @@
 #include "errors.h"
 #include "qinstallerglobal.h"
 #include "repository.h"
+#include "repositorycategory.h"
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QStringList>
@@ -55,6 +56,7 @@ static const QLatin1String scUserRepositories("UserRepositories");
 static const QLatin1String scTmpRepositories("TemporaryRepositories");
 static const QLatin1String scMaintenanceToolIniFile("MaintenanceToolIniFile");
 static const QLatin1String scRemoteRepositories("RemoteRepositories");
+static const QLatin1String scRepositoryCategories("RepositoryCategories");
 static const QLatin1String scDependsOnLocalInstallerBinary("DependsOnLocalInstallerBinary");
 static const QLatin1String scTranslations("Translations");
 static const QLatin1String scCreateLocalRepository("CreateLocalRepository");
@@ -133,11 +135,16 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
     return arguments;
 }
 
-static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode)
+static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode,
+                                         QString *displayName = nullptr, bool *preselected = nullptr,
+                                         QString *tooltip = nullptr)
 {
     QSet<Repository> set;
     while (reader.readNextStartElement()) {
-        if (reader.name() == QLatin1String("Repository")) {
+        if (reader.name() == QLatin1String("DisplayName"))  {
+            //remote repository can have also displayname. Needed when creating archive repositories
+            *displayName = reader.readElementText();
+        } else if (reader.name() == QLatin1String("Repository")) {
             Repository repo(QString(), isDefault);
             while (reader.readNextStartElement()) {
                 if (reader.name() == QLatin1String("Url")) {
@@ -160,7 +167,13 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
                         .arg(reader.name().toString()), parseMode);
                 }
             }
+            if (displayName && !displayName->isEmpty())
+                repo.setCategoryName(*displayName);
             set.insert(repo);
+        } else if (reader.name() == QLatin1String("Tooltip")) {
+            *tooltip = reader.readElementText();
+        }  else if (reader.name() == QLatin1String("Preselected")) {
+            *preselected = (reader.readElementText() == QLatin1String("true") ? true : false);
         } else {
             raiseError(reader, QString::fromLatin1("Unexpected element \"%1\".").arg(reader.name().toString()),
                 parseMode);
@@ -174,6 +187,28 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
     return set;
 }
 
+static QSet<RepositoryCategory> readRepositoryCategories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode,
+                                                         QString *repositoryCategoryName)
+{
+    QSet<RepositoryCategory> archiveSet;
+    while (reader.readNextStartElement()) {
+        if (reader.name() == QLatin1String("RemoteRepositories")) {
+            RepositoryCategory archiveRepo;
+            QString displayName;
+            QString tooltip;
+            bool preselected = false;
+            archiveRepo.setRepositories(readRepositories(reader, isDefault, parseMode,
+                                                         &displayName, &preselected, &tooltip));
+            archiveRepo.setDisplayName(displayName);
+            archiveRepo.setTooltip(tooltip);
+            archiveRepo.setEnabled(preselected);
+            archiveSet.insert(archiveRepo);
+        } else if (reader.name() == QLatin1String("RepositoryCategoryDisplayname")) {
+            *repositoryCategoryName = reader.readElementText();
+        }
+    }
+    return archiveSet;
+}
 
 // -- Settings::Private
 
@@ -256,7 +291,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
-                << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify;
+                << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify << scAllowUnstableComponents
+                << scSaveDefaultRepositories << scRepositoryCategories;
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
@@ -279,11 +315,16 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
             s.setRunProgramArguments(readArgumentAttributes(reader, parseMode, QLatin1String("Argument")));
         } else if (name == scRemoteRepositories) {
             s.addDefaultRepositories(readRepositories(reader, true, parseMode));
+        } else if (name == scRepositoryCategories) {
+            QString repositoryCategoryName;
+            s.addRepositoryCategories(readRepositoryCategories(reader, true, parseMode, &repositoryCategoryName));
+            if (!repositoryCategoryName.isEmpty()) {
+                s.setRepositoryCategoryDisplayName(repositoryCategoryName);
+            }
         } else {
             s.d->m_data.insert(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
         }
     }
-
     if (reader.error() != QXmlStreamReader::NoError) {
         throw Error(QString::fromLatin1("Error in %1, line %2, column %3: %4").arg(path).arg(reader
             .lineNumber()).arg(reader.columnNumber()).arg(reader.errorString()));
@@ -325,7 +366,10 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         s.d->m_data.insert(scCreateLocalRepository, false);
     if (!s.d->m_data.contains(scInstallActionColumnVisible))
         s.d->m_data.insert(scInstallActionColumnVisible, false);
-
+    if (!s.d->m_data.contains(scAllowUnstableComponents))
+        s.d->m_data.insert(scAllowUnstableComponents, false);
+    if (!s.d->m_data.contains(scSaveDefaultRepositories))
+        s.d->m_data.insert(scSaveDefaultRepositories, true);
     return s;
 }
 
@@ -545,6 +589,21 @@ QSet<Repository> Settings::defaultRepositories() const
     return variantListToSet<Repository>(d->m_data.values(scRepositories));
 }
 
+QSet<RepositoryCategory> Settings::repositoryCategories() const
+{
+    return variantListToSet<RepositoryCategory>(d->m_data.values(scRepositoryCategories));
+}
+
+QMap<QString, RepositoryCategory> Settings::organizedRepositoryCategories() const
+{
+    QSet<RepositoryCategory> categories = repositoryCategories();
+    QMap<QString, RepositoryCategory> map;
+    foreach (const RepositoryCategory &category, categories) {
+        map.insert(category.displayname(), category);
+    }
+    return map;
+}
+
 void Settings::setDefaultRepositories(const QSet<Repository> &repositories)
 {
     d->m_data.remove(scRepositories);
@@ -555,6 +614,12 @@ void Settings::addDefaultRepositories(const QSet<Repository> &repositories)
 {
     foreach (const Repository &repository, repositories)
         d->m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
+}
+
+void Settings::addRepositoryCategories(const QSet<RepositoryCategory> &repositories)
+{
+    foreach (const RepositoryCategory &repository, repositories)
+        d->m_data.insertMulti(scRepositoryCategories, QVariant().fromValue(repository));
 }
 
 static bool apply(const RepoHash &updates, QHash<QUrl, Repository> *reposToUpdate)
@@ -742,4 +807,35 @@ QString Settings::controlScript() const
 bool Settings::supportsModify() const
 {
     return d->m_data.value(scSupportsModify, true).toBool();
+}
+
+bool Settings::allowUnstableComponents() const
+{
+    return d->m_data.value(scAllowUnstableComponents, true).toBool();
+}
+
+void Settings::setAllowUnstableComponents(bool allow)
+{
+    d->m_data.insert(scAllowUnstableComponents, allow);
+}
+
+bool Settings::saveDefaultRepositories() const
+{
+    return d->m_data.value(scSaveDefaultRepositories, true).toBool();
+}
+
+void Settings::setSaveDefaultRepositories(bool save)
+{
+    d->m_data.insert(scSaveDefaultRepositories, save);
+}
+
+QString Settings::repositoryCategoryDisplayName() const
+{
+    QString displayName = d->m_data.value(QLatin1String(scRepositoryCategoryDisplayName)).toString();
+    return displayName.isEmpty() ? tr("Show package categories") : displayName;
+}
+
+void Settings::setRepositoryCategoryDisplayName(const QString& name)
+{
+    d->m_data.insert(scRepositoryCategoryDisplayName, name);
 }

@@ -65,6 +65,14 @@ public:
         Protocol::Mode mode = Protocol::Mode::Production);
     ~PackageManagerCore();
 
+    enum UnstableError {
+        DepencyToUnstable = 0,
+        ShaMismatch,
+        ScriptLoadingFailed,
+        MissingDependency
+    };
+     Q_ENUM(UnstableError)
+
     // status
     enum Status {
         Success = EXIT_SUCCESS,
@@ -125,7 +133,7 @@ public:
     bool fetchCompressedPackagesTree();
 
     bool run();
-    void reset(const QHash<QString, QString> &params);
+    void reset();
 
     void setGuiObject(QObject *gui);
     QObject *guiObject() const;
@@ -262,12 +270,19 @@ public:
 
     int downloadNeededArchives(double partProgressSize);
 
+    bool foundEssentialUpdate() const;
+    void setFoundEssentialUpdate(bool foundEssentialUpdate = true);
+
     bool needsHardRestart() const;
     void setNeedsHardRestart(bool needsHardRestart = true);
     bool finishedWithSuccess() const;
 
     QStringList filesForDelayedDeletion() const;
     void addFilesForDelayedDeletion(const QStringList &files);
+
+    static QString checkableName(const QString &name);
+    static void parseNameAndVersion(const QString &requirement, QString *name, QString *version);
+    static QStringList parseNames(const QStringList &requirements);
 
 public Q_SLOTS:
     bool runInstaller();
@@ -323,6 +338,7 @@ Q_SIGNALS:
     void coreNetworkSettingsChanged();
 
     void guiObjectChanged(QObject *gui);
+    void unstableComponentFound(const QString &type, const QString &errorMessage, const QString &component);
 
 private:
     struct Data {
