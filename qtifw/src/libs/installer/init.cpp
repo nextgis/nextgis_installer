@@ -48,6 +48,12 @@
 #include "settingsoperation.h"
 #include "consumeoutputoperation.h"
 
+#include "ng_fileenvironmentvariablesoperation.h"
+#include "ng_copyonlyoperation.h"
+#ifdef Q_OS_WIN
+#include "ng_userpathwinenvironmentvariablesoperation.h"
+#endif
+
 #include "lib7z_facade.h"
 #include "utils.h"
 

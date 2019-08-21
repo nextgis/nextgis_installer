@@ -41,6 +41,7 @@
 #include <QCommandLineParser>
 #include <QDateTime>
 #include <QNetworkProxyFactory>
+#include <QProcess>
 
 #include <iostream>
 

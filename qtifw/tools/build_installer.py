@@ -57,7 +57,7 @@ def parse_arguments():
     args = parser.parse_args()
 
 def run(args):
-    print 'calling ' + string.join(args)
+    print ('calling ' + string.join(args))
     subprocess.check_call(args)
 
 def init():
@@ -86,17 +86,18 @@ def init():
         qt_dir = os.path.dirname(os.path.dirname(root_dir))
         qt_dir = os.path.join(qt_dir, args.qt_dir)
         abs_qt_dir = os.path.abspath(qt_dir)
-        print 'abs_qt_dir: ' + abs_qt_dir
+        print ('abs_qt_dir: ' + abs_qt_dir)
         for subdir in os.listdir(abs_qt_dir):
             test_path = os.path.join(abs_qt_dir, subdir, "qtbase")
             if os.path.isdir(test_path):
                 qmake = os.path.join(test_path, 'qmake')
                 break
 
-    print 'source dir: ' + src_dir
-    print 'build dir: ' + build_dir
-    print 'package dir: ' + package_dir
-    print 'target path: ' + target_path
+    print ('source dir: ' + src_dir)
+    print ('build dir: ' + build_dir)
+    print ('package dir: ' + package_dir)
+    print ('target path: ' + target_path)
+    print ('qmake: ' + qmake)
 
     if args.clean and os.path.exists(build_dir):
         print 'delete existing build dir ...'
@@ -105,21 +106,21 @@ def init():
         os.makedirs(build_dir)
 
     if os.path.exists(target_path):
-        print 'delete existing target dir ...'
+        print ('delete existing target dir ...')
         shutil.rmtree(target_path)
     os.makedirs(target_path)
 
     if os.path.exists(package_dir):
-        print 'delete existing package dir ...'
+        print ('delete existing package dir ...')
         shutil.rmtree(package_dir)
     os.makedirs(package_dir)
 
 def build_docs():
-    print 'building documentation ...'
+    print ('building documentation ...')
     os.chdir(build_dir)
     run((args.doc_qmake, src_dir))
     run((args.make, 'docs'))
-    print 'success!'
+    print ('success!')
 
 def build():
     print 'building sources ...'
@@ -129,7 +130,7 @@ def build():
 
 def package():
     global package_dir
-    print 'package ...'
+    print ('package ...')
     os.chdir(package_dir)
     shutil.copytree(os.path.join(build_dir, 'bin'), os.path.join(package_dir, 'bin'), ignore = shutil.ignore_patterns("*.exe.manifest","*.exp","*.lib"))
     if sys.platform == 'linux2':
@@ -150,7 +151,7 @@ def package():
     binary_creator = os.path.join(build_dir, 'bin', 'binarycreator')
     config_file = os.path.join(src_dir, 'dist', 'config', 'config.xml')
     package_dir = os.path.join(src_dir, 'dist', 'packages')
-    installer_path = os.path.join(src_dir, 'dist', 'packages')
+    # installer_path = os.path.join(src_dir, 'dist', 'packages')
     run((binary_creator, '--offline-only', '-c', config_file, '-p', package_dir, target_path))
     # if sys.platform == 'darwin':
     #     shutil.copytree(args.menu_nib, target_path + '.app/Contents/Resources/qt_menu.nib')
@@ -162,4 +163,4 @@ init()
 build()
 package()
 
-print 'DONE, installer is at ' + target_path
+print ('DONE, installer is at ' + target_path)

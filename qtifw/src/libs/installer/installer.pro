@@ -133,9 +133,10 @@ HEADERS += packagemanagercore.h \
     lib7z_extract.h \
     lib7z_list.h \
     repositorycategory.h \
-    componentselectionpage_p.h
+    componentselectionpage_p.h \
     ng_fileenvironmentvariablesoperation.h \
     ng_copyonlyoperation.h
+
 win32 {
     HEADERS += ng_userpathwinenvironmentvariablesoperation.h
 }
@@ -215,9 +216,10 @@ SOURCES += packagemanagercore.cpp \
     systeminfo.cpp \
     packagesource.cpp \
     repositorycategory.cpp \
-    componentselectionpage_p.cpp
+    componentselectionpage_p.cpp \
     ng_fileenvironmentvariablesoperation.cpp \
     ng_copyonlyoperation.cpp
+
 win32 {
     SOURCES += ng_userpathwinenvironmentvariablesoperation.cpp
 }
