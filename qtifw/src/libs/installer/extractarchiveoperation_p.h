@@ -37,6 +37,8 @@
 
 #include <QRunnable>
 #include <QThread>
+#include <QFileInfo>
+#include <QDir>
 
 namespace QInstaller {
 
