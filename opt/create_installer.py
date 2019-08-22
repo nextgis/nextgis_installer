@@ -217,7 +217,7 @@ def init():
 
     if args.network:
         repo_remote_path = args.remote
-        print 'remote repository URL: ' + repo_remote_path
+        print ('remote repository URL: ' + repo_remote_path)
 
     translate_tool = os.path.join(args.qt_bin, 'lrelease')
     if sys.platform == 'win32':
@@ -793,7 +793,7 @@ def create_installer():
 
     # Hack as <InstallerApplicationIcon> in config.xml not working
     if sys.platform == 'darwin':
-        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, 'nextgis-setup'))) # , '--sign', mac_sign_identy
+        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, 'nextgis-setup'), '--sign', mac_sign_identy))
 
         import dmgbuild
         icns_path = os.path.join(repo_target_path, 'nextgis-setup.app', 'Contents', 'Resources', 'nextgis-setup.icns' )
@@ -818,7 +818,7 @@ def create_installer():
     else:
         run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '-p', repo_new_packages_path, os.path.join(repo_target_path, installer_name) ))
 
-    # TODO: run xcrun altool -t osx -f os.path.join(repo_target_path, installer_name) --primary-bundle-id 'com.yourcompany.installerbase' --notarize-app --user someuser --pssword somepassword
+    # TODO: run xcrun altool -t osx -f os.path.join(repo_target_path, installer_name) --primary-bundle-id 'com.yourcompany.installerbase' --notarize-app --user someuser --password somepassword
 
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, installer_name), True, 'LMAGENTA')
 
