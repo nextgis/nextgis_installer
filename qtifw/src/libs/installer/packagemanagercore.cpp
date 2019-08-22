@@ -422,9 +422,7 @@ void PackageManagerCore::writeMaintenanceTool()
             d->writeMaintenanceTool(d->m_performedOperationsOld + d->m_performedOperationsCurrentSession);
 
             bool gainedAdminRights = false;
-            QTemporaryFile tempAdminFile(d->targetDir()
-                + QLatin1String("/testjsfdjlkdsjflkdsjfldsjlfds") + QString::number(qrand() % 1000));
-            if (!tempAdminFile.open() || !tempAdminFile.isWritable()) {
+            if (!directoryWritable(d->targetDir())) {
                 gainAdminRights();
                 gainedAdminRights = true;
             }
@@ -665,7 +663,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 }
 
 /*!
-    Returns \c true if essential component update is found.
+    Returns \c true if an essential component update is found.
 */
 bool PackageManagerCore::foundEssentialUpdate() const
 {
@@ -673,7 +671,7 @@ bool PackageManagerCore::foundEssentialUpdate() const
 }
 
 /*!
-    Sets the value of \a foundEssentialUpdate, defaults \c true.
+    Sets the value of \a foundEssentialUpdate, defaults to \c true.
 */
 void PackageManagerCore::setFoundEssentialUpdate(bool foundEssentialUpdate)
 {
@@ -1111,8 +1109,7 @@ void PackageManagerCore::networkSettingsChanged()
 
     if (isMaintainer() ) {
         bool gainedAdminRights = false;
-        QTemporaryFile tempAdminFile(d->targetDir() + QStringLiteral("/XXXXXX"));
-        if (!tempAdminFile.open() || !tempAdminFile.isWritable()) {
+        if (!directoryWritable(d->targetDir())) {
             gainAdminRights();
             gainedAdminRights = true;
         }
@@ -1578,6 +1575,16 @@ Component *PackageManagerCore::componentByName(const QString &name, const QList<
     }
 
     return nullptr;
+}
+
+bool PackageManagerCore::directoryWritable(const QString &path) const
+{
+    return d->directoryWritable(path);
+}
+
+bool PackageManagerCore::subdirectoriesWritable(const QString &path) const
+{
+    return d->subdirectoriesWritable(path);
 }
 
 /*!

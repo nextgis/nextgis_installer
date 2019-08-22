@@ -1543,7 +1543,7 @@ void IntroductionPage::setErrorMessage(const QString &error)
 {
     QPalette palette;
     const PackageManagerCore::Status s = packageManagerCore()->status();
-    if (s == PackageManagerCore::Failure || s == PackageManagerCore::Failure) {
+    if (s == PackageManagerCore::Failure) {
         palette.setColor(QPalette::WindowText, Qt::red);
     } else {
         palette.setColor(QPalette::WindowText, palette.color(QPalette::WindowText));
@@ -1911,6 +1911,11 @@ void ComponentSelectionPage::entering()
     setColoredSubTitle(tr(strings[index]));
 
     d->updateTreeView();
+
+    // check component model state so we can enable needed component selection buttons
+    if (core->isUpdater())
+        d->onModelStateChanged(d->m_currentModel->checkedState());
+
     setModified(isComplete());
     if (core->settings().repositoryCategories().count() > 0 && !core->isOfflineOnly()
         && !core->isUpdater()) {

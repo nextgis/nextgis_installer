@@ -345,6 +345,27 @@ QString PackageManagerCorePrivate::targetDir() const
     return m_core->value(scTargetDir);
 }
 
+bool PackageManagerCorePrivate::directoryWritable(const QString &path) const
+{
+    QTemporaryFile tempFile(path + QStringLiteral("/tempFile") + QString::number(qrand() % 1000));
+    if (!tempFile.open() || !tempFile.isWritable())
+        return false;
+    else
+        return true;
+}
+
+bool PackageManagerCorePrivate::subdirectoriesWritable(const QString &path) const
+{
+    // Iterate over target directory subdirectories for writing access
+    QDirIterator iterator(path, QDir::AllDirs | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+    while (iterator.hasNext()) {
+        QTemporaryFile tempFile(iterator.next() + QLatin1String("/tempFile"));
+        if (!tempFile.open() || !tempFile.isWritable())
+            return false;
+    }
+    return true;
+}
+
 QString PackageManagerCorePrivate::configurationFileName() const
 {
     return m_core->value(scTargetConfigurationFile, QLatin1String("components.xml"));
@@ -1144,9 +1165,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *outp
 void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOperations)
 {
     bool gainedAdminRights = false;
-    QTemporaryFile tempAdminFile(targetDir() + QLatin1String("/testjsfdjlkdsjflkdsjfldsjlfds")
-        + QString::number(qrand() % 1000));
-    if (!tempAdminFile.open() || !tempAdminFile.isWritable()) {
+    if (!directoryWritable(targetDir())) {
         m_core->gainAdminRights();
         gainedAdminRights = true;
     }
@@ -1455,8 +1474,7 @@ bool PackageManagerCorePrivate::runInstaller()
                 }
             }
         } else if (QDir(target).exists()) {
-            QTemporaryFile tempAdminFile(target + QLatin1String("/adminrights"));
-            if (!tempAdminFile.open() || !tempAdminFile.isWritable())
+            if (!directoryWritable(targetDir()))
                 adminRightsGained = m_core->gainAdminRights();
         }
 
@@ -1622,10 +1640,16 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         //to have some progress for the cleanup/write component.xml step
         ProgressCoordinator::instance()->addReservePercentagePoints(1);
 
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
         // check if we need admin rights and ask before the action happens
-        if (!QTemporaryFile(targetDir() + QStringLiteral("/XXXXXX")).open())
+        // on Linux and macOS also check target directory subdirectories
+        if (!directoryWritable(targetDir()) || !subdirectoriesWritable(targetDir()))
             adminRightsGained = m_core->gainAdminRights();
-
+#else
+        // check if we need admin rights and ask before the action happens
+        if (!directoryWritable(targetDir()))
+            adminRightsGained = m_core->gainAdminRights();
+#endif
         const QList<Component *> componentsToInstall = m_core->orderedComponentsToInstall();
         qDebug() << "Install size:" << componentsToInstall.size() << "components";
 
@@ -1792,8 +1816,7 @@ bool PackageManagerCorePrivate::runUninstaller()
         setStatus(PackageManagerCore::Running);
 
         // check if we need to run elevated and ask before the action happens
-        QTemporaryFile tempAdminFile(targetDir() + QLatin1String("/adminrights"));
-        if (!tempAdminFile.open() || !tempAdminFile.isWritable())
+        if (!directoryWritable(targetDir()))
             adminRightsGained = m_core->gainAdminRights();
 
         OperationList undoOperations = m_performedOperationsOld;
