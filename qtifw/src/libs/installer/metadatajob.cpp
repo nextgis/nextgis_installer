@@ -134,7 +134,7 @@ void MetadataJob::doStart()
                         items.append(item);
 
                         // NEXTGIS: Add release message fetch
-                        QString urlMsg = repo.url().toString() + QLatin1String("/ReleaseMessage.xml?");
+                        QString urlMsg = repo.url().toString() + QLatin1String("/Release.xml?");
                         if(urlMsg.contains(QLatin1String("api/repo"), Qt::CaseInsensitive)) {
                             // Onle for repka url
                             FileTaskItem itemMsg(urlMsg.append(QString::number(qrand() * qrand())));
@@ -586,11 +586,14 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         const QDomElement root = doc.documentElement();
 
         // NEXTGIS: Check type
-        if(root.tagName() == QLatin1String("msg")) {
+        if(root.tagName() == QLatin1String("Release")) {
             if(!m_releaseMessage.isEmpty()) {
                 m_releaseMessage.append(QLatin1String("\n"));
             }
-            m_releaseMessage.append(root.text());
+            const QDomNode msg = root.firstChildElement(QLatin1String("Msg"));
+            if (!msg.isNull()) {
+                m_releaseMessage.append(msg.toElement().text());
+            }
             return XmlDownloadSuccess;
         }
         // End NextGIS
