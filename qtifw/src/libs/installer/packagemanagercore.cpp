@@ -1530,6 +1530,12 @@ QList<Component *> PackageManagerCore::components(ComponentTypes mask) const
     return components;
 }
 
+// NEXTGIS: Release message
+QString PackageManagerCore::releaseMessage() const
+{
+    return d->m_releaseMessage;
+}
+
 /*!
     Appends \a component to the internal storage for updater components. Emits
     the componentAdded() signal.

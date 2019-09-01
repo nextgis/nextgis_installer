@@ -132,6 +132,17 @@ void MetadataJob::doStart()
                         item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
                         item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                         items.append(item);
+
+                        // NEXTGIS: Add release message fetch
+                        QString urlMsg = repo.url().toString() + QLatin1String("/ReleaseMessage.xml?");
+                        if(urlMsg.contains(QLatin1String("api/repo"), Qt::CaseInsensitive)) {
+                            // Onle for repka url
+                            FileTaskItem itemMsg(urlMsg.append(QString::number(qrand() * qrand())));
+                            itemMsg.insert(TaskRole::UserRole, QVariant::fromValue(repo));
+                            itemMsg.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
+                            items.append(itemMsg);
+                        }
+                        // End NextGIS
                     }
                     else {
                         qDebug() << "Trying to parse compressed repo as normal repository."\
@@ -573,6 +584,17 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
 
         bool testCheckSum = true;
         const QDomElement root = doc.documentElement();
+
+        // NEXTGIS: Check type
+        if(root.tagName() == "msg") {
+            if(!m_releaseMessage.IsEmpty()) {
+                m_releaseMessage.append("\n");
+            }
+            m_releaseMessage.append(root.text())
+            return XmlDownloadSuccess;
+        }
+        // End NextGIS
+
         const QDomNode checksum = root.firstChildElement(QLatin1String("Checksum"));
         if (!checksum.isNull())
             testCheckSum = (checksum.toElement().text().toLower() == scTrue);

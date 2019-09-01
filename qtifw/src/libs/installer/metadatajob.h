@@ -73,6 +73,8 @@ public:
     void addCompressedPackages(bool addCompressPackage) { m_addCompressedPackages = addCompressPackage;}
     QStringList shaMismatchPackages() const { return m_shaMissmatchPackages; }
 
+    // NEXTGIS: Release message
+    QString m_releaseMessage;
 private slots:
     void doStart();
     void doCancel();

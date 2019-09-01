@@ -62,3 +62,5 @@ qtifw_pkg
 qtifw_pkg_debug
 qtifw_pkg_release
 qtifw/dist/packages/org.qtproject.ifw.binaries/data
+
+.vscode

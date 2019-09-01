@@ -216,6 +216,10 @@ public:
     QList<Component *> components(ComponentTypes mask) const;
     Component *componentByName(const QString &identifier) const;
 
+    // NEXTGIS: Add release message from repka
+    QString releaseMessage() const;
+    // End NextGIS
+
     Q_INVOKABLE bool calculateComponentsToInstall() const;
     QList<Component*> orderedComponentsToInstall() const;
     bool calculateComponents(QString *displayString);
