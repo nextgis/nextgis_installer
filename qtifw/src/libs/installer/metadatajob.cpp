@@ -586,11 +586,11 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         const QDomElement root = doc.documentElement();
 
         // NEXTGIS: Check type
-        if(root.tagName() == "msg") {
-            if(!m_releaseMessage.IsEmpty()) {
-                m_releaseMessage.append("\n");
+        if(root.tagName() == QLatin1String("msg")) {
+            if(!m_releaseMessage.isEmpty()) {
+                m_releaseMessage.append(QLatin1String("\n"));
             }
-            m_releaseMessage.append(root.text())
+            m_releaseMessage.append(root.text());
             return XmlDownloadSuccess;
         }
         // End NextGIS
