@@ -561,7 +561,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         QString src = ti.source();
         QString newName(QLatin1String("/Updates.xml"));
         if(src.contains(QLatin1String("Release.xml"), Qt::CaseInsensitive)) {
-            newName = QLatin1String("/Release.xml")
+            newName = QLatin1String("/Release.xml");
         }
 
         QFile file(result.target());
