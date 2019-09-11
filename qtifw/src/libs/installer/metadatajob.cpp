@@ -602,7 +602,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
             if (!msg.isNull()) {
                 m_releaseMessage.append(msg.toElement().text());
             }
-            return XmlDownloadSuccess;
+            continue;
         }
         // End NextGIS
 
