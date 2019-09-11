@@ -23,7 +23,7 @@ Some software distributed via installer and network repository.
 4. Execute script
 
 ```
-> python opt/create_updater.py -i nextgis-setup-<mac | win>-dev -v '3.0.1' --ftp_user <name:password> --ftp ftp://192.168.255.51/software/installer
+> python opt/create_updater.py -i nextgis-setup-<mac | win>-dev -v '3.0.1' --ftp_user <name:password> --ftp ftp://192.168.255.51/software/installer --ftpout_user <name:password> --ftpout ftp://192.168.245.1:8121/software/installer
 ```
 
 5. Update installer via buildbot. In force field add ``com.nextgis.nextgis_installer`` package name.

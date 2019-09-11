@@ -73,10 +73,12 @@ def parse_arguments():
     global args
 
     parser = argparse.ArgumentParser(description='Create NextGIS desktop software updater package.')
-    parser.add_argument('-i', dest='installer_name', required=False, help='Installer name')
-    parser.add_argument('-v', dest='version', required=False, help='updater version')
-    parser.add_argument('--ftp_user', dest='ftp_user', required=False, help='FTP user name and password to fetch package.zip anv version.str files')
-    parser.add_argument('--ftp', dest='ftp', required=False, help='FTP address with directories to fetch installer.exe package.zip anv version.str files')
+    parser.add_argument('-i', dest='installer_name', required=True, help='Installer name')
+    parser.add_argument('-v', dest='version', required=True, help='updater version')
+    parser.add_argument('--ftp_user', dest='ftp_user', required=True, help='FTP user name and password to fetch package.zip anv version.str files')
+    parser.add_argument('--ftp', dest='ftp', required=True, help='FTP address with directories to fetch installer.exe package.zip anv version.str files')
+    parser.add_argument('--ftpout_user', dest='ftpout_user', required=True, help='FTP user name and password to store package.zip anv version.str files')
+    parser.add_argument('--ftpout', dest='ftpout', required=True, help='FTP address with directories to store package.zip anv version.str files')
     args = parser.parse_args()
 
 
@@ -209,6 +211,9 @@ with open(ver_str, "w") as text_file:
     text_file.write('{}\n{}\npackage'.format(version_str, version_file_date))
 
 # 6 Send to ftp
+ftp = args.ftpout
+if ftp[-1:] != '/':
+    ftp += '/'
 ftp = ftp + 'src/' + updater_repo + '_' + suffix + '/'
 
-run(('curl', '-u', args.ftp_user, '-T', "{package.zip,version.str}", '-s', '--ftp-create-dirs', ftp))
+run(('curl', '-u', args.ftpout_user, '-T', "{package.zip,version.str}", '-s', '--ftp-create-dirs', ftp))
