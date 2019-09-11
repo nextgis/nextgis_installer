@@ -557,21 +557,28 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         metadata.directory = tmp.path();
         m_tempDirDeleter.add(metadata.directory);
 
+        FileTaskItem ti = result.taskItem();
+        QString src = ti.source();
+        QString newName(QLatin1String("/Updates.xml"));
+        if(src.contains(QLatin1String("Release.xml"), Qt::CaseInsensitive)) {
+            newName = QLatin1String("/Release.xml")
+        }
+
         QFile file(result.target());
-        if (!file.rename(metadata.directory + QLatin1String("/Updates.xml"))) {
-            qDebug() << "Cannot rename target to Updates.xml:" << file.errorString();
+        if (!file.rename(metadata.directory + newName)) {
+            qDebug() << "Cannot rename target:" << file.errorString();
             return XmlDownloadFailure;
         }
 
         if (!file.open(QIODevice::ReadOnly)) {
-            qDebug() << "Cannot open Updates.xml for reading:" << file.errorString();
+            qDebug() << "Cannot open file for reading:" << file.errorString();
             return XmlDownloadFailure;
         }
 
         QString error;
         QDomDocument doc;
         if (!doc.setContent(&file, &error)) {
-            qDebug().nospace() << "Cannot fetch a valid version of Updates.xml from repository "
+            qDebug().nospace() << "Cannot fetch a valid version of xml file from repository "
                                << metadata.repository.displayname() << ": " << error;
             //If there are other repositories, try to use those
             continue;
@@ -587,6 +594,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
 
         // NEXTGIS: Check type
         if(root.tagName() == QLatin1String("Release")) {
+            // Rename file again
             if(!m_releaseMessage.isEmpty()) {
                 m_releaseMessage.append(QLatin1String("\n"));
             }
