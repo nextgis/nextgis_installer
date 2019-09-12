@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_proj">
     <mac>
-        <path src="Library/Frameworks/proj4.framework" dst="Library/Frameworks/proj4.framework"/>
+        <path src="Library/Frameworks/proj.framework" dst="Library/Frameworks/proj.framework"/>
     </mac>
     <win>
         <path src="bin/*.dll" dst="bin"/>

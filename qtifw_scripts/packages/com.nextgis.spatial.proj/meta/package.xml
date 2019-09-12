@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>PROJ4</DisplayName>
-    <Description>PROJ4 library</Description>
+    <DisplayName>PROJ</DisplayName>
+    <Description>PROJ library</Description>
     <Script>installscript.qs</Script>
 </Package>

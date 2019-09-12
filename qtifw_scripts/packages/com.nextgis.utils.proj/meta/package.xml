@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>Proj4 utilities</DisplayName>
-    <Description>Proj4 command line utilities</Description>
+    <DisplayName>Proj utilities</DisplayName>
+    <Description>Proj command line utilities</Description>
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

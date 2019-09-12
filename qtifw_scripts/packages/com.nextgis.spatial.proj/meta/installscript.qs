@@ -46,9 +46,9 @@ Component.prototype.createOperations = function()
     {
         component.addOperation( "NgFileEnvironmentVariable",
                                 "PROJ_LIB",
-                                "@TargetDir@/Library/Frameworks/proj4.framework/Resources/proj",
+                                "@TargetDir@/Library/Frameworks/proj.framework/Resources/proj",
                                 "@HomeDir@/.profile;@HomeDir@/.bash_profile",
                                 "single");
-        SetEnvMac("PROJ_LIB", "@TargetDir@/Library/Frameworks/proj4.framework/Resources/proj");
+        SetEnvMac("PROJ_LIB", "@TargetDir@/Library/Frameworks/proj.framework/Resources/proj");
     }
 }
