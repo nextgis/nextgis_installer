@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import datetime
 import json
-import urllib2
+import urllib2, base64
 import os
 
-def install_license(valid_user, valid_date, out_dir):
+def install_license(valid_user, valid_date, out_dir, sign_pwd):
     today = datetime.date.today()
     begin_date = today.strftime('%Y-%m-%d')
     end_date = valid_date
@@ -12,12 +12,15 @@ def install_license(valid_user, valid_date, out_dir):
     payload = {
         "nextgis_guid": "00000000-0000-0000-0000-0000000000000",
         "start_date": begin_date,
-        "end_date": valid_date,
+        "end_date": end_date,
         "supported": "true"
     }
 
-    url = 'http://192.168.250.1:9201/sign'
+    url = 'https://s1.nextgis.com/api/sign'
     req = urllib2.Request(url)
+    if sign_pwd is not None:
+        base64string = base64.b64encode(sign_pwd)
+        req.add_header("Authorization", "Basic %s" % base64string)   
     req.add_header('Content-Type', 'application/json')
     response = urllib2.urlopen(req, json.dumps(payload))
     data = json.load(response)
@@ -33,7 +36,7 @@ def install_license(valid_user, valid_date, out_dir):
         'supported': 'true',
         'sign': sign,
         'start_date': begin_date,
-        'end_date': valid_date,
+        'end_date': end_date,
     }
 
     if not os.path.exists(out_dir):

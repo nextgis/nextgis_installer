@@ -140,6 +140,7 @@ def parse_arguments():
     parser_prepare.add_argument('-p', dest='qgis_plugins', required=False, help='QGIS Additional python plugins to include into installer. Plugin names separeted by comma')
     parser_prepare.add_argument('-vd', dest='valid_date', required=False, help='Validity end date')
     parser_prepare.add_argument('-vu', dest='valid_user', required=False, help='Authorised user')
+    parser_prepare.add_argument('--sign_pwd', dest='sign_pwd', required=False, help='Authorisation for sign api')
 
     parser_create = subparsers.add_parser('create')
 
@@ -561,7 +562,7 @@ def delete_path(path_to_delete):
     color_print('Delete existing build dir ...', True, 'LRED')
     shutil.rmtree(path_to_delete, ignore_errors=True)
 
-def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date):
+def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pwd):
     if ftp is None:
         return
 
@@ -677,7 +678,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date):
                             extract_path = os.path.join(archive_dir, 'usr/share/license')
                         elif sys.platform == 'win32':
                             extract_path = os.path.join(archive_dir, 'share\\license')
-                        sign.install_license(valid_user, valid_date, extract_path)
+                        sign.install_license(valid_user, valid_date, extract_path, sign_pwd)
 
                 shutil.move(archive_dir, target_repo_dir)
                 break
@@ -833,7 +834,7 @@ if args.command == 'create':
     update(None)
     create_installer()
 elif args.command == 'prepare':
-    download(args.ftp_user, args.ftp, args.source, args.qgis_plugins, args.valid_user, args.valid_date)
+    download(args.ftp_user, args.ftp, args.source, args.qgis_plugins, args.valid_user, args.valid_date, args.sign_pwd)
     prepare()
 elif args.command == 'update':
     packages = []
