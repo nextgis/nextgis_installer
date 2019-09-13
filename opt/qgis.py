@@ -32,7 +32,8 @@ def install_plugins(plugins_list, out_dir):
 
     metadata_xml_urls = [
         'http://plugins.qgis.org/plugins/plugins.xml?qgis=' + qgis_version,
-        'http://nextgis.ru/programs/qgis/qgis-repo.xml?qgis=' + qgis_version
+        'https://rm.nextgis.com/api/repo/1/qgis_xml?qgis=',
+        # 'http://nextgis.ru/programs/qgis/qgis-repo.xml?qgis=' + qgis_version
     ]
 
     # Create repos dir

@@ -14,6 +14,7 @@ import argparse
 import sys
 import subprocess
 import string
+import time
 
 args = {}
 updater_repo = 'nextgis_updater'
@@ -183,6 +184,8 @@ with open(script_path, "w") as text_file:
     text_file.write(script_content)
 
 run((installer_exe, '--script', script_path))
+
+time.sleep(10)
 
 # 3 Get installer files
 color_print('Create updater package', False, 'LBLUE')
