@@ -48,6 +48,7 @@ def install_plugins(plugins_list, out_dir):
         urllib.urlretrieve(metadata_xml_url, os.path.join(repos_dir, str(counter) + ".repo.xml"))
         counter += 1
     for plugin in plugins_list:
+        print('Install plugin {}'.format(plugin))
         plugin_name1 = plugin
         plugin_name2 = plugin.replace(' ', '_')
         output_url = ''
@@ -67,6 +68,7 @@ def install_plugins(plugins_list, out_dir):
                 pass
 
         if output_url:
+            print('Download url: {}'.format(output_url))
             out_zip = os.path.join(plugins_dir, plugin_name2 + '.zip')
             urllib.urlretrieve(output_url, out_zip)
 
@@ -75,3 +77,5 @@ def install_plugins(plugins_list, out_dir):
             os.chdir(out_dir)
             run(('cmake', '-E', 'tar', 'xzf', out_zip))
             os.chdir(prev_dir)
+        else:
+            print('Failed to find plugin {}'.find(plugin))
