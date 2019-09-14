@@ -15,7 +15,7 @@ def extract_value(text):
     return text.replace(")", "").strip()
 
 def get_qgis_version():
-    url = 'https://github.com/nextgis/nextgisqgis/blob/master/cmake/util.cmake'
+    url = 'https://raw.githubusercontent.com/nextgis/nextgisqgis/master/cmake/util.cmake'
     qgis_major = "0"
     qgis_minor = "0"
     u2 = urllib.urlopen(url)
@@ -45,10 +45,10 @@ def install_plugins(plugins_list, out_dir):
     if not os.path.exists(plugins_dir):
         os.makedirs(plugins_dir)
     for metadata_xml_url in metadata_xml_urls:
+        print('Fetch {}'.format(metadata_xml_url))
         urllib.urlretrieve(metadata_xml_url, os.path.join(repos_dir, str(counter) + ".repo.xml"))
         counter += 1
     for plugin in plugins_list:
-        print('Install plugin {}'.format(plugin))
         plugin_name1 = plugin
         plugin_name2 = plugin.replace(' ', '_')
         output_url = ''
@@ -68,7 +68,7 @@ def install_plugins(plugins_list, out_dir):
                 pass
 
         if output_url:
-            print('Download url: {}'.format(output_url))
+            print('Plugin {} download url: {}'.format(plugin, output_url))
             out_zip = os.path.join(plugins_dir, plugin_name2 + '.zip')
             urllib.urlretrieve(output_url, out_zip)
 
