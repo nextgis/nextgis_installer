@@ -690,7 +690,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
                         sign.install_license(valid_user, valid_date, extract_path, sign_pwd)
                         ## Avatar
                         avatar_path = os.path.join(license_path, "avatar")
-                        local_filename, _ = ("https://raw.githubusercontent.com/nextgis/lib_ngstd/master/res/enterprise_person.png", "avatar")
+                        local_filename, _ = urlretrieve("https://raw.githubusercontent.com/nextgis/lib_ngstd/master/res/enterprise_person.png", "avatar")
                         shutil.copyfile(local_filename, avatar_path)
                         ## Public.key
                         pk_path = os.path.join(license_path, "public.key")
