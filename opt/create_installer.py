@@ -688,8 +688,6 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
                             license_path = os.path.join(archive_dir, 'share')
                         extract_path = os.path.join(license_path, 'license')
                         sign.install_license(valid_user, valid_date, extract_path, sign_pwd)
-                        if os.path.exists(extract_path):
-                            exit('Failed to get {}'.format(extract_path))
                         ## Avatar
                         avatar_path = os.path.join(license_path, "avatar")
                         local_filename, _ = ("https://github.com/nextgis/lib_ngstd/raw/master/res/enterprise_preson.png", "avatar")
