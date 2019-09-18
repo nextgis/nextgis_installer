@@ -689,13 +689,11 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
                         extract_path = os.path.join(license_path, 'license')
                         sign.install_license(valid_user, valid_date, extract_path, sign_pwd)
                         ## Avatar
-                        avatar_path = os.path.join(license_path, "avatar")
-                        local_filename, _ = urlretrieve("https://raw.githubusercontent.com/nextgis/lib_ngstd/master/res/enterprise_person.png", "avatar")
-                        shutil.copyfile(local_filename, avatar_path)
+                        avatar_path = os.path.join(extract_path, "avatar")
+                        urlretrieve("https://raw.githubusercontent.com/nextgis/lib_ngstd/master/res/enterprise_person.png", avatar_path)
                         ## Public.key
-                        pk_path = os.path.join(license_path, "public.key")
-                        local_filename, _ = urlretrieve("https://my.nextgis.com/api/v1/rsa_public_key", "public.key")
-                        shutil.copyfile(local_filename, pk_path)
+                        pk_path = os.path.join(extract_path, "public.key")
+                        urlretrieve("https://my.nextgis.com/api/v1/rsa_public_key", pk_path)
 
                 shutil.move(archive_dir, target_repo_dir)
                 break
