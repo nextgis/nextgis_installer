@@ -19,6 +19,7 @@ import xml.etree.ElementTree as ET
 import time
 import pickle
 import glob
+import urllib2
 
 args = {}
 libraries_version_dict = {}
@@ -675,10 +676,16 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
                     if valid_user and valid_date:
                         import sign
                         if sys.platform == 'darwin':
-                            extract_path = os.path.join(archive_dir, 'usr/share/license')
+                            license_path = os.path.join(archive_dir, 'usr/share')
                         elif sys.platform == 'win32':
-                            extract_path = os.path.join(archive_dir, 'share\\license')
+                            license_path = os.path.join(archive_dir, 'share')
+                        extract_path = os.path.join(license_path, 'license')
                         sign.install_license(valid_user, valid_date, extract_path, sign_pwd)
+                        ## Avatar
+                        urllib2.urlretrieve ("https://github.com/nextgis/lib_ngstd/raw/master/res/enterprise_preson.png", os.path.join(license_path, "avatar"))
+                        ## Public.key
+                        urllib2.urlretrieve ("https://my.nextgis.com/api/v1/rsa_public_key", os.path.join(license_path, "public.key"))
+
 
                 shutil.move(archive_dir, target_repo_dir)
                 break
