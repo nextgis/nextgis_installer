@@ -50,5 +50,7 @@
         <path src="translations/qtdeclarative_*.qm" dst="share/qt5/translations"/>
         <path src="translations/qtscript_*.qm" dst="share/qt5/translations"/>
         <path src="translations/qtxmlpatterns_*.qm" dst="share/qt5/translations"/>
+        
+        <path src="plugins/styles/qwindowsvistastyle.dll" dst="bin/styles"/>
     </win>
 </Package>
