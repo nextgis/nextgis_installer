@@ -16,6 +16,7 @@
         <path src="lib/QtXmlPatterns.framework" dst="Library/Frameworks/QtXmlPatterns.framework"/>
         <path src="lib/QtMacExtras.framework" dst="Library/Frameworks/QtMacExtras.framework"/>
         <path src="lib/QtPrintSupport.framework" dst="Library/Frameworks/QtPrintSupport.framework"/>
+        <path src="lib/QtDBus.framework" dst="Library/Frameworks/QtDBus.framework"/>
 
         <path src="plugins/bearer/*.dylib" dst="Library/Plugins/Qt5/bearer"/>
         <path src="plugins/geometryloaders/*.dylib" dst="Library/Plugins/Qt5/geometryloaders"/>
