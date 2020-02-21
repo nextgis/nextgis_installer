@@ -1,5 +1,5 @@
 @echo off
-set PATH=TargetDir\bin;%PATH%
+set PATH=TargetDir\bin;TargetDir\lib\python27\site-packages\shapely\DLLs
 set PROJ_LIB=TargetDir\share\proj
 set SSL_CERT_FILE=TargetDir\share\ssl\certs\cert.pem
 set CURL_CA_BUNDLE=TargetDir\share\ssl\certs\cert.pem
