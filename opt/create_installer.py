@@ -506,12 +506,17 @@ def process_directory(dir_name):
         sources_root_dir = root.attrib['root']
         version_text, has_changes = get_version_text(sources_root_dir, dir_name, False)
         if has_changes == False:
+            version_tag = root.find('Version')
             # Try check Version
-            version_text, has_changes = check_version(root.find('Version').text, '', dir_name, False)
+            if version_tag is not None:
+                version_text, has_changes = check_version(version_tag.text, '', dir_name, False)
     else:
         mtime = time.gmtime(os.path.getmtime(package_xml))
         version_date = time.strftime('%Y-%m-%d %H:%M:%S', mtime)
-        version_text, has_changes = check_version(root.find('Version').text, version_date, dir_name, False)
+        version_tag = root.find('Version')
+        if version_tag is None:
+            return
+        version_text, has_changes = check_version(version_tag.text, version_date, dir_name, False)
 
     updatetext_tag = root.find('UpdateText')
     updatetext_text = None
