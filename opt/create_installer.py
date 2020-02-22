@@ -75,6 +75,11 @@ skip_osx_dependencies = ['com.nextgis.common.qt.all', 'com.nextgis.python.python
     'com.nextgis.python.sci',
 ]
 
+virtual_packages = ['com.nextgis.nextgis_updater', 'com.nextgis.python', 
+    'com.nextgis.common', 'com.nextgis.common.qt', 'com.nextgis.utils',
+    'com.nextgis.spatial', 'com.nextgis.python.all', 'com.nextgis.utils.all'
+]
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -743,8 +748,9 @@ def update_directory(dir_name, force):
 
     # Don't force updater
     local_force = force
-    if dir_name == 'com.nextgis.nextgis_updater' or dir_name == 'com.nextgis.python' or dir_name == 'com.nextgis.common' or dir_name == 'com.nextgis.common.qt' or dir_name == 'com.nextgis.utils' or dir_name == 'com.nextgis.spatial' or dir_name ==  'com.nextgis.python.all' or dir_name == 'com.nextgis.utils.all':
+    if dir_name in virtual_packages:
         local_force = False
+        return # This disables update this packages. To update them - comment this line
 
     sources_root_dir = ''
     if 'root' in root.attrib:
