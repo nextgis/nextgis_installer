@@ -504,7 +504,11 @@ def process_directory(dir_name):
     sources_root_dir = ''
     if 'root' in root.attrib:
         sources_root_dir = root.attrib['root']
+        version_str = root.find('Version')
         version_text, has_changes = get_version_text(sources_root_dir, dir_name, False)
+        if has_changes == False:
+            # Try check Version
+            version_text, has_changes = check_version(root.find('Version').text, '', dir_name, False)
     else:
         mtime = time.gmtime(os.path.getmtime(package_xml))
         version_date = time.strftime('%Y-%m-%d %H:%M:%S', mtime)
