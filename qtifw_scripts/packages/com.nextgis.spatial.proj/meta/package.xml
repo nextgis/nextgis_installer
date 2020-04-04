@@ -3,4 +3,5 @@
     <DisplayName>PROJ</DisplayName>
     <Description>PROJ library</Description>
     <Script>installscript.qs</Script>
+    <Dependencies>com.nextgis.common.sqlite,com.nextgis.common.curl,com.nextgis.common.tiff</Dependencies>
 </Package>
