@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>NextGIS STD 4</DisplayName>
     <Description>NextGIS Standard Qt4 Library</Description>
-    <Dependencies>com.nextgis.common.qt.qt4,com.nextgis.spatial.gdal</Dependencies>
+    <Dependencies>com.nextgis.common.qt.qt4,com.nextgis.spatial.gdal,com.nextgis.common.sentry</Dependencies>
 </Package>
