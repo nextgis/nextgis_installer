@@ -230,19 +230,25 @@ def get_file_id(release, platform):
 def get_path_from_repka(package, version, suffix):
     packet_id = get_packet_id(repo_id, package)
     if packet_id == -1:
-        return ''
+        return '', '0.0.0', ''
     release = None
     if version == '':
         release = get_release(packet_id, 'latest')
     else:
         release = get_release(packet_id, version)
     if release is None:
-        return ''
+        return '', '0.0.0', ''
     file_id = get_file_id(release, suffix)
     if file_id == -1:
-        return ''
+        return '', '0.0.0', ''
 
-    return repka_endpoint + '/api/asset/{}/download'.format(file_id)    
+    package_ver = '' 
+    for tag in release['tags']:
+        if tag != 'latest':
+            package_ver = tag
+            break
+
+    return repka_endpoint + '/api/asset/{}/download'.format(file_id), package_ver, release['updated']
 
 def load_versions(file_name):
     color_print('load versions from ' + file_name, True, 'LYELLOW')
@@ -737,10 +743,6 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
         color_print('Download ' + ftp_dir + '/package.zip', True, 'LGREEN')
         run(('curl', '-u', ftp_user, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
 
-    for repository in repka_repositories:
-        url = get_path_from_repka(repository['package'], repository['version'], suffix)
-        run(('curl', '-L', url, '-o', out_zip, '-s'))
-
 # 2. Extract archive
         color_print('Extract ' + out_zip, False, 'LGREEN')
         run(('cmake', '-E', 'tar', 'xzf', out_zip))
@@ -782,6 +784,27 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
         if os.path.exists(target_repo_dir):
             color_print('Download ' + ftp_dir + '/version.str', True, 'LGREEN')
             run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
+
+    for repository in repka_repositories:
+        url, version, date = get_path_from_repka(repository['package'], repository['version'], suffix)
+        run(('curl', '-L', url, '-o', out_zip, '-s'))
+
+# 2. Extract archive
+        color_print('Extract ' + out_zip, False, 'LGREEN')
+        run(('cmake', '-E', 'tar', 'xzf', out_zip))
+
+# 3. Move archive with new name to target_dir
+        target_repo_dir = os.path.join(target_dir, repository['package'])
+        for o in os.listdir(tmp_dir):
+            archive_dir = os.path.join(tmp_dir,o)
+            if os.path.isdir(archive_dir):
+                shutil.move(archive_dir, target_repo_dir)
+                break
+# 4. Create version.str
+        if os.path.exists(target_repo_dir):
+            f = open(os.path.join(target_repo_dir, 'version.str'), 'w')
+            f.write('{}\n{}\n'.format(version, date))
+            f.close()
 
 def prepare():
     color_print('Preparing ...', True, 'LYELLOW')
