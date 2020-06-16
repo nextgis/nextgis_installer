@@ -19,14 +19,16 @@ import xml.etree.ElementTree as ET
 import time
 import pickle
 import glob
+import json
 
 if sys.version_info[0] >= 3:
-    from urllib.request import urlretrieve
+    from urllib.request import urlretrieve, urlopen
 else:
     # Not Python 3 - today, it is most likely to be Python 2
     # But note that this might need an update when Python 4
     # might be around one day
     from urllib import urlretrieve
+    from urllib2 import urlopen
 
 args = {}
 libraries_version_dict = {}
