@@ -52,12 +52,16 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
     'lib_jbig', 'lib_szip', 'lib_xml2', 'lib_spatialite', 'lib_openjpeg',
     'lib_tiff', 'lib_geotiff', 'lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml',
     'numpy', 'lib_gdal', 'py_markupsafe', 'py_subprocess32', 'py_psycopg',
-    'py_spatialite', 'py_matplotlib', 'lib_qt4', 'lib_qt5', 'lib_qca',
+    'py_spatialite', 'py_matplotlib', 'lib_qt4', 'lib_qt5',
     'lib_spatialindex', 'lib_qwt', 'py_sip', 'py_qt4', 'lib_qscintilla',
     'nextgisqgis', 'py_kiwisolver', 'lib_ngstd', 'formbuilder', 'lib_opencv',
     'manuscript', 'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
     'lib_bzip2', 'py_pillow', 'lib_harfbuzz', 'lib_littlecms', 'lib_webp',
     'lib_sentrynative',
+]
+
+repka_repositories = [
+    {'package': 'lib_qca', 'version': '2.2.0'},
 ]
 
 repositories_win = ['lib_iconv', 'python', 'py_sci',
@@ -131,7 +135,6 @@ def color_print(text, bold, color):
         out_text += text + bcolors.ENDC
         print out_text
 
-
 def parse_arguments():
     global args
 
@@ -181,6 +184,63 @@ def run_shell(args):
     if rc != 0:
         sys.exit('Failed to call')
 
+repka_endpoint = 'https://rm.nextgis.com'
+repo_id = 2
+compilers = {
+    'mac' : 'Clang-9.0',
+    'win32' : 'MSVC-19.12',
+    'win64' : 'MSVC-19.12-64bit',
+}
+
+def get_packet_id(repo_id, packet_name):
+    url =  repka_endpoint + '/api/packet?repository={}&filter={}'.format(repo_id, packet_name)
+    color_print('Check packet url: ' + url, False, 'OKGRAY')
+    response = urlopen(url)
+    packets = json.loads(response.read())
+    for packet in packets:
+        if packet['name'] == packet_name: 
+            return packet['id']
+    return -1
+
+def get_release(packet_id, tag):
+    url =  repka_endpoint + '/api/release?packet={}'.format(packet_id)
+    color_print('Check release url: ' + url, False, 'OKGRAY')
+    response = urlopen(url)
+    releases = json.loads(response.read())
+    if releases is None:
+        color_print('Release ID not found', False, 'LCYAN')
+        return None
+
+    for release in releases:
+        if tag in release['tags']: 
+            color_print('Release ID {} found'.format(release['id']), False, 'LCYAN')
+            return release
+
+    color_print('Release ID not found', False, 'LCYAN')
+    return None
+
+def get_file_id(release, platform):
+    for file in release['files']:
+        if file['name'].endswith('{}.zip'.format(compilers[platform])):
+            return file['id']
+    return -1    
+
+def get_path_from_repka(package, version, suffix):
+    packet_id = get_packet_id(repo_id, package)
+    if packet_id == -1:
+        return ''
+    release = None
+    if version == '':
+        release = get_release(packet_id, 'latest')
+    else:
+        release = get_release(packet_id, version)
+    if release is None:
+        return ''
+    file_id = get_file_id(release, suffix)
+    if file_id == -1:
+        return ''
+
+    return repka_endpoint + '/api/asset/{}/download'.format(file_id)    
 
 def load_versions(file_name):
     color_print('load versions from ' + file_name, True, 'LYELLOW')
@@ -674,6 +734,10 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
         ftp_dir = repository + '_' + suffix
         color_print('Download ' + ftp_dir + '/package.zip', True, 'LGREEN')
         run(('curl', '-u', ftp_user, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
+
+    for repository in repka_repositories:
+        url = get_path_from_repka(repository['package'], repository['version'], suffix)
+        run(('curl', '-L', url, '-o', out_zip, '-s'))
 
 # 2. Extract archive
         color_print('Extract ' + out_zip, False, 'LGREEN')
