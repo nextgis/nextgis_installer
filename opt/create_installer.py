@@ -59,7 +59,7 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
     'nextgisqgis', 'py_kiwisolver', 'lib_ngstd', 'formbuilder', 'lib_opencv',
     'manuscript', 'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
     'lib_bzip2', 'py_pillow', 'lib_harfbuzz', 'lib_littlecms', 'lib_webp',
-    'lib_sentrynative',
+    'lib_sentrynative', 'py_lxml', 'lib_xslt',
 ]
 
 repka_repositories = [
