@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_lxml">
     <mac>
-        <path src="inst/lib/python2.7/site-packages/lxml" dst="Library/Python/2.7/site-packages/lxml"/>
+        <path src="Library/lib/python2.7/site-packages/lxml/" dst="Library/Python/2.7/site-packages/lxml"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/lxml" dst="lib/python27/site-packages/lxml"/>
+        <path src="Lib/site-packages/lxml" dst="lib/python27/site-packages/lxml"/>
     </win>
 </Package>
