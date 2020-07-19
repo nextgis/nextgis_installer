@@ -176,7 +176,7 @@ def run(args):
     try:
         subprocess.check_call(args)
     except subprocess.CalledProcessError as e:
-        print("Error: {}".format(e.output.decode()))
+        print(e.output)
         pass
 
 def run_shell(args):
