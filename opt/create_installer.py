@@ -48,6 +48,9 @@ translate_tool = ''
 packages_data_source_path = ''
 mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 
+connect_timeout = 10
+max_time = 85
+
 repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
     'lib_qhull', 'lib_png', 'lib_freetype', 'lib_agg', 'lib_geos', 'lib_expat',
     'lib_jsonc', 'lib_opencad', 'lib_jpeg', 'lib_pq', 'lib_proj', 'lib_lzma',
@@ -702,7 +705,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
             suffix_u = 'win'
         ftp_dir = repository + '_' + suffix_u
         color_print('Download ' + ftp_dir + '/package.zip', True, 'LGREEN')
-        run(('curl', '-u', ftp_user, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
+        run(('curl', '-u', ftp_user, '--connect-timeout', connect_timeout, '--max-time', max_time, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
 
 # 2. Extract archive
         color_print('Extract ' + out_zip, False, 'LGREEN')
@@ -719,7 +722,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
 # 4. Download version.str
         if os.path.exists(target_repo_dir):
             color_print('Download ' + ftp_dir + '/version.str', True, 'LGREEN')
-            run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
+            run(('curl', '-u', ftp_user, '--connect-timeout', connect_timeout, '--max-time', max_time, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
     except:
         pass
 
@@ -741,7 +744,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
     for repository in repositories:
         ftp_dir = repository + '_' + suffix
         color_print('Download ' + ftp_dir + '/package.zip', True, 'LGREEN')
-        run(('curl', '-u', ftp_user, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
+        run(('curl', '-u', ftp_user, '--connect-timeout', connect_timeout, '--max-time', max_time, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
 
 # 2. Extract archive
         color_print('Extract ' + out_zip, False, 'LGREEN')
@@ -783,7 +786,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
 # 4. Download version.str
         if os.path.exists(target_repo_dir):
             color_print('Download ' + ftp_dir + '/version.str', True, 'LGREEN')
-            run(('curl', '-u', ftp_user, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
+            run(('curl', '-u', ftp_user, '--connect-timeout', connect_timeout, '--max-time', max_time, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
 
     for repository in repka_repositories:
         url, version, date = get_path_from_repka(repository['package'], repository['version'], suffix)
