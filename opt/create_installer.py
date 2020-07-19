@@ -172,11 +172,15 @@ def parse_arguments():
 
 
 def run(args):
-    print 'calling ' + string.join(args)
-    subprocess.check_call(args)
+    print('calling {}'.format(string.join(args)))
+    try:
+        subprocess.check_call(args)
+    except subprocess.CalledProcessError as e:
+        print("Error: {}".format(e.output.decode()))
+        pass
 
 def run_shell(args):
-    print 'calling ' + string.join(args)
+    print('calling {}'.format(string.join(args)))
     # subprocess.check_call(args, shell=True)
 
     p = subprocess.Popen(args, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
