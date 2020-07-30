@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="mapinfo_connect">
+    <win>
+        <path src="*" dst="share/MapInfo/NextGISConnect"/>
+    </win>
+</Package>
