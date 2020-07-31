@@ -67,7 +67,7 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
 
 repka_repositories = [
     {'package': 'lib_qca', 'version': '2.2.0'},
-    {'package': 'mapinfo_connect', 'version': ''},
+    {'package': 'mapinfo_connect', 'version': 'latest'},
 ]
 
 repositories_win = ['lib_iconv', 'python', 'py_sci',
