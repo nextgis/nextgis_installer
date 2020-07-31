@@ -46,13 +46,13 @@ Component.prototype.createOperations = function()
             reg_path += "\\99999"; 
             // TODO: add checks whether "99999" already exists in registry and pick another name if so.
 
-            component.addElevatedOperation("Execute", "REG", "ADD", reg_path, "UNDOEXECUTE", "REG", "DELETE", reg_path, "/f");
-            component.addElevatedOperation("Execute", "REG", "ADD", reg_path, "/v", "Autoload", "/t", "REG_DWORD", "/d", "1");
-            component.addElevatedOperation("Execute", "REG", "ADD", reg_path, "/v", "Description", "/t", "REG_SZ", "/d", "NextGIS Connect for MapInfo");
-            component.addElevatedOperation("Execute", "REG", "ADD", reg_path, "/v", "ImageUri", "/t", "REG_SZ", "/d", plugin_path + "\\nextgis.png");
-            component.addElevatedOperation("Execute", "REG", "ADD", reg_path, "/v", "Location", "/t", "REG_SZ", "/d", plugin_path + "\\NextGISConnect.mbx");
-            component.addElevatedOperation("Execute", "REG", "ADD", reg_path, "/v", "Owner", "/t", "REG_SZ", "/d", "MI_TOOLS");
-            component.addElevatedOperation("Execute", "REG", "ADD", reg_path, "/v", "Title", "/t", "REG_SZ", "/d", "NextGIS Connect");
+            component.addOperation("Execute", "REG", "ADD", reg_path, "UNDOEXECUTE", "REG", "DELETE", reg_path, "/f");
+            component.addOperation("Execute", "REG", "ADD", reg_path, "/v", "Autoload", "/t", "REG_DWORD", "/d", "1");
+            component.addOperation("Execute", "REG", "ADD", reg_path, "/v", "Description", "/t", "REG_SZ", "/d", "NextGIS Connect for MapInfo");
+            component.addOperation("Execute", "REG", "ADD", reg_path, "/v", "ImageUri", "/t", "REG_SZ", "/d", plugin_path + "\\nextgis.png");
+            component.addOperation("Execute", "REG", "ADD", reg_path, "/v", "Location", "/t", "REG_SZ", "/d", plugin_path + "\\NextGISConnect.mbx");
+            component.addOperation("Execute", "REG", "ADD", reg_path, "/v", "Owner", "/t", "REG_SZ", "/d", "MI_TOOLS");
+            component.addOperation("Execute", "REG", "ADD", reg_path, "/v", "Title", "/t", "REG_SZ", "/d", "NextGIS Connect");
         }
     }
 }
