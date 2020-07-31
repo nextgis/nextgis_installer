@@ -2,7 +2,7 @@
 <Package>
     <Dependencies>com.nextgis.spatial.ngstore</Dependencies>
     <DisplayName>NextGIS Connect for MapInfo</DisplayName>
-    <Description>MapInfo Pro extension for connecting to your Web GIS and managing its resources</Description>
+    <Description>MapInfo Pro extension which allows to connect to your Web GIS at nextgis.com and manage its resources</Description>
     <Default>false</Default>
     <Script>afterinstall.qs</Script>
     <Translations>
