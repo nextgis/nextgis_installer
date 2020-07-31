@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="mapinfo_connect">
     <win>
-        <path src="*" dst="share/MapInfo/NextGISConnect"/>
+        <path src="ru/*" dst="share/MapInfo/NextGISConnect/ru"/>
+        <path src="*.dll" dst="share/MapInfo/NextGISConnect"/>
+        <path src="*.mbx" dst="share/MapInfo/NextGISConnect"/>
+        <path src="*.pdb" dst="share/MapInfo/NextGISConnect"/>
     </win>
 </Package>
