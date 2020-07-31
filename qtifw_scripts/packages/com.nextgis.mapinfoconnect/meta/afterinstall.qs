@@ -18,7 +18,7 @@ Component.prototype.createOperations = function()
         var plugin_path = "@TargetDir@\\share\\NextGIS\\MapInfo\\NextGISConnect";
         
         // Define architecture type of installer (not the system).
-        var repo_url = component.repositoryUrl().toString();
+        var repo_url = component.repositoryUrl.toString();
         var is_installer_x64 = false;
         if (repo_url.indexOf("64") != -1)
             is_installer_x64 = true;
