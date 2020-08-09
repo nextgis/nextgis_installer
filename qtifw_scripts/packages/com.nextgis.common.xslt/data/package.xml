@@ -2,6 +2,7 @@
 <Package root="lib_xslt">
     <mac>
         <path src="Library/Frameworks/libxslt.framework" dst="Library/Frameworks/libxslt.framework"/>
+        <path src="Library/Frameworks/libexslt.framework" dst="Library/Frameworks/libexslt.framework"/>
     </mac>
     <win>
         <path src="bin/*.dll" dst="bin"/>
