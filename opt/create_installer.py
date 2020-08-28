@@ -58,7 +58,7 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
     'lib_tiff', 'lib_geotiff', 'lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml',
     'numpy', 'lib_gdal', 'py_markupsafe', 'py_subprocess32', 'py_psycopg',
     'py_spatialite', 'py_matplotlib', 'lib_qt4', 'lib_qt5',
-    'lib_spatialindex', 'lib_qwt', 'py_sip', 'py_qt4', 'lib_qscintilla',
+    'lib_spatialindex', 'lib_qwt', 'py_sip', 'py_qt4', 
     'nextgisqgis', 'py_kiwisolver', 'lib_ngstd', 'formbuilder', 'lib_opencv',
     'manuscript', 'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
     'lib_bzip2', 'py_pillow', 'lib_harfbuzz', 'lib_littlecms', 'lib_webp',
@@ -67,6 +67,7 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
 
 repka_repositories = [
     {'package': 'lib_qca', 'version': '2.2.0'},
+    {'package': 'lib_qscintilla', 'version': '2.10.4'},
     {'package': 'mapinfo_connect', 'version': 'latest'},
 ]
 
