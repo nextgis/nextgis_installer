@@ -72,7 +72,11 @@ repka_repositories = [
     {'package': 'mapinfo_connect', 'version': 'latest'},
 ]
 
-repositories_win = ['lib_iconv', 'python', 'py_sci',
+repositories_win = ['lib_iconv', 'py_sci',
+]
+
+repka_repositories_win = [
+    {'package': 'python', 'version': '2.7.14'},
 ]
 
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
@@ -747,6 +751,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
 
     if sys.platform == 'win32':
         repositories.extend(repositories_win)
+        repka_repositories.extend(repka_repositories_win)
 
     for repository in repositories:
         ftp_dir = repository + '_' + suffix
