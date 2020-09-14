@@ -15,7 +15,7 @@ Component.prototype.createOperations = function()
 
     if (systemInfo.productType === "windows")
     {
-        var plugin_path = "@TargetDir@\\share\\NextGIS\\MapInfo\\NextGISConnect";
+        var plugin_path = "@TargetDir@\\share\\MapInfo\\NextGISConnect";
         
         // Define architecture type of installer (not the system).
         var repo_url = component.repositoryUrl.toString();
