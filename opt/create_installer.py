@@ -70,6 +70,7 @@ repka_repositories = [
     {'package': 'lib_qscintilla', 'version': '2.10.4'},
     {'package': 'py_sip', 'version': '4.19.8'},
     {'package': 'mapinfo_connect', 'version': 'latest'},
+    {'package': 'nextgisutilities', 'version': 'latest'},
 ]
 
 repositories_win = ['lib_iconv', 'py_sci',
