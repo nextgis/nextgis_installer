@@ -51,8 +51,8 @@ mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 connect_timeout = "10.5"
 max_time = "85.7"
 
-repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
-    'lib_qhull', 'lib_png', 'lib_freetype', 'lib_agg', 'lib_geos', 'lib_expat',
+repositories = ['lib_z', 'lib_openssl', 'lib_gif',
+    'lib_qhull', 'lib_freetype', 'lib_agg', 'lib_geos', 'lib_expat',
     'lib_jsonc', 'lib_opencad', 'lib_jpeg', 'lib_pq', 'lib_proj', 'lib_lzma',
     'lib_jbig', 'lib_szip', 'lib_xml2', 'lib_spatialite', 'lib_openjpeg',
     'lib_tiff', 'lib_geotiff', 'lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml',
@@ -71,6 +71,9 @@ repka_repositories = [
     {'package': 'py_sip', 'version': '4.19.8'},
     {'package': 'mapinfo_connect', 'version': 'latest'},
     {'package': 'nextgisutilities', 'version': 'latest'},
+    {'package': 'lib_sqlite', 'version': 'latest'},
+    {'package': 'lib_png', 'version': 'latest'},
+    {'package': 'lib_curl', 'version': 'latest'},
 ]
 
 repositories_win = ['lib_iconv', 'py_sci',
