@@ -3,5 +3,5 @@
     <DisplayName>GDAL python</DisplayName>
     <Description>GDAL python bindings</Description>
     <Script>afterinstall.qs</Script>
-    <Dependencies>com.nextgis.python.all,com.nextgis.spatial.gdal,com.nextgis.python.numpy</Dependencies>
+    <Dependencies>com.nextgis.python.all,com.nextgis.spatial.gdal,com.nextgis.python.numpy,com.nextgis.utils.utils</Dependencies>
 </Package>

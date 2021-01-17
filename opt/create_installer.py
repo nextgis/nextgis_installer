@@ -51,14 +51,14 @@ mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 connect_timeout = "10.5"
 max_time = "85.5"
 
-repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
-    'lib_qhull', 'lib_png', 'lib_freetype', 'lib_agg', 'lib_geos', 'lib_expat',
+repositories = ['lib_z', 'lib_openssl', 'lib_gif',
+    'lib_qhull', 'lib_freetype', 'lib_agg', 'lib_geos', 'lib_expat',
     'lib_jsonc', 'lib_opencad', 'lib_jpeg', 'lib_pq', 'lib_proj', 'lib_lzma',
     'lib_jbig', 'lib_szip', 'lib_xml2', 'lib_spatialite', 'lib_openjpeg',
     'lib_tiff', 'lib_geotiff', 'lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml',
     'numpy', 'lib_gdal', 'py_markupsafe', 'py_subprocess32', 'py_psycopg',
     'py_spatialite', 'py_matplotlib', 'lib_qt4', 'lib_qt5',
-    'lib_spatialindex', 'lib_qwt', 'py_sip', 'py_qt4', 'lib_qscintilla',
+    'lib_spatialindex', 'lib_qwt', 'py_qt4', 
     'nextgisqgis', 'py_kiwisolver', 'lib_ngstd', 'formbuilder', 'lib_opencv',
     'manuscript', 'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
     'lib_bzip2', 'py_pillow', 'lib_harfbuzz', 'lib_littlecms', 'lib_webp',
@@ -67,10 +67,20 @@ repositories = ['lib_z', 'lib_openssl', 'lib_curl', 'lib_sqlite', 'lib_gif',
 
 repka_repositories = [
     {'package': 'lib_qca', 'version': '2.2.0'},
+    {'package': 'lib_qscintilla', 'version': '2.10.4'},
+    {'package': 'py_sip', 'version': '4.19.8'},
     {'package': 'mapinfo_connect', 'version': 'latest'},
+    {'package': 'nextgisutilities', 'version': 'latest'},
+    {'package': 'lib_sqlite', 'version': 'latest'},
+    {'package': 'lib_png', 'version': 'latest'},
+    {'package': 'lib_curl', 'version': 'latest'},
 ]
 
-repositories_win = ['lib_iconv', 'python', 'py_sci',
+repositories_win = ['lib_iconv', 'py_sci',
+]
+
+repka_repositories_win = [
+    {'package': 'python', 'version': '2.7.14'},
 ]
 
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
@@ -745,6 +755,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
 
     if sys.platform == 'win32':
         repositories.extend(repositories_win)
+        repka_repositories.extend(repka_repositories_win)
 
     for repository in repositories:
         ftp_dir = repository + '_' + suffix

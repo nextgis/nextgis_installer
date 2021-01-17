@@ -6,5 +6,5 @@
         <Translation>ru.qm</Translation>
     </Translations>
     <Script>script.qs</Script>
-    <Dependencies>com.nextgis.utils.all,com.nextgis.spatial.gdal,com.nextgis.python.gdal</Dependencies>
+    <Dependencies>com.nextgis.utils.utils,com.nextgis.python.gdal</Dependencies>
 </Package>
