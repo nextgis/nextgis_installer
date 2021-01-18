@@ -77,7 +77,8 @@ repka_repositories = [
     {'package': 'lib_webp', 'version': 'latest'},
 ]
 
-repositories_win = ['lib_iconv', 'py_sci',
+repositories_win = [
+    'lib_iconv', 'py_sci',
 ]
 
 repka_repositories_win = [
@@ -87,7 +88,7 @@ repka_repositories_win = [
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
     'py_cycler', 'py_parsing', 'py_contextlib', 'py_raven', 'py_future',
     'py_requests', 'py_pytz', 'py_nose', 'py_jinja', 'py_httplib', 'py_ows',
-    'py_dateutil', 'py_pygments', 'py_six', 'py_urllib3','py_idna','py_chardet',
+    'py_dateutil', 'py_pygments', 'py_six', 'py_urllib3', 'py_idna', 'py_chardet',
     'py_certifi', 'py_geojson', 'py_tqdm', 'py_beautifulsoup', 'py_geographiclib',
     'py_soupsieve',
 ]
