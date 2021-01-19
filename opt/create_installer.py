@@ -51,18 +51,17 @@ mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 connect_timeout = "10.5"
 max_time = "85.5"
 
-repositories = ['lib_z', 'lib_openssl', 'lib_gif',
-    'lib_qhull', 'lib_freetype', 'lib_agg', 'lib_geos', 'lib_expat',
-    'lib_jsonc', 'lib_opencad', 'lib_jpeg', 'lib_pq', 'lib_proj', 'lib_lzma',
-    'lib_jbig', 'lib_szip', 'lib_xml2', 'lib_spatialite', 'lib_openjpeg',
-    'lib_tiff', 'lib_geotiff', 'lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml',
-    'numpy', 'py_markupsafe', 'py_subprocess32', 'py_psycopg',
-    'py_spatialite', 'py_matplotlib', 'lib_qt4', 'lib_qt5',
-    'lib_spatialindex', 'lib_qwt', 'py_qt4', 
-    'nextgisqgis', 'py_kiwisolver', 'lib_ngstd', 'formbuilder', 'lib_opencv',
-    'manuscript', 'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
+repositories = [
+    'lib_z', 'lib_openssl', 'lib_gif', 'lib_qhull', 'lib_freetype', 'lib_agg', 
+    'lib_geos', 'lib_expat', 'lib_jsonc', 'lib_opencad', 'lib_jpeg', 'lib_pq', 
+    'lib_proj', 'lib_lzma', 'lib_jbig', 'lib_szip', 'lib_xml2', 'lib_spatialite', 
+    'lib_openjpeg', 'lib_tiff', 'lib_geotiff', 'lib_hdf4', 'lib_gsl', 'lib_yaml', 
+    'py_yaml', 'py_markupsafe', 'py_subprocess32', 'py_psycopg',
+    'py_spatialite', 'py_matplotlib',
+    'lib_spatialindex', 'lib_qwt', 'py_qt4', 'py_kiwisolver', 'lib_ngstd', 
+    'lib_opencv', 'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
     'lib_bzip2', 'py_pillow', 'lib_harfbuzz', 'lib_littlecms', 
-    'lib_sentrynative', 'py_lxml', 'lib_xslt', 'nextgis_datastore',
+    'lib_sentrynative', 'py_lxml', 'lib_xslt',
 ]
 
 repka_repositories = [
@@ -76,6 +75,13 @@ repka_repositories = [
     {'package': 'lib_curl', 'version': 'latest'},
     {'package': 'lib_webp', 'version': 'latest'},
     {'package': 'lib_gdal', 'version': 'latest'},
+    {'package': 'nextgisqgis', 'version': 'latest'},
+    {'package': 'formbuilder', 'version': 'latest'},
+    {'package': 'manuscript', 'version': 'latest'},
+    {'package': 'numpy', 'version': 'latest'},
+    {'package': 'nextgis_datastore', 'version': 'latest'},
+    {'package': 'lib_qt4', 'version': 'latest'},
+    {'package': 'lib_qt5', 'version': 'latest'},
 ]
 
 repositories_win = [
