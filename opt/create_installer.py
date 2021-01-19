@@ -61,7 +61,8 @@ repositories = [
     'lib_spatialindex', 'lib_qwt', 'py_qt4', 'py_kiwisolver', 'lib_ngstd', 
     'lib_opencv', 'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
     'lib_bzip2', 'py_pillow', 'lib_harfbuzz', 'lib_littlecms', 
-    'lib_sentrynative', 'py_lxml', 'lib_xslt',
+    'lib_sentrynative', 'py_lxml', 'lib_xslt', 'nextgisqgis', 'manuscript', 
+    'formbuilder', 
 ]
 
 repka_repositories = [
@@ -75,9 +76,6 @@ repka_repositories = [
     {'package': 'lib_curl', 'version': 'latest'},
     {'package': 'lib_webp', 'version': 'latest'},
     {'package': 'lib_gdal', 'version': 'latest'},
-    {'package': 'nextgisqgis', 'version': 'latest'},
-    {'package': 'formbuilder', 'version': 'latest'},
-    {'package': 'manuscript', 'version': 'latest'},
     {'package': 'numpy', 'version': 'latest'},
     {'package': 'nextgis_datastore', 'version': 'latest'},
     {'package': 'lib_qt4', 'version': 'latest'},
