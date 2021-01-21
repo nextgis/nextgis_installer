@@ -53,7 +53,7 @@ max_time = "85.5"
 
 repositories = [
     'lib_z', 'lib_openssl', 'lib_gif', 'lib_qhull', 'lib_freetype', 'lib_agg', 
-    'lib_geos', 'lib_expat', 'lib_jsonc', 'lib_opencad', 'lib_jpeg', 'lib_pq', 
+    'lib_geos', 'lib_expat', 'lib_jsonc', 'lib_opencad', 'lib_pq', 
     'lib_proj', 'lib_lzma', 'lib_jbig', 'lib_szip', 'lib_xml2', 'lib_spatialite', 
     'lib_openjpeg', 'lib_tiff', 'lib_geotiff', 'lib_hdf4', 'lib_gsl', 'lib_yaml', 
     'py_yaml', 'py_markupsafe', 'py_subprocess32', 'py_psycopg',
@@ -80,6 +80,7 @@ repka_repositories = [
     {'package': 'nextgis_datastore', 'version': 'latest'},
     {'package': 'lib_qt4', 'version': 'latest'},
     {'package': 'lib_qt5', 'version': 'latest'},
+    {'package': 'lib_jpeg', 'version': 'latest'},
 ]
 
 repositories_win = [
