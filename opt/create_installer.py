@@ -53,13 +53,12 @@ max_time = "85.5"
 
 repositories = [
     'lib_z', 'lib_openssl', 'lib_gif', 'lib_qhull', 'lib_freetype', 'lib_agg', 
-    'lib_geos', 'lib_expat', 'lib_jsonc', 'lib_opencad', 'lib_pq', 
-    'lib_proj', 'lib_lzma', 'lib_jbig', 'lib_szip', 'lib_xml2', 'lib_spatialite', 
-    'lib_openjpeg', 'lib_tiff', 'lib_geotiff', 'lib_hdf4', 'lib_gsl', 'lib_yaml', 
-    'py_yaml', 'py_markupsafe', 'py_subprocess32', 'py_psycopg',
-    'py_spatialite', 'py_matplotlib',
-    'lib_spatialindex', 'lib_qwt', 'py_qt4', 'py_kiwisolver', 'lib_ngstd', 
-    'lib_opencv', 'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
+    'lib_geos', 'lib_expat', 'lib_jsonc', 'lib_opencad', 'lib_pq', 'lib_proj', 
+    'lib_lzma', 'lib_jbig', 'lib_szip', 'lib_xml2', 'lib_spatialite', 'lib_openjpeg', 
+    'lib_tiff', 'lib_geotiff', 'lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml', 
+    'py_markupsafe', 'py_subprocess32', 'py_psycopg', 'py_spatialite', 'py_matplotlib',
+    'lib_spatialindex', 'lib_qwt', 'py_qt4', 'py_kiwisolver',
+    'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
     'lib_bzip2', 'py_pillow', 'lib_harfbuzz', 'lib_littlecms', 
     'lib_sentrynative', 'py_lxml', 'lib_xslt', 'nextgisqgis', 'manuscript', 
     'formbuilder', 
@@ -81,6 +80,8 @@ repka_repositories = [
     {'package': 'lib_qt4', 'version': 'latest'},
     {'package': 'lib_qt5', 'version': 'latest'},
     {'package': 'lib_jpeg', 'version': 'latest'},
+    {'package': 'lib_opencv', 'version': 'latest'},
+    {'package': 'lib_ngstd', 'version': 'latest'},
 ]
 
 repositories_win = [
