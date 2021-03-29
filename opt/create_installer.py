@@ -250,7 +250,7 @@ def get_release(packet_id, tag):
 
 def get_file_id(release, platform):
     for file in release['files']:
-        if file['name'].endswith('{}.zip'.format(compilers[platform])):
+        if file['name'].endswith('{}.zip'.format(compilers[platform])) and 'static' not in file['name']:
             return file['id']
     return -1    
 
