@@ -6,5 +6,6 @@
     </mac>
     <win>
         <path src="bin/*.dll" dst="bin"/>
+        <path src="bin/*.exe" dst="bin"/>
     </win>
 </Package>
