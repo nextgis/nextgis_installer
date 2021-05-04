@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>Oracle client interface</DisplayName>
-    <Description>Oracle client interface Library</Description>
-    <Licenses>
-        <License name="License Agreement for Oracle Instant Client software" file="oci_license.txt" />
-    </Licenses>
-</Package>

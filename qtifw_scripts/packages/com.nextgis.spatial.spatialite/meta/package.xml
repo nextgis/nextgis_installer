@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>SpatiaLite</DisplayName>
-    <Description>SpatiaLite Library</Description>
-    <Dependencies>com.nextgis.common.sqlite,com.nextgis.spatial.geos,com.nextgis.spatial.proj,com.nextgis.common.xml2</Dependencies>
-</Package>

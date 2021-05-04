@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>PIL</DisplayName>
-    <Description>PIL package</Description>
-    <Dependencies>com.nextgis.python.all,com.nextgis.common.freetype,com.nextgis.common.jpeg,com.nextgis.common.littlecms,com.nextgis.common.openjpeg,com.nextgis.common.tiff,com.nextgis.common.webp,com.nextgis.common.z</Dependencies>
-</Package>

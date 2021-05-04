@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="vc_redist">
-    <win>
-        <path src="inst/bin/*.dll" dst="bin"/>
-        <!--path src="inst/bin/msvcr*.dll" dst="bin"/>
-		<path src="inst/bin/msvcp*.dll" dst="bin"/>
-		<path src="inst/bin/vcruntime*.dll" dst="bin"/-->
-    </win>
-</Package>

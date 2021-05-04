@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Qt Installer Framework</DisplayName>
+    <Description>Installs the Qt Installer Framework.</Description>
+    <Version>4.1.0</Version>
+    <ReleaseDate>2020-12-09</ReleaseDate>
+    <Licenses>
+        <License name="The Qt Company GPL Exception 1.0" file="LICENSE.GPL3-EXCEPT" />
+        <License name="Third Party Code Licenses" file="3RDPARTY" />
+    </Licenses>
+    <Script>installscript.qs</Script>
+</Package>

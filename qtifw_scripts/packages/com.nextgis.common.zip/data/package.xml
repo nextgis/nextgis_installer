@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="lib_zip">
-    <win>
-        <path src="bin/*.dll" dst="bin"/>
-    </win>
-</Package>

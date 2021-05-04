@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>Freetype</DisplayName>
-    <Description>Freetype Library</Description>
-    <Dependencies>com.nextgis.common.harfbuzz,com.nextgis.common.bz</Dependencies>
-</Package>

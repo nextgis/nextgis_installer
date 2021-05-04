@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="py_shapely">
-    <mac>
-        <path src="Library/lib/python2.7/site-packages/shapely/" dst="Library/Python/2.7/site-packages/shapely"/>
-    </mac>
-    <win>
-        <path src="Lib/site-packages/shapely" dst="lib/python27/site-packages/shapely"/>
-    </win>
-</Package>

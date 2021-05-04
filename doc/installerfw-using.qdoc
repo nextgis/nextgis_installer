@@ -1,0 +1,502 @@
+/****************************************************************************
+**
+** Copyright (C) 2021 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \previouspage ifw-getting-started.html
+    \page ifw-use-cases.html
+    \nextpage ifw-use-cases-install.html
+
+    \title End User Workflows
+
+    The end user experience is similar for offline and online installers.
+    Along with your application, the installers install a maintenance tool that
+    consists of a package manager, an updater, and an uninstaller. End users can
+    use the maintenance tool to add, update, and remove components. The
+    maintenance tool connects to an external repository to fetch the components
+    to add or update. You can specify the repository in the configuration file
+    or end users can specify it in the maintenance tool settings.
+
+    You can support the following end user workflows:
+
+    \list
+
+        \li \l{Initial Installation}
+
+        \li \l{Adding Components}
+
+        \li \l{Removing Components}
+
+        \li \l{Updating Components}
+
+        \li \l{Specifying Settings}
+
+        \li \l{Using from Command Line}
+
+    \endlist
+*/
+
+/*!
+    \previouspage ifw-use-cases.html
+    \page ifw-use-cases-install.html
+    \nextpage ifw-use-cases-add.html
+
+    \title Initial Installation
+
+    The following image illustrates the default workflow for installing
+    applications:
+
+    \image ifw-user-flow-installing.png "Installation workflow"
+
+    This section uses the \e {Your Application Installer} example run on macOS
+    to illustrate the default workflow for end users. The installers have the
+    native look and feel on each supported desktop platform, and therefore they
+    look and feel different when run on Linux and Windows.
+
+    The example files are stored in the \c{examples\tutorial} directory
+    in the Qt Installer Framework repository. You can use the \c binarycreator
+    tool to create \e {Your Application Installer}.
+
+    \section1 Starting Installer
+
+    When end users start the installer, the introduction page opens:
+
+    \image ifw-introduction-page.png "Introduction page"
+
+    You specify the name of the installer and the product to install in the
+    \c config.xml configuration file.
+
+    When end users select \gui Continue, the target directory selection page opens.
+
+    \section1 Selecting Target Directory
+
+    End users must specify the target directory for the installation. You can
+    specify a default value in the \c config.xml configuration file.
+
+    \image ifw-target-directory-page.png "Target directory selection page"
+
+    When end users select \gui Continue, the component selection page opens.
+
+    If the directory already contains files, a warning page opens:
+
+    \image ifw-warning-existing-installation.png "Warning page"
+
+    \section1 Selecting Components
+
+    The component selection page lists the components available for installation
+    and a short description of each component. End users select the components
+    to install. They can select \gui {Select All} to select all components,
+    \gui {Deselect All} to deselect them, or \gui Default to revert to the
+    default selection.
+
+    \image ifw-select-components.png "Component selection page"
+
+    You add the installable components to the \c data directory in the package
+    directory. You specify information about the components in the
+    \c package.xml file in the \c meta directory.
+
+    You can use a boolean operator or a script to specify whether a component is
+    selected by default.
+
+    When end users select \gui Continue, the license check page opens.
+
+    \section1 Accepting License Agreements
+
+    On the license check page, end users must accept the terms of the license
+    agreement for the installation to continue.
+
+    \image ifw-license-check-page.png "License check page"
+
+    The license check page is displayed, if you specify a license file in the
+    \c package.xml file and copy the file to the \c meta directory.
+
+    \section1 Selecting Windows Program Group
+
+    On Windows, the Start menu directory selection page enables end users to
+    select the program group for the product in the Windows \gui Start menu.
+
+    \image ifw-win-program-group.png "Start menu directory selection page"
+
+    You specify a default value for the program group in the \c config.xml
+    configuration file.
+
+    When end users select \gui Next, the ready for installation page opens.
+
+    \section1 Installing Components
+
+    The ready for installation page informs end users that the installation can
+    begin when users select \gui Install.
+
+    \image ifw-ready-for-installation.png "Ready for installation page"
+
+    During the installation, the perform installation page displays information
+    about how the installation is progressing. End users can select
+    \gui {Show Details} to view more information.
+
+    \image ifw-perform-installation.png "Perform installation page"
+
+    When the installation is complete, the installation finished page opens.
+
+    \image ifw-installation-finished.png "Installation finished page"
+
+    To this page, you can add the option to start the installed product upon
+    closing the installer. You specify the product to start and the text to
+    display in the \c config.xml configuration file.
+*/
+
+/*!
+    \previouspage ifw-use-cases-install.html
+    \page ifw-use-cases-add.html
+    \nextpage ifw-use-cases-remove.html
+
+    \title Adding Components
+
+    If end users did not select all the components available for installation
+    during the initial installation, they can use the package manager to install
+    the remaining components from a repository later. The package manager is
+    part of a maintenance tool that is installed together with the application
+    during the initial installation. This only works if a repository that
+    contains the components is available either locally or externally.
+
+    The following image illustrates the default workflow for installing
+    additional components:
+
+    \image ifw-user-flow-adding.png "Add components workflow"
+
+    This section uses the \e {Maintenance Tool} installed by the Qt 5 installer
+    run on macOS as an example implementation of how end users can add components
+    after the initial installation. The Maintenance Tool contains the package
+    manager, updater, and uninstaller.
+
+    \section1 Starting Package Manager
+
+    When end users start the Maintenance Tool, the introduction page opens:
+
+    \image ifw-add-components-introduction.png "Introduction page"
+
+    When end users select \gui {Package manager}, and then \gui Continue, the
+    component selection page opens.
+
+    \section1 Selecting Additional Components
+
+    The component selection page lists the components available for installation
+    and a short description of each component. Installed components are
+    displayed selected in the list. End users select additional components to
+    install. They can select \gui Reset to display the currently installed
+    components again.
+
+    \image ifw-add-components-selection.png "Select Components page"
+
+    When end users select \gui Continue, the ready to update page opens.
+
+    \section1 Installing Selected Components
+
+    The ready to update page informs end users that the components are installed
+    when users select \gui Update.
+
+    \image ifw-ready-to-update.png "Ready to Update Packages page"
+
+    The update page displays information about how installation is progressing.
+    End users can select \gui {Show Details} to view more information.
+
+    \image ifw-perform-update.png "Update page"
+
+    When the installation is complete, the update finished page opens.
+
+    \image ifw-update-finished.png "Update finished page"
+
+*/
+
+/*!
+    \previouspage ifw-use-cases-add.html
+    \page ifw-use-cases-remove.html
+    \nextpage ifw-use-cases-update.html
+
+    \title Removing Components
+
+    The following image illustrates the default workflow for removing either
+    all or some installed components:
+
+    \image ifw-user-flow-removing.png "Remove components workflow"
+
+    This section uses the Qt 5 Maintenance Tool run on macOS as an example
+    implementation of how end users can remove all or selected components.
+
+    \section1 Removing All Components
+
+    When end users start the Maintenance Tool, the introduction page opens:
+
+    \image ifw-add-components-introduction.png "Introduction page"
+
+    End users can select \gui {Remove all components}, and then \gui Continue, to
+    remove all installed components.
+
+    The ready to uninstall page informs end users that the uninstallation can
+    begin when users select \gui Uninstall.
+
+    \image ifw-ready-to-uninstall.png "Ready to uninstall page"
+
+    \section1 Removing Selected Components
+
+    End users can select \gui {Package manager}, and then \gui Continue, to select
+    components to remove on the component selection page:
+
+    \image ifw-add-components-selection.png "Component selection page"
+
+    When end users deselect the components to remove, and then select \gui Continue,
+    the ready to update page opens. It informs end users that the components are
+    removed when users select \gui Update.
+
+    \image ifw-ready-to-update.png "Ready to update page"
+
+    The update page displays information about how removal is progressing.
+    End users can select \gui {Show Details} to view more information.
+
+    \image ifw-removing-components.png "Update page"
+
+    When the removal is complete, the update finished page opens.
+
+    \image ifw-update-finished.png "Update finished page"
+*/
+
+/*!
+    \previouspage ifw-use-cases-remove.html
+    \page ifw-use-cases-update.html
+    \nextpage ifw-use-cases-settings.html
+
+    \title Updating Components
+
+    The following image illustrates the default workflow for updating installed
+    components:
+
+    \image ifw-user-flow-updating.png "Updating workflow"
+
+    This section uses the Qt 5 Maintenance Tool run on macOS as an example
+    implementation of how end users can update installed components.
+
+    \section1 Starting Updater
+
+    When end users start the Maintenance Tool, the introduction page opens:
+
+    \image ifw-updating-introduction.png "Introduction page"
+
+    When end users select \gui {Update components}, and then \gui Continue, the
+    component selection page opens.
+
+    \section1 Selecting Components to Update
+
+    The updater displays a list of available updates that end users can select
+    from.
+
+    \image ifw-updating-components.png "Component selection page"
+
+    When end users select \gui Continue, the ready to update page opens.
+
+    \section1 Updating Selected Components
+
+    The ready to update page informs end users that the components are updated
+    when they select \gui Update.
+
+    \image ifw-ready-to-update.png "Ready to update page"
+
+    The update page displays information about how updating is progressing.
+    End users can select \gui {Show Details} to view more information.
+
+    \image ifw-perform-update.png "Update page"
+
+    When update is complete, the update finished page opens.
+
+    \image ifw-update-finished.png "Update finished page"
+*/
+
+/*!
+    \previouspage ifw-use-cases-update.html
+    \page ifw-use-cases-settings.html
+    \nextpage ifw-use-cases-cli.html
+
+    \title Specifying Settings
+
+    Settings pages enable end users to specify proxy settings or install add-on
+    components. End users select \gui Settings on the introduction page to
+    specify the settings.
+
+    \section1 Specifying Proxy Settings
+
+    By default, the installer uses system proxy settings. End users can
+    select to use no proxy or specify the proxy settings manually.
+
+    \image ifw-settings-network.png "Network tab on Settings page"
+
+    \section1 Installing Add-on Components
+
+    To install add-on components, end users select the \gui Repositories tab.
+
+    \image ifw-settings-repositories.png "Repositories tab on Settings page"
+
+    If the web server requires authentication, end users can add their username
+    and password. To display passwords, end users select \gui {Show Passwords}.
+
+    To add their own repositories to the installer, end users can select
+    \gui Add and specify the URL that points to the repository.
+
+    Temporary repositories can be used only once, for initial installation.
+    After the installation, only default and user-defined repositories will be
+    available.
+
+*/
+
+/*!
+    \previouspage ifw-use-cases-settings.html
+    \page ifw-use-cases-cli.html
+    \nextpage ifw-tutorial.html
+
+    \title Using from Command Line
+
+    Qt Installer Framework 4.0.0 introduces a new command line interface workflow. Most
+    of the end user use cases can now be performed using a text based interface, either
+    interactively, or unattended by specifying the desired options beforehand. This
+    topic describes the basic use cases. For more information about the syntax
+    and a description of all supported options, see \l{Command Line Interface}.
+
+    \section1 Installing Components
+
+    Both the installer and the maintenance tool support installation of new components from
+    command line. The following will install the components given as an argument and
+    their respective dependencies:
+
+    \code
+    maintenancetool.exe install componentA componentB componentC
+    \endcode
+
+    If no components are specified, the default set of components will be installed instead.
+    This includes components with elements \c <Default> or \c <ForcedInstallation> set to \c true.
+    The default installation can be only done with an installer binary. The \c --root option can be
+    used to select an installation target directory:
+
+    \code
+    installer.exe --root "C:\Users\MyUser\MyInstallation" install
+    \endcode
+
+    \section1 Checking for Available Updates
+
+    To print information about available component updates, run the \c check-updates
+    command with the maintenance tool:
+
+    \code
+    maintenancetool.exe check-updates
+    \endcode
+
+    \section1 Updating Components
+
+    Running \c update without arguments will update all components that have an update
+    available. Essential and ForcedUpdate components are always updated first, same way as
+    when launching the updater from GUI. After Essential and ForcedUpdate components
+    are updated, the installer needs to be restarted for other updates. To update only
+    a specific subset of installed components, they can be provided as an optional argument
+    for \c update:
+
+    \code
+    maintenancetool.exe update componentA componentB
+    \endcode
+
+    \section1 Uninstalling Components
+
+    The \c remove command can be used to uninstall selected components. This will
+    automatically uninstall their children and other components depending on the
+    components about to be uninstalled:
+
+    \code
+    // This would also automatically uninstall componentC.subcomponent1, componentC.subcomponent2,...
+    maintenancetool.exe remove componentC
+    \endcode
+
+    \section1 Listing Installed Components
+
+    To get a list and print additional information about currently installed components, run the
+    \c list command with the maintenance tool. The command also accepts an optional regular
+    expression argument to filter the shown component list.
+
+    \code
+    maintenancetool.exe list
+    \endcode
+
+    \section1 Searching for Available Components
+
+    The \c search command can be used to search components from available repositories, or
+    from integrated binary content in case of an offline installer. It can be used with
+    no arguments to list all available components or with a regular expression to get a list
+    of only components matching the pattern:
+
+    \code
+    installer.exe search "expression"
+    \endcode
+
+    \section1 Performing Full Uninstallation
+
+    To uninstall all components and remove the program directory, including maintenance tool,
+    run \c purge command:
+
+    \code
+    maintenancetool.exe purge
+    \endcode
+
+    \section1 Creating Custom Offline Installers
+
+    To create a personal offline installer containing a selected set of components from online repositories,
+    use the \c create-offline command. This is a useful feature for scenarios where the same installation
+    content will be deployed multiple times or on several machines, as it saves time spent on downloading
+    component archives and enables easily reproducible installations. The \c --offline-installer-name
+    option can be used to set a desired name for the generated offline installer.
+
+    Note that you can create offline installers only from online installers with valid repositories enabled.
+
+    \code
+    installer.exe --root "C:\TargetFolder" --offline-installer-name "MyInstaller" create-offline componentA componentB
+    \endcode
+
+    \section1 Unattended Usage
+
+    By default, the generated installers may ask for additional information during installation,
+    which requires user attention. Unattended usage is possible by providing all information
+    beforehand with appropriate options:
+
+    \code
+    installer.exe --root "C:\MyInstallation" --accept-licenses --default-answer --confirm-command install componentA
+    \endcode
+
+    In this example, \c --accept-licenses is used to automatically accept all license agreements
+    required by components to be installed. The \c --default-answer option is used to answer all
+    message queries with their default answer. Alternatively, \c --accept-messages and \c --reject-messages
+    can be used to accept or reject all message queries. To provide unique answers for individual
+    queries, for example to confirm overwriting of an existing directory, you could use
+    \c {--auto-answer OverwriteTargetDirectory=Yes}. Automatic answers are shown on the
+    console output and installation log.
+
+    By default, the installer and maintenance tool will print a summary of components to be
+    affected by the command and then ask for permission to continue performing the action,
+    to prevent accidental changes. For unattended usage, this can be skipped by using the
+    \c --confirm-command option.
+*/

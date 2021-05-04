@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <Name>com.nextgis.common.other</Name>
-    <DisplayName>Other libraries</DisplayName>
-    <Description>Other libraries</Description>
-    <Version>0</Version>
-    <ReleaseDate>2016-11-10</ReleaseDate>
-</Package>

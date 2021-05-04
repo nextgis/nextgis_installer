@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="lib_jsonc">
-    <mac>
-        <path src="Library/Frameworks/json-c.framework" dst="Library/Frameworks/json-c.framework"/>
-    </mac>
-    <win>
-        <path src="bin/*.dll" dst="bin"/>
-    </win>
-</Package>

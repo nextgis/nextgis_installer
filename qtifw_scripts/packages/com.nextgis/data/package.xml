@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="all">
-    <Version>1.2</Version>
-    <win>
-        <path src="run_ng_env.bat" dst=""/>
-        <path src="ng.bat" dst=""/>
-    </win>
-</Package>

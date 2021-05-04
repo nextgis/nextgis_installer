@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>LibKML</DisplayName>
-    <Description>LibKML Library</Description>
-    <Dependencies>com.nextgis.common.uriparser,com.nextgis.common.expat</Dependencies>
-</Package>

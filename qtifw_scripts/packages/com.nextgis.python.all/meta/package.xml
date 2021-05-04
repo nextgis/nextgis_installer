@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>Operation for all python</DisplayName>
-    <Virtual>true</Virtual>
-    <Script>installscript.qs</Script>
-    <Dependencies>com.nextgis.python.python</Dependencies>
-</Package>

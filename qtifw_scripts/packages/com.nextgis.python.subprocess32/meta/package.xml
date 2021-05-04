@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>Subproces32</DisplayName>
-    <Description>Subproces32 package</Description>
-    <Dependencies>com.nextgis.python.all</Dependencies>
-</Package>

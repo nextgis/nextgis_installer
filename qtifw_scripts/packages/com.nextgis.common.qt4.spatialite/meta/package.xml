@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>Spatialite plugin</DisplayName>
-    <Description>Spatialite connecton plugin</Description>
-    <Dependencies>com.nextgis.spatial.spatialite,com.nextgis.common.qt.qt4</Dependencies>
-</Package>

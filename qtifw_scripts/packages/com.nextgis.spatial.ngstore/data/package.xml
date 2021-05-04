@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="nextgis_datastore">
-    <mac>
-        <path src="Library/Frameworks/ngstore.framework" dst="Library/Frameworks/ngstore.framework"/>
-    </mac>
-    <win>
-        <path src="bin/*.dll" dst="bin"/>
-    </win>
-</Package>

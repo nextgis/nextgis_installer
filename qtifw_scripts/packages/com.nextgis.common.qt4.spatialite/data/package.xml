@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="lib_spatialite">
-    <mac>
-        <path src="Library/Plugins/Qt4/sqldrivers/*.dylib" dst="Library/Plugins/Qt4/sqldrivers"/>
-    </mac>
-    <win>
-        <path src="lib/qt4/plugins/sqldrivers/*.dll" dst="lib/qt4/plugins/sqldrivers"/>
-    </win>
-</Package>

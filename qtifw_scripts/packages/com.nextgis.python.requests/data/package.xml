@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="py_requests">
-    <mac>
-        <path src="inst/lib/python2.7/site-packages/requests" dst="Library/Python/2.7/site-packages/requests"/>
-    </mac>
-    <win>
-        <path src="inst/Lib/site-packages/requests" dst="lib/python27/site-packages/requests"/>
-    </win>
-</Package>

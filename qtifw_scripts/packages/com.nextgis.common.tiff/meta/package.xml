@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>TIFF</DisplayName>
-    <Description>TIFF Library</Description>
-    <Dependencies>com.nextgis.common.jbig,com.nextgis.common.jpeg,com.nextgis.common.jpeg12,com.nextgis.common.lzma,com.nextgis.common.webp</Dependencies>
-</Package>

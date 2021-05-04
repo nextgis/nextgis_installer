@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="lib_ngstd">
-    <mac>
-        <path src="Library/Python/2.7/site-packages/ngstd" dst="Library/Python/2.7/site-packages/ngstd"/>
-    </mac>
-    <win>
-        <path src="lib/Python27/site-packages/ngstd" dst="lib/python27/site-packages/ngstd"/>
-    </win>
-</Package>

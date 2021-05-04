@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>CURL</DisplayName>
-    <Description>CURL Library</Description>
-    <Dependencies>com.nextgis.common.openssl,com.nextgis.common.z</Dependencies>
-    <Script>installscript.qs</Script>
-</Package>

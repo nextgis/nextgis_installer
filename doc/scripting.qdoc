@@ -1,0 +1,374 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \previouspage noninteractive.html
+    \page scripting.html
+    \nextpage operations.html
+
+    \title Component Scripting
+
+    For each component, you can specify one script that prepares the operations
+    to be performed by the installer. The script format has to be
+    compatible with QJSEngine.
+
+    \section1 Construction
+
+    The script has to contain a \c Component object that the installer creates
+    when it loads the script. Therefore, the script must contain at
+    least the \c Component() function, which performs initialization, such as
+    putting pages in the correct places or connecting signals and slots.
+
+    The following code snippet places the \c ErrorPage (which is the class
+    name of the user interface file loaded from errorpage.ui) in front of the
+    ready for installation page and sets its completeness to \c false.
+
+    \code
+    function Component()
+    {
+        // Add a user interface file called ErrorPage, which should not be complete
+        installer.addWizardPage( component, "ErrorPage", QInstaller.ReadyForInstallation );
+        component.userInterface( "ErrorPage" ).complete = false;
+    }
+    \endcode
+
+    For more information, see the documentation for \l installer::addWizardPage() and
+    \l component::userInterface().
+
+    \section1 Installer Hooks
+
+    You can add the following hook methods into your script:
+
+    \table
+        \header
+            \li Method
+            \li Description
+        \row
+            \li \c{Component.prototype.retranslateUi}
+            \li Called when the language of the installer changes.
+        \row
+            \li \c{Component.prototype.createOperations}
+            \li See \l component::createOperations().
+        \row
+            \li \c{Component.prototype.createOperationsForArchive}
+            \li See \l component::createOperationsForArchive().
+        \row
+            \li \c{Component.prototype.createOperationsForPath}
+            \li See \l component::createOperationsForPath().
+    \endtable
+
+    \section1 Global Variables
+
+    The installer puts the following symbols into the script space:
+
+    \table
+        \header
+            \li Symbol
+            \li Description
+        \row
+            \li installer
+            \li Reference to the \l QInstaller of the component
+        \row
+            \li component
+            \li Reference to the \l Component of the component
+    \endtable
+
+    \section1 Message Boxes
+
+    You can show a QMessageBox from within the script by using the following
+    static members:
+
+    \list
+    \li QMessageBox::critical()
+    \li QMessageBox::information()
+    \li QMessageBox::question()
+    \li QMessageBox::warning()
+    \endlist
+
+    For your convenience, the values for QMessageBox::StandardButton are made
+    available by using \c QMessageBox.Ok, \c QMessageBox.Open, and so on.
+
+    \section1 Adding Operations to Components
+
+    You might want to add custom operations after extracting the content, when
+    copying files or patching file content, for example. You can create and add
+    update operations to the installation from within a script using
+    component::addOperation(). If you need to run an operation that requires
+    administrative rights, use component::addElevatedOperation() instead.
+    Alternative way of adding custom operations is to use \c component.xml, see
+    \l{Package Directory}
+
+    Operations need to be added before the actual installation step. Override
+    \l component::createOperations() to register custom operations for a
+    component.
+
+    Each operation has a unique key used for identification and can take up to
+    five parameters. In the parameter values, you can use variables as set in
+    installer::setValue(). For more information, see \l{Predefined Variables}.
+
+    For a summary of all available operations, see \l{Operations}.
+
+    \section1 Registering Custom Operations
+
+    You can register custom installation operations in the installer by deriving
+    the KDUpdater::UpdateOperation class. The following code displays the
+    methods that you must implement:
+
+  \code
+  #include <UpdateOperation>
+
+  class CustomOperation : public KDUpdater::UpdateOperation
+  {
+  public:
+    CustomOperation()
+    {
+        setName( "CustomOperation" );
+    }
+
+    void backup()
+    {
+        // do whatever is needed to restore the state in undoOperation()
+    }
+
+    bool performOperation()
+    {
+        const QStringList args = arguments();
+        // do whatever is needed to do for the given arguments
+
+        bool success = ...;
+        return success;
+    }
+
+    void undoOperation()
+    {
+        // restore the previous state, as saved in backup()
+    }
+
+    bool testOperation()
+    {
+        // currently unused
+        return true;
+    }
+
+    CustomOperation* clone() const
+    {
+        return new CustomOperation;
+    }
+
+    QDomDocument toXml()
+    {
+        // automatically adds the operation's arguments and everything set via setValue
+        QDomDocument doc = KDUpdater::UpdateOperation::toXml();
+
+        // if you need any information to undo the operation you did,
+        // add them to the doc here
+
+        return doc;
+    }
+
+    bool fromXml( const QDomDocument& doc )
+    {
+        // automatically loads the operation's arguments and everything set via setValue
+        if( !KDUpdater::UpdateOperation::fromXml( doc ) )
+            return false;
+
+        // if you need any information to undo the operation you did,
+        // read them from the doc here
+
+        return true;
+    }
+  };
+  \endcode
+
+    Finally, you need to register your custom operation class, as follows:
+  \code
+  #include <UpdateOperationFactory>
+
+  KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< CustomOperation >( "CustomOperation" );
+  \endcode
+
+    Now you can use your operation in the installer in the same way as the
+    predefined operations.
+
+  \section1 Predefined Variables
+
+    You can use the following predefined variables in scripts to facilitate
+    directory access:
+
+    \table
+        \header
+            \li Symbol
+            \li Description
+        \row
+            \li ProductName
+            \li Name of the product to be installed, as defined in config.xml.
+        \row
+            \li ProductVersion
+            \li Version number of the product to be installed, as defined in
+                config.xml.
+        \row
+            \li Title
+            \li Title of the installation program, as defined in config.xml.
+        \row
+            \li Publisher
+            \li Publisher of the installation program, as defined in config.xml.
+        \row
+            \li Url
+            \li Product URL, as defined in config.xml.
+        \row
+            \li StartMenuDir
+            \li Start menu group, as defined in config.xml. Only available on Windows.
+        \row
+            \li TargetDir
+            \li Target directory for installation, as selected by the user.
+        \row
+            \li DesktopDir
+            \li Name of the directory that contains the user's desktop.
+
+            Only available on Windows.
+        \row
+            \li os
+            \li Current platform: \c "x11", \c "win", or \c "mac".
+
+                This variable is deprecated: Use \l systemInfo instead.
+        \row
+            \li FrameworkVersion
+            \li Version number of the Qt Installer Framework used to build the installation program.
+        \row
+            \li RootDir
+            \li Root directory of the filesystem.
+        \row
+            \li HomeDir
+            \li Home directory of the current user.
+        \row
+            \li ApplicationsDir
+            \li Applications directory.
+
+                For example, \c {C:\Program Files} on Windows,
+                \c {/opt} on Linux and \c {/Applications} on macOS.
+
+                See also the table that lists examples of \l {Applications-directory-on-Windows}
+                {applications directories on Windows}.
+        \row
+            \li ApplicationsDirUser
+            \li Applications directory for user-specific programs. This is useful on macOS,
+                on other platforms it is the same as \c ApplicationsDir.
+
+                For example, \c {$HOME/Applications} on macOS.
+        \row
+            \li ApplicationsDirX86
+            \li Applications Directory for 32 bit programs. This is useful on Windows,
+                on other platforms it is the same as \c ApplicationsDir.
+
+                For example, \c {C:\Program Files (x86)} on Windows.
+
+                See also the table that lists examples of \l {Applications-directory-on-Windows}
+                {applications directories on Windows}.
+        \row
+            \li ApplicationsDirX64
+            \li Applications Directory for 64 bit programs. This is useful on Windows,
+                on other platforms it is the same as \c ApplicationsDir.
+
+                For example, \c {C:\Program Files} on Windows.
+
+                See also the table that lists examples of \l {Applications-directory-on-Windows}
+                {applications directories on Windows}.
+        \row
+            \li InstallerDirPath
+            \li The directory that contains the installer application executable.
+        \row
+            \li InstallerFilePath
+            \li The file path of the installer application executable.
+        \row
+            \li UserStartMenuProgramsPath
+            \li The path to the folder containing the items in the Start menu of the user.
+
+                For example, \c {C:\Users\USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs}
+
+                Only available on Windows.
+        \row
+            \li AllUsersStartMenuProgramsPath
+            \li The path to the folder containing the items in the Start menu for all users.
+
+                For example, \c {C:\ProgramData\Microsoft\Windows\Start Menu\Programs}
+
+                Only available on Windows.
+    \endtable
+
+    The variables can be resolved by calls to installer::value(). If embedded
+    in '@' they can also be part of strings passed as arguments to installation
+    operations:
+
+    \code
+    if (installer.value("os") === "win") {
+        component.addOperation("CreateShortcut", "@TargetDir@/MyApp.exe", "@StartMenuDir@/MyApp.lnk");
+    }
+    \endcode
+
+
+    \target Applications-directory-on-Windows
+    For example, applications directory on Windows:
+    \table
+        \header
+            \li OS (Windows)
+            \li Qt Installer Framework
+            \li Variable
+            \li Example Path
+        \row
+            \li {1, 3} 32bit
+            \li {1, 3} 32bit
+            \li ApplicationsDir
+            \li \c {C:\Program Files}
+        \row
+            \li ApplicationsDirX86
+            \li \c {C:\Program Files}
+        \row
+            \li ApplicationsDirX64
+            \li \c {C:\Program Files}
+        \row
+            \li {1, 6} 64bit
+            \li {1, 3} 32bit
+            \li ApplicationsDir
+            \li \c {C:\Program Files (x86)}
+        \row
+            \li ApplicationsDirX86
+            \li \c {C:\Program Files (x86)}
+        \row
+            \li ApplicationsDirX64
+            \li \c {C:\Program Files}
+        \row
+            \li {1, 3} 64bit
+            \li ApplicationsDir
+            \li \c {C:\Program Files}
+        \row
+            \li ApplicationsDirX86
+            \li \c {C:\Program Files (x86)}
+        \row
+            \li ApplicationsDirX64
+            \li \c {C:\Program Files}
+    \endtable
+*/

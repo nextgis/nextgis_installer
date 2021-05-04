@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="py_certifi">
-    <mac>
-        <path src="inst/lib/python2.7/site-packages/certifi" dst="Library/Python/2.7/site-packages/certifi"/>
-    </mac>
-    <win>
-        <path src="inst/Lib/site-packages/certifi" dst="lib/python27/site-packages/certifi"/>
-    </win>
-</Package>

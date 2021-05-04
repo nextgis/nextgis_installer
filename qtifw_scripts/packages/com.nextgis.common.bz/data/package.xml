@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="lib_bzip2">
-    <mac>
-        <path src="Library/Frameworks/bz2.framework" dst="Library/Frameworks/bz2.framework"/>
-    </mac>
-    <win>
-        <path src="bin/*.dll" dst="bin"/>
-    </win>
-</Package>

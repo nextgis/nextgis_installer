@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>NextGIS STD 4</DisplayName>
-    <Description>NextGIS Standard Qt4 Library</Description>
-    <Dependencies>com.nextgis.common.qt.qt4,com.nextgis.spatial.gdal,com.nextgis.common.sentry</Dependencies>
-</Package>

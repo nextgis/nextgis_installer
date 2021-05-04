@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>QWT</DisplayName>
-    <Description>QWT Library</Description>
-    <Dependencies>com.nextgis.common.qt.qt4</Dependencies>
-</Package>

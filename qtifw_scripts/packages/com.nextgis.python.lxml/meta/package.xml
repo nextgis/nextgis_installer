@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>Lxml</DisplayName>
-    <Description>Lxml package</Description>
-    <Dependencies>com.nextgis.python.all,com.nextgis.common.z,com.nextgis.common.xml2,com.nextgis.common.iconv,com.nextgis.common.xslt</Dependencies>
-</Package>

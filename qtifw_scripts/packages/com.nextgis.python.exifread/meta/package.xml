@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>ExifRead</DisplayName>
-    <Description>ExifRead package</Description>
-    <Dependencies>com.nextgis.python.all</Dependencies>
-</Package>

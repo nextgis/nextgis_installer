@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>LibPQ</DisplayName>
-    <Description>LibPQ Library (PostgreSQL)</Description>
-    <Dependencies>com.nextgis.common.openssl</Dependencies>
-</Package>

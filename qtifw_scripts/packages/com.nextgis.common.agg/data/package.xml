@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="lib_agg">
-    <mac>
-        <path src="Library/Frameworks/agg.framework" dst="Library/Frameworks/agg.framework"/>
-    </mac>
-    <win>
-        <path src="bin/*.dll" dst="bin"/>
-    </win>
-</Package>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>Python27</DisplayName>
-    <Description>Python27</Description>
-    <Dependencies>com.nextgis.common.z,com.nextgis.common.bz,com.nextgis.common.expat,com.nextgis.common.openssl,com.nextgis.common.sqlite</Dependencies>
-</Package>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>GeoTIFF</DisplayName>
-    <Description>GeoTIFF Library</Description>
-    <Dependencies>com.nextgis.common.tiff,com.nextgis.common.jpeg,com.nextgis.common.z,com.nextgis.spatial.proj</Dependencies>
-</Package>

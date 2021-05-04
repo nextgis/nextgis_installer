@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>Shapely</DisplayName>
-    <Description>Shapely package</Description>
-    <Dependencies>com.nextgis.python.all,com.nextgis.spatial.geos,com.nextgis.python.numpy</Dependencies>
-</Package>

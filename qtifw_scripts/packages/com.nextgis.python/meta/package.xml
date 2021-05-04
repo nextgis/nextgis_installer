@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>Python</DisplayName>
-    <Description>Python framework</Description>
-    <Virtual>true</Virtual>
-</Package>

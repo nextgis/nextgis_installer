@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>XSLT</DisplayName>
-    <Description>XSLT Library</Description>
-    <Dependencies>com.nextgis.common.xml2,com.nextgis.common.iconv</Dependencies>
-</Package>

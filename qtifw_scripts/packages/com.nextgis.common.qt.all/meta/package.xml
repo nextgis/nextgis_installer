@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>qt all</DisplayName>
-    <Description>common actions for all qt packages</Description>
-    <ReleaseDate>2017-03-01</ReleaseDate>
-    <Script>script.qs</Script>
-</Package>

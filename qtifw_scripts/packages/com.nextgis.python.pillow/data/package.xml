@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="py_pillow">
-    <mac>
-        <path src="Library/lib/python2.7/site-packages/PIL" dst="Library/Python/2.7/site-packages/PIL"/>
-    </mac>
-    <win>
-        <path src="Lib/site-packages/PIL" dst="lib/python27/site-packages/PIL"/>
-    </win>
-</Package>
