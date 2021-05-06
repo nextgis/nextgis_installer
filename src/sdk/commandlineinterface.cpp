@@ -101,7 +101,8 @@ int CommandLineInterface::checkUpdates()
         qCWarning(QInstaller::lcInstallerInstallLog) << "There are currently no updates available.";
         return EXIT_SUCCESS;
     }
-    QInstaller::LoggingHandler::instance().printComponentInfo(components);
+
+    QInstaller::LoggingHandler::instance().printComponentInfo(components, m_core->releaseMessage());
     return EXIT_SUCCESS;
 }
 

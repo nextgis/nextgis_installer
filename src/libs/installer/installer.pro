@@ -138,7 +138,13 @@ HEADERS += packagemanagercore.h \
     repositorycategory.h \
     componentselectionpage_p.h \
     commandlineparser.h \
-    commandlineparser_p.h
+    commandlineparser_p.h \
+    ng_fileenvironmentvariablesoperation.h \
+    ng_copyonlyoperation.h
+
+win32 {
+    HEADERS += ng_userpathwinenvironmentvariablesoperation.h
+}
 
 SOURCES += packagemanagercore.cpp \
     aspectratiolabel.cpp \
@@ -217,7 +223,13 @@ SOURCES += packagemanagercore.cpp \
     packagesource.cpp \
     repositorycategory.cpp \
     componentselectionpage_p.cpp \
-    commandlineparser.cpp
+    commandlineparser.cpp \
+    ng_fileenvironmentvariablesoperation.cpp \
+    ng_copyonlyoperation.cpp
+
+win32 {
+    SOURCES += ng_userpathwinenvironmentvariablesoperation.cpp
+}
 
 FORMS += proxycredentialsdialog.ui \
     serverauthenticationdialog.ui

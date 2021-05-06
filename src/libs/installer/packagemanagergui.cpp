@@ -2356,6 +2356,33 @@ void TargetDirectoryPage::initializePage()
             targetDir += productName();
         }
     }
+
+    // NEXTGIS: change the default dir for Windows. Added in order to allow users without admin
+    // permissions install software by default.
+    #if defined(Q_OS_WIN)
+    QFileInfoList drives = QDir::drives();
+    if (!drives.isEmpty()) // unusual?
+    {
+        targetDir.clear();
+        foreach (const QFileInfo &drive, drives)
+        {
+            const QString driveLetter = QDir::toNativeSeparators(drive.canonicalPath());
+            const uint driveType = GetDriveTypeA(qPrintable(driveLetter));
+            if (driveType == DRIVE_FIXED)
+            {
+                targetDir = driveLetter + QLatin1String("NextGIS"); // select the first hard disk drive
+                break;
+            }
+        }
+        if (targetDir.isEmpty()) // also unusual?
+            targetDir = QDir::homePath() + QLatin1String("\\NextGIS");
+    }
+    else
+    {
+        targetDir = QDir::homePath() + QLatin1String("\\NextGIS");
+    }
+    #endif // Q_OS_WIN
+
     m_lineEdit->setText(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));
 
     PackageManagerPage::initializePage();

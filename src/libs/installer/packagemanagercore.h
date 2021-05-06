@@ -120,6 +120,10 @@ public:
 
     static Component *componentByName(const QString &name, const QList<Component *> &components);
 
+    // NEXTGIS: Add release message from repka
+    QString releaseMessage() const;
+    // End NextGIS
+
     bool directoryWritable(const QString &path) const;
 
     bool fetchLocalPackagesTree();
@@ -149,7 +153,11 @@ public:
     Q_INVOKABLE bool executeDetached(const QString &program,
         const QStringList &arguments = QStringList(),
         const QString &workingDirectory = QString()) const;
-    Q_INVOKABLE QString environmentVariable(const QString &name) const;
+
+    // NEXTGIS: added a parameter to the methos so it can be possible to get only user
+    // environment variable (not user+system).
+    //Q_INVOKABLE QString environmentVariable(const QString &name) const;
+    Q_INVOKABLE QString environmentVariable(const QString &name, bool onlyForUser = false) const;
 
     Q_INVOKABLE bool operationExists(const QString &name);
     Q_INVOKABLE bool performOperation(const QString &name, const QStringList &arguments);

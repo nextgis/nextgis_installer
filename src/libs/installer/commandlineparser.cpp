@@ -216,6 +216,15 @@ CommandLineParser::CommandLineParser()
                       "<path_to_qt>/bin/qmake -r SQUISH_PATH=<pat_to_squish>"),
         QLatin1String("port number")));
 
+    // NEXTGIS: add options for launch external programs after the work of the installer.
+    addOption(QCommandLineOption(QLatin1String(CommandLineOptions::scLaunch),
+              QLatin1String("Specify the program to launch after the work of the installer "
+                            "(only in the GUI --updater mode)."),
+              QLatin1String("path")));
+    addOption(QCommandLineOption(QLatin1String(CommandLineOptions::scLaunchOptions),
+              QLatin1String("Specify the options for the launched program via --launch."),
+              QLatin1String("string")));
+
     // Deprecated options
     QCommandLineOption deprecatedUpdater(CommandLineOptions::scDeprecatedUpdater);
     deprecatedUpdater.setHidden(true);
