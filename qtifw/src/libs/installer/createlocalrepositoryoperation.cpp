@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,6 +38,8 @@
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
 #include "productkeycheck.h"
+#include "constants.h"
+#include "remoteclient.h"
 
 #include "updateoperations.h"
 
@@ -48,6 +50,11 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::CreateLocalRepositoryOperation
+    \internal
+*/
 
 // -- AutoHelper
 
@@ -81,8 +88,7 @@ static void fixPermissions(const QString &repoPath)
         if (!it.fileInfo().isFile())
             continue;
 
-        if (!QFile::setPermissions(it.filePath(), QFile::ReadOwner | QFile::WriteOwner
-            | QFile::ReadUser | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther)) {
+        if (!setDefaultFilePermissions(it.filePath(), DefaultFilePermissions::NonExecutable)) {
                 throw Error(CreateLocalRepositoryOperation::tr("Cannot set permissions for file \"%1\".")
                     .arg(QDir::toNativeSeparators(it.filePath())));
         }
@@ -183,14 +189,58 @@ bool CreateLocalRepositoryOperation::performOperation()
         }
         setValue(QLatin1String("createddir"), mkDirOp.value(QLatin1String("createddir")));
 
+        // Internal changes to QTemporaryFile break copying Qt resources through
+        // QInstaller::RemoteFileEngine. We do not register resources to be handled by
+        // RemoteFileEngine, instead copying using 5.9 succeeded because QFile::copy()
+        // creates a QTemporaryFile object internally that is handled by the remote engine.
+        //
+        // This will not work with Qt 5.10 and above as QTemporaryFile introduced a new
+        // rename() implementation that explicitly uses its own QTemporaryFileEngine.
+        //
+        // During elevated installation, first dump the resources to a writable directory
+        // as a normal user, then do the real copy work. We will drop admin rights temporarily.
+
+        QString metaSource = QLatin1String(":/metadata/");
+        QDir metaSourceDir;
+        bool createdMetaDir = false;
+
+        if (RemoteClient::instance().isActive()) {
+            core->dropAdminRights();
+
+            metaSource = generateTemporaryFileName() + QDir::separator();
+            metaSourceDir.setPath(metaSource);
+            if (!metaSourceDir.mkpath(metaSource)) {
+                setError(UserDefinedError);
+                setErrorString(tr("Cannot create path \"%1\".")
+                    .arg(QDir::toNativeSeparators(metaSource)));
+                return false;
+            }
+            createdMetaDir = true;
+
+            CopyDirectoryOperation copyMetadata(nullptr);
+            copyMetadata.setArguments(QStringList() << QLatin1String(":/metadata/") << metaSource);
+            if (!copyMetadata.performOperation()) {
+                setError(copyMetadata.error());
+                setErrorString(copyMetadata.errorString());
+                return false;
+            }
+            core->gainAdminRights();
+        }
         // copy the whole meta data into local repository
         CopyDirectoryOperation copyDirOp(core);
-        copyDirOp.setArguments(QStringList() << QLatin1String(":/metadata/") << repoPath);
+        copyDirOp.setArguments(QStringList() << metaSource << repoPath);
         connect(&copyDirOp, &CopyDirectoryOperation::outputTextChanged,
                 this, &CreateLocalRepositoryOperation::outputTextChanged);
 
         const bool success = copyDirOp.performOperation();
         helper.m_files = copyDirOp.value(QLatin1String("files")).toStringList();
+
+        if (createdMetaDir && !metaSourceDir.removeRecursively()) {
+            setError(UserDefinedError);
+            setErrorString(tr("Cannot remove directory \"%1\".")
+                .arg(QDir::toNativeSeparators(metaSourceDir.absolutePath())));
+            return false;
+        }
         if (!success) {
             setError(copyDirOp.error());
             setErrorString(copyDirOp.errorString());
@@ -324,7 +374,11 @@ bool CreateLocalRepositoryOperation::performOperation()
 
 bool CreateLocalRepositoryOperation::undoOperation()
 {
-    Q_ASSERT(arguments().count() == 2);
+    if (parseUndoOperationArguments().count() > 0)
+        return true;
+
+    if (!checkArgumentCount(2))
+        return false;
 
     AutoHelper _(this);
     emit progressChanged(0.0);

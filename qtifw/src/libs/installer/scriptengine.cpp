@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,6 +31,7 @@
 #include "errors.h"
 #include "scriptengine_p.h"
 #include "systeminfo.h"
+#include "loggingutils.h"
 
 #include <QMetaEnum>
 #include <QQmlEngine>
@@ -46,8 +47,32 @@ namespace QInstaller {
 */
 
 /*!
-    \fn ScriptEngine::globalObject() const
+    \fn QInstaller::ScriptEngine::globalObject() const
     Returns a global object.
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ConsoleProxy
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::InstallerProxy
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::QDesktopServicesProxy
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::QFileDialogProxy
+    \internal
 */
 
 QJSValue InstallerProxy::components() const
@@ -178,6 +203,16 @@ void GuiProxy::clickButton(int wizardButton, int delayInMs)
         m_gui->clickButton(wizardButton, delayInMs);
 }
 
+/*!
+    Automatically clicks the button specified by \a objectName after a delay
+    in milliseconds specified by \a delayInMs.
+*/
+void GuiProxy::clickButton(const QString &objectName, int delayInMs) const
+{
+    if (m_gui)
+        m_gui->clickButton(objectName, delayInMs);
+}
+
 bool GuiProxy::isButtonEnabled(int wizardButton)
 {
     if (!m_gui)
@@ -265,6 +300,77 @@ void GuiProxy::setModified(bool value)
         m_gui->setModified(value);
 }
 
+QFileDialogProxy::QFileDialogProxy(PackageManagerCore *core): m_core(core)
+{
+}
+
+QString QFileDialogProxy::getExistingDirectory(const QString &caption,
+                                               const QString &dir, const QString &identifier)
+{
+    if (m_core->isCommandLineInstance()) {
+        return getExistingFileOrDirectory(caption, identifier, true);
+    } else {
+        return QFileDialog::getExistingDirectory(0, caption, dir);
+    }
+}
+
+QString QFileDialogProxy::getOpenFileName(const QString &caption, const QString &dir,
+                                          const QString &filter, const QString &identifier)
+{
+    if (m_core->isCommandLineInstance()) {
+        return getExistingFileOrDirectory(caption, identifier, false);
+    } else {
+        return QFileDialog::getOpenFileName(0, caption, dir, filter);
+    }
+}
+
+QString QFileDialogProxy::getExistingFileOrDirectory(const QString &caption,
+                            const QString &identifier, bool isDirectory)
+{
+    QHash<QString, QString> autoAnswers = m_core->fileDialogAutomaticAnswers();
+    QString selectedDirectoryOrFile;
+    QString errorString;
+    if (autoAnswers.contains(identifier)) {
+        selectedDirectoryOrFile = autoAnswers.value(identifier);
+        QFileInfo fileInfo(selectedDirectoryOrFile);
+        if (isDirectory ? fileInfo.isDir() : fileInfo.isFile()) {
+            qCDebug(QInstaller::lcInstallerInstallLog).nospace() << "Automatic answer for "<< identifier
+                << ": " << selectedDirectoryOrFile;
+        } else {
+            if (isDirectory)
+                errorString = QString::fromLatin1("Automatic answer for %1: Directory '%2' not found.")
+                        .arg(identifier, selectedDirectoryOrFile);
+            else
+                errorString = QString::fromLatin1("Automatic answer for %1: File '%2' not found.")
+                        .arg(identifier, selectedDirectoryOrFile);
+            selectedDirectoryOrFile = QString();
+        }
+    } else if (!LoggingHandler::instance().outputRedirected()) {
+        qDebug().nospace().noquote() << identifier << ": " << caption << ": ";
+        QTextStream stream(stdin);
+        stream.readLineInto(&selectedDirectoryOrFile);
+        QFileInfo fileInfo(selectedDirectoryOrFile);
+        if (isDirectory ? !fileInfo.isDir() : !fileInfo.isFile()) {
+            if (isDirectory)
+                errorString = QString::fromLatin1("Directory '%1' not found.")
+                        .arg(selectedDirectoryOrFile);
+            else
+                errorString = QString::fromLatin1("File '%1' not found.")
+                        .arg(selectedDirectoryOrFile);
+            selectedDirectoryOrFile = QString();
+        }
+    } else {
+        qCDebug(QInstaller::lcInstallerInstallLog).nospace()
+            << "No answer available for "<< identifier << ": " << caption;
+
+        throw Error(tr("User input is required but the output "
+            "device is not associated with a terminal."));
+    }
+    if (!errorString.isEmpty())
+        qCWarning(QInstaller::lcInstallerInstallLog).nospace() << errorString;
+    return selectedDirectoryOrFile;
+}
+
 
 /*!
     Constructs a script engine with \a core as parent.
@@ -273,19 +379,14 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
     QObject(core),
     m_guiProxy(new GuiProxy(this, this))
 {
+    m_engine.installExtensions(QJSEngine::TranslationExtension);
     QJSValue global = m_engine.globalObject();
     global.setProperty(QLatin1String("console"), m_engine.newQObject(new ConsoleProxy));
-    global.setProperty(QLatin1String("QFileDialog"), m_engine.newQObject(new QFileDialogProxy));
+    global.setProperty(QLatin1String("QFileDialog"), m_engine.newQObject(new QFileDialogProxy(core)));
     const QJSValue proxy = m_engine.newQObject(new InstallerProxy(this, core));
     global.setProperty(QLatin1String("InstallerProxy"), proxy);
     global.setProperty(QLatin1String("print"), m_engine.newQObject(new ConsoleProxy)
         .property(QLatin1String("log")));
-#if QT_VERSION < 0x050400
-    global.setProperty(QLatin1String("qsTr"), m_engine.newQObject(new QCoreApplicationProxy)
-        .property(QStringLiteral("qsTr")));
-#else
-    m_engine.installTranslatorFunctions();
-#endif
     global.setProperty(QLatin1String("systemInfo"), m_engine.newQObject(new SystemInfo));
 
     global.setProperty(QLatin1String("QInstaller"), generateQInstallerObject());
@@ -412,7 +513,7 @@ QJSValue ScriptEngine::loadInContext(const QString &context, const QString &file
     // replacements of %1, %2 or %3 inside the javascript code.
     const QString scriptContent = QLatin1String("(function() {")
         + scriptInjection + QString::fromUtf8(file.readAll())
-        + QString::fromLatin1(";"
+        + QString::fromLatin1("\n"
         "    if (typeof %1 != \"undefined\")"
         "        return new %1;"
         "    else"

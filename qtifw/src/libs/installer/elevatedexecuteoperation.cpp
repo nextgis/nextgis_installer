@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -30,6 +30,8 @@
 
 #include "environment.h"
 #include "qprocesswrapper.h"
+#include "globals.h"
+#include "packagemanagercore.h"
 
 #include <QtCore/QDebug>
 #include <QtCore/QProcessEnvironment>
@@ -37,6 +39,12 @@
 #include <QtCore/QThread>
 
 using namespace QInstaller;
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ElevatedExecuteOperation
+    \internal
+*/
 
 class ElevatedExecuteOperation::Private
 {
@@ -53,7 +61,11 @@ private:
 
 public:
     void readProcessOutput();
-    bool run(const QStringList &arguments);
+    int run(QStringList &arguments, const OperationType type);
+
+private:
+    bool needsRerunWithReplacedVariables(QStringList &arguments, const OperationType type);
+
 
     QProcessWrapper *process;
     bool showStandardError;
@@ -65,6 +77,7 @@ ElevatedExecuteOperation::ElevatedExecuteOperation(PackageManagerCore *core)
 {
     // this operation has to "overwrite" the Execute operation from KDUpdater
     setName(QLatin1String("Execute"));
+    setRequiresUnreplacedVariables(true);
 }
 
 ElevatedExecuteOperation::~ElevatedExecuteOperation()
@@ -87,10 +100,14 @@ bool ElevatedExecuteOperation::performOperation()
             break; //we don't need the UNDOEXECUTE args here
     }
 
-    return d->run(args);
+    if (requiresUnreplacedVariables()) {
+        PackageManagerCore *const core = packageManager();
+        args = core->replaceVariables(args);
+    }
+    return d->run(args, Operation::Perform) ? false : true;
 }
 
-bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
+int ElevatedExecuteOperation::Private::run(QStringList &arguments, const OperationType type)
 {
     QStringList args = arguments;
     QString workingDirectory;
@@ -146,7 +163,8 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     process = new QProcessWrapper();
     if (!workingDirectory.isEmpty()) {
         process->setWorkingDirectory(workingDirectory);
-        qDebug() << "ElevatedExecuteOperation setWorkingDirectory:" << workingDirectory;
+        qCDebug(QInstaller::lcInstallerInstallLog) << "ElevatedExecuteOperation setWorkingDirectory:"
+            << workingDirectory;
     }
 
     QProcessEnvironment penv;
@@ -167,7 +185,8 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     //readProcessOutput should only called from this current Thread -> Qt::DirectConnection
     QObject::connect(process, SIGNAL(readyRead()), q, SLOT(readProcessOutput()), Qt::DirectConnection);
     process->start(args.front(), args.mid(1));
-    qDebug() << args.front() << "started, arguments:" << QStringList(args.mid(1)).join(QLatin1String(" "));
+    qCDebug(QInstaller::lcInstallerInstallLog) << args.front() << "started, arguments:"
+        << QStringList(args.mid(1)).join(QLatin1String(" "));
 
     bool success = false;
     //we still like the none blocking possibility to perform this operation without threads
@@ -177,13 +196,17 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
         success = process->waitForFinished(-1);
     }
 
-    bool returnValue = true;
+    int returnValue = NoError;
     if (!success) {
         q->setError(UserDefinedError);
         //TODO: pass errorString() through the wrapper */
         q->setErrorString(tr("Cannot start: \"%1\": %2").arg(callstr,
             process->errorString()));
-        returnValue = false;
+        if (!needsRerunWithReplacedVariables(arguments, type)) {
+            returnValue = Error;
+        } else {
+            returnValue = NeedsRerun;
+        }
     }
 
     if (QThread::currentThread() == qApp->thread()) {
@@ -198,32 +221,57 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     if (process->exitStatus() == QProcessWrapper::CrashExit) {
         q->setError(UserDefinedError);
         q->setErrorString(tr("Program crashed: \"%1\"").arg(callstr));
-        returnValue = false;
+        returnValue = Error;
     }
 
-    if (!allowedExitCodes.contains(process->exitCode())) {
-        q->setError(UserDefinedError);
-        if (customErrorMessage.isEmpty()) {
-            q->setErrorString(tr("Execution failed (Unexpected exit code: %1): \"%2\"")
-                .arg(QString::number(process->exitCode()), callstr));
+    if (!allowedExitCodes.contains(process->exitCode()) && returnValue != NeedsRerun) {
+        if (!needsRerunWithReplacedVariables(arguments, type)) {
+            q->setError(UserDefinedError);
+            if (customErrorMessage.isEmpty()) {
+                q->setErrorString(tr("Execution failed (Unexpected exit code: %1): \"%2\"")
+                    .arg(QString::number(process->exitCode()), callstr));
+            } else {
+                q->setErrorString(customErrorMessage);
+            }
+
+            QByteArray standardErrorOutput = process->readAllStandardError();
+            // in error case it would be useful to see something in verbose output
+            if (!standardErrorOutput.isEmpty())
+                qCWarning(QInstaller::lcInstallerInstallLog).noquote() << standardErrorOutput;
+
+            returnValue = Error;
         } else {
-            q->setErrorString(customErrorMessage);
+            returnValue = NeedsRerun;
         }
-
-        QByteArray standardErrorOutput = process->readAllStandardError();
-        // in error case it would be useful to see something in verbose output
-        if (!standardErrorOutput.isEmpty())
-            qWarning().noquote() << standardErrorOutput;
-
-        returnValue = false;
     }
-
     Q_ASSERT(process);
     Q_ASSERT(process->state() == QProcessWrapper::NotRunning);
     delete process;
     process = nullptr;
 
     return returnValue;
+}
+
+bool ElevatedExecuteOperation::Private::needsRerunWithReplacedVariables(QStringList &arguments, const OperationType type)
+{
+    if (type != Operation::Undo)
+        return false;
+    bool rerun = false;
+    PackageManagerCore *const core = q->packageManager();
+    for (int i = 0; i < arguments.count(); i++) {
+        QString key = core->key(arguments.at(i));
+        if (!key.isEmpty() && key.endsWith(QLatin1String("_OLD"))) {
+            key.remove(key.length() - 4, 4);
+            if (core->containsValue(key)) {
+                key.prepend(QLatin1String("@"));
+                key.append(QLatin1String("@"));
+                QString value = core->replaceVariables(key);
+                arguments.replace(i, value);
+                rerun = true;
+            }
+        }
+    }
+    return rerun;
 }
 
 /*!
@@ -240,18 +288,18 @@ void ElevatedExecuteOperation::Private::readProcessOutput()
     Q_ASSERT(process);
     Q_ASSERT(QThread::currentThread() == process->thread());
     if (QThread::currentThread() != process->thread()) {
-        qDebug() << Q_FUNC_INFO << "can only be called from the same thread as the process is.";
+        qCDebug(QInstaller::lcInstallerInstallLog) << Q_FUNC_INFO << "can only be called from the "
+            "same thread as the process is.";
     }
     const QByteArray output = process->readAll();
     if (!output.isEmpty()) {
         if (q->error() == UserDefinedError)
-            qWarning() << output;
+            qCWarning(QInstaller::lcInstallerInstallLog)<< output;
         else
-            qDebug() << output;
+            qCDebug(QInstaller::lcInstallerInstallLog) << output;
         emit q->outputTextChanged(QString::fromLocal8Bit(output));
     }
 }
-
 
 bool ElevatedExecuteOperation::undoOperation()
 {
@@ -266,7 +314,21 @@ bool ElevatedExecuteOperation::undoOperation()
     if (args.isEmpty())
         return true;
 
-    return d->run(args);
+    if (requiresUnreplacedVariables()) {
+        PackageManagerCore *const core = packageManager();
+        args = core->replaceVariables(args);
+    }
+
+    int returnValue = d->run(args, Operation::Undo);
+    if (returnValue == NeedsRerun) {
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote() << QString::fromLatin1("Failed to run "
+            "undo operation \"%1\" for component %2. Trying again with arguments %3").arg(name(),
+            value(QLatin1String("component")).toString(), args.join(QLatin1String(", ")));
+        setError(NoError);
+        setErrorString(QString());
+        returnValue = d->run(args, Operation::Undo);
+    }
+    return returnValue ? false : true;
 }
 
 bool ElevatedExecuteOperation::testOperation()

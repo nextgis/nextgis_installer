@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -11,8 +11,8 @@
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU Free Documentation License Usage
 ** Alternatively, this file may be used under the terms of the GNU Free
@@ -20,7 +20,7 @@
 ** Foundation and appearing in the file included in the packaging of
 ** this file. Please review the following information to ensure
 ** the GNU Free Documentation License version 1.3 requirements
-** will be met: http://www.gnu.org/copyleft/fdl.html.
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
@@ -32,7 +32,6 @@
 // **********************************************************************
 
 /*!
-    \contentspage{index.html}{Qt Installer Framework}
     \page index.html
     \nextpage ifw-overview.html
 
@@ -42,7 +41,7 @@
 
     The Qt Installer Framework provides a set of tools and utilities to
     create installers for the supported desktop Qt platforms: Linux, Microsoft
-    Windows, and OS X.
+    Windows, and macOS.
 
     \note Report bugs and suggestions for the Qt Installer Framework project
     in the \l{https://bugreports.qt.io/browse/QTIFW}{Qt Bugtracker}.
@@ -57,6 +56,7 @@
             \li \l{Removing Components}
             \li \l{Updating Components}
             \li \l{Specifying Settings}
+            \li \l{Using From Command Line}
         \endlist
         \li \l{Tutorial: Creating an Installer}
         \li \l{Creating Installers}
@@ -69,6 +69,7 @@
         \li \l{Qt Installer Framework Examples}
         \li \l{Reference}
         \list
+            \li \l{Command Line Interface}
             \li \l{Configuration File}
             \li \l{Package Directory}
             \li \l{Controller Scripting}
@@ -83,7 +84,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-tutorial.html
     \page ifw-creating-installers.html
     \nextpage ifw-offline-installers.html
@@ -104,7 +104,7 @@
             \l{Configuration File}.
 
         \li Create a package information file called \c package.xml in the
-            \c {config\meta} directory. It contains settings for deployment and
+            \c {packages\{component}\meta} directory. It contains settings for deployment and
             the installation process. For more information, see
             \l{Meta Directory}.
 
@@ -134,8 +134,199 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-reference.html
+    \page ifw-cli.html
+    \nextpage ifw-globalconfig.html
+
+    \title Command Line Interface
+
+    Installers created with the Qt Installer Framework have the following command
+    line interface syntax:
+
+    \code
+    installer.exe [options] command <args> <key=value>
+    \endcode
+
+    Here \c [options] is one or a combination of supported options in either short
+    or long form. In addition some options may require mandatory value(s) that can
+    be passed using the assignment operator or space.
+
+    The \c command is one of the supported command line installer operations to be
+    run headless in text mode. Some commands may be provided with optional \c <args>
+    separated by space. The \c <key=value> list is used to set internal key-value
+    pairs by the framework.
+
+    Installer will return an exit code after it is executed. Exit code can be used
+    to determine whether the installation was successful, if the installation has
+    an mandatory update etc. See \c PackagemanagerCore::Status.
+
+    \section1 Summary of Options
+
+    Options marked with \c CLI are only available when running in headless mode,
+    the rest of the options can be used also in graphical mode. For the most
+    up-to-date list of available options with a specific version of Qt Installer
+    Framework, refer \c --help option output of \l installerbase.
+
+    \table
+        \header
+            \li Option
+            \li Usage
+        \row
+            \li -?, -h, --help
+            \li Displays help.
+        \row
+            \li -v, --version
+            \li Displays version information.
+        \row
+            \li -d, --verbose
+            \li Verbose mode. Prints out more information.
+        \row
+            \li -g, --logging-rules <rules>
+            \li Enables logging according to passed rules. Comma separated logging rules
+                have the following syntax: \c{loggingCategory=true/false}. Passing empty logging
+                rules enables all logging categories. The following rules enable a single
+                category: \c{ifw.*=false, ifw.category=true}. The available logging categories
+                can be referenced with --help option.
+        \row
+            \li --ar, --add-repository <URI,...>
+            \li Add a local or remote repository to the list of user defined repositories.
+        \row
+            \li --at, --add-temp-repository <URI,...>
+            \li Add a local or remote repository to the list of temporary available repositories.
+        \row
+            \li --st, --set-temp-repository <URI,...>
+            \li Set a local or remote repository as temporary repository, it is the only one
+                used during fetch. Note: a URI must be prefixed with the protocol, i.e. file:///,
+                https://, http:// or ftp://.
+        \row
+            \li --sp, --system-proxy
+            \li Use system proxy on Windows and Linux. This option has no effect on macOS. (Default)
+        \row
+            \li --np, --no-proxy
+            \li Do not use system proxy.
+        \row
+            \li --su, --start-updater
+            \li Start application in updater mode. This will override the internal marker that is used
+                to distinguish which kind of binary is currently running.
+        \row
+            \li --sm, --start-package-manager
+            \li Start application in package manager mode. This will override the internal marker
+                that is used to distinguish which kind of binary is currently running.
+        \row
+            \li --sr, --start-uninstaller
+            \li Start application in uninstaller mode. This will override the internal marker
+                that is used to distinguish which kind of binary is currently running.
+        \row
+            \li -t, --root <directory>
+            \li [CLI] Set the installation root directory.
+        \row
+            \li --oi, --offline-installer-name <filename>
+            \li [CLI] Set custom filename for the generated offline installer. Without this
+                the original filename is used with an added "_offline-yyyy-MM-dd" suffix.
+        \row
+            \li -p, --platform <plugin>
+            \li Use the specified platform plugin.
+        \row
+            \li --nf, --no-force-installations
+            \li Allow deselecting components that are marked as forced.
+        \row
+            \li --nd, --no-default-installations
+            \li Deselects components that are marked as default.
+        \row
+            \li --ns, --no-size-checking
+            \li Disable checking of free space for the installation target.
+        \row
+            \li --sv, --show-virtual-components
+            \li Show virtual components in the installer and the package manager.
+        \row
+            \li -i, --install-compressed-repository <URI,...>
+            \li Installs a QBSP or a 7z file. The QBSP (Board Support Package) file must be a .7z file
+                which contains a valid repository.
+        \row
+            \li -c, --create-local-repository
+            \li Create a local repository inside the installation directory. This option has no
+                effect on online installers.
+        \row
+            \li --am, --accept-messages
+            \li [CLI] Accepts all message queries without user input.
+        \row
+            \li --rm, --reject-messages
+            \li [CLI] Rejects all message queries without user input.
+        \row
+            \li --aa, --auto-answer <identifier=value>
+            \li [CLI] Automatically answers the message queries with the message identifier and a button
+                value. Several \c{identifier=value} pairs can be given separated with a comma, for example
+                \c{--auto-answer message.id=Ok,message.id2=Cancel}.
+        \row
+            \li --da, --default-answer
+            \li [CLI] Automatically answers to message queries with their default values.
+        \row
+            \li --al, --accept-licenses
+            \li [CLI] Accepts all licenses without user input.
+        \row
+            \li --file-query <identifier=value>
+            \li [CLI] Automatically sets the QFileDialog values getExistingDirectory() or
+                getOpenFileName() requested by the install script. Several \c{identifier=value} pairs can be
+                given separated with a comma, for example \c{--file-query filedialog.id=C:Temp,filedialog.id2=C:Temp2}.
+        \row
+            \li -c, --confirm-command
+            \li [CLI] Confirms starting of installation, update or removal of components without user input.
+        \row
+            \li -s, --script <file>
+            \li Execute the script given as an argument.
+        \row
+            \li --ss, --start-server <mode, socketname, key>
+            \li Starts the application as headless process waiting for commands to execute. Mode can
+                be DEBUG or PRODUCTION. In the DEBUG mode, the option values can be omitted. Note: The
+                server will not shutdown on its own, you need to quit the process by hand.
+        \row
+            \li --sc, --start-client <socketname, key>
+            \li Starts the application to debug the client-server communication. If a value is
+                omitted, the client will use a default instead. Note: The server process is not started
+                by the client application in that case, you need to start it on your own.
+        \row
+            \li -q, --squish-port <port number>
+            \li Give a port where Squish can connect to. If no port is given, default port 11233 is used.
+                Note: To enable Squish support, you first need to build IFW with SQUISH_PATH parameter
+                where SQUISH_PATH is pointing to your Squish installation folder:
+                \c{<path_to_qt>/bin/qmake -r SQUISH_PATH=<pat_to_squish>}.
+    \endtable
+
+    \section1 Summary of Commands
+
+    \table
+        \header
+            \li Command
+            \li Usage
+        \row
+            \li in, install <pkg ...>
+            \li Install packages given as an argument. If no packages are given, install the default package set.
+        \row
+            \li ch, check-updates
+            \li Show information about available updates on the maintenance tool.
+        \row
+            \li up, update <pkg ...>
+            \li Update packages given as an argument. If no packages are given, install all available updates.
+        \row
+            \li rm, remove <pkg ...>
+            \li Uninstall selected packages and their child components.
+        \row
+            \li li, list <regexp>
+            \li List information about currently installed packages.
+        \row
+            \li se, search <regexp>
+            \li Search available packages. If no search pattern is given, show all available packages.
+        \row
+            \li co, create-offline <pkg ...>
+            \li Create offline installer from selected packages.
+        \row
+            \li pr, purge
+            \li Uninstall all packages and remove the program directory.
+    \endtable
+*/
+
+/*!
+    \previouspage ifw-cli.html
     \page ifw-globalconfig.html
     \nextpage ifw-component-description.html
 
@@ -191,13 +382,13 @@
         \row
             \li Icon
             \li Filename for a custom installer icon. The actual file is looked up by attaching
-                a '.icns' (OS X), '.ico' (Windows) or '.png' (Unix) suffix. Deprecated,
+                a '.icns' (macOS), '.ico' (Windows) or '.png' (Unix) suffix. Deprecated,
                 use \c <InstallerApplicationIcon> or \c <InstallerWindowIcon>
                 instead.
         \row
             \li InstallerApplicationIcon
             \li Filename for a custom installer icon. The actual file is looked up by attaching
-                a '.icns' (OS X), '.ico' (Windows). No functionality on Unix.
+                a '.icns' (macOS), '.ico' (Windows). No functionality on Unix.
         \row
             \li InstallerWindowIcon
             \li Filename for a custom window icon in PNG format for the Installer application.
@@ -206,13 +397,19 @@
             \li Filename for a logo used as \c QWizard::LogoPixmap.
         \row
             \li Watermark
-            \li Filename for a watermark used as \c QWizard::WatermarkPixmap.
+            \li Filename for a watermark used as \c QWizard::WatermarkPixmap. If
+                \c <WizardShowPageList> is set to \c true, the watermark is hidden.
         \row
             \li Banner
             \li Filename for a banner used as \c QWizard::BannerPixmap (only used by ModernStyle).
         \row
             \li Background
             \li Filename for an image used as \c QWizard::BackgroundPixmap (only used by MacStyle).
+                If \c <WizardShowPageList> is set to \c true, the background is hidden.
+        \row
+            \li PageListPixmap
+            \li Filename for an image shown on top of installer page list. The image is shown
+                only if \c <WizardShowPageList> is also set to \c true.
         \row
             \li WizardStyle
             \li Set the wizard style to be used ("Modern", "Mac", "Aero" or "Classic").
@@ -229,6 +426,24 @@
             \li Sets the default height of the wizard in pixels. Setting a watermark image will
                 override this. You can add the \c em or \c ex suffix to the specified value to
                 use the \e em or \e ex unit, as in a CSS file.
+        \row
+            \li WizardMinimumWidth
+            \li Sets the minimum width of the wizard in pixels. You can add the \c em or \c ex
+                suffix to the specified value to use the \e em or \e ex unit, as in a CSS file.
+        \row
+            \li WizardMinimumHeight
+            \li Sets the minimum height of the wizard in pixels. You can add the \c em or \c ex
+                suffix to the specified value to use the \e em or \e ex unit, as in a CSS file.
+        \row
+            \li WizardShowPageList
+            \li Set to \c false if the widget listing installer pages on the left side of the
+                wizard should not be shown. Defaults to \c true. If visible, this widget hides
+                \c QWizard::WatermarkPixmap on \c QWizard::ClassicStyle and \c QWizard::ModernStyle,
+                and \c QWizard::BackgroundPixmap on \c QWizard::MacStyle.
+        \row
+            \li ProductImages
+            \li A list of images to be shown on \c PerformInstallationPage. This element can have
+                one or several \c <Image> child elements that contain a filename for an image.
         \row
             \li TitleColor
             \li Set the color of the titles and subtitles (takes an HTML color code,
@@ -290,6 +505,11 @@
             \li Set to \c true if the installation should not ask users to run the authorization
                 fallback in case of authorization errors. Instead abort the installation immediately.
         \row
+            \li DisableCommandLineInterface
+            \li Set to \c true if command line interface features should be disabled. This prevents
+                the user from passing any consumer command to installer, like \c install, \c update
+                and \c remove. Other options can still be used normally. Defaults to \c false.
+        \row
             \li RepositorySettingsPageVisible
             \li Set to \c false to hide the repository settings page inside the settings dialog.
         \row
@@ -347,7 +567,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-updates.html
     \page ifw-customizing-installers.html
     \nextpage Qt Installer Framework Examples
@@ -494,15 +713,10 @@
         </Translations>
     \endcode
 
-    Use the \c {qsTr()} function for literal text within scripts. Additionally,
+    Use the \c {qsTranslate()} function for literal text within scripts. Additionally,
     you can add the \c Component.prototype.retranslateUi method to the script.
     It is called when the language of the installer changes and the translation
     file is loaded.
-
-    The context being used for translation is the basename of the script file
-    when using \c qsTr or the class name of the UI file when translating a user
-    interface. For example, if the script file is called \c installscript.qs, the
-    context will be installscript.
 
     \note The translation system can also be used to customize the UI. Use e.g.
     an \c en.ts file to replace any text in the installer with a custom English
@@ -510,7 +724,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-globalconfig.html
     \page ifw-component-description.html
     \nextpage noninteractive.html
@@ -525,7 +738,9 @@
 
     Place all components in the same root directory, which is called the
     \e {package directory}. The directory name acts as a domain-like identifier,
-    which identifies all components. For example, \c com.vendor.root.
+    which identifies all components. For example, \c com.vendor.root. The directory
+    name must not contain \c : or \c - characters as those are reserved for separating
+    the version number from the identifier.
 
     Within the root directory, create subdirectories called \c data and \c meta.
 
@@ -633,7 +848,8 @@
             \li Licenses
             \li List of license agreements to be accepted by the installing
                 user. To add several licenses, add several \c <License> child
-                elements that each specify the license \c name and \c file.
+                elements that each specify the license \c name and \c file and,
+                optionally, \c priority.
                 ASCII and UTF8 file formats are supported for license files.
 
                 If there are translations listed for this component, the installer
@@ -685,6 +901,12 @@
             \li Determines that the package must always be installed. End users
                 cannot deselect it in the installer.
         \row
+            \li ForcedUpdate
+            \li Marks the package as \c ForcedUpdate to force a restart of the
+                \c MaintenanceTool. If there are updates available
+                for a \c ForcedUpdate component, the package manager stays
+                disabled until that component is updated.
+        \row
             \li Replaces
             \li Comma-separated list of components to replace. Optional.
 
@@ -707,6 +929,22 @@
         \row
             \li ExpandedByDefault
             \li Set to \c true if you want this item to be expanded by default. Optional.
+
+        \row
+            \li Operations
+            \li List of operations that are performed when component is installed. To add
+                several operations, specify several \c <Operation> child elements that each
+                specify the operation \c name. \c Operation can have several \c <Argument>
+                child elements depending on the operation to be run. Adding \c <Operations>
+                is an alternative way of defining operations to defining them in scripts.
+                For more information, see \l{Adding Operations}. For a
+                summary of available operations, see \l {Operations}.
+
+        \row
+            \li TreeName
+            \li Specifies the component location in the install tree view. Overwrites the original
+                location which is calculated from component name. Component names and tree names
+                must be unique. Optional.
 
     \endtable
 
@@ -732,7 +970,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage operations.html
     \page ifw-tools.html
     \nextpage Scripting API
@@ -794,7 +1031,7 @@
     <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file> <installer_name>
     \endcode
 
-        \li On Linux and OS X
+        \li On Linux and macOS
 
     \code
     <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory>/<config_file> <installer_name>
@@ -812,7 +1049,7 @@
     <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file> -e <packages> <installer_name>
     \endcode
 
-        \li On Linux and OS X
+        \li On Linux and macOS
 
     \code
     <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory>/<config_file> -e <packages> <installer_name>
@@ -883,7 +1120,7 @@
 
         \row
             \li -s or --sign identity
-            \li Only available on OS X. Allows specifying a code signing identity to be
+            \li Only available on macOS. Allows specifying a code signing identity to be
                 used for signing the generated app bundle.
     \endtable
 
@@ -907,7 +1144,7 @@
 
     \section2 Using Icons
 
-    On OS X, if the target binary is suffixed with .app, a OS X
+    On macOS, if the target binary is suffixed with .app, a macOS
     application bundle is created. The icon that you specify in config.xml is
     extended with .icns and used as the icon for the created bundle.
 
@@ -1034,15 +1271,15 @@
             \li --verbose
             \li Display additional information.
         \row
-            \li --update <file>
+            \li update <binary> <installerbase>
             \li Update an existing installer or maintenance tool with a new
                 installer base.
         \row
-            \li --dump <folder>
+            \li dump <binary> <folder>
             \li Dump the binary content that belongs to an installer or
                 maintenance tool into the target.
         \row
-            \li --operation <mode,name,args,...>
+            \li operation <mode,name,args,...>
             \li Execute an operation with a list of arguments.
 
                 \c mode can be \c DO or \c UNDO, depending on whether the step
@@ -1051,7 +1288,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-offline-installers.html
     \page ifw-online-installers.html
     \nextpage ifw-updates.html
@@ -1195,7 +1431,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-creating-installers.html
     \page ifw-offline-installers.html
     \nextpage ifw-online-installers.html
@@ -1231,7 +1466,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-online-installers.html
     \page ifw-updates.html
     \nextpage ifw-customizing-installers.html
@@ -1393,7 +1627,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-cpp-classes.html
     \page ifw-knownissues.html
     \nextpage index.html

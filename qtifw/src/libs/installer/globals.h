@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,14 +35,19 @@
 
 namespace QInstaller {
 
-INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcComponentChecker)
-INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcResources)
-INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcTranslations)
-INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcNetwork)
+INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcServer)
+INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcInstallerInstallLog)
+
+INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcProgressIndicator)
+INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcDeveloperBuild)
+INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcPackageInfo)
 
 QStringList INSTALLER_EXPORT loggingCategories();
 
 QRegExp INSTALLER_EXPORT commaRegExp();
+
+QString htmlToString(const QString &html);
+QString enumToString(const QMetaObject& metaObject, const char *enumerator, int key);
 
 }   // QInstaller
 

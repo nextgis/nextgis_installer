@@ -26,8 +26,8 @@
 **
 **************************************************************************/
 
-#ifndef ARCHIVEREPOSITORY_H
-#define ARCHIVEREPOSITORY_H
+#ifndef REPOSITORYCATEGORY_H
+#define REPOSITORYCATEGORY_H
 
 #include "installer_global.h"
 #include "repository.h"
@@ -54,8 +54,8 @@ public:
     void setTooltip(const QString &tooltip);
 
     QSet<Repository> repositories() const;
-    void setRepositories(const QSet<Repository> repositories);
-    void addRepository(const Repository repository);
+    void setRepositories(const QSet<Repository> repositories, const bool replace = false);
+    void addRepository(const Repository &repository);
 
     bool isEnabled() const;
     void setEnabled(bool enabled);
@@ -87,4 +87,4 @@ INSTALLER_EXPORT QDataStream &operator<<(QDataStream &ostream, const RepositoryC
 
 Q_DECLARE_METATYPE(QInstaller::RepositoryCategory)
 
-#endif // ARCHIVEREPOSITORY_H
+#endif // REPOSITORYCATEGORY_H

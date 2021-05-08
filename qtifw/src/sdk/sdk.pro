@@ -1,5 +1,5 @@
 TEMPLATE = app
-INCLUDEPATH += . .. 
+INCLUDEPATH += . ..
 TARGET = installerbase
 
 include(../../installerfw.pri)
@@ -40,17 +40,27 @@ exists($$LRELEASE) {
         "    <qresource prefix=\"/\">"
     for (file, IB_TRANSLATIONS) {
         lang = $$replace(file, .*_([^/]*)\\.ts, \\1)
+        qlang = $${lang}
         qfile = $$[QT_INSTALL_TRANSLATIONS]/qtbase_$${lang}.qm
         !exists($$qfile) {
-            qfile = $$[QT_INSTALL_TRANSLATIONS]/qt_$${lang}.qm
+            qfile = $$[QT_INSTALL_TRANSLATIONS]/qt_$${qlang}.qm
             !exists($$qfile) {
-                warning("No Qt translation for '$$lang'; skipping.")
-                next()
+                # get 'pt' from 'pt_BR', for example, to find 'qt_pt.qm' file
+                qlang ~= s/_.*//
+                qfile = $$[QT_INSTALL_TRANSLATIONS]/qtbase_$${lang}.qm
+                !exists($$qfile) {
+                    qfile = $$[QT_INSTALL_TRANSLATIONS]/qt_$${qlang}.qm
+                    !exists($$qfile) {
+                        warning("No Qt translation for '$$lang'; skipping.")
+                        next()
+                    }
+                }
             }
         }
+
         qrc_cont += \
             "        <file>translations/ifw_$${lang}.qm</file>" \
-            "        <file alias=\"translations/qt_$${lang}.qm\">$$qfile</file>"
+            "        <file alias=\"translations/qt_$${qlang}.qm\">$$qfile</file>"
         ACTIVE_IB_TRANSLATIONS += $$file
         RESOURCE_DEPS += $$qfile translations/ifw_$${lang}.qm
     }
@@ -88,12 +98,9 @@ HEADERS += \
            tabcontroller.h \
            installerbasecommons.h \
            settingsdialog.h \
-           console.h \
            sdkapp.h \
-           updatechecker.h \
-           installerbase.h \
-           constants.h \
-           commandlineparser.h
+           commandlineinterface.h \
+           installerbase.h
 
 SOURCES = \
           main.cpp \
@@ -101,15 +108,12 @@ SOURCES = \
           tabcontroller.cpp \
           installerbasecommons.cpp \
           settingsdialog.cpp \
-          updatechecker.cpp \
-          commandlineparser.cpp
+          commandlineinterface.cpp
 
 win32 {
     # Use our own manifest file
     CONFIG -= embed_manifest_exe
     RC_FILE = installerbase.rc
-
-    SOURCES += console_win.cpp
 }
 
 macx:include(../../no_app_bundle.pri)

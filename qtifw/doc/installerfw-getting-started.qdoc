@@ -11,8 +11,8 @@
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU Free Documentation License Usage
 ** Alternatively, this file may be used under the terms of the GNU Free
@@ -20,13 +20,12 @@
 ** Foundation and appearing in the file included in the packaging of
 ** this file. Please review the following information to ensure
 ** the GNU Free Documentation License version 1.3 requirements
-** will be met: http://www.gnu.org/copyleft/fdl.html.
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
 /*!
-    \contentspage {index.html}{Qt Installer Framework}
     \previouspage ifw-overview.html
     \page ifw-getting-started.html
     \nextpage ifw-use-cases.html
@@ -45,9 +44,9 @@
     The installers have been tested on the following platforms:
 
     \list
-        \li Microsoft Windows XP, and later
-        \li Ubuntu Linux 11.10, and later
-        \li OS X 10.7, and later
+        \li Microsoft Windows 7, and later
+        \li Ubuntu Linux 16.04, and later
+        \li macOS 10.12, and later
     \endlist
 
     \section1 Building from Sources
@@ -59,15 +58,18 @@
     \section2 Supported Compilers
 
     The Qt Installer Framework can be compiled with Microsoft Visual Studio
-    2013 and newer, GCC 4.7 and newer, and Clang 3.1 and newer.
+    2013 and newer, GCC 4.7 and newer, and Clang 3.1 and newer. Currently, the
+    tested combination for Windows is Qt 5.12.4 with MSVC 2015.
 
     \section2 Configuring Qt
 
     If you use a statically built Qt to build the Qt Installer Framework
     you do not have to deliver Qt libraries, which enables you to distribute
-    installers as one file.
+    installers as one file. Please read SSL Import and Export Restrictions
+    from http://doc.qt.io/qt-5/ssl.html if you are statically linking against
+    OpenSSL libraries.
 
-    The minimum required Qt version is 5.5.
+    The supported Qt version is 5.12.7.
 
     \section3 Configuring Qt for Windows
 
@@ -75,8 +77,13 @@
     Windows:
 
     \code
-    configure -prefix %CD%\qtbase -release -static -static-runtime -target xp -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
+    configure -prefix %CD%\qtbase -release -static -static-runtime -accessibility -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests
 
+    \endcode
+
+    Build Qt:
+    \code
+    nmake (or 'mingw32-make') module-qtbase module-qtdeclarative module-qttools module-qttranslations module-qtwinextras
     \endcode
 
     \section3 Configuring Qt for Linux
@@ -84,15 +91,25 @@
     We recommend that you use the following configuration options for Linux:
 
     \code
-    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -qt-freetype -no-glib -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -no-egl -no-xinput -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
+    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -no-glib -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -no-egl -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -no-libudev
     \endcode
 
-    \section3 Configuring Qt for OS X
+    Build Qt:
+    \code
+    make module-qtbase module-qtdeclarative module-qttools module-qttranslations
+    \endcode
 
-    We recommend that you use the following configuration options for OS X:
+    \section3 Configuring Qt for macOS
+
+    We recommend that you use the following configuration options for macOS:
 
     \code
-    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
+    configure -prefix $PWD/qtbase -release -static -no-securetransport -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -no-freetype
+    \endcode
+
+    Build Qt:
+    \code
+    make module-qtbase module-qtdeclarative module-qttools module-qttranslations
     \endcode
 
     \section2 Setting up Qt Installer Framework

@@ -55,6 +55,18 @@ using namespace QInstaller;
     objects.
 */
 
+/*!
+    \fn void KDUpdater::UpdateFinder::addCompressedPackage(bool add)
+    \internal
+
+*/
+
+/*!
+    \fn void KDUpdater::UpdateFinder::isCompressedPackage()
+    \internal
+
+*/
+
 //
 // Private
 //
@@ -418,23 +430,23 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
 
         if (match > 0) {
             // new package has higher version, use
-            qDebug().nospace() << "Remove Package 'Name: " << name << ", Version: "
-                               << existingPackage->data(QLatin1String("Version")).toString()
-                               << ", Source: " << QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName()
-                               << "' found a package with higher version 'Name: "
-                               << name << ", Version: " << newPackage.value(QLatin1String("Version")).toString()
-                               << ", Source: " << QFileInfo(source.url.toLocalFile()).fileName() << "'";
+            qCDebug(QInstaller::lcDeveloperBuild).nospace() << "Remove Package 'Name: " << name
+                << ", Version: "<< existingPackage->data(QLatin1String("Version")).toString()
+                << ", Source: " << QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName()
+                << "' found a package with higher version 'Name: "
+                << name << ", Version: " << newPackage.value(QLatin1String("Version")).toString()
+                << ", Source: " << QFileInfo(source.url.toLocalFile()).fileName() << "'";
             return Resolution::RemoveExisting;
         }
 
         if ((match == 0) && (source.priority > existingPackage->packageSource().priority)) {
             // new package version equals but priority is higher, use
-            qDebug().nospace() << "Remove Package 'Name: " << name << ", Priority: "
-                               << existingPackage->packageSource().priority
-                               << ", Source: " << QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName()
-                               << "' found a package with higher priority 'Name: "
-                               << name << ", Priority: " << source.priority
-                               << ", Source: " << QFileInfo(source.url.toLocalFile()).fileName() << "'";
+            qCDebug(QInstaller::lcDeveloperBuild).nospace() << "Remove Package 'Name: " << name
+                << ", Priority: " << existingPackage->packageSource().priority
+                << ", Source: " << QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName()
+                << "' found a package with higher priority 'Name: "
+                << name << ", Priority: " << source.priority
+                << ", Source: " << QFileInfo(source.url.toLocalFile()).fileName() << "'";
             return Resolution::RemoveExisting;
         }
         if (q->isCompressedPackage() && match == 0 && source.priority == existingPackage->packageSource().priority) {
@@ -476,13 +488,16 @@ QList<Update *> UpdateFinder::updates() const
     return d->updates.values();
 }
 
+/*!
+    Sets the information about installed local packages \a hub.
+*/
 void UpdateFinder::setLocalPackageHub(std::weak_ptr<LocalPackageHub> hub)
 {
     d->m_localPackageHub = std::move(hub);
 }
 
 /*!
-    Sets the package sources information to use when searching for applicable packages.
+    Sets the package \a sources information when searching for applicable packages.
 */
 void UpdateFinder::setPackageSources(const QSet<PackageSource> &sources)
 {
@@ -552,7 +567,7 @@ void UpdateFinder::Private::slotDownloadDone()
 /*!
    \inmodule kdupdater
 
-   This function compares two version strings \c v1 and \c v2 and returns
+   This function compares two version strings \a v1 and \a v2 and returns
    -1, 0 or +1 based on the following rule
 
     \list

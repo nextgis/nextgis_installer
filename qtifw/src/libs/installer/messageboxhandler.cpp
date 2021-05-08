@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -28,11 +28,15 @@
 
 #include "messageboxhandler.h"
 
+#include "globals.h"
+#include "loggingutils.h"
+
 #include <QtCore/QDebug>
 
 #include <QApplication>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QMetaEnum>
 
 /*!
     \inmodule QtInstallerFramework
@@ -90,6 +94,8 @@ using namespace QInstaller;
             Accept the message box.
     \value  Reject
             Reject the message box.
+    \value  Default
+            Uses default answer set for message box.
 */
 
 /*!
@@ -280,7 +286,7 @@ QMessageBox::StandardButton MessageBoxHandler::warning(QWidget *parent, const QS
     returns the escape button.
 */
 int MessageBoxHandler::critical(const QString &identifier, const QString &title,
-    const QString &text, int buttons, int button) const
+    const QString &text, int buttons, int button)
 {
     return showMessageBox(criticalType, currentBestSuitParent(), identifier, title, text,
         QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
@@ -299,7 +305,7 @@ int MessageBoxHandler::critical(const QString &identifier, const QString &title,
     returns the escape button.
 */
 int MessageBoxHandler::information(const QString &identifier, const QString &title,
-    const QString &text, int buttons, int button) const
+    const QString &text, int buttons, int button)
 {
     return showMessageBox(informationType, currentBestSuitParent(), identifier, title, text,
         QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
@@ -318,7 +324,7 @@ int MessageBoxHandler::information(const QString &identifier, const QString &tit
     returns the escape button.
 */
 int MessageBoxHandler::question(const QString &identifier, const QString &title,
-    const QString &text, int buttons, int button) const
+    const QString &text, int buttons, int button)
 {
     return showMessageBox(questionType, currentBestSuitParent(), identifier, title, text,
         QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
@@ -336,7 +342,7 @@ int MessageBoxHandler::question(const QString &identifier, const QString &title,
     returns the escape button.
 */
 int MessageBoxHandler::warning(const QString &identifier, const QString &title, const QString &text,
-    int buttons, int button) const
+    int buttons, int button)
 {
     return showMessageBox(warningType, currentBestSuitParent(), identifier, title, text,
         QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
@@ -381,7 +387,7 @@ static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBo
                 msgBox.setDefaultButton(button);
         }
     }
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_MACOS)
     msgBox.setWindowModality(Qt::WindowModal);
 #endif
     if (msgBox.exec() == -1)
@@ -391,24 +397,49 @@ static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBo
 
 QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messageType, QWidget *parent,
     const QString &identifier, const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
-    QMessageBox::StandardButton defaultButton) const
+    const QMessageBox::StandardButton defaultButton)
 {
-    static QHash<MessageType, QString> messageTypeHash;
-    if (messageTypeHash.isEmpty()) {
-        messageTypeHash.insert(criticalType, QLatin1String("critical"));
-        messageTypeHash.insert(informationType, QLatin1String("information"));
-        messageTypeHash.insert(questionType, QLatin1String("question"));
-        messageTypeHash.insert(warningType, QLatin1String("warning"));
-    };
+    QString availableAnswers = availableAnswerOptions(buttons);
+    qCDebug(QInstaller::lcInstallerInstallLog).noquote() << identifier << ":" << title << ":" << text
+        << availableAnswers;
 
-    qDebug().nospace() << "Created " << messageTypeHash.value(messageType).toUtf8().constData()
-                       << " message box " << identifier << ": " << title << ", " << text;
+    if (m_automaticAnswers.contains(identifier)) {
+        QMessageBox::StandardButton selectedButton = m_automaticAnswers.value(identifier);
+        const QString buttonName = enumToString(QMessageBox::staticMetaObject, "StandardButton", selectedButton);
+        if (buttons & selectedButton) {
+            qCDebug(QInstaller::lcInstallerInstallLog).nospace() << "Automatic answer for "<< identifier
+                << ": " << buttonName;
+        } else {
+            qCDebug(QInstaller::lcInstallerInstallLog()).nospace() << "Invalid answer " << buttonName
+                << "for " << identifier << ". Using default value " << enumToString(QMessageBox::staticMetaObject,
+                    "StandardButton", defaultButton) << " instead.";
+            selectedButton = defaultButton;
+        }
+        return selectedButton;
+    }
 
-    if (qobject_cast<QApplication*> (qApp) == nullptr)
-        return defaultButton;
+    if (qobject_cast<QApplication*> (qApp) == nullptr) {
+        QMessageBox::StandardButton button = defaultButton;
+        bool showAnswerInLog = true;
+        if (LoggingHandler::instance().outputRedirected() && (m_defaultAction == AskUser))
+            setDefaultAction(Reject);
 
-    if (m_automaticAnswers.contains(identifier))
-        return m_automaticAnswers.value(identifier);
+        if (m_defaultAction == AskUser) {
+            if (!availableAnswers.isEmpty()) {
+                while (!askAnswerFromUser(button, buttons)) {
+                    qCDebug(QInstaller::lcInstallerInstallLog) << "Invalid answer, please retry";
+                }
+            }
+            showAnswerInLog = false;
+        } else if (m_defaultAction != Default) {
+            button = autoReply(buttons);
+        }
+        if (showAnswerInLog) {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Answer:"
+                << enumToString(QMessageBox::staticMetaObject, "StandardButton", button);
+        }
+        return button;
+    }
 
     if (m_defaultAction == AskUser) {
         switch (messageType) {
@@ -427,4 +458,44 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
 
     Q_ASSERT_X(false, Q_FUNC_INFO, "Something went really wrong.");
     return defaultButton;
+}
+
+bool MessageBoxHandler::askAnswerFromUser(QMessageBox::StandardButton &selectedButton,
+                                          QMessageBox::StandardButtons &availableButtons) const
+{
+    QTextStream stream(stdin);
+
+    QString answer;
+    stream.readLineInto(&answer);
+
+    const QMetaObject metaObject = QMessageBox::staticMetaObject;
+    int enumIndex = metaObject.indexOfEnumerator("StandardButton");
+    if (enumIndex != -1) {
+        QMetaEnum en = metaObject.enumerator(enumIndex);
+        answer.prepend(QLatin1String("QMessageBox::"));
+
+        bool ok = false;
+        int button = en.keyToValue(answer.toLocal8Bit().data(), &ok);
+        if (ok) {
+            selectedButton = static_cast<QMessageBox::Button>(button);
+            if (availableButtons & selectedButton)
+               return true;
+        }
+    }
+    return false;
+}
+
+QString MessageBoxHandler::availableAnswerOptions(const QFlags<QMessageBox::StandardButton> &flags) const
+{
+    QString answers = QString();
+    QMetaObject metaObject = QMessageBox::staticMetaObject;
+    int enumIndex = metaObject.indexOfEnumerator("StandardButton");
+    if (enumIndex != -1) {
+        QMetaEnum en = metaObject.enumerator(enumIndex);
+        // If valueToKey returned a value, we don't have a question
+        // as there was only one value in the flags.
+         if (QLatin1String(en.valueToKey(quint64(flags))).isEmpty())
+            answers = QLatin1String(en.valueToKeys(quint64(flags)));
+    }
+    return answers;
 }

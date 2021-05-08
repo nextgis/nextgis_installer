@@ -11,22 +11,27 @@
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 or version 3 as published by the Free
-** Software Foundation and appearing in the file LICENSE.LGPLv21 and
-** LICENSE.LGPLv3 included in the packaging of this file. Please review the
-** following information to ensure the GNU Lesser General Public License
-** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** General Public License version 3 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL3 included in the
+** packaging of this file. Please review the following information to
+** ensure the GNU Lesser General Public License version 3 requirements
+** will be met: https://www.gnu.org/licenses/lgpl-3.0.html.
 **
-** As a special exception, The Qt Company gives you certain additional
-** rights. These rights are described in The Qt Company LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 2.0 or (at your option) the GNU General
+** Public license version 3 or any later version approved by the KDE Free
+** Qt Foundation. The licenses are as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-2.0.html and
+** https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -82,13 +87,13 @@
 */
 
 /*!
-    \fn GenericFactory::GenericFactory()
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::GenericFactory()
 
     Creates the generic factory.
 */
 
 /*!
-    \fn GenericFactory::~GenericFactory()
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::~GenericFactory()
 
     Destroys the generic factory.
 */
@@ -100,7 +105,7 @@
 */
 
 /*!
-    \fn void GenericFactory::registerProduct(const IDENTIFIER &id)
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::registerProduct(const IDENTIFIER &id)
 
     Registers a type DERIVED, identified by \a id in the factory. Any type with the same id gets
     unregistered.
@@ -108,20 +113,20 @@
 
 /*!
     \overload
-    \fn void GenericFactory::registerProduct(const IDENTIFIER &id, FactoryFunction func)
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::registerProduct(const IDENTIFIER &id, FactoryFunction func)
 
     Registers a function \a func that can create the type DERIVED, identified by \a id in the
     factory. Any type with the same id gets unregistered.
 */
 
 /*!
-    \fn bool GenericFactory::containsProduct(const IDENTIFIER &id) const
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::containsProduct(const IDENTIFIER &id) const
 
     Returns \c true if the factory contains a type with the \a id; otherwise returns false.
 */
 
 /*!
-    \fn BASE *GenericFactory::create(const IDENTIFIER &id, ARGUMENTS... args) const
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> BASE *GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::create(const IDENTIFIER &id, ARGUMENTS... args) const
 
     Creates and returns the type identified by \a id, but automatically upcasted to BASE. Ownership
     of the type is transferred to the caller.

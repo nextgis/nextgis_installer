@@ -32,6 +32,7 @@
 #include <stdlib.h>
 
 #include "environment.h"
+#include "globals.h"
 
 #ifdef Q_OS_WIN
 # include <windows.h>
@@ -39,6 +40,12 @@
 
 using namespace QInstaller;
 using namespace KDUpdater;
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::EnvironmentVariableOperation
+    \internal
+*/
 
 EnvironmentVariableOperation::EnvironmentVariableOperation(PackageManagerCore *core)
     : UpdateOperation(core)
@@ -59,7 +66,7 @@ static void broadcastEnvironmentChange()
     LRESULT sendresult = SendMessageTimeoutW(HWND_BROADCAST, WM_SETTINGCHANGE,
         0, (LPARAM) L"Environment", SMTO_BLOCK | SMTO_ABORTIFHUNG, 5000, &aResult);
     if (sendresult == 0 || aResult != 0)
-        qWarning("Failed to broadcast the WM_SETTINGCHANGE message.");
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Failed to broadcast the WM_SETTINGCHANGE message.";
 }
 #endif
 
@@ -152,8 +159,18 @@ UpdateOperation::Error undoSetting(const QString &regPath,
         SettingsType registry(regPath, QSettingsWrapper::NativeFormat);
         actual = registry.value(name).toString();
     }
-    if (actual != value) //key changed, don't undo
-        return UpdateOperation::UserDefinedError;
+
+    if (actual != value)
+    {
+        //For unknown reason paths with @TargetDir@ variable get modified
+        //so that Windows file separators get replaced with unix style separators,
+        //fix separators before matching to actual value in register
+        QString tempValue = value;
+        QString fixedValue = tempValue.replace(QLatin1Char('/'), QLatin1Char('\\'));
+
+        if (actual != fixedValue) //key changed, don't undo
+            return UpdateOperation::UserDefinedError;
+    }
 
     bool error = false;
     if (handleRegExpandSz(regPath, name, oldValue, errorString, &error))
@@ -228,7 +245,7 @@ bool EnvironmentVariableOperation::undoOperation()
         const bool doUndo = actual == value;
         if (doUndo)
             Environment::instance().setTemporaryValue(name, oldvalue);
-        return doUndo;
+        return true;
     }
 
 #ifdef Q_OS_WIN

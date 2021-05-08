@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -33,6 +33,12 @@
 #include <QFileInfo>
 #include <QStringList>
 
+/*!
+    \fn inline uint QInstaller::qHash(const Repository &repository)
+
+    Returns a hash of the \a repository.
+*/
+
 namespace QInstaller {
 
 /*
@@ -64,7 +70,7 @@ Repository::Repository(const Repository &other)
 
 /*!
     Constructs a new repository by setting its address to \a url
-    and its default and \a compressed states.
+    and \a isDefault and \a compressed states.
 */
 Repository::Repository(const QUrl &url, bool isDefault, bool compressed)
     : m_url(url)
@@ -120,7 +126,7 @@ bool Repository::isDefault() const
 }
 
 /*!
-    Returns the URL of the repository. By default an invalid \sa QUrl is returned.
+    Returns the URL of the repository. By default an invalid QUrl is returned.
 */
 QUrl Repository::url() const
 {
@@ -144,7 +150,8 @@ bool Repository::isEnabled() const
 }
 
 /*!
-    Sets this repository to \n enabled state and thus to use this repository for information retrieval or not.
+    Sets this repository to \a enabled state. If \a enabled is \c true,
+    the repository is used for information retrieval.
 */
 void Repository::setEnabled(bool enabled)
 {
@@ -224,14 +231,6 @@ bool Repository::isCompressed() const
 }
 
 /*!
-    Sets this repository to \a compressed state to know weather the repository
-    needs to be uncompressed before use.
-*/
-void Repository::setCompressed(bool compressed)
-{
-    m_compressed = compressed;
-}
-/*!
     Compares the values of this repository to \a other and returns true if they are equal (same server,
     default state, enabled state as well as username and password). \sa operator!=()
 */
@@ -276,6 +275,9 @@ void Repository::registerMetaType()
     qRegisterMetaTypeStreamOperators<Repository>("Repository");
 }
 
+/*!
+    \internal
+*/
 QDataStream &operator>>(QDataStream &istream, Repository &repository)
 {
     QByteArray url, username, password, displayname, compressed;
@@ -288,6 +290,9 @@ QDataStream &operator>>(QDataStream &istream, Repository &repository)
     return istream;
 }
 
+/*!
+    \internal
+*/
 QDataStream &operator<<(QDataStream &ostream, const Repository &repository)
 {
     return ostream << repository.m_url.toEncoded().toBase64() << repository.m_default << repository.m_enabled

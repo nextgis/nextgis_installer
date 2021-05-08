@@ -29,6 +29,9 @@
 
 #include "errors.h"
 #include "fileutils.h"
+#include "globals.h"
+#include "adminauthorization.h"
+#include "remoteclient.h"
 
 #include <QDir>
 #include <QFile>
@@ -36,6 +39,12 @@
 #include <QTextStream>
 
 using namespace QInstaller;
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::CreateDesktopEntryOperation
+    \internal
+*/
 
 QString CreateDesktopEntryOperation::absoluteFileName()
 {
@@ -53,7 +62,10 @@ QString CreateDesktopEntryOperation::absoluteFileName()
                                                         .split(QLatin1Char(':'),
         QString::SkipEmptyParts);
 
-    XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default path
+    XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default user-specific path
+
+    if (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive())
+        XDG_DATA_HOME.push_front(QLatin1String("/usr/local/share")); // default system-wide path
 
     const QStringList directories = XDG_DATA_HOME;
     QString directory;
@@ -137,8 +149,7 @@ bool CreateDesktopEntryOperation::performOperation()
         return false;
     }
 
-    QFile::setPermissions(filename, QFile::ReadOwner | QFile::WriteOwner | QFile::ReadUser | QFile::ReadGroup
-        | QFile::ReadOther | QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
+    setDefaultFilePermissions(filename, DefaultFilePermissions::Executable);
 
     QTextStream stream(&file);
     stream.setCodec("UTF-8");
@@ -159,7 +170,8 @@ bool CreateDesktopEntryOperation::undoOperation()
     // first remove the link
     QFile file(filename);
     if (file.exists() && !file.remove()) {
-        qWarning() << "Cannot delete file" << filename << ":" << file.errorString();
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot delete file" << filename
+            << ":" << file.errorString();
         return true;
     }
 
@@ -169,13 +181,15 @@ bool CreateDesktopEntryOperation::undoOperation()
     QFile backupFile(value(QLatin1String("backupOfExistingDesktopEntry")).toString());
     if (!backupFile.exists()) {
         // do not treat this as a real error: The backup file might have been just nuked by the user.
-        qWarning() << "Cannot restore original desktop entry at" << filename
-                   << ": Backup file" << backupFile.fileName() << "does not exist anymore.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot restore original desktop entry at" << filename
+            << ": Backup file" << backupFile.fileName() << "does not exist anymore.";
         return true;
     }
 
-    if (!backupFile.rename(filename))
-        qWarning() << "Cannot restore the file" << filename << ":" << backupFile.errorString();
+    if (!backupFile.rename(filename)) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot restore the file" << filename
+            << ":" << backupFile.errorString();
+    }
 
     return true;
 }

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -28,8 +28,8 @@
 
 #include "performinstallationform.h"
 
-#include "lazyplaintextedit.h"
 #include "progresscoordinator.h"
+#include "globals.h"
 
 #include <QApplication>
 #include <QLabel>
@@ -37,6 +37,8 @@
 #include <QPushButton>
 #include <QScrollBar>
 #include <QVBoxLayout>
+#include <QImageReader>
+#include <QScrollArea>
 
 #include <QtCore/QTimer>
 
@@ -65,7 +67,7 @@ using namespace QInstaller;
 */
 
 /*!
-    \fn PerformInstallationForm::showDetailsChanged()
+    \fn QInstaller::PerformInstallationForm::showDetailsChanged()
 
     This signal is emitted when the end users select the details button to show
     or hide progress details.
@@ -78,6 +80,8 @@ PerformInstallationForm::PerformInstallationForm(QObject *parent)
     : QObject(parent)
     , m_progressBar(nullptr)
     , m_progressLabel(nullptr)
+    , m_productImagesScrollArea(nullptr)
+    , m_productImagesLabel(nullptr)
     , m_detailsButton(nullptr)
     , m_detailsBrowser(nullptr)
     , m_updateTimer(nullptr)
@@ -130,7 +134,19 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     bottomLayout->setObjectName(QLatin1String("BottomLayout"));
     bottomLayout->addStretch();
 
-    m_detailsBrowser = new LazyPlainTextEdit(widget);
+    m_productImagesScrollArea = new QScrollArea(widget);
+    m_productImagesScrollArea->setObjectName(QLatin1String("ProductImagesScrollArea"));
+    m_productImagesScrollArea->setWidgetResizable(true);
+    m_productImagesScrollArea->setFrameShape(QFrame::NoFrame);
+    m_productImagesScrollArea->setStyleSheet(QLatin1String("background-color:transparent;"));
+
+    m_productImagesLabel = new AspectRatioLabel(widget);
+    m_productImagesLabel->setObjectName(QLatin1String("ProductImagesLabel"));
+
+    m_productImagesScrollArea->setWidget(m_productImagesLabel);
+    bottomLayout->addWidget(m_productImagesScrollArea);
+
+    m_detailsBrowser = new QTextEdit(widget);
     m_detailsBrowser->setReadOnly(true);
     m_detailsBrowser->setWordWrapMode(QTextOption::NoWrap);
     m_detailsBrowser->setObjectName(QLatin1String("DetailsBrowser"));
@@ -138,6 +154,7 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     bottomLayout->addWidget(m_detailsBrowser);
 
     bottomLayout->setStretch(1, 10);
+    bottomLayout->setStretch(2, 10);
     baseLayout->addLayout(topLayout);
     baseLayout->addLayout(bottomLayout);
 
@@ -200,6 +217,7 @@ void PerformInstallationForm::toggleDetails()
     const bool willShow = !isShowingDetails();
     m_detailsButton->setText(willShow ? tr("&Hide Details") : tr("&Show Details"));
     m_detailsBrowser->setVisible(willShow);
+    m_productImagesScrollArea->setVisible(!willShow);
     emit showDetailsChanged();
 }
 
@@ -220,6 +238,7 @@ void PerformInstallationForm::enableDetails()
     m_detailsButton->setEnabled(true);
     m_detailsButton->setText(tr("&Show Details"));
     m_detailsBrowser->setVisible(false);
+    m_productImagesScrollArea->setVisible(true);
 }
 
 /*!
@@ -249,14 +268,6 @@ void PerformInstallationForm::setDetailsButtonEnabled(bool enable)
 }
 
 /*!
-    Scrolls to the bottom of the details browser.
-*/
-void PerformInstallationForm::scrollDetailsToTheEnd()
-{
-    m_detailsBrowser->updateCursor(LazyPlainTextEdit::TextCursorPosition::ForceEnd);
-}
-
-/*!
     Returns \c true if the details browser is visible.
 */
 bool PerformInstallationForm::isShowingDetails() const
@@ -272,4 +283,23 @@ void PerformInstallationForm::onDownloadStatusChanged(const QString &status)
 {
     m_downloadStatus->setText(m_downloadStatus->fontMetrics().elidedText(status, Qt::ElideRight,
         m_downloadStatus->width()));
+}
+
+/*!
+    Sets currently shown form image specified by \a fileName.
+*/
+void PerformInstallationForm::setImageFromFileName(const QString &fileName)
+{
+    if (!QFile::exists(fileName)) {
+        qCWarning(QInstaller::lcDeveloperBuild) << "Image file does not exist:" << fileName;
+        return;
+    }
+    QImageReader reader(fileName);
+    QPixmap pixmap = QPixmap::fromImageReader(&reader);
+    if (!pixmap.isNull()) {
+        m_productImagesLabel->setPixmap(pixmap);
+    } else {
+        qCWarning(QInstaller::lcDeveloperBuild) <<
+            QString::fromLatin1("Failed to load image '%1' : %2.").arg(fileName, reader.errorString());
+    }
 }

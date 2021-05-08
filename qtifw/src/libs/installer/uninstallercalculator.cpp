@@ -36,6 +36,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::UninstallerCalculator
+    \internal
+*/
+
 UninstallerCalculator::UninstallerCalculator(const QList<Component *> &installedComponents)
     : m_installedComponents(installedComponents)
 {
@@ -119,6 +125,37 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
 
     if (!autoDependOnList.isEmpty())
         appendComponentsToUninstall(autoDependOnList);
+    else
+        continueAppendComponentsToUninstall();
+}
+
+void UninstallerCalculator::continueAppendComponentsToUninstall()
+{
+    QList<Component*> unneededVirtualList;
+    // Check for virtual components without dependees
+    foreach (Component *component, m_installedComponents) {
+        if (component->isInstalled() && component->isVirtual() && !m_componentsToUninstall.contains(component)) {
+            // Components with auto dependencies were handled in the previous step
+            if (!component->autoDependencies().isEmpty())
+                continue;
+            if (component->forcedInstallation())
+                continue;
+
+            bool required = false;
+            PackageManagerCore *core = component->packageManagerCore();
+            foreach (Component *dependee, core->dependees(component)) {
+                if (dependee->isInstalled() && !m_componentsToUninstall.contains(dependee)) {
+                    required = true;
+                    break;
+                }
+            }
+            if (!required)
+                unneededVirtualList.append(component);
+        }
+    }
+
+    if (!unneededVirtualList.isEmpty())
+        appendComponentsToUninstall(unneededVirtualList);
 }
 
 } // namespace QInstaller

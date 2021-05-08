@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -40,20 +40,28 @@ public:
     explicit PackageManagerCoreData(const QHash<QString, QString> &variables);
 
     void clear();
-    void setDynamicPredefinedVariables();
+    void addDynamicPredefinedVariables();
+    void setUserDefinedVariables(const QHash<QString, QString> &variables);
+    void addNewVariable(const QString &key, const QString &value);
 
     Settings &settings() const;
     QStringList keys() const;
 
+    inline QString settingsFilePath() {
+        return m_settingsFilePath;
+    }
+
     bool contains(const QString &key) const;
     bool setValue(const QString &key, const QString &normalizedValue);
     QVariant value(const QString &key, const QVariant &_default = QVariant()) const;
+    QString key(const QString &value) const;
 
     QString replaceVariables(const QString &str) const;
     QByteArray replaceVariables(const QByteArray &ba) const;
 
 private:
     mutable Settings m_settings;
+    QString m_settingsFilePath;
     QHash<QString, QString> m_variables;
 };
 

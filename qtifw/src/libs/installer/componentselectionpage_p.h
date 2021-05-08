@@ -44,6 +44,8 @@ class QListWidgetItem;
 class QProgressBar;
 class QVBoxLayout;
 class QHBoxLayout;
+class QGridLayout;
+class QStackedLayout;
 
 namespace QInstaller {
 
@@ -72,7 +74,6 @@ public slots:
     void currentSelectedChanged(const QModelIndex &current);
     void selectAll();
     void deselectAll();
-    void checkboxStateChanged();
     void enableRepositoryCategory(const QString &repositoryName, bool enable);
     void updateWidgetVisibility(bool show);
     void fetchRepositoryCategories();
@@ -88,9 +89,7 @@ private:
     PackageManagerCore *m_core;
     QTreeView *m_treeView;
     QLabel *m_sizeLabel;
-    QScrollArea *m_descriptionScrollArea;
     QLabel *m_descriptionLabel;
-    QVBoxLayout *m_descriptionVLayout;
     QPushButton *m_checkAll;
     QPushButton *m_uncheckAll;
     QPushButton *m_checkDefault;
@@ -98,12 +97,12 @@ private:
     QGroupBox *m_categoryGroupBox;
     QLabel *m_metadataProgressLabel;
     QProgressBar *m_progressBar;
-    QHBoxLayout *m_mainHLayout;
-    QVBoxLayout *m_treeViewVLayout;
+    QGridLayout *m_mainGLayout;
     bool m_allowCompressedRepositoryInstall;
     ComponentModel *m_allModel;
     ComponentModel *m_updaterModel;
     ComponentModel *m_currentModel;
+    QStackedLayout *m_stackedLayout;
 };
 
 }  // namespace QInstaller

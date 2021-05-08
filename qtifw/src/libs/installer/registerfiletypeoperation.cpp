@@ -34,6 +34,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::RegisterFileTypeOperation
+    \internal
+*/
+
 #ifdef Q_OS_WIN
 #include <shlobj.h>
 
@@ -91,7 +97,7 @@ bool RegisterFileTypeOperation::performOperation()
     ensureOptionalArgumentsRead();
     if (!checkArgumentCount(2, 5, QString::fromLatin1("<extension> <command> [description [contentType [icon]]]")))
         return false;
-    QStringList args = arguments();
+    QStringList args = parsePerformOperationArguments();
 
     bool allUsers = false;
     PackageManagerCore *const core = packageManager();
@@ -147,8 +153,10 @@ bool RegisterFileTypeOperation::undoOperation()
 {
 #ifdef Q_OS_WIN
     ensureOptionalArgumentsRead();
-    QStringList args = arguments();
+    if (parseUndoOperationArguments().count() > 0)
+        return true;
 
+    QStringList args = arguments();
     if (!checkArgumentCount(2, 5, tr("Register File Type: Invalid arguments")))
         return false;
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,6 +29,9 @@
 
 #include "fileutils.h"
 #include "packagemanagercore.h"
+#include "globals.h"
+#include "adminauthorization.h"
+#include "remoteclient.h"
 
 #include <QDebug>
 #include <QDir>
@@ -36,16 +39,25 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::InstallIconsOperation
+    \internal
+*/
+
 QString InstallIconsOperation::targetDirectory()
 {
     // we're not searching for the first time, let's re-use the old value
-    if (hasValue(QLatin1String("targetdirectory")))
-        return value(QLatin1String("targetdirectory")).toString();
+    if (hasValue(QLatin1String("directory")))
+        return value(QLatin1String("directory")).toString();
 
     QStringList XDG_DATA_HOME = QString::fromLocal8Bit(qgetenv("XDG_DATA_HOME"))
                                                         .split(QLatin1Char(':'),
         QString::SkipEmptyParts);
-    XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share/icons"))); // default path
+    XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default user-specific path
+
+    if (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive())
+        XDG_DATA_HOME.push_front(QLatin1String("/usr/local/share")); // default system-wide path
 
     QString directory;
     const QStringList& directories = XDG_DATA_HOME;
@@ -53,11 +65,7 @@ QString InstallIconsOperation::targetDirectory()
         if (it->isEmpty())
             continue;
 
-        // our default dirs are correct, XDG_DATA_HOME set via env needs "icon" at the end
-        if ((it + 1 == directories.end()) || (it + 2 == directories.end()) || (it + 3 == directories.end()))
-            directory = QDir(*it).absolutePath();
-        else
-            directory = QDir(*it).absoluteFilePath(QLatin1String("icons"));
+        directory = QDir(*it).absoluteFilePath(QLatin1String("icons"));
 
         QDir dir(directory);
         // let's see if this dir exists or we're able to create it
@@ -87,11 +95,6 @@ InstallIconsOperation::InstallIconsOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {
     setName(QLatin1String("InstallIcons"));
-}
-
-InstallIconsOperation::~InstallIconsOperation()
-{
-    const QStringList backupFiles = value(QLatin1String("backupfiles")).toStringList();
 }
 
 void InstallIconsOperation::backup()
@@ -131,7 +134,7 @@ bool InstallIconsOperation::performOperation()
         if (status == PackageManagerCore::Canceled || status == PackageManagerCore::Failure)
             return true;
 
-        const QString source = it.next();
+        const QString &source = it.next();
         QString target = targetDir.absoluteFilePath(sourceDir.relativeFilePath(source));
 
         emit outputTextChanged(target);
@@ -265,10 +268,10 @@ bool InstallIconsOperation::undoOperation()
     }
 
     if (!warningMessages.isEmpty()) {
-        qWarning() << "Undo of operation" << name() << "with arguments"
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Undo of operation" << name() << "with arguments"
                    << arguments().join(QLatin1String(", ")) << "had some problems.";
         foreach (const QString &message, warningMessages) {
-            qWarning().noquote() << message;
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << message;
         }
     }
 

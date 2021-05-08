@@ -6,6 +6,7 @@ CONFIG += staticlib
 
 include(../7zip/7zip.pri)
 include(../kdtools/kdtools.pri)
+include(../ifwtools/ifwtools.pri)
 include(../../../installerfw.pri)
 
 # productkeycheck API
@@ -23,6 +24,7 @@ HEADERS += productkeycheck.h
     include($$PRODUCTKEYCHECK_PRI_FILE)
 } else {
     SOURCES += productkeycheck.cpp
+    SOURCES += commandlineparser_p.cpp
 }
 
 DESTDIR = $$IFW_LIB_PATH
@@ -41,6 +43,8 @@ QT += \
 win32:QT += winextras
 
 HEADERS += packagemanagercore.h \
+    aspectratiolabel.h \
+    loggingutils.h \
     packagemanagercore_p.h \
     packagemanagergui.h \
     binaryformat.h \
@@ -75,7 +79,6 @@ HEADERS += packagemanagercore.h \
     adminauthorization.h \
     elevatedexecuteoperation.h \
     fakestopprocessforupdateoperation.h \
-    lazyplaintextedit.h \
     progresscoordinator.h \
     minimumprogressoperation.h \
     performinstallationform.h \
@@ -134,14 +137,12 @@ HEADERS += packagemanagercore.h \
     lib7z_list.h \
     repositorycategory.h \
     componentselectionpage_p.h \
-    ng_fileenvironmentvariablesoperation.h \
-    ng_copyonlyoperation.h
-
-win32 {
-    HEADERS += ng_userpathwinenvironmentvariablesoperation.h
-}
+    commandlineparser.h \
+    commandlineparser_p.h
 
 SOURCES += packagemanagercore.cpp \
+    aspectratiolabel.cpp \
+    loggingutils.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \
     binaryformat.cpp \
@@ -171,7 +172,6 @@ SOURCES += packagemanagercore.cpp \
     init.cpp \
     elevatedexecuteoperation.cpp \
     fakestopprocessforupdateoperation.cpp \
-    lazyplaintextedit.cpp \
     progresscoordinator.cpp \
     minimumprogressoperation.cpp \
     performinstallationform.cpp \
@@ -217,12 +217,7 @@ SOURCES += packagemanagercore.cpp \
     packagesource.cpp \
     repositorycategory.cpp \
     componentselectionpage_p.cpp \
-    ng_fileenvironmentvariablesoperation.cpp \
-    ng_copyonlyoperation.cpp
-
-win32 {
-    SOURCES += ng_userpathwinenvironmentvariablesoperation.cpp
-}
+    commandlineparser.cpp
 
 FORMS += proxycredentialsdialog.ui \
     serverauthenticationdialog.ui

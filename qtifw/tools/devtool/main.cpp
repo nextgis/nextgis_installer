@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -37,6 +37,7 @@
 #include <fileutils.h>
 #include <init.h>
 #include <utils.h>
+#include <loggingutils.h>
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
@@ -96,7 +97,7 @@ static QStringList split(int index, const QString &description)
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-    app.setApplicationVersion(QLatin1String("1.0.0"));
+    app.setApplicationVersion(QLatin1String("2.0.0"));
 
     QCommandLineParser parser;
     QCommandLineOption help = parser.addHelpOption();
@@ -161,14 +162,14 @@ int main(int argc, char *argv[])
         return fail(QString::fromLatin1("\"%1\" is not a devtool command.").arg(command));
 
     QInstaller::init();
-    QInstaller::setVerbose(parser.isSet(verbose));
+    QInstaller::LoggingHandler::instance().setVerbose(parser.isSet(verbose));
 
     QString bundlePath;
     QString path = QFileInfo(arguments.first()).absoluteFilePath();
     if (QInstaller::isInBundle(path, &bundlePath)) {
         path = QDir(bundlePath).filePath(QLatin1String("Contents/Resources/installer.dat"));
     }
-#ifndef Q_OS_OSX
+#ifndef Q_OS_MACOS
     QFileInfo fi = QFileInfo(path);
     bundlePath = path;
     QString tmp = QDir(fi.path()).filePath(QLatin1String("installer.dat"));

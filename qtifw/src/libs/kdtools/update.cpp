@@ -33,7 +33,7 @@ using namespace KDUpdater;
 /*!
    \inmodule kdupdater
    \class KDUpdater::Update
-   \brief Represents a single update
+   \brief Represents a single update.
 
    The KDUpdater::Update class contains information about an update. It is created by KDUpdater::UpdateFinder
    corresponding to the update.
@@ -42,6 +42,11 @@ using namespace KDUpdater;
    KDUpdater::UpdateFinder (which is a friend class). The destructor however is public.
 */
 
+/*!
+    \fn KDUpdater::Update::packageSource() const
+
+    Returns the package source.
+*/
 
 /*!
    \internal

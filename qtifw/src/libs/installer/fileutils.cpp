@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -27,6 +27,9 @@
 **************************************************************************/
 #include "fileutils.h"
 
+#include "globals.h"
+#include "constants.h"
+#include "fileio.h"
 #include <errors.h>
 
 #include <QtCore/QDateTime>
@@ -38,6 +41,9 @@
 #include <QtCore/QUrl>
 #include <QtCore/QCoreApplication>
 #include <QImageReader>
+#include <QRandomGenerator>
+#include <QGuiApplication>
+#include <QScreen>
 
 #include <errno.h>
 
@@ -49,6 +55,20 @@
 
 using namespace QInstaller;
 
+/*!
+    \enum QInstaller::DefaultFilePermissions
+
+    \value NonExecutable
+           Default permissions for a non-executable file.
+    \value Executable
+           Default permissions for an executable file.
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::TempDirDeleter
+    \internal
+*/
 
 // -- TempDirDeleter
 
@@ -82,28 +102,6 @@ void TempDirDeleter::add(const QStringList &paths)
     m_paths += paths.toSet();
 }
 
-void TempDirDeleter::releaseAll()
-{
-    m_paths.clear();
-}
-
-void TempDirDeleter::release(const QString &path)
-{
-    m_paths.remove(path);
-}
-
-void TempDirDeleter::passAndReleaseAll(TempDirDeleter &tdd)
-{
-    tdd.m_paths = m_paths;
-    releaseAll();
-}
-
-void TempDirDeleter::passAndRelease(TempDirDeleter &tdd, const QString &path)
-{
-    tdd.add(path);
-    release(path);
-}
-
 void TempDirDeleter::releaseAndDeleteAll()
 {
     foreach (const QString &path, m_paths)
@@ -124,6 +122,10 @@ void TempDirDeleter::releaseAndDelete(const QString &path)
     }
 }
 
+/*!
+    Returns the given \a size in a measuring unit suffixed human readable format,
+    with \a precision marking the number of shown decimals.
+*/
 QString QInstaller::humanReadableSize(const qint64 &size, int precision)
 {
     double sizeAsDouble = size;
@@ -153,11 +155,17 @@ QString QInstaller::humanReadableSize(const qint64 &size, int precision)
 
 // -- read, write operations
 
+/*!
+    \internal
+*/
 bool QInstaller::isLocalUrl(const QUrl &url)
 {
     return url.scheme().isEmpty() || url.scheme().toLower() == QLatin1String("file");
 }
 
+/*!
+    \internal
+*/
 QString QInstaller::pathFromUrl(const QUrl &url)
 {
     if (isLocalUrl(url))
@@ -168,6 +176,9 @@ QString QInstaller::pathFromUrl(const QUrl &url)
     return str;
 }
 
+/*!
+    \internal
+*/
 void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
 {
     const QFileInfoList entries = QDir(path).entryInfoList(QDir::AllEntries | QDir::Hidden);
@@ -188,7 +199,7 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
                                 QDir::toNativeSeparators(f.fileName()), f.errorString());
                     if (!ignoreErrors)
                         throw Error(errorMessage);
-                    qWarning().noquote() << errorMessage;
+                    qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
                 }
             }
         }
@@ -207,6 +218,16 @@ static QString errnoToQString(int error)
 #endif
 }
 
+/*!
+    \internal
+
+    Removes the directory at \a path recursively.
+    @param path The directory to remove
+    @param ignoreErrors if @p true, errors will be silently ignored. Otherwise an exception will be thrown
+        if removing fails.
+
+    @throws QInstaller::Error if the directory cannot be removed and ignoreErrors is @p false
+*/
 void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
 {
     if (path.isEmpty()) // QDir("") points to the working directory! We never want to remove that one.
@@ -231,7 +252,7 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
                                                           errnoToQString(errno));
             if (!ignoreErrors)
                 throw Error(errorMessage);
-            qWarning().noquote() << errorMessage;
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
         }
     }
 }
@@ -253,7 +274,7 @@ public:
     }
 
 protected:
-    /*!
+    /*
      \reimp
      */
     void run()
@@ -271,6 +292,9 @@ private:
     const bool ignore;
 };
 
+/*!
+    \internal
+*/
 void QInstaller::removeDirectoryThreaded(const QString &path, bool ignoreErrors)
 {
     RemoveDirectoryThread thread(path, ignoreErrors);
@@ -282,17 +306,60 @@ void QInstaller::removeDirectoryThreaded(const QString &path, bool ignoreErrors)
         throw Error(thread.error());
 }
 
+/*!
+    Removes system generated files from \a path on Windows and macOS. Does nothing on Linux.
+*/
 void QInstaller::removeSystemGeneratedFiles(const QString &path)
 {
     if (path.isEmpty())
         return;
-#if defined Q_OS_OSX
+#if defined Q_OS_MACOS
     QFile::remove(path + QLatin1String("/.DS_Store"));
 #elif defined Q_OS_WIN
     QFile::remove(path + QLatin1String("/Thumbs.db"));
 #endif
 }
 
+/*!
+    Sets permissions of file or directory specified by \a fileName to \c 644 or \c 755
+    based by the value of \a permissions.
+
+    Returns \c true on success, \c false otherwise.
+*/
+bool QInstaller::setDefaultFilePermissions(const QString &fileName, DefaultFilePermissions permissions)
+{
+    QFile file(fileName);
+    return setDefaultFilePermissions(&file, permissions);
+}
+
+/*!
+    Sets permissions of file or directory specified by \a file to \c 644 or \c 755
+    based by the value of \a permissions. This is effective only on Unix platforms
+    as \c setPermissions() does not manipulate ACLs. On Windows NTFS volumes this
+    only unsets the legacy read-only flag regardless of the value of \a permissions.
+
+    Returns \c true on success, \c false otherwise.
+*/
+bool QInstaller::setDefaultFilePermissions(QFile *file, DefaultFilePermissions permissions)
+{
+    if (!file->exists()) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Target" << file->fileName() << "does not exists.";
+        return false;
+    }
+    if (file->permissions() == static_cast<QFileDevice::Permission>(permissions))
+        return true;
+
+    if (!file->setPermissions(static_cast<QFileDevice::Permission>(permissions))) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot set default permissions for target"
+                   << file->fileName() << ":" << file->errorString();
+        return false;
+    }
+    return true;
+}
+
+/*!
+    \internal
+*/
 void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
     Q_ASSERT(QFileInfo(sourceDir).isDir());
@@ -321,6 +388,9 @@ void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &
     }
 }
 
+/*!
+    \internal
+*/
 void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
     Q_ASSERT(QFileInfo(sourceDir).isDir());
@@ -352,6 +422,9 @@ void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &
     }
 }
 
+/*!
+    \internal
+*/
 void QInstaller::mkdir(const QString &path)
 {
     errno = 0;
@@ -361,6 +434,9 @@ void QInstaller::mkdir(const QString &path)
     }
 }
 
+/*!
+    \internal
+*/
 void QInstaller::mkpath(const QString &path)
 {
     errno = 0;
@@ -370,6 +446,12 @@ void QInstaller::mkpath(const QString &path)
     }
 }
 
+/*!
+    \internal
+
+    Generates and returns a temporary file name. The name can start with
+    a template \a templ.
+*/
 QString QInstaller::generateTemporaryFileName(const QString &templ)
 {
     if (templ.isEmpty()) {
@@ -383,9 +465,8 @@ QString QInstaller::generateTemporaryFileName(const QString &templ)
 
     static const QString characters = QLatin1String("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
     QString suffix;
-    qsrand(qrand() * QDateTime::currentDateTime().toTime_t());
     for (int i = 0; i < 5; ++i)
-        suffix += characters[qrand() % characters.length()];
+        suffix += characters[QRandomGenerator::global()->generate() % characters.length()];
 
     const QString tmp = QLatin1String("%1.tmp.%2.%3");
     int count = 1;
@@ -404,6 +485,9 @@ QString QInstaller::generateTemporaryFileName(const QString &templ)
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
 
+/*!
+    \internal
+*/
 QString QInstaller::getShortPathName(const QString &name)
 {
     if (name.isEmpty())
@@ -420,6 +504,9 @@ QString QInstaller::getShortPathName(const QString &name)
     return rc;
 }
 
+/*!
+    \internal
+*/
 QString QInstaller::getLongPathName(const QString &name)
 {
     if (name.isEmpty())
@@ -436,6 +523,11 @@ QString QInstaller::getLongPathName(const QString &name)
     return rc;
 }
 
+/*!
+    \internal
+
+    Makes sure that capitalization of directory specified by \a name is canonical.
+*/
 QString QInstaller::normalizePathName(const QString &name)
 {
     QString canonicalName = getShortPathName(name);
@@ -492,17 +584,23 @@ typedef struct {
 
 #pragma pack(pop)
 
+/*!
+    \internal
+
+    Sets the .ico file at \a icon as application icon for \a application.
+*/
 void QInstaller::setApplicationIcon(const QString &application, const QString &icon)
 {
     QFile iconFile(icon);
     if (!iconFile.open(QIODevice::ReadOnly)) {
-        qWarning() << "Cannot use" << icon << "as an application icon:" << iconFile.errorString();
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot use" << icon << "as an application icon:"
+            << iconFile.errorString();
         return;
     }
 
     if (QImageReader::imageFormat(icon) != "ico") {
-        qWarning() << "Cannot use" << icon << "as an application icon, unsupported format"
-                   << QImageReader::imageFormat(icon).constData();
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot use" << icon << "as an application icon, "
+            "unsupported format" << QImageReader::imageFormat(icon).constData();
         return;
     }
 
@@ -555,6 +653,9 @@ static quint64 symlinkSizeWin(const QString &path)
 
 #endif
 
+/*!
+    \internal
+*/
 quint64 QInstaller::fileSize(const QFileInfo &info)
 {
     if (!info.isSymLink())
@@ -570,9 +671,15 @@ quint64 QInstaller::fileSize(const QFileInfo &info)
 #endif
 }
 
+/*!
+    \internal
+
+    Returns \c true if a file specified by \a path points to a bundle. The
+    absolute path for the bundle can be retrieved with \a bundlePath. Works only on macOS.
+*/
 bool QInstaller::isInBundle(const QString &path, QString *bundlePath)
 {
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     QFileInfo fi = QFileInfo(path).absoluteFilePath();
     while (!fi.isRoot()) {
         if (fi.isBundle()) {
@@ -603,4 +710,112 @@ QString QInstaller::replacePath(const QString &path, const QString &before, cons
     if (pathToPatch.startsWith(pathToReplace))
         return QDir::cleanPath(after) + pathToPatch.mid(pathToReplace.size());
     return path;
+}
+
+/*!
+    Replaces \a imagePath with high dpi image. If high dpi image is not provided or
+    high dpi screen is not in use, the original value is returned.
+*/
+void QInstaller::replaceHighDpiImage(QString &imagePath)
+{
+    if (QGuiApplication::primaryScreen()->devicePixelRatio() >= 2 ) {
+        QFileInfo fi(imagePath);
+        QString highdpiPixmap = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + scHighDpi + fi.suffix();
+        if (QFileInfo::exists(highdpiPixmap))
+            imagePath = highdpiPixmap;
+    }
+}
+
+/*!
+    Copies an internal configuration file from \a source to \a target. The XML elements,
+    and their children, specified by \a elementsToRemoveTags will be removed from the \a target
+    file. All relative filenames referenced in the \a source configuration file will be
+    also copied to the location of the \a target file.
+
+    Throws \c QInstaller::Error in case of failure.
+*/
+void QInstaller::trimmedCopyConfigData(const QString &source, const QString &target, const QStringList &elementsToRemoveTags)
+{
+    qCDebug(QInstaller::lcDeveloperBuild) << "Copying configuration file and associated data.";
+
+    const QString targetPath = QFileInfo(target).absolutePath();
+    if (!QDir(targetPath).exists() && !QDir().mkpath(targetPath)) {
+        throw Error(QCoreApplication::translate("QInstaller",
+            "Cannot create directory \"%1\".").arg(targetPath));
+    }
+
+    QFile xmlFile(source);
+    if (!xmlFile.copy(target)) {
+        throw Error(QCoreApplication::translate("QInstaller",
+            "Cannot copy file \"%1\" to \"%2\": %3").arg(source, target, xmlFile.errorString()));
+    }
+    setDefaultFilePermissions(target, DefaultFilePermissions::NonExecutable);
+
+    xmlFile.setFileName(target);
+    QInstaller::openForRead(&xmlFile); // throws in case of error
+
+    QDomDocument dom;
+    dom.setContent(&xmlFile);
+    xmlFile.close();
+
+    foreach (auto elementTag, elementsToRemoveTags) {
+        QDomNodeList elementsToRemove = dom.elementsByTagName(elementTag);
+        for (int i = 0; i < elementsToRemove.length(); i++) {
+            QDomNode elementToRemove = elementsToRemove.item(i);
+            elementToRemove.parentNode().removeChild(elementToRemove);
+
+            qCDebug(QInstaller::lcDeveloperBuild) << "Removed dom element from target file:"
+                << elementToRemove.toElement().text();
+        }
+    }
+
+    const QDomNodeList children = dom.documentElement().childNodes();
+    copyConfigChildElements(dom, children, QFileInfo(source).absolutePath(), QFileInfo(target).absolutePath());
+
+    QInstaller::openForWrite(&xmlFile); // throws in case of error
+    QTextStream stream(&xmlFile);
+    dom.save(stream, 4); // use 4 as the amount of space for indentation
+
+    qCDebug(QInstaller::lcDeveloperBuild) << "Finished copying configuration data.";
+}
+
+/*!
+    \internal
+
+    Recursively iterates over a list of QDomNode \a objects belonging to \a dom and their
+    children accordingly, searching for relative file names. Found files are copied from
+    \a sourceDir to \a targetDir.
+
+    Throws \c QInstaller::Error in case of failure.
+*/
+void QInstaller::copyConfigChildElements(QDomDocument &dom, const QDomNodeList &objects,
+    const QString &sourceDir, const QString &targetDir)
+{
+    for (int i = 0; i < objects.length(); i++) {
+        QDomElement domElement = objects.at(i).toElement();
+        if (domElement.isNull())
+            continue;
+
+        // Iterate recursively over all child nodes
+        const QDomNodeList elementChildren = domElement.childNodes();
+        QInstaller::copyConfigChildElements(dom, elementChildren, sourceDir, targetDir);
+
+        // Filename may also contain a path relative to source directory but we
+        // copy it strictly into target directory without extra paths
+        const QString newName = domElement.text()
+            .replace(QRegExp(QLatin1String("\\\\|/|\\.|:")), QLatin1String("_"));
+
+        const QString targetFile = targetDir + QDir::separator() + newName;
+        const QFileInfo elementFileInfo = QFileInfo(sourceDir, domElement.text());
+
+        if (!elementFileInfo.exists() || elementFileInfo.isDir())
+            continue;
+
+        domElement.replaceChild(dom.createTextNode(newName), domElement.firstChild());
+
+        if (!QFile::copy(elementFileInfo.absoluteFilePath(), targetFile)) {
+            throw Error(QCoreApplication::translate("QInstaller",
+                "Cannot copy file \"%1\" to \"%2\".").arg(elementFileInfo.absoluteFilePath(), targetFile));
+        }
+    }
 }

@@ -1,7 +1,42 @@
+/**************************************************************************
+**
+** Copyright (C) 2020 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
+**
+** $QT_END_LICENSE$
+**
+**************************************************************************/
+
 #include <messageboxhandler.h>
 #include <qinstallerglobal.h>
 #include <scriptengine.h>
 #include <packagemanagercore.h>
+#include <component.h>
+#include <utils.h>
+#include <fileutils.h>
+#include <binarycontent.h>
+#include <packagemanagercore.h>
+#include <settings.h>
+#include <init.h>
 
 #include <QTest>
 #include <QMetaEnum>
@@ -26,7 +61,15 @@ QT_END_NAMESPACE
 class tst_MessageBoxHandler : public QObject
 {
     Q_OBJECT
-public:
+private:
+    void setRepository(const QString &repository) {
+        core->cancelMetaInfoJob();
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(repository);
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
+    }
+
 private slots:
     void initTestCase()
     {
@@ -46,12 +89,23 @@ private slots:
             if (enumValue == QMessageBox::LastButton)
                 break;
         }
+
+        QInstaller::init(); //This will eat debug output
+
+        core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
+                                      QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
+                                      QHash<QString, QString>(), true);
+        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
+        core->disableWriteMaintenanceTool();
+        core->setAutoConfirmCommand();
+        m_installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(m_installDir));
+        core->setValue(scTargetDir, m_installDir);
     }
 
     void testScriptButtonValues()
     {
-        PackageManagerCore core;
-        ScriptEngine *scriptEngine = new ScriptEngine(&core);
+        ScriptEngine *scriptEngine = new ScriptEngine(core);
         QMapIterator<QMessageBox::StandardButton, QString> i(m_standardButtonValueMap);
         while (i.hasNext()) {
             i.next();
@@ -67,8 +121,6 @@ private slots:
 
     void testDefaultAction()
     {
-        const char ignoreMessage[] = "Created critical message box \"TestError\": \"A test error\", "
-            "\"This is a test error message.\"";
         srand(time(0)); /* initialize random seed: */
 
         int standardButtons = QMessageBox::NoButton;
@@ -82,8 +134,6 @@ private slots:
             // use only every 5th run to reduce the time which it takes to run this test
             if (iSecret > 2)
                 continue;
-
-            QTest::ignoreMessage(QtDebugMsg, ignoreMessage);
             int returnButton = MessageBoxHandler::instance()->critical(QLatin1String("TestError"),
                 QLatin1String("A test error"), QLatin1String("This is a test error message."),
                 static_cast<QMessageBox::StandardButton>(standardButtons));
@@ -101,11 +151,93 @@ private slots:
         } while (standardButtons < m_maxStandardButtons);
     }
 
+    void invalidOperationAutoReject()
+    {
+        setRepository(":///data/invalidoperation");
+        core->autoRejectMessageBoxes();
+        core->installDefaultComponentsSilently();
+        QCOMPARE(PackageManagerCore::Canceled, core->status());
+    }
+
+    void invalidOperationAutoAccept()
+    {
+        setRepository(":///data/invalidoperation");
+        core->autoAcceptMessageBoxes();
+        core->installDefaultComponentsSilently();
+        QCOMPARE(PackageManagerCore::Success, core->status());
+    }
+
+    void invalidHashAutoReject()
+    {
+        setRepository(":///data/invalidhash");
+        core->autoRejectMessageBoxes();
+        core->installSelectedComponentsSilently(QStringList () << "B");
+        QCOMPARE(PackageManagerCore::Failure, core->status());
+    }
+
+    void invalidHashAutoAccept()
+    {
+        setRepository(":///data/invalidhash");
+        core->autoAcceptMessageBoxes();
+        core->installSelectedComponentsSilently(QStringList () << "B");
+        QCOMPARE(PackageManagerCore::Failure, core->status());
+    }
+
+    void missingArchiveAutoReject()
+    {
+        setRepository(":///data/missingarchive");
+        core->autoRejectMessageBoxes();
+        core->installSelectedComponentsSilently(QStringList () << "C");
+        QCOMPARE(PackageManagerCore::Canceled, core->status());
+    }
+
+    void missingArchiveAutoAccept()
+    {
+        setRepository(":///data/missingarchive");
+        core->autoAcceptMessageBoxes();
+        core->installSelectedComponentsSilently(QStringList () << "C");
+        QCOMPARE(PackageManagerCore::Canceled, core->status());
+    }
+
+    void messageBoxFromScriptDefaultAnswer()
+    {
+        setRepository(":///data/messagebox");
+        core->acceptMessageBoxDefaultButton();
+        core->installSelectedComponentsSilently(QStringList () << "A");
+
+        // These values are written in script based on default
+        // messagebox query results.
+        QCOMPARE(core->value("test.question.default.ok"), QLatin1String("Ok"));
+        QCOMPARE(core->value("test.question.default.cancel"), QLatin1String("Cancel"));
+    }
+
+    void messageBoxFromScriptAutoAnswer()
+    {
+        setRepository(":///data/messagebox");
+        core->setMessageBoxAutomaticAnswer("test.question.default.ok", QMessageBox::Cancel);
+        core->setMessageBoxAutomaticAnswer("test.question.default.cancel", QMessageBox::Ok);
+        core->installSelectedComponentsSilently(QStringList () << "A");
+
+        // These values are written in script based on
+        // messagebox query results.
+        QCOMPARE(core->value("test.question.default.ok"), QLatin1String("Cancel"));
+        QCOMPARE(core->value("test.question.default.cancel"), QLatin1String("Ok"));
+    }
+
+    void cleanupTestCase()
+    {
+        core->deleteLater();
+        QDir dir(m_installDir);
+        QVERIFY(dir.removeRecursively());
+    }
+
 private:
     QMap<QMessageBox::StandardButton, QString> m_standardButtonValueMap;
     int m_maxStandardButtons;
+    PackageManagerCore *core;
+    QString m_installDir;
 };
 
-QTEST_MAIN(tst_MessageBoxHandler)
+QTEST_GUILESS_MAIN(tst_MessageBoxHandler)
 
 #include "tst_messageboxhandler.moc"

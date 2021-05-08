@@ -1,9 +1,146 @@
-3.1.2
+4.1.0
+- Emit signal when components are recalculated (QTIFW-2172)
+- Add Arabic translation (QTIFW-1425)
+- Update side widget with the binary marker changes in introduction page (QTIFW-2150)
+- Fix App Error when trying to launch a running installer (QTIFW-2149)
+- Fix value overwrite from command line (QTIFW-2021)
+- Fix DesktopDir value for AllUsers
+- CLI: Add warning when cli-only options are used without command keyword (QTIFW-2046)
+- Translations: Update existing TS files (QTIFW-2126)
+- Add possibility to move component in component tree (QTIFW-594)
+- Try rerunning execute operation (QTIFW-2125)
+- CLI: Exit when expecting user input and the output device is not a TTY (QTIFW-1949)
+- Add support for setting minimum wizard dimensions in config.xml (QTIFW-1903)
+- Save Execute operation with predefined variable (QTIFW-2124)
+- Make LicenseAgreementPage license list & details browser user-resizable (QTIFW-1987)
+- Fix wizard page addition before ComponentSelectionPage (QTIFW-1168)
+- Remove double calculation of uninstall components (QTIFW-1021)
+- Replace usage of derived LazyPlainTextEdit class with QTextEdit (QTIFW-1994)
+- Fix InstallIcons and CreateDesktopEntry operations usage as root (QTIFW-2093)
+- Add support for generating offline installer from online (QTIFW-1945)
+- Provide tooltip texts for buttons (QTIFW-2073)
+- Allow disabling undo in CreateLocalRepository operation during uninstall (QTIFW-2094)
+- Remove 'Reject Licenses' radio button and change 'Accept Licenses' to checkbox (QTIFW-2057)
+- Add highdpi support for watermark, banner, background and pagelistpixmaps (QTIFW-2084)
+- Fix translating from component script (QTIFW-392)
+- Allow disabling undo in RegisterFileType operation during uninstall (QTIFW-2089)
+- Allow disabling undo in SimpleMoveFile operation during uninstall (2090)
+- Allow disabling undo in CopyDirectory during uninstall (QTIFW-2088)
+- Allow disabling undo of GlobalSettings during uninstall (QTIFW-1973)
+- Introduce ForcedUpdate element for component (QTIFW-1565)
+- Add high dpi image support for Logo and ProductImages (QTIFW-2061, QTIFW-2060)
+- Copy highdpi images as resource to installer (QTIFW-2080)
+- Tools: fix binarycreator usage with unified meta-only repositories (QTIFW-2051)
+- Add option to define operations in component.xml (QTIFW-507)
+- Print package information in xml format (QTIFW-1950)
+- Arrange licenses and filter duplicates
+- CLI: Print extra archive information with higher verbosity level (QTIFW-1998)
+- Allow to set ForcedInstallation from component script (QTIFW-675)
+- Automatically uninstall unneeded virtual components (QTBUG-76210)
+- CLI: Add possibility to filter installed packages with regexp (QTIFW-1953)
+
+4.0.1
+- Enable HighDPI support in X11
+- Fix AppendFile undo (QTIFW-2020)
+- Repogen: Fix unite metadata when --repository switch used ( QTIFW-2018)
+- Docs: Fix doc on gui::showFinishedPage() (QTIFW-798)
+- Fix loading controller script with comment on last line (QTIFW-1062)
+- Fix segfault on file download error properly
+- Doc: Update command line interface reference
+- Obey stylesheet in SettingsDialog (QTIFW-1507)
+- CLI: Fix wrong warning text in command 'purge' for running processes (QTIFW-1996)
+
+4.0.0
+- Fix essential update (QTIFW-1970)
+- Print package id when running checkupdates (QTIFW-1972)
+- Update documentation to support clang
+- Allow setting BackgroundPixmap shown on MacStyle regardless of platform (QTIFW-1175)
+- Hide detailed verbose with lowest verbose level
+- Add support for vendor set image decoration (QTIFW-1900)
+- Add verbose levels (QTIFW-1914)
+- CLI: Ask user confirmation before performing installer actions (QTIFW-1834)
+- Add possibility to add custom widget from script to certain position (QTIFW-1847)
+- Add function to get information if default install is performed (QTIFW-1847)
+- Add possibility to select/deselect component from script using core (QTIFW-1847)
+- Add a page list widget to installer wizard (QTIFW-1755)
+- Add function to enable button click with objectname (QTIFW-1707)
+- Add support for disabling CLI features from configuration file (QTIFW-1760)
+- Fix interrupt() call from script
+- CLI: Add option to read arbitrary user input (QTIFW-1631)
+- Use default button if auto-answer value not found
+- Fix addElevatedOperation prevents installing from CLI (QTIFW-1700)
+- Add possibility to accept licenses from CLI (QTIFW-1742, QTIFW-1745)
+- Answer queries from command line (QTIFW-1739)
+- Fix creation of local repository with elevated permissions (QTIFW-1500)
+- Update minimum required Qt version to Qt5.12.7
+- Add new option --auto-answer (QTIFW-1740)
+- Allow setting IFW_LIB_PATH with qmake
+- Add possibility to auto accept or reject IFW queries from CLI (QTIFW-1736)
+- Fix bugs in InstallIconsOperation and add unit tests (QTIFW-1715, QTIFW-1465)
+- Initialize user arguments earlier (QTIFW-576, QTIFW-1730)
+- Remove existing installation from command line (QTIFW-1574)
+- Add function to allow additional processes to be run (QTIFW-1019)
+- Add possibility to compress metadata per repository
+- Separate maintenance tool writing for testing purpose
+- Add short versions of CLI options (QTIFW-1634)
+- Perform headless commands without GUI dependency (QTIFW-1633)
+- Show progress in CLI when performing time consuming operations (QTIFW-1625)
+- Add command line option to start the installer binary as uninstaller (QTIFW-1639)
+- Change IntroductionPage radio button handling in maintenance tool (QTIFW-349)
+- Enable optional targetDir argument on command line installation (QTIFW-1608)
+- Uninstall selected packages from command line
+- Use of QLoggingCategory
+- Do not prompt admin query when command line interface is used (QTIFW-1598)
+- Enable command line default components installation (QTIFW-1583)
+- Remove obsolete sharedFlag() function
+- Update IFW version number
+- Install selected packages from CLI
+- Update selected components from command line
+- List available packages from command line
+- List installed packages from command line
+- Add regular expression support to replace operation (QTIFW-889)
+- Change ApplicationsDir variable on macOS to return "/Applications"(QTIFW-1011)
+- Add Brazilian portuguese translation file
+- Accept translation file names in ifw_language_COUNTRY.ts format
+
+3.2.3
+- Translation fixes (QTIFW-1435, QTBUG-75911)
+- Provide a means to use fixed translations for Qt and IFW
+
+3.2.2
+- Using patched Qt5.12.4 for binary builds (QTIFW-1632)
+- Add a command line argument to disable size check (QTIFW-1602)
+- Show information about updated components in repogen (QTIFW-1543)
+- Fix EnvironmentVariableOp undo behavior with non-persistent variables
+- Fix building against Qt 5.14 and newer (QTIFW-1526)
+- Fix devtool documentation
+- Fix building with msvc2013
+
+3.2.1
+- Documentation fixes
+- Fix QWizardPage title color (QTIFW-1557)
+
+3.2.0
+- Fix extracted files list formation in ExtractArchive operation (QTIFW-1239)
+- Decrease the .dat file file size by writing file names to a separate file instead of .dat (QTIFW-1448)
+- Use grid layout in component selection page (QTIFW-1334)
+- Fix addDependency functionality (QTIFW-1458)
+- Fix --no-proxy option in Windows (QTIFW-1445)
+- Fix env variable remove on Windows (QTIFW-1148)
+- Fix essential package update (QTIFW-1215)
+- Fix CreateLink operation destination string formatting on Windows (QTIFW-1443)
 - Gain admin rights for writing MaintenanceTool config files if needed (QTIFW-1363)
 - Update INSTALL file (QTIFW-1185)
 - Fix initially deactivated buttons when selecting components to update (QTIFW-1320)
-- Fix MaintenanceTool file write permission check on Linux and macOS (QTIFW-1324)
 - Fix installer hang on Windows with empty command prompt window appearing (QTIFW-1250)
+- Add IFW version information to installerbase binary on Windows (QTIFW-1397)
+- Fix Mkdir undo operation fail to remove directory in Settings operation (QTIFW-1365)
+- Fix IFW version information not apparent on macOS (QTIFW-1396)
+- Update repository categories on server authentication request (QTIFW-1358)
+- Fix recalculation of components to install in MaintenanceTool (QTIFW-694)
+- Enable support for Qt 5.12. In Windows supported compilers are msvc2015 and msvc2017 (QTIFW-1312)
+- Set default file permissions to installer created files on Unix (QTIFW-1412)
+- MacOS: Fix widget overlapping in componentselection page in MacOS 10.12 (QTIFW-1437)
 
 3.1.1
 - Add fetch to the same pane with package categories (QTIFW-1284)

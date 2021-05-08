@@ -11,8 +11,8 @@
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU Free Documentation License Usage
 ** Alternatively, this file may be used under the terms of the GNU Free
@@ -20,7 +20,7 @@
 ** Foundation and appearing in the file included in the packaging of
 ** this file. Please review the following information to ensure
 ** the GNU Free Documentation License version 1.3 requirements
-** will be met: http://www.gnu.org/copyleft/fdl.html.
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
@@ -104,6 +104,13 @@
 */
 
 /*!
+    \qmlmethod void gui::clickButton(string objectName, int delayInMs)
+
+    Automatically clicks the button specified by \a objectName after a delay
+    in milliseconds specified by \a delayInMs.
+*/
+
+/*!
     \qmlmethod boolean gui::isButtonEnabled(int wizardButton)
 
     Returns \c true if the button specified by \a wizardButton is enabled.
@@ -162,7 +169,7 @@
 /*!
     \qmlmethod void gui::showFinishedPage()
 
-    Shows the next page.
+    Shows the InstallationFinished page.
 */
 
 /*!
@@ -170,7 +177,7 @@
 */
 
 /*!
-    \qmlmethod void gui::setTextItems(object control, string[] items)
+    \qmlmethod void gui::setTextItems(object control, stringlist items)
 
     Updates the model of \a control (which must be a QComboBox or QAbstractItemView)
     such that it contains the given \a items.

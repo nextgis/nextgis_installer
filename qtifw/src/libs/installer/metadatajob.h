@@ -36,6 +36,9 @@
 
 #include <QFutureWatcher>
 
+class QDomNodeList;
+class QDomNode;
+
 namespace QInstaller {
 
 class PackageManagerCore;
@@ -50,6 +53,13 @@ struct ArchiveMetadata
 {
     QString archive;
     Metadata metaData;
+};
+
+enum DownloadType
+{
+    All,
+    CompressedPackage,
+    UpdatesXML
 };
 
 class INSTALLER_EXPORT MetadataJob : public Job
@@ -70,11 +80,9 @@ public:
     QList<Metadata> metadata() const;
     Repository repositoryForDirectory(const QString &directory) const;
     void setPackageManagerCore(PackageManagerCore *core) { m_core = core; }
-    void addCompressedPackages(bool addCompressPackage) { m_addCompressedPackages = addCompressPackage;}
+    void addDownloadType(DownloadType downloadType) { m_downloadType = downloadType;}
     QStringList shaMismatchPackages() const { return m_shaMissmatchPackages; }
 
-    // NEXTGIS: Release message
-    QString m_releaseMessage;
 private slots:
     void doStart();
     void doCancel();
@@ -85,7 +93,7 @@ private slots:
     void progressChanged(int progress);
     void setProgressTotalAmount(int maximum);
     void unzipRepositoryTaskFinished();
-    void startXMLTask(const QList<FileTaskItem> items);
+    void startXMLTask(const QList<FileTaskItem> &items);
 
 private:
     bool fetchMetaDataPackages();
@@ -94,6 +102,14 @@ private:
     void resetCompressedFetch();
     Status parseUpdatesXml(const QList<FileTaskResult> &results);
     QSet<Repository> getRepositories();
+    void addFileTaskItem(const QString &source, const QString &target, const Metadata &metadata,
+                         const QString &sha1, const QString &packageName);
+    bool parsePackageUpdate(const QDomNodeList &c2, QString &packageName, QString &packageVersion,
+                            QString &packageHash, bool online, bool testCheckSum);
+    QHash<QString, QPair<Repository, Repository> > searchAdditionalRepositories(const QDomNode &repositoryUpdate,
+                            const FileTaskResult &result, const Metadata &metadata);
+    MetadataJob::Status setAdditionalRepositories(QHash<QString, QPair<Repository, Repository> > repositoryUpdates,
+                            const FileTaskResult &result, const Metadata& metadata);
 
 private:
     PackageManagerCore *m_core;
@@ -104,7 +120,7 @@ private:
     QFutureWatcher<FileTaskResult> m_metadataTask;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipTasks;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipRepositoryTasks;
-    bool m_addCompressedPackages;
+    DownloadType m_downloadType;
     QList<FileTaskItem> m_unzipRepositoryitems;
     QList<FileTaskResult> m_metadataResult;
     int m_downloadableChunkSize;

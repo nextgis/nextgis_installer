@@ -36,6 +36,7 @@
 #include "remoteclient.h"
 #include "remoteobject.h"
 #include "utils.h"
+#include "constants.h"
 
 #include <QCoreApplication>
 #include <QElapsedTimer>
@@ -85,7 +86,7 @@ public:
         if (mode == Protocol::Mode::Production) {
             m_startServerAs = startAs;
             m_serverCommand = QCoreApplication::applicationFilePath();
-            m_serverArguments = QStringList() << QLatin1String("--startserver")
+            m_serverArguments = QStringList() << QLatin1String("--") + CommandLineOptions::scStartServerLong
                 << QString::fromLatin1("%1,%2,%3")
                     .arg(QLatin1String(Protocol::ModeProduction))
                     .arg(socketName)
@@ -98,7 +99,7 @@ public:
             m_thread.start();
         } else if (mode == Protocol::Mode::Debug) {
             // To be able to debug the client-server connection start and stop the server manually,
-            // e.g. installer --startserver DEBUG.
+            // e.g. installer --start-server DEBUG.
         }
     }
 
@@ -134,7 +135,7 @@ public:
                                 "Cannot get authorization that is needed for continuing the installation.\n\n"
                                 "Please start the setup program as a user with the appropriate rights.\n"
                                 "Or accept the elevation of access rights if being asked."),
-                                QMessageBox::Abort | QMessageBox::Retry, QMessageBox::Retry);
+                                QMessageBox::Abort | QMessageBox::Retry, QMessageBox::Abort);
                         if (res == QMessageBox::Retry)
                             started = AdminAuthorization::execute(0, m_serverCommand, m_serverArguments);
                     }

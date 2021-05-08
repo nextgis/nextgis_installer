@@ -129,8 +129,13 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
                 const QDomNode licenseNode = licenseNodes.at(i);
                 if (licenseNode.nodeName() == QLatin1String("License")) {
                     QDomElement element = licenseNode.toElement();
-                    licenseHash.insert(element.attributeNode(QLatin1String("name")).value(),
-                        element.attributeNode(QLatin1String("file")).value());
+                    QVariantMap attributes;
+                    attributes.insert(QLatin1String("file"), element.attributeNode(QLatin1String("file")).value());
+                    if (!element.attributeNode(QLatin1String("priority")).isNull())
+                        attributes.insert(QLatin1String("priority"), element.attributeNode(QLatin1String("priority")).value());
+                    else
+                        attributes.insert(QLatin1String("priority"), QLatin1String("0"));
+                    licenseHash.insert(element.attributeNode(QLatin1String("name")).value(), attributes);
                 }
             }
             if (!licenseHash.isEmpty())
@@ -149,6 +154,10 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
         } else if (childE.tagName() == QLatin1String("UpdateFile")) {
             info.data[QLatin1String("CompressedSize")] = childE.attribute(QLatin1String("CompressedSize"));
             info.data[QLatin1String("UncompressedSize")] = childE.attribute(QLatin1String("UncompressedSize"));
+        } else if (childE.tagName() == QLatin1String("Operations")) {
+            const QDomNodeList operationNodes = childE.childNodes();
+            QVariant operationListVariant = parseOperations(childE.childNodes());
+            info.data.insert(QLatin1String("Operations"), operationListVariant);
         } else {
             info.data[childE.tagName()] = childE.text();
         }
@@ -190,6 +199,32 @@ void UpdatesInfoData::processLocalizedTag(const QDomElement &childE, QHash<QStri
     // overwrite default if we have a language specific description
     if (QLocale().name().startsWith(languageAttribute, Qt::CaseInsensitive))
         info[childE.tagName()] = childE.text();
+}
+
+QVariant UpdatesInfoData::parseOperations(const QDomNodeList &operationNodes)
+{
+    QVariant operationListVariant;
+    QList<QPair<QString, QVariant>> operationsList;
+    for (int i = 0; i < operationNodes.count(); ++i) {
+        const QDomNode operationNode = operationNodes.at(i);
+        if (operationNode.nodeName() == QLatin1String("Operation")) {
+            const QDomNodeList argumentNodes = operationNode.childNodes();
+            QStringList attributes;
+            for (int i = 0; i < argumentNodes.count(); ++i) {
+                const QDomNode argumentNode = argumentNodes.at(i);
+                if (argumentNode.nodeName() == QLatin1String("Argument")) {
+                    QDomElement argumentElement = argumentNode.toElement();
+                    attributes.append(argumentElement.text());
+                }
+            }
+            QPair<QString, QVariant> pair;
+            pair.first = operationNode.toElement().attributeNode(QLatin1String("name")).value();
+            pair.second = attributes;
+            operationsList.append(pair);
+        }
+    }
+    operationListVariant.setValue(operationsList);
+    return operationListVariant;
 }
 
 

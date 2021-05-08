@@ -33,6 +33,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::SimpleMoveFileOperation
+    \internal
+*/
+
 SimpleMoveFileOperation::SimpleMoveFileOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {
@@ -87,6 +93,8 @@ bool SimpleMoveFileOperation::performOperation()
 
 bool SimpleMoveFileOperation::undoOperation()
 {
+    if (parseUndoOperationArguments().count() > 0)
+        return true;
     const QString source = arguments().at(0);
     const QString target = arguments().at(1);
 
