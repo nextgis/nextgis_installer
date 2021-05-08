@@ -2620,10 +2620,6 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
     if (!compressedRepository && m_updateSourcesAdded)
         return m_updateSourcesAdded;
 
-    // NEXTGIS:
-    m_releaseMessage = m_metadataJob.m_releaseMessage;
-    // End NextGIS
-
     const QList<Metadata> metadata = m_metadataJob.metadata();
     if (metadata.isEmpty()) {
         m_updateSourcesAdded = true;

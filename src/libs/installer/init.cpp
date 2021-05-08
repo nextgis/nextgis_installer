@@ -49,12 +49,6 @@
 #include "consumeoutputoperation.h"
 #include "loggingutils.h"
 
-#include "ng_fileenvironmentvariablesoperation.h"
-#include "ng_copyonlyoperation.h"
-#ifdef Q_OS_WIN
-#include "ng_userpathwinenvironmentvariablesoperation.h"
-#endif
-
 #include "lib7z_facade.h"
 
 #include "updateoperationfactory.h"
@@ -105,13 +99,6 @@ void QInstaller::init()
     factory.registerUpdateOperation<LicenseOperation>(QLatin1String("License"));
     factory.registerUpdateOperation<ConsumeOutputOperation>(QLatin1String("ConsumeOutput"));
     factory.registerUpdateOperation<SettingsOperation>(QLatin1String("Settings"));
-
-    // NEXTGIS: register custom operations.
-    factory.registerUpdateOperation<NgFileEnvironmentVariableOperation>(QLatin1String("NgFileEnvironmentVariable"));
-    factory.registerUpdateOperation<NgCopyOnlyOperation>(QLatin1String("NgCopyOnly"));
-    #ifdef Q_OS_WIN
-    factory.registerUpdateOperation<NgUserPathWinEnvironmentVariableOperation>(QLatin1String("NgUserPathWinEnvironmentVariable"));
-    #endif
 
     FileDownloaderFactory::setFollowRedirects(true);
 

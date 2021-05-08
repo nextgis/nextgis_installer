@@ -179,17 +179,6 @@ void MetadataJob::doStart()
                         item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
                         item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                         items.append(item);
-
-                        // NEXTGIS: Add release message fetch
-                        QString urlMsg = repo.url().toString() + QLatin1String("/Release.xml?");
-                        if(urlMsg.contains(QLatin1String("api/repo"), Qt::CaseInsensitive)) {
-                            // Onle for repka url
-                            FileTaskItem itemMsg(urlMsg.append(QString::number(qrand() * qrand())));
-                            itemMsg.insert(TaskRole::UserRole, QVariant::fromValue(repo));
-                            itemMsg.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
-                            items.append(itemMsg);
-                        }
-                        // End NextGIS
                     }
                     else {
                         qCWarning(QInstaller::lcInstallerInstallLog) << "Trying to parse compressed repo as "
@@ -639,21 +628,6 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
 
         bool testCheckSum = true;
         const QDomElement root = doc.documentElement();
-
-        // NEXTGIS: Check type
-        if(root.tagName() == QLatin1String("Release")) {
-            // Rename file again
-            if(!m_releaseMessage.isEmpty()) {
-                m_releaseMessage.append(QLatin1String("\n"));
-            }
-            const QDomNode msg = root.firstChildElement(QLatin1String("Msg"));
-            if (!msg.isNull()) {
-                m_releaseMessage.append(msg.toElement().text());
-            }
-            continue;
-        }
-        // End NextGIS
-
         const QDomNode checksum = root.firstChildElement(QLatin1String("Checksum"));
         if (!checksum.isNull())
             testCheckSum = (checksum.toElement().text().toLower() == scTrue);

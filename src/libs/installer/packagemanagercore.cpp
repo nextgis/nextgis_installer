@@ -1888,12 +1888,6 @@ QList<Component *> PackageManagerCore::components(ComponentTypes mask) const
     return components;
 }
 
-// NEXTGIS: Release message
-QString PackageManagerCore::releaseMessage() const
-{
-    return d->m_releaseMessage;
-}
-
 /*!
     Appends \a component to the internal storage for updater components. Emits
     the componentAdded() signal.
@@ -2936,37 +2930,26 @@ bool PackageManagerCore::executeDetached(const QString &program, const QStringLi
 
     \sa {installer::environmentVariable}{installer.environmentVariable}
 */
-QString PackageManagerCore::environmentVariable(const QString &name, bool onlyForUser) const
+QString PackageManagerCore::environmentVariable(const QString &name) const
 {
     if (name.isEmpty())
         return QString();
 
 #ifdef Q_OS_WIN
+    static TCHAR buffer[32767];
+    DWORD size = GetEnvironmentVariable(LPCWSTR(name.utf16()), buffer, 32767);
+    QString value = QString::fromUtf16((const unsigned short *) buffer, size);
 
-    // NEXTGIS: original code is in else() branch.
-    if (onlyForUser)
-    {
-        QString value = QSettings(QLatin1String("HKEY_CURRENT_USER\\Environment"),
-                                  QSettings::NativeFormat).value(name,QLatin1String("")).toString();
-        return value;
-    }
-    else
-    {
-        static TCHAR buffer[32767];
-        DWORD size = GetEnvironmentVariable(LPCWSTR(name.utf16()), buffer, 32767);
-        QString value = QString::fromUtf16((const unsigned short *) buffer, size);
-
+    if (value.isEmpty()) {
+        static QLatin1String userEnvironmentRegistryPath("HKEY_CURRENT_USER\\Environment");
+        value = QSettings(userEnvironmentRegistryPath, QSettings::NativeFormat).value(name).toString();
         if (value.isEmpty()) {
-            static QLatin1String userEnvironmentRegistryPath("HKEY_CURRENT_USER\\Environment");
-            value = QSettings(userEnvironmentRegistryPath, QSettings::NativeFormat).value(name).toString();
-            if (value.isEmpty()) {
-                static QLatin1String systemEnvironmentRegistryPath("HKEY_LOCAL_MACHINE\\SYSTEM\\"
-                                                                   "CurrentControlSet\\Control\\Session Manager\\Environment");
-                value = QSettings(systemEnvironmentRegistryPath, QSettings::NativeFormat).value(name).toString();
-            }
+            static QLatin1String systemEnvironmentRegistryPath("HKEY_LOCAL_MACHINE\\SYSTEM\\"
+                "CurrentControlSet\\Control\\Session Manager\\Environment");
+            value = QSettings(systemEnvironmentRegistryPath, QSettings::NativeFormat).value(name).toString();
         }
-        return value;
     }
+    return value;
 #else
     return QString::fromUtf8(qgetenv(name.toLatin1()));
 #endif

@@ -253,17 +253,10 @@ bool LoggingHandler::outputRedirected() const
 /*!
     Prints basic information about \a components.
 */
-void LoggingHandler::printComponentInfo(const QList<Component *> components, const QString &releaseMsg) const
+void LoggingHandler::printComponentInfo(const QList<Component *> components) const
 {
     QDomDocument doc;
     QDomElement root = doc.createElement(QLatin1String("updates"));
-
-    // NEXTGIS: Add release message
-    if(!releaseMsg.isEmpty()) {
-        root.setAttribute(QLatin1String("release_msg"), releaseMsg);
-    }
-    // END NextGIS block
-
     doc.appendChild(root);
 
     foreach (Component *component, components) {

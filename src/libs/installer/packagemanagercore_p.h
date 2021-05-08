@@ -205,10 +205,6 @@ public:
     QList<QInstaller::Component*> m_updaterComponentsDeps;
     QList<QInstaller::Component*> m_updaterDependencyReplacements;
 
-    //NEXTGIS: Release message
-    QString m_releaseMessage;
-    // End NextGIS
-
     OperationList m_ownedOperations;
     OperationList m_performedOperationsOld;
     OperationList m_performedOperationsCurrentSession;

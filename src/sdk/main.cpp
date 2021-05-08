@@ -41,7 +41,6 @@
 #include <QCommandLineParser>
 #include <QDateTime>
 #include <QNetworkProxyFactory>
-#include <QProcess>
 
 #include <iostream>
 
@@ -285,55 +284,7 @@ int main(int argc, char *argv[])
             }
 #endif
         }
-
-        int result = InstallerBase(argc, argv).run();
-
-        // NEXTGIS: add the task to run the passed app after the updater's gui finishes.
-        // Note: we run the passed app anyway, even if the updater has finished with an error.
-        if ((parser.isSet(CommandLineOptions::scStartUpdaterLong)
-                || parser.isSet(CommandLineOptions::scDeprecatedUpdater))
-            && parser.isSet(QLatin1String(CommandLineOptions::scLaunch)))
-        {
-            QString launchPath = parser.value(QLatin1String(CommandLineOptions::scLaunch));
-            if (launchPath.isEmpty())
-                throw QInstaller::Error(QLatin1String("Empty launch path for option 'launch'."));
-
-            if (!QFile::exists(launchPath))
-            {
-                std::cout << "Application for launching not found: "
-                          << launchPath.toUtf8().data()
-                          << "\n";
-            }
-            else
-            {
-                QString launchOption;
-                QStringList launchOptions;
-
-                if (parser.isSet(QLatin1String(CommandLineOptions::scLaunchOptions)))
-                {
-                    QString launchOption = parser.value(QLatin1String(CommandLineOptions::scLaunchOptions));
-                    if (launchOption.startsWith(QLatin1String("\"")))
-                        launchOption.remove(0,1);
-                    if (launchOption.endsWith(QLatin1String("\"")))
-                        launchOption.remove(launchOption.size()-1,1);
-                    launchOptions = launchOption.split(QLatin1String(" "));
-                }
-
-                std::cout << "Starting " << launchPath.toUtf8().data()
-                          << " " << launchOption.toUtf8().data() << "\n";
-#ifdef Q_OS_MACX
-                QProcess::startDetached(
-                    launchPath,
-                    launchOptions
-                );
-#else
-                QProcess *otherAppProcess = new QProcess();
-                otherAppProcess->start(launchPath, launchOptions);
-#endif
-            }
-        }
-
-        return result;
+        return InstallerBase(argc, argv).run();
 
     } catch (const QInstaller::Error &e) {
         std::cerr << qPrintable(e.message()) << std::endl;

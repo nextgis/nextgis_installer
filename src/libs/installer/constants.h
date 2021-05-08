@@ -213,10 +213,6 @@ static const QLatin1String scStartClientLong("start-client");
 static const QLatin1String scSquishPortShort("q");
 static const QLatin1String scSquishPortLong("squish-port");
 
-// NEXTGIS: add options for launch external programs after the work of installer.
-static const QLatin1String scLaunch("launch");
-static const QLatin1String scLaunchOptions("launch-options");
-
 // Deprecated options, provided only for backward compatibility
 static const QLatin1String scDeprecatedUpdater("updater");
 static const QLatin1String scDeprecatedCheckUpdates("checkupdates");
