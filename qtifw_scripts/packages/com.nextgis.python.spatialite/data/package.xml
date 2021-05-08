@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_spatialite">
+    <mac>
+        <path src="Library/lib/python2.7/site-packages/pyspatialite" dst="Library/Python/2.7/site-packages/pyspatialite"/>
+    </mac>
+    <win>
+        <path src="Lib/site-packages/pyspatialite" dst="lib/python27/site-packages/pyspatialite"/>
+    </win>
+</Package>

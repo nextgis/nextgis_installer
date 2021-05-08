@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_beautifulsoup">
+    <mac>
+        <path src="inst/lib/python2.7/site-packages/bs4" dst="Library/Python/2.7/site-packages/bs4"/>
+    </mac>
+    <win>
+        <path src="inst/Lib/site-packages/bs4" dst="lib/python27/site-packages/bs4"/>
+    </win>
+</Package>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_opencv">
+    <mac>
+        <path src="Library/Frameworks/opencv.framework" dst="Library/Frameworks/opencv.framework"/>
+    </mac>
+    <win>
+        <path src="bin/*.dll" dst="bin"/>
+    </win>
+</Package>

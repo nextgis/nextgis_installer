@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>QGIS</DisplayName>
+    <Description>Main QGIS application</Description>
+    <Default>true</Default>
+    <Script>afterinstall.qs</Script>
+    <Dependencies>com.nextgis.qgis.libapp,com.nextgis.utils.gdal,com.nextgis.common.vc</Dependencies>    
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+</Package>

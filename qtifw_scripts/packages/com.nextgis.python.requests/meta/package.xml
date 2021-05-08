@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Requests</DisplayName>
+    <Description>Requests package</Description>
+    <Dependencies>com.nextgis.python.all,com.nextgis.python.urllib3,com.nextgis.python.idna,com.nextgis.python.chardet,com.nextgis.python.certifi</Dependencies>
+</Package>

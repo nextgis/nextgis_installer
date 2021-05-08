@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_geotiff">
+    <mac>
+        <path src="Library/Frameworks/geotiff.framework" dst="Library/Frameworks/geotiff.framework"/>
+    </mac>
+    <win>
+        <path src="bin/*.dll" dst="bin"/>
+    </win>
+</Package>

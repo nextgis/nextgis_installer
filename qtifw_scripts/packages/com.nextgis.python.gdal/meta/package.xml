@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>GDAL python</DisplayName>
+    <Description>GDAL python bindings</Description>
+    <Script>afterinstall.qs</Script>
+    <Dependencies>com.nextgis.python.all,com.nextgis.spatial.gdal,com.nextgis.python.numpy,com.nextgis.utils.utils</Dependencies>
+</Package>

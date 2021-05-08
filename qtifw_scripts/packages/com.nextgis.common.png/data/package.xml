@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_png">
+    <mac>
+        <path src="Library/Frameworks/png.framework" dst="Library/Frameworks/png.framework"/>
+    </mac>
+    <win>
+        <path src="bin" dst="bin"/>
+    </win>
+</Package>

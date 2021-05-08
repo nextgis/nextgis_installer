@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_expat">
+    <mac>
+        <path src="bin/xmlwf" dst="usr/bin/"/>
+    </mac>
+    <win>
+        <path src="bin/xmlwf.exe" dst="bin/"/>
+    </win>
+</Package>

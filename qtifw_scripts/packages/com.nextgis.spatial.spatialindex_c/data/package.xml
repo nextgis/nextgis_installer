@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_spatialindex">
+    <mac>
+        <path src="Library/Frameworks/spatialindex_c.framework" dst="Library/Frameworks/spatialindex_c.framework"/>
+    </mac>
+    <win>
+        <path src="bin/spatialindex_c.dll" dst="bin"/>
+    </win>
+</Package>

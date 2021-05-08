@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_jpeg">
+    <mac>
+        <path src="Library/Frameworks/jpeg12.framework" dst="Library/Frameworks/jpeg12.framework"/>
+    </mac>
+	<win>
+        <path src="bin/*.dll" dst="bin"/>
+    </win>
+</Package>

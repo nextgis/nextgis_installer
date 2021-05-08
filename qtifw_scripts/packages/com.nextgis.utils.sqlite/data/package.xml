@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_sqlite">
+    <mac>
+        <path src="bin" dst="usr/bin"/>
+    </mac>
+    <win>
+        <path src="bin/*.exe" dst="bin"/>
+    </win>
+</Package>

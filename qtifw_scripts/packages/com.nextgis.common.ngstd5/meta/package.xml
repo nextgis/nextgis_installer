@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>NextGIS STD 5</DisplayName>
+    <Description>NextGIS Standard Qt5 Library</Description>
+    <Dependencies>com.nextgis.common.qt.qt5,com.nextgis.spatial.gdal,com.nextgis.common.sentry</Dependencies>
+</Package>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>QCA</DisplayName>
+    <Description>QCA Library</Description>
+    <Dependencies>com.nextgis.common.openssl,com.nextgis.common.qt.qt4</Dependencies>
+    <Script>installscript.qs</Script>
+</Package>

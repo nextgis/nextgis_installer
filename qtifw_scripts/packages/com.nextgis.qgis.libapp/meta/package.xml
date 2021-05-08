@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>App library</DisplayName>
+    <Description>App library</Description>
+    <Virtual>true</Virtual>
+    <Dependencies>com.nextgis.qgis.libgui,com.nextgis.common.ngstd4</Dependencies>
+</Package>

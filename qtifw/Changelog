@@ -1,0 +1,422 @@
+3.1.2
+- Gain admin rights for writing MaintenanceTool config files if needed (QTIFW-1363)
+- Update INSTALL file (QTIFW-1185)
+- Fix initially deactivated buttons when selecting components to update (QTIFW-1320)
+- Fix MaintenanceTool file write permission check on Linux and macOS (QTIFW-1324)
+- Fix installer hang on Windows with empty command prompt window appearing (QTIFW-1250)
+
+3.1.1
+- Add fetch to the same pane with package categories (QTIFW-1284)
+- Change text in Select Components view when selection of components is not possible (QTIFW-1241)
+- Fix long description texts not properly shown by enabling scrolling (QTIFW-1308)
+- Fix install button string having a font name in French translation (QTIFW-1333)
+- Fix maintenance tool size (QTIFW-1322)
+- Update Russian translation
+- Enable links and text selection in component description fields (QTIFW-1292)
+
+3.1.0
+- Fix wizard's maximum size not to exceed screen maximum size (QTIFW-1227)
+- Allow maintenancetool signing in Windows (QTIFW-667)
+- Enable usage of categorized repositories (QTIFW-1147)
+- Add possibility to check/uncheck repositories with one button click (QTIFW-1132)
+- Update danish (da) translation for Qt installer-framework
+- Add attribute to mark parts of install tree unstable (QTIFW-930)
+   -> Setting AllowUnstablecomponents to true in config.xml will
+    * allow installing other components when there are errors in scripts
+    * allow installing other components when there are missing dependencies
+    * allow installing other components when there are sha mismatches in metadata
+    * will mark the 'broken' components uninstallable in treeview
+- Add findFiles method (QTIFW-1094)
+- Enable expanding items by default
+- Add support dash (-) symbol in component name (QTIFW-948)
+- Allow comparing non-numeric versions (QTIFW-948)
+- Add Component::addAutoDependOn method
+- Teach 'binarycreator' and 'repogen' to repack packages from repository (QTIFW-925)
+
+3.0.6
+- Remove 'Your install seems to be corrupted' messagebox (QTIFW-1003)
+- Register virtual component for uninstall (QTIFW-1102)
+- Optimize ExctractArchiveOperation::fileFinished() (QTBUG-51337)
+- Do not reset core data values in restart (QTIFW-504)
+- Fix maintenancetool writing in Windows (QTIFW-1096)
+- Fix environment variables for XDG paths not being recognized (QTIFW-1043)
+- Update german translation file (QTIFW-1084)
+- Fix admin query retry (QTIFW-988, QTIFW-1173)
+- Fix install fail if there is no metadata (QTIFW-1150)
+- Reset meta information download result (QTIFW-1137)
+
+3.0.5
+- Decrease metadata dowload amount (QTIFW-975)
+- Print component warnings only in verbose mode (QTIFW-975)
+- Fix nested autodependency uninstall (QTIFW-1114, QTBUG-67106)
+- Fix crash in updater if component does not exist anymore (QTIFW-1140)
+
+3.0.4
+- Fix infinite wait if downloadable package is missing (QTIFW-1064)
+- Fix the maintenancetool that failing to elevate to admin (QTIFW-1010)
+- Fix devtool's segmentation fault when using operation
+- Update Japanese translation
+- Remove unnecessary warning (QTIFW-1022)
+- Fix Mkdir operation in uninstall (QTIFW-1099)
+- Enable building IFW with Squish support
+
+3.0.3
+- Set correct proxy type (QTBUG-65143)
+- Add no-proxy option (QTIFW-1085)
+- Fix maintenancetool icon visibility in Mac (QTIFW-1074)
+- Fix EnvironmentVariable operation in Windows (QTIFW-794)
+- Fix crash when downloadable package is missing (QTIFW-1064)
+- Documentation fixes
+
+3.0.2
+- Add possibility to reopen admin query (QTIFW-988)
+- Implement package download resume (QTIFW-5)
+- Use QDir::rmdir and not rmpath as that will remove more than it should
+- Enable HighDPI support only in Windows
+- Do not reset core when pressing 'Restart' (QTIFW-1017)
+- Update italian translation
+- Update russian translation
+- Fixed building with dynamically linked Qt (QTIFW-993)
+
+3.0.1
+- Fix install type if --online-only passed to binarycreator
+- Fix install fail if there are missing repositories
+- Fix Component Name visibility in maintenancetool
+- Adminauthorization freeze fixed under unix (QTIFW-934)
+- Enable high-DPI scaling (QTBUG-61122)
+- Fix maintenance tool update with silentUpdate (QTIFW-976)
+
+3.0.0
+- Change required Qt version, minimum version is now 5.6.2.
+- Clarify the add/remove components string to make it clearer
+- Fix crash at the very end of install if admin rights needed in Windows (QTIFW-943)
+- Make installer to check the dependency version (QTIFW-914)
+- Fix uninstallation on Windows when target path contains non-ascii characters
+- Fix installer crash when it contains replaced and replacement component (QTIFW-915)
+- Avoid warning messages when passing '--platform minimal'
+- New --silentUpdate command line option (QTIFW-906)
+- Allow installing compressed packages. (QTIFW-886)
+- Make support for modifying installations configurable. Introduces new setting 'SupportsModify' in the config.xml.
+- Allow the use of relative URLs to update repositories in Updates.xml.
+- Fix cancel button functionality in Settings->Repositories->Test. (QTIFW-832)
+- Introduced gui.setTextItems() method
+- Store lock files in temporary directory
+- Vertical layout for LicenseAgreement page. (QTIFW-815)
+- add NOMINMAX to fix compile with Qt5.7 in Windows (QTIFW-854)
+- Make usage of authorization fallback optional
+- Fix building with ICC on Windows. (QTIFW-851)
+- Add ApplicationsDirX86 and ApplicationsDirX64 predefined Variables.
+- Fixed (and greatly simplified) creating .dmg files
+- Add a logging category and debug print for http download
+- Make communication via installer.execute() Unicode safe - added two new optional arguments to installer.execute() to define the used codec.
+- Allow specifying the installer size in 'em' or 'ex' units
+- Fixed deleting files when uninstalling on OS X
+- Fix arguments in RegisterFileType
+- Add new '--sign' switch to binarycreator for signing OS X app bundles
+- Fix setValue saving in restart. (QTIFW-504)
+- Allow calling installer.setValue() with an empty string as the value.
+- Fixed writing log on Windows if target dir requires admin rights.
+- Fixed final 'Finish' message on OS X.
+- Resize banner image to fit default installer width.
+- Allow defining non-checkable items - introduces new element 'Checkable' for package. (QTIFW-773)
+- Added support for setting descriptions of Windows shortcuts.
+- Let mkdmg.sh script on OS X actually create random temporary file names. (QTIFW-780)
+- Fix timeout errors while building app bundles files on OS X.
+- Fix timezone issue in archive, simply keep the UTC time.
+- Optimized checking validity of target directory value on Windows. (QTIFW-673)
+- Remove implicit expanding vertical spacer from dynamic pages. (QTIFW-779)
+- Fixed compiling lib7z_facade.cpp with Visual Studio 2013.
+- Fixed several sudo problems eg. (QTIFW-771)
+- Fixed running binarycreator if the temporary directory name contains spaces. (QTIFW-787)
+- Fix violated assertion in error handling of binarycreator.
+- Automatically choose to perform uninstall if appropriate.
+- Implemented installer.readFile().
+- Implemented support for creating URL shortcuts on Windows.
+- Fixed occasional crash on Windows when terminating installer.
+- Fix broken daylight saving time check.
+- Fix crash when updating admin installation with user/temp repository. (QTIFW-740)
+- Read UrlQueryString from settings. (QTIFW-744)
+- Allow to use the stylesheet to customize UI.
+- Add Castilian Spanish translation.
+- Add possibility to run silently without a gui. (QTIFW-166)
+- Removed {kd} and {kdupdater} prefix.
+- Make the installation relocatable (with some limitations). (QTIFW-653)
+- Add factory auto test.
+- Fix canceling the download done by an external call.
+- Print Qt version in verbose output.
+- Fix missing filename conversion on UNIX systems. (QTIFW-643)
+- Remove superfluous clone() method from operations.
+- Implement generic factory using c++11 variadic template feature.
+- Follow description on MSDN to implement time utils. (QTIFW-445)
+- Fix compile for gcc 4.7.3.
+- Convert to Qt 5 connect syntax.
+- Remove signal finished() overload.
+- Use qmake .depends instead of CONFIG += ordered.
+- Update archivegen.
+    * Stop on file errors.
+    * Better verbose/ help output.
+    * Add support for compression level.
+    * Do not hide symbols in statically build lib7z to use e.g. CPercentPrinter symbol in dynamic IFW builds.
+- Update source tree with version 9.38.beta of LZMA SDK.
+- Store AutoDependOn inside components.xml.
+- Implemented xml:lang attribute support for DisplayName tag.
+- Added AllUsers constant.
+- Enable feature live preview of dependencies. Introduces new InstallActionColumnVisible property to config.xml.
+- Remove scRemoteVersion, it's the same as scVersion.
+- Introduce a new struct PackageInfo which replaces UpdateSourceInfo.
+- Use positional arguments instead of options in devtool.
+- Add a warning if component with data contains children.
+- Fix reading and checking arguments of CreateShortcutOperation
+- Introduc new isMaintainer() method
+
+2.0.5
+- Fix hang in Windows when admin rights needed. (QTIFW-902)
+- Use deterministic sorting order for components. (QTIFW-833)
+- Resolve relative URLs from Updates.xml.
+- Do not fail to install or update if repository is missing
+
+2.0.4
+- Set also display name for Repository action "remove"
+- Adjusted wrong repogen parameter name
+- Fix settings test
+- Make Execute operation work without arguments in Windows
+- Add make install functionality with INSTALL_ROOT
+- Do not force doc build on Linux when calling "make install"
+- Documentation updates
+
+2.0.3
+- Update Japanese translation.
+- Make IFW compile with FreeBSD. (QTIFW-841)
+- Fix MSVC2015 build.
+- Revert "Use QQmlV4Function to correctly get empty parameters from script."
+- Fix crash when updating admin installation with user/temp repository (QTIFW-740)
+- Compile with Qt 5.5, 5.6. Minimum version is now 5.5.
+- Fix compile with namespace'ed Qt.
+
+2.0.2
+- Doc: Remove dubious sentence from installer.calculateComponentsToUninstall().
+- Update documentation for --runoperation.
+- Update the git-archive export options.
+- Add alternative option where to read the installer-framework sha1.
+- Add sync.profile.
+- Add .qt-license-check.exclude and .qt-license-check.optional rules.
+- Update license headers.
+- Fix target directory check for reserved words on Windows.
+- Use QQmlV4Function to correctly get empty parameters from script. (QTIFW-724)
+- Fix errors when running updates in a directory requiring elevation. (QTIFW-746)
+- Doc: Fix the function name in Controller Scripting page.
+- Fix usage of system proxy with credentials. (QTBUG-46547)
+- Unify handling of translations. QTIFW-390
+- Init all components with proper install action. (QTIFW-727)
+- Fix .dat file that gets deleted after multiple component changes on Windows.
+- Fix maintenance tool upgrade on OS X.
+- Fix handling of system proxy with credentials. (QTBUG-46547)
+- Unify selection of language for translations. (QTIFW-390)
+- Fix return value of component.installAction() when updating. (QTIFW-727)
+- Fix errors when updating an installation requiring elevation on Windows. (QTIFW-746)
+- Documentation updates.
+
+2.0.1
+- Do not throw exception on empty translation files.
+- Fix --checkupdates mode.
+- Prevent disabled component to be selected using the Select All button. (QTIFW-635)
+- Windows: Fix crashes in elevated installation. (QTIFW-6656, QTIFW-659)
+- OS X: Fix problems with writing settings in elevated installation (QTIFW-709)
+- Fix crash on exit for Windows XP, Vista. (QTIFW-652)
+- Re-add handling of zero compression level files supported by 7z.
+- Improve Proxy Credentials dialog.
+- Make component checker warning optional (set QT_LOGGING_RULES=ifw.componentChecker=true to enable).
+- Make code ready to be compiled with Qt 5.5.
+- Documentation updates.
+
+2.0.0
+- Require Qt 5.4 as a minimal version, Qt 4 code removed.
+- Only support Qt 5 on documentation side as well.
+- Source code is now available also under LGPLv3.
+- Changed the default value of AllowSpaceInPath in config.xml to true.
+- Made cycles in component dependencies fatal.
+- Respect AllowSpaceInPath everywhere.
+- Fixed crash while canceling the meta data unzip task.
+- Fixed replacing of the maintenance tool binary.
+- Introduced new classes for client-server communication.
+- Replaced qscript with js engine.
+- Added an example how to use dynamic pages.
+- Added an example how to ask for a license agreement.
+- Provided an API to get all wizard pages from java script. (QTIFW-477)
+- Made the installer binary paths available for scripts.  (QTIFW-424)
+- Fixed possible case of uninstalling all of Windows. (QTIFW-511)
+- Stopped trying to get admin rights on Windows if impossible.
+- Introduced developer tool.
+- Improved checking of Installationpath and better reporting to user. (QTIFW-468, QTIFW-512)
+- Fixed detailwindow not following content. (QTIFW-353)
+- Log messages are now prefixed with a timestamp. (QTIFW-496)
+- Renamed settings inside config.xml:
+  - UninstallerName renamed to MaintenanceToolName (default value changed to "maintenancetool")
+  - UninstallerIniFile renamed to MaintenanceToolIniFile
+- Windows: Re-use parent console for verbose output if possible
+- Fixed disk space checking for updates. (QTIFW-434)
+- List disk space requirements prior to installation. (QTIFW-16)
+- Toggle details with verbose mode. (QTIFW-140)
+- Implemented progress indicator on taskbar on Windows. (QTIFW-15)
+- Added --framework-version argument.
+- Fixed the uninstaller calculator.
+- Fixed broken command line parsing.
+- Fixed binary data extraction. (QTIFW-574)
+- Fixed uninstall after installing into a target with elevated permissions. (QTIFW-447, QTIFW-479)
+- Allow spaces in RunProgramArguments. (QTIFW-227)
+- Removed some deprecated things.
+- Removed SetQtCreatorArrayValue, AddQtCreatorArrayValue operations.
+- Removed ApplyProductKey, ReplaceInstallNames, QtPatch operations.
+- Added systemInfo to the scripting API. (QTIFW-592)
+- Changed default of 'AllowSpaceInPath' from false to true.
+- Added possibility to specify a control script on installer creation. (QTIFW-166, QTIFW-495)
+- Introduced a setting for Wizard default height and width. (QTIFW-47)
+- Added CreateLocalRepository configuration option.
+- Simplified registration of objects into the script engine.
+- Made sure widgets from .ui files are properly registered to the engine.
+- No longer use Version as the repository format version.
+- Introduced InstallAction property for components.
+- Marked "os" variable as deprecated.
+- Show "Forced" component as enabled, but without checkbox. (QTIFW-491)
+- Fixed running out of sockets in server.
+- No longer show checkbox for autodependent components.
+- No longer defer deletion of sockets in RemoteObject.
+- Fixed loading of translations.
+- Set objectName for QThread.
+- Use local sockets for client-server communication. (QTIFW-228)
+- Fixed handling of incomplete messages in client-server communication.
+- Improved the examples and their documentation.
+- Added and improved documentation. (QTIFW-526)
+- Added translations: Polish, Italian
+- Updated and improved translations.
+- Fixed various bugs. (QTIFW-397, QTIFW-469, QTIFW-481, QTIFW-524, QTIFW-538, QTIFW-541, QTIFW-542, QTIFW-562, QTIFW-564, QTIFW-568, QTIFW-569, QTIFW-583, QTIFW-589, QTIFW-593, QTIFW-600, QTIFW-602, QTIFW-605, QTIFW-612, QTIFW-615, QTIFW-616, QTIFW-618, QTIFW-620, QTIFW-621, QTIFW-622, QTIFW-625, QTBUG-633)
+
+Thanks go to Christoph Vogtländer, Sze Howe Koh, Ray Donnelly, Tasuku Suzuki, Takayuki Orito, Sascha Cunz, Zhang Xingtao, Sergey Belyashov and Cuoghi Massimiliano for contributions.
+
+1.6.0
+- No longer requires Xcode command line tools on Mac. (QTBUG-38015)
+- Use local encoding to parse executable output in ConsumeOutput.
+- Avoid 'Too many open files' on Mac.
+- Fixed HTTP proxy settings not having any effect. (QTIFW-498)
+- Made it possible to calculate dependencies from script. (QTIFW-503)
+- Bugfixes (QTBUG-38343, QTIFW-488)
+- Code cleanup
+
+1.5.1
+- The checkupdates option handles no-network situations better. (QTIFW-431)
+- Fixed random crash while accessing arguments.
+- Fixed I18N on Windows.
+- Qt5 compatibility fixes.
+- Fixed for path handling on Windows.
+- Fixed preselection of components from another component.
+- Added operationExists method on script side.
+- Unified access to the supported schemes.
+- Implemented missing setNativeArguments wrapper. (QTIFW-310)
+- Fixed banner image not working in dynamic pages. (QTIFW-471)
+- Fixed hang when entering wrong sudo password. (QTIFW-409 and QTIFW-451)
+- Documentation improvements.
+- Updated translations.
+
+Thanks go to Takumi Asaki and Sergey Belyashov for contributions.
+
+1.5.0
+- Fixed generation of random temp directory name. (QTIFW-427)
+- Now reuses http proxy settings for https.
+- Allow a page to force showing the settings button.
+- Read qmake output even if it crashed.
+- Implemented factory to be able to insert wizard pages dynamically.
+- Open a console window (Windows) to show the verbose output. (QTIFW-403)
+- Added new settingsoperation.
+- Offline installer do not require any temporary space.
+- Now .dmg files are named after the application bundle on Mac OS X.
+- Introduced ApplicationsDir variable. (QTIFW-258)
+- Now never delete the install directory if it's not empty.
+- Environment variables changes are now propagated to the system. (QTIFW-391)
+- Build installers with accessibility plugin. (QTBUG-34296)
+- Improved documentation.
+- Minor bugfixes.
+
+1.4.1
+- Added support to pass a query string when downloading archives. (QTIFW-329)
+- Fixed progress display for redirected HTTP Downloads. (QTIFW-267)
+- Add support to repogen to update only newer components. (QTIFW-234)
+- Don't show RunProgram after uninstall. (QTIFW-366)
+- Fix broken random name generation for temporary directories. (QTIFW-354)
+- Removed unnecessary WindowModal in the gui. (QTIFW-364)
+- Made some previously missed elements scriptable. (QTIFW-372)
+- Fixed searching for magic marker.
+- Now create the temp remoterepo directory later to avoid conflicts.
+- Disable close button during installer run to avoid crashes.
+- Child repositories added by setTempRepository are no longer default. (QTIFW-373)
+- Ignore filtered repositories as early as possible to avoid hang.
+- Connect extract operation to progress calculation. (QTIFW-11, QTIFW-141)
+- Fixed target dir for root installations and empty AdminTargetDir.
+- Fixed broken dependency resolver.
+- Implemented a way to replace the default resource.
+- Renamed forceRestart to needsHardRestart.
+- Made installer apps retina-ready.
+- Restart on the wizard now cleans up component leftovers.
+- Read file content in case mmap fails (fallback).  (QTIFW-400)
+- Added more autotests.
+- Improved documentation.
+- Minor bugfixes.
+
+1.4
+- Force updating of Essential components. (QTIFW-38, QTIFW-155)
+- Display release date in Updater and Packagemanager. (QTIFW-25)
+- Fixed a crash in the package manager. (QTIFW-313)
+- Fixed component selection showing wrong package sizes. (QTIFW-302)
+- Better handling of dependencies while updating. (QTIFW-318)
+- Now allows to ignore SSL errors.
+- Implemented dedicated translation settings support.
+- Added exceptionhandler code for connected signals/JS methods.
+- Now properly calculates the file size for symlinks. (QTIFW-137)
+- Fixed downloading when the server redirects.
+- Changed two fatals to warnings.
+- Added errorString to execute operation error output.
+- Implemented configuration interface. (QTIFW-196)
+- Introduced no_app_bundle.pri for Mac.
+- Added a change installer ui example.
+- Added entered/left signals to pages.
+- Forwarded packagemanager core to ProductKeyCheck class.
+- Added installerscriptengine.
+- Replaced the external date and time implementation.
+- Now only uses the basic LZMA SDK (instead of all of 7zip).
+- Forwarded make "check" target to autotests.
+- Added documentation for JS API.
+- Fixed messageboxhandler.
+- Added INSTALL file, cleaned up README.
+- Now sets the subTitle to " " if empty on Linux as well.
+- Now checks for os-release instead of lsb-release on Linux.
+- Added getrepositorycontent tool.
+- Now provides documentation for Vendorprefix parameter.
+- Fixed output of line number in log.
+- Fixed broken update behavior (in the size and description label).
+- Binarycreator now assumes offline installer if there are no repositories. (QTIFW-224)
+- Rewrote copy configuration function. (QTIFW-221)
+- Added banner pixmap to the wizard.
+- Removed previously deprecated Pages config.xml element.
+- Deprecated Icon, introduce replacements for config.xml.
+- Added component model behavior auto test and fix broken model. (QTIFW-84, QTIFW-213)
+- Made CreateShortcut operation a NOOP on non-Windows systems.
+- Added RunProgramArguments to config.xml.
+- Qt5 SDK specific fixes.
+- Minor documentation fixes and additions.
+- Added more autotests.
+- Bugfixes
+- Added Japanese translation.
+- Updated translations
+- Cleaned up the Code.
+
+1.3.1
+- Fixed missing magic cookie in installer binary on Mac. (QTIFW-322)
+- Fixed UNDO of MkDirOperation and CopyOperation.
+- Enabled Qt4 patch syntax in QtPatchOperation.
+- Added the OS attribute to be compatible with old sdks.
+- Show the error string not the empty errorString when parsing Settings.
+- Now continues on unknown operations.
+- Fixed error handling in 7z lib.
+- Added a DisplayName setting for repositories. (QTIFW-244)
+- Chinese Translation added
+- Documentation fixes and additions.
+- Bugfixes (QTIFW-271 et al)

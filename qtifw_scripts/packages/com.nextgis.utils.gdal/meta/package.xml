@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>GDAL utilities</DisplayName>
+    <Description>GDAL command line utilities</Description>
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+    <Script>script.qs</Script>
+    <Dependencies>com.nextgis.utils.utils,com.nextgis.python.gdal</Dependencies>
+</Package>

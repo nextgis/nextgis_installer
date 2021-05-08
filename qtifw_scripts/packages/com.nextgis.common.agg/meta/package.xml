@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Agg</DisplayName>
+    <Description>Anti Grain Geometry Library</Description>
+    <Dependencies>com.nextgis.common.freetype</Dependencies>
+</Package>

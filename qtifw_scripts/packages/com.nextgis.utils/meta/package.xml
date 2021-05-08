@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Utilities</DisplayName>
+    <Description>Utility applications</Description>
+    <Virtual>false</Virtual>
+
+    <Dependencies>com.nextgis.nextgis_updater</Dependencies>
+
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+    <Script>script.qs</Script>
+</Package>

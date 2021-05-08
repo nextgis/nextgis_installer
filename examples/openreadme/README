@@ -1,6 +1,0 @@
-Shows how to add a 'Open ReadMe' checkbox to the final page.
-
-Generate installer with
-
-binarycreator --offline-only -c config/config.xml -p packages installer
-

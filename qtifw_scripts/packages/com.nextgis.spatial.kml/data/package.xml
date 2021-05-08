@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_kml">
+    <mac>
+        <path src="Library/Frameworks/kml.framework" dst="Library/Frameworks/kml.framework"/>
+    </mac>
+    <win>
+        <path src="bin/*.dll" dst="bin"/>
+    </win>
+</Package>

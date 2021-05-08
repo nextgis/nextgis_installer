@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_sip">
+    <mac>
+        <path src="Library/Python/2.7/site-packages" dst="Library/Python/2.7/site-packages"/>
+        <path src="include" dst="usr/include/"/>
+        <path src="bin/sip" dst="usr/bin/"/>
+    </mac>
+    <win>
+        <path src="lib" dst="lib"/>
+        <path src="include" dst="include"/>
+        <path src="bin/*.exe" dst="bin"/>
+    </win>
+</Package>

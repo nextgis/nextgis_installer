@@ -1,0 +1,114 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://www.qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage {index.html}{Qt Installer Framework}
+    \previouspage ifw-overview.html
+    \page ifw-getting-started.html
+    \nextpage ifw-use-cases.html
+
+    \title Getting Started
+
+    Qt Installer Framework is developed as part of the Qt project. The
+    framework itself uses Qt. However, it can be used to install all kind of
+    applications, including (but not limited to) applications built with Qt.
+
+    \section1 Supported Platforms
+
+    You can use the Qt Installer Framework to create installers for all
+    platforms supported by \l[QtDoc]{Supported Platforms}{desktop Qt}.
+
+    The installers have been tested on the following platforms:
+
+    \list
+        \li Microsoft Windows XP, and later
+        \li Ubuntu Linux 11.10, and later
+        \li OS X 10.7, and later
+    \endlist
+
+    \section1 Building from Sources
+
+    The following steps describe how to build the Qt Installer Framework
+    yourself. You can skip this if you have downloaded a pre-built version
+    of the framework.
+
+    \section2 Supported Compilers
+
+    The Qt Installer Framework can be compiled with Microsoft Visual Studio
+    2013 and newer, GCC 4.7 and newer, and Clang 3.1 and newer.
+
+    \section2 Configuring Qt
+
+    If you use a statically built Qt to build the Qt Installer Framework
+    you do not have to deliver Qt libraries, which enables you to distribute
+    installers as one file.
+
+    The minimum required Qt version is 5.5.
+
+    \section3 Configuring Qt for Windows
+
+    We recommend that you use the following options when you configure Qt for
+    Windows:
+
+    \code
+    configure -prefix %CD%\qtbase -release -static -static-runtime -target xp -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
+
+    \endcode
+
+    \section3 Configuring Qt for Linux
+
+    We recommend that you use the following configuration options for Linux:
+
+    \code
+    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -qt-freetype -no-glib -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -no-egl -no-xinput -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
+    \endcode
+
+    \section3 Configuring Qt for OS X
+
+    We recommend that you use the following configuration options for OS X:
+
+    \code
+    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
+    \endcode
+
+    \section2 Setting up Qt Installer Framework
+
+    \list 1
+
+        \li Clone the Qt Installer Framework source code from
+            \l{http://code.qt.io/cgit/installer-framework/installer-framework.git/}
+            to get the sources for the tools.
+
+        \li Build the tools by running the "qmake" from the static Qt, followed by "make" or "nmake".
+
+    \endlist
+
+    \note To contribute patches to Qt Installer Framework, follow the standard
+    Qt processes and guidelines. For more information, see
+    \l{http://wiki.qt.io/Contribute}{Contribute to Qt}.
+
+*/

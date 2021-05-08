@@ -1,5 +1,0 @@
-Create an installer that shows how the dependency solving works
-
-Generate installer with:
-
-binarycreator -c config/config.xml -p packages installer

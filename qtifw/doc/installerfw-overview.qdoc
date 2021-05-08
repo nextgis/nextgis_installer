@@ -1,0 +1,100 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://www.qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage {index.html}{Qt Installer Framework}
+    \previouspage index.html
+    \page ifw-overview.html
+    \nextpage ifw-getting-started.html
+
+    \title Overview of Qt Installer Framework
+
+    The Qt Installer Framework provides a set of tools and utilities to
+    create installers once, and deploy them across all the supported desktop
+    Qt platforms without rewriting the source code. The installers will have the
+    native look and feel on the platform where they are run: Linux, Microsoft
+    Windows, and OS X.
+
+    The Qt Installer Framework tools generate installers with a set of pages
+    that guide the users during the installation, update, or uninstallation
+    process. You provide the installable content and specify information about
+    it, such as the name of the product and the installer and the text for the
+    license agreement.
+
+    You can customize the installers by adding widgets to the predefined pages
+    or by adding whole pages to provide users with additional options. You can
+    create scripts to add operations to the installer.
+
+    \section1 Choosing Installer Type
+
+    You can provide end users with an \e offline or \e online installer, or
+    both, depending on your use cases.
+
+    \image ifw-overview.png
+
+    Both installers install a \e {maintenance tool} that can later be used to
+    add, update, and remove components. Offline installers contain all the
+    installable components and do not require network connections during the
+    installation. Online installers only install the maintenance tool that then
+    downloads and installs components from an online repository on a web server.
+    Therefore, the size of an online installer binary is smaller and its
+    download time is shorter than that of an offline installer binary. The total
+    time spent downloading and running an online installer might also be shorter
+    than dowloading and running an offline installer if the end users do not
+    install all the available components.
+
+    End users can use the maintenance tool to install additional components from
+    the server after the initial installation, as well as to receive automatic
+    updates to content as soon as the updates are published on the server.
+    However, this works for an offline installation only if you specify a
+    repository address in the offline installer configuration or if end users
+    specify the repository address themselves in the maintenance tool settings.
+
+    Create an offline installer to enable users to directly download the
+    installation package on a media for installation on a computer later. You
+    can also distribute the installation package on a CD-ROM or USB stick, for
+    example.
+
+    Create an online installer to enable users to always install the latest
+    versions of the content binaries.
+
+    \section1 Promoting Updates
+
+    Make online repositories available to promote updates to end users who
+    install your product. The easiest way to provide an update is to recreate
+    the repository and upload it to the web server. For large repositories, you
+    can update only the changed components.
+
+    \section1 Providing Content for Installers
+
+    You can enable other content providers to add components to the installer
+    as add-on components. The component providers must set up repositories that
+    contain the installable components and deliver the URL that points to the
+    repositories to end users. End users must then configure the URL in the
+    installer. The add-on components are visible in the package manager.
+
+*/

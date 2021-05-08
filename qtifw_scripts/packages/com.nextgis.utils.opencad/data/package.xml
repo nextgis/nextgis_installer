@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_opencad">
+    <mac>
+        <path src="bin/cadinfo" dst="usr/bin"/>
+    </mac>
+    <win>
+        <path src="bin/*.exe" dst="bin"/>
+    </win>
+</Package>

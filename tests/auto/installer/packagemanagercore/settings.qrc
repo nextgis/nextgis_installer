@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/metadata">
-        <file>installer-config/config.xml</file>
-    </qresource>
-</RCC>
-

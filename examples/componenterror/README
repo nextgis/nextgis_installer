@@ -1,5 +1,0 @@
-Create an installer that shows how to react on errors set from a component.
-
-Generate installer with
-
-binarycreator --offline-only -c config/config.xml -p packages installer

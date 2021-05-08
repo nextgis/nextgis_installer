@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_exifread">
+    <mac>
+        <path src="inst/lib/python2.7/site-packages/exifread" dst="Library/Python/2.7/site-packages/exifread"/>
+        <path src="inst/bin" dst="usr/bin/"/>
+    </mac>
+    <win>
+        <path src="inst/Lib/site-packages/exifread" dst="lib/python27/site-packages/exifread"/>
+        <path src="inst/Scripts" dst="bin"/>
+    </win>
+</Package>

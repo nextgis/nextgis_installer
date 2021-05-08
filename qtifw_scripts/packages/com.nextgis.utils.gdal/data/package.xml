@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_gdal">
+    <mac>
+        <path src="bin/gdal*" dst="usr/bin/"/>
+        <path src="bin/nearblack" dst="usr/bin/"/>
+        <path src="bin/ogr*" dst="usr/bin/"/>
+        <path src="bin/gnm*" dst="usr/bin/"/>
+        <path src="bin/testepsg" dst="usr/bin/"/>
+    </mac>
+    <win>
+        <path src="bin/*.exe" dst="bin"/>
+    </win>
+</Package>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>PyYaml</DisplayName>
+    <Description>PyYaml package</Description>
+    <Dependencies>com.nextgis.python.all,com.nextgis.common.yaml</Dependencies>
+</Package>

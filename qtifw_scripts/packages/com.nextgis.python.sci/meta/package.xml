@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Scipy</DisplayName>
+    <Description>Scipy package</Description>
+    <Dependencies>com.nextgis.python.numpy</Dependencies>
+</Package>

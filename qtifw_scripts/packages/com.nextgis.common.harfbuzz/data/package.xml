@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_harfbuzz">
+    <mac>
+        <path src="Library/Frameworks/harfbuzz.framework" dst="Library/Frameworks/harfbuzz.framework"/>
+    </mac>
+    <win>
+        <path src="bin/*.dll" dst="bin"/>
+    </win>
+</Package>

@@ -1,0 +1,256 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://www.qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage{index.html}{Qt Installer Framework}
+    \previouspage scripting.html
+    \page operations.html
+    \nextpage ifw-tools.html
+
+    \title Operations
+
+    The operations are prepared by component and controller scripts and performed by the
+    installer.
+    \note Operations are performed threaded.
+
+    Internally, each operation has a \e DO step that contains instructions for
+    the installer and an \e UNDO step that contains instructions for the
+    uninstaller.
+
+    \section1 Summary of Operations
+
+    The following table summarizes the available operations and their syntax.
+
+    \table
+        \header
+            \li Operation
+            \li Syntax
+            \li Use
+        \row
+            \li Copy
+            \li "Copy" \c source \c target
+            \li Copies a file from \c source to \c target.
+        \row
+            \li Move
+            \li "Move" \c source \c target
+            \li Moves a file from \c source to \c target.
+        \row
+            \li SimpleMoveFile
+            \li "SimpleMoveFile" \c source \c target
+            \li Moves a file from \c source to \c target.
+        \row
+            \li Delete
+            \li "Delete" \c filename
+            \li Deletes the file specified by \c filename.
+        \row
+            \li Mkdir
+            \li "Mkdir" \c path
+            \li Creates the directory path \c path.
+        \row
+            \li Rmdir
+            \li "Rmdir" \c path
+            \li Removes the directory path \c path.
+        \row
+            \li CopyDirectory
+            \li "CopyDirectory" \c sourcePath \c targetPath
+            \li Copies a directory from \c sourcePath to \c targetPath.
+        \row
+            \li AppendFile
+            \li "AppendFile" \c filename \c text
+            \li Appends \c text to the file specified by \c filename. \c text is
+                treated as ASCII text.
+        \row
+            \li PrependFile
+            \li "PrependFile" \c filename \c text
+            \li Prepends \c text to the file specified by \c filename. \c text
+                is treated as ASCII text.
+        \row
+            \li Replace
+            \li "Replace" \c file \c search \ replace
+            \li Opens \c file to find \c search string and replaces that with the \c replace string.
+        \row
+            \li LineReplace
+            \li "LineReplace" \c file \c search \c replace
+            \li Opens \c file to find lines that start with \c search string and
+                replaces that with the \c replace string. Lines are trimmed before
+                the search.
+        \row
+            \li Execute
+            \li "Execute" [{\c exitcodes}] \c command [\c parameter1 [\c parameter... [\c parameter10]]]
+            \li Executes the command specified by \c command. Up to 10
+                parameters can be passed. If that is not enough, you can use a JavaScript string array.
+
+                Optionally, you can pass a comma-separated list of exit codes
+                within curly brackets ({}) as the first argument to specify the
+                exit codes for successful execution. This defaults to "{0}".
+
+                Other optional named arguments are: "workingdirectory=<your_working_dir>";
+                "errormessage=<your_custom_errormessage>"
+
+                In addition, a special argument, UNDOEXECUTE, separates the DO step of the operation
+                from the UNDO step.
+
+                Example:
+                \c{component.addOperation("Execute", "touch", "test.txt", "UNDOEXECUTE", "rm", "test.txt")}
+        \row
+            \li CreateShortcut
+            \li "CreateShortcut" \c filename \c linkname [\c arguments]
+            \li Creates a shortcut from the file specified by \c filename to
+                \c linkname.
+                On Windows, this creates a .lnk file which can have
+                \c arguments. Furthermore, on Windows, \c filename can be
+                an HTTP or FTP URL in which case a URL shortcut is created.
+                On Unix, this creates a symbolic link.
+        \row
+            \li CreateDesktopEntry
+            \li "CreateDesktopEntry" \c {filename "key=value[ key2=value2[ key3=value3]]]"}
+            \li Creates a .desktop initialization file, as specified by
+                freedesktop.org.
+
+                If \c filename is absolute, the desktop entry is stored there.
+                Otherwise, it is stored in the location specified in
+                \c{$XDG_DATA_HOME/applications}, including the default path,
+                as defined by freedesktop.org.
+
+                The key-value pairs are written to the file.
+
+                The file is set to use UTF-8 encoding.
+        \row
+            \li InstallIcons
+            \li "InstallIcons" \c directory \c [Vendorprefix]
+            \li Installs the contents of \c directory into a location, as
+                specified by freedesktop.org. That is, into
+                \c {$XDG_DATA_HOME/icons} or
+                \c {$HOME/.local/share/icons}. The files are removed from their initial
+                location. Make sure to add this operation after the operation
+                that extracts the files from the archive.
+                If you provide a \c Vendorprefix it replaces all characters up to the
+                first dash (-) in the filename of the icon with this prefix.
+        \row
+            \li Extract
+            \li "Extract" \c archive \c targetdirectory
+            \li Extracts \c archive to \c targetdirectory.
+
+        \row
+            \li GlobalConfig
+            \li "GlobalConfig" \c company \c application \c key \c value
+
+                or
+
+                "GlobalConfig" \c scope \c company \c application \c key \c value
+
+                or
+
+                "GlobalConfig" \c filename \c key \c value
+            \li Stores \c value for \c key in a configuration file. The
+                configuration file is specified either by \c filename
+                (using \c QSettings::NativeFormat, which might be the Windows
+                registry) or by \c application and \c company name. Set \c scope
+                to "SystemScope" to create an entry in the system scope.
+
+                \note The operation is using QSettings to store the key value pair. QSettings
+                always treats backslash as a special character and provides no API for reading
+                or writing such entries. Do not use slashes ('/' and '\\') in section or key names;
+                the backslash character is used to separate sub keys. On windows, '\\' are converted
+                by QSettings to '/', which makes them identical. Because the backslash character is
+                used by QSettings to separate sub keys, you cannot read or write windows registry
+                entries that contain slashes or backslashes. You should use a native windows API if
+                you need to do so.
+        \row
+            \li EnvironmentVariable
+            \li "EnvironmentVariable" \c key \c value [\c persistent [\c system]]
+            \li Sets the environment variable \c key to \c value. If
+                \c persistent is set to \c true, the variable is set
+                persistently. This is currently only supported on Windows.
+                If \c system is set to \c true, the persistent variable is set
+                system-wide, not only for the current user.
+        \row
+            \li RegisterFileType
+            \li "RegisterFileType" \c extension \c command [\c description [\c contentType [\c icon]]].
+            \li Registers the file type with \c extension to be opened via
+                \c command. Optionally, you can specify \c description,
+                \c contentType, and \c icon. This is currently only supported on
+                Windows.
+        \row
+            \li ConsumeOutput
+            \li "ConsumeOutput" \c installerKeyName \c executablePath \c processArguments
+            \li Saves the output from running the executable located at
+                \c executablePath with the arguments \c processArguments to the
+                installer key specified by \c installerKeyName. Additional
+                arguments can be passed.
+        \row
+            \li CreateLink
+            \li "CreateLink" \c linkPath \c targetPath
+            \li Creates a link from the location specified by \c linkPath to
+                the location specified by \c targetPath.
+        \row
+            \li CreateLocalRepository
+            \li "CreateLocalRepository" \c binaryPath \c repoPath
+            \li Creates a local repository in the directory specified by
+                \c repoPath. For offline installers, stores binary data in the
+                directory specified by \c binaryPath.
+        \row
+            \li FakeStopProcessForUpdate
+            \li "FakeStopProcessForUpdate" \c processlist
+            \li Matches running processes against the comma-separated entries in \c processlist
+                during uninstallation. If matches are found, shows a messagebox asking the user
+                to stop those processes before continuing.
+        \row
+            \li License
+            \li "License" \c licenses
+            \li Copies the license files specified by \c licenses to a subfolder called \c Licenses
+                in the target directory. This operation is automatically added for packages
+                declaring \c <Licenses> in their package description file.
+        \row
+            \li MinimumProgress
+            \li "MinimumProgress"
+            \li Increases the progress value by one.
+        \row
+            \li SelfRestart
+            \li "SelfRestart" \c core
+            \li Restarts the updater or package manager specified by \c core.
+        \row
+            \li Settings
+            \li "Settings" \c path \c method \c key \c aValue
+            \li Sets or removes the value \c aValue of \c key in the settings file
+                or registry located at \c path, depending on the value of
+                \c method: \c set, \c remove, \c add_array_value, and \c remove_array_value.
+    \endtable
+
+    The Extract, License, and MinimumProgress operations are automatically added for matching
+    components that do not overwrite the component::createOperations() method. See also
+    component::autoCreateOperations.
+
+    If errors occur, you can test operations manually using the \c devtool. However,
+    variables are not resolved, so you need to use absolute values.
+
+    For example, to test copying a file:
+    \code
+    devtool --operation DO,Copy,<source>,<target>
+    \endcode
+
+*/

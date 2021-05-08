@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="nextgisqgis">
+    <mac>
+        <path src="Applications/qgis-ng.app/Contents/Resources/doc/NextGIS_QGIS_en.pdf" dst="Applications/qgis-ng.app/Contents/Resources/doc/"/>
+    </mac>
+    <win>
+        <path src="share/doc/qgis/NextGIS_QGIS_en.pdf" dst="share/doc/ngqgis"/>
+    </win>
+</Package>

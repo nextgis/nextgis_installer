@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Gui library</DisplayName>
+    <Description>Gui library</Description>
+    <Virtual>true</Virtual>
+    <Dependencies>com.nextgis.qgis.libanalysis</Dependencies>
+</Package>

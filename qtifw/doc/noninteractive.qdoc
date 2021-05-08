@@ -1,0 +1,626 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://www.qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage{index.html}{Qt Installer Framework}
+    \previouspage ifw-component-description.html
+    \page noninteractive.html
+    \nextpage scripting.html
+
+    \title Controller Scripting
+
+    For each installer, you can specify a control script that interacts with certain parts of
+    the installer's UI or functionality. The control script can add and remove pages to the
+    wizard, change existing pages, do additional checks, and interact with the UI by
+    simulating user clicks. This allows for example unattended installations.
+
+    The script format has to be compatible with QJSEngine.
+
+    This section describes the functions that are called to implement such a control script.
+    It also gives an overview of installer pages and the widgets that are available on each
+    page, such as push buttons, radio buttons, and line edits.
+
+    \section1 Writing Control Scripts
+
+    A minimal valid script needs to contain at least a constructor, which can look like this:
+    \code
+        function Controller()
+        {
+        }
+    \endcode
+
+    The following example presents a more advanced script that uses the \l gui
+    JavaScript global object methods to set a new page title and welcome message
+    on the introduction page and to automatically click the \uicontrol Next
+    button on the target directory page:
+
+    \code
+        function Controller()
+        {
+        }
+
+        Controller.prototype.IntroductionPageCallback = function()
+        {
+            var widget = gui.currentPageWidget(); // get the current wizard page
+            if (widget != null) {
+                widget.title = "New title."; // set the page title
+                widget.MessageLabel.setText("New Message."); // set the welcome text
+            }
+        }
+
+        Controller.prototype.TargetDirectoryPageCallback = function()
+        {
+            gui.clickButton(buttons.NextButton); // automatically click the Next button
+        }
+    \endcode
+
+    For more information about the JavaScript global objects that you can use
+    in control scripts, see \l{Scripting API}.
+
+    \section1 Predefined Installer Pages
+
+    The QInstaller JavaScript object provides access to the following predefined
+    installer pages:
+
+    \list
+        \li \c Introduction
+        \li \c TargetDirectory
+        \li \c ComponentSelection
+        \li \c LicenseCheck
+        \li \c StartMenuSelection
+        \li \c ReadyForInstallation
+        \li \c PerformInstallation
+        \li \c InstallationFinished
+    \endlist
+
+    The \l buttons JavaScript object provides a set of buttons that can be used
+    on installer pages.
+
+    The following sections describe the functions that you can implement to
+    interact with installer pages and the widgets that are available on each
+    page.
+
+    \section2 Introduction Page
+
+    Implement the \c Controller.prototype.IntroductionPageCallback() function to interact with
+    widgets on the introduction page.
+
+    Wizard buttons:
+    \list
+        \li \c NextButton
+        \li \c CancelButton
+    \endlist
+
+    \table
+        \header
+        \li Widgets
+        \li Brief Description
+
+        \row
+        \li \c ErrorLabel
+        \li Displays an error message.
+
+        \row
+        \li \c MessageLabel
+        \li Displays a message. By default, it displays the
+            "Welcome to the \l{ProductNameTarget}{<Name>} Setup Wizard" message.
+
+        \row
+        \li \c InformationLabel
+        \li Displays progress information.
+    \endtable
+
+    \table
+        \header
+        \li Radio Buttons
+        \li Brief Description
+
+        \row
+        \li \c PackageManagerRadioButton
+        \li The package manager radio button shown on the page while running as maintenance tool.
+
+        \row
+        \li \c UpdaterRadioButton
+        \li The updater radio button shown on the page while running as maintenance tool.
+
+        \row
+        \li \c UninstallerRadioButton
+        \li The uninstaller radio button shown on the page while running as maintenance tool.
+            Selected by default.
+    \endtable
+
+    \table
+        \header
+        \li Progress Bar
+        \li Brief Description
+
+        \row
+        \li \c InformationProgressBar
+        \li The progress bar shown while fetching remote packages.
+    \endtable
+
+    \table
+        \header
+        \li Qt Core Feature
+        \li Brief Description
+
+        \row
+        \li \c packageManagerCoreTypeChanged()
+        \li Connect to this signal if you want to be notified when the type of maintenance tool
+            changes.
+            \note The signal is only emitted when the user has started the binary as so called
+            maintenance tool (after the installation) and switches between the radio buttons.
+    \endtable
+
+    Example code:
+    \code
+    function Controller()
+    {
+        var widget = gui.pageById(QInstaller.Introduction); // get the introduction wizard page
+        if (widget != null)
+            widget.packageManagerCoreTypeChanged.connect(onPackageManagerCoreTypeChanged);
+    }
+
+    onPackageManagerCoreTypeChanged = function()
+    {
+        console.log("Is Updater: " + installer.isUpdater());
+        console.log("Is Uninstaller: " + installer.isUninstaller());
+        console.log("Is Package Manager: " + installer.isPackageManager());
+    }
+    \endcode
+
+
+    \section2 License Agreement Page
+
+    Implement the \c Controller.prototype.LicenseAgreementPageCallback() function to interact with
+    widgets on the license agreement page.
+
+    Wizard buttons:
+    \list
+        \li \c NextButton
+        \li \c CancelButton
+        \li \c BackButton
+    \endlist
+
+    \table
+        \header
+        \li Widgets
+        \li Brief Description
+
+        \row
+        \li \c LicenseListWidget
+        \li Lists the available licenses.
+
+        \row
+        \li \c LicenseTextBrowser
+        \li Shows the content of the selected license file.
+
+        \row
+        \li \c AcceptLicenseLabel
+        \li Shows the text next to the accept license radio button.
+
+        \row
+        \li \c RejectLicenseLabel
+        \li Shows the text next to the reject license radio button.
+    \endtable
+
+    \table
+        \header
+        \li Radio Buttons
+        \li Brief Description
+
+        \row
+        \li \c AcceptLicenseRadioButton
+        \li Accepts the license agreement.
+
+        \row
+        \li \c RejectLicenseRadioButton
+        \li Rejects the license agreement. Selected by default.
+    \endtable
+
+    \section2 Target Directory Page
+
+    Implement the \c Controller.prototype.TargetDirectoryPageCallback() function to interact with
+    widgets on the target directory selection page.
+
+    Wizard buttons:
+    \list
+        \li \c NextButton
+        \li \c CancelButton
+        \li \c BackButton
+    \endlist
+
+    \table
+        \header
+        \li Widgets
+        \li Brief Description
+
+        \row
+        \li \c MessageLabel
+        \li Displays a message.
+
+        \row
+        \li \c TargetDirectoryLineEdit
+        \li Displays the value of the installation's target directory.
+
+        \row
+        \li \c WarningLabel
+        \li Displays a warning.
+    \endtable
+
+    \section2 Component Selection Page
+
+    Implement the \c Controller.prototype.ComponentSelectionPageCallback() function to interact
+    with widgets on the component selection page.
+
+    Wizard buttons:
+    \list
+        \li \c NextButton
+        \li \c CancelButton
+        \li \c BackButton
+    \endlist
+
+    \table
+        \header
+        \li Methods
+        \li Brief Description
+
+        \row
+            \li \c selectAll()
+            \li Selects all available packages if possible.
+
+        \row
+            \li \c deselectAll()
+            \li Deselects all available packages if possible.
+
+        \row
+            \li \c selectDefault()
+            \li Resets the checked state of available packages to their initial state.
+
+        \row
+            \li \c selectComponent(id)
+            \li Selects the package with \c id (string).
+
+        \row
+            \li \c deselectComponent(id)
+            \li Deselects the package with \c id (string).
+    \endtable
+
+    \table
+        \header
+        \li Push Buttons
+        \li Brief Description
+
+        \row
+            \li \c SelectAllComponentsButton
+            \li Selects all available packages if possible.
+
+        \row
+            \li \c DeselectAllComponentsButton
+            \li Deselects all available packages if possible.
+
+        \row
+            \li \c SelectDefaultComponentsButton
+            \li Resets the checked state of available packages to their initial state.
+
+        \row
+            \li \c ResetComponentsButton
+            \li Resets to already installed components.
+
+        \row
+            \li \c FetchCategoryButton
+            \li Fetch components from a category.
+    \endtable
+
+    \table
+        \header
+        \li Widgets
+        \li Brief Description
+
+        \row
+            \li \c CategoryGroupBox
+            \li Contains checkboxes for selecting repository categories.
+    \endtable
+
+    Installer Framework 3.1 introduces repository categories as a new feature. When
+    you use an installer that contains repository categories, you can select a category
+    by its display name, fetch its contents, and then select the included components for installation.
+
+    You can fetch the components from a category as follows:
+    \code
+    Controller.prototype.ComponentSelectionPageCallback = function()
+    {
+        var page = gui.pageWidgetByObjectName("ComponentSelectionPage");
+
+        // if CategoryGroupBox is visible, check one of the checkboxes
+        // and click fetch button before selecting any components
+        var groupBox = gui.findChild(page, "CategoryGroupBox");
+        if (groupBox) {
+            console.log("groupBox found");
+            // findChild second argument is the display name of the checkbox
+            var checkBox = gui.findChild(page, "Archive");
+            if (checkBox) {
+                console.log("checkBox found");
+                console.log("checkBox name: " + checkBox.text);
+                if (checkBox.checked == false) {
+                    checkBox.click();
+                    var fetchButton = gui.findChild(page, "FetchCategoryButton");
+                    if (fetchButton) {
+                        console.log("fetchButton found");
+                        fetchButton.click();
+                    } else {
+                        console.log("fetchButton NOT found");
+                    }
+                }
+            } else {
+                console.log("checkBox NOT found");
+            }
+        } else {
+            console.log("groupBox NOT found");
+        }
+        // you can now select components from the fetched category
+    }
+    \endcode
+
+    \section2 Start Menu Directory Page
+
+    Implement the \c Controller.prototype.StartMenuDirectoryPageCallback() function to interact with
+    widgets on the ready for installation page.
+
+    Wizard buttons:
+    \list
+        \li \c NextButton
+        \li \c CancelButton
+        \li \c BackButton
+    \endlist
+
+    \table
+        \header
+        \li Widgets
+        \li Brief Description
+
+        \row
+        \li \c StartMenuPathLineEdit
+        \li Shows the directory where to create the program's shortcut.
+    \endtable
+
+
+    \section2 Ready for Installation Page
+
+    Implement the \c Controller.prototype.ReadyForInstallationPageCallback() function to interact
+    with widgets on the ready for installation page.
+
+    Wizard buttons:
+    \list
+        \li \c CommitButton
+        \li \c CancelButton
+        \li \c BackButton
+    \endlist
+
+    \table
+        \header
+        \li Widgets
+        \li Brief Description
+
+        \row
+        \li \c MessageLabel
+        \li Displays a message.
+
+        \row
+        \li \c TaskDetailsBrowser
+        \li Displays some more detailed information about the installation.
+    \endtable
+
+    \section2 Perform Installation Page
+
+    Implement the \c Controller.prototype.PerformInstallationPageCallback() function to interact
+    with widgets on the perform installation page.
+
+    Wizard buttons:
+    \list
+        \li \c CommitButton
+        \li \c CancelButton
+    \endlist
+
+
+    \section2 Finished Page
+
+    Implement the \c Controller.prototype.FinishedPageCallback() function to interact with widgets
+    on the installation finished page.
+
+    Wizard buttons:
+    \list
+        \li \c CommitButton
+        \li \c CancelButton
+        \li \c FinishButton
+    \endlist
+
+    \table
+        \header
+        \li Widgets
+        \li Brief Description
+
+        \row
+        \li \c MessageLabel
+        \li Displays a message.
+
+        \row
+        \li \c RunItCheckBox
+        \li Text field that informs users that they can start an application after
+            the installation process has finished.
+    \endtable
+
+
+    \section1 Custom Pages
+
+    Custom pages are registered as \c{Dynamic${ObjectName}}, where \c{${ObjectName}} is the object
+    name set in the UI file. Thus, the \c{Dynamic${ObjectName}Callback()} function is called.
+    Widgets can be addressed using their object names (from the UI file).
+
+    Example code:
+    \code
+    function Component()
+    {
+        // add page with widget \c SomePageWidget before the target directory page
+        installer.addWizardPage(component, "SomePageWidget", QInstaller.TargetDirectory)
+    }
+
+    Component.prototype.DynamicSomePageWidgetCallback = function()
+    {
+        var page = gui.pageWidgetByObjectName("DynamicSomePageWidget");
+        page.myButton.click, //direct child of the UI file's widget
+        page.someFancyWidget.subWidget.setText("foobar") // nested widget
+    }
+    \endcode
+
+
+    \section1 Message Boxes
+
+    While executing the installer application, for example, the application
+    might show some message boxes about an error that occurred. This is fine
+    while running the application on the end user's system, but it might break
+    automated test suites. To overcome this issue, all message
+    boxes shown by the Qt Installer Framework are addressable by a specific identifier.
+
+    \table
+        \header
+        \li Identifier
+        \li Possible Answers
+        \li Description
+
+        \row
+        \li \c OverwriteTargetDirectory
+        \li Yes, No
+        \li Confirmation for using an already existing directory as the target directory for
+            installation.
+
+        \row
+        \li \c installationError
+        \li OK, Retry, Ignore
+        \li A fatal error occurred while performing the installation.
+
+        \row
+        \li \c installationErrorWithRetry
+        \li Retry, Ignore, Cancel
+        \li An error occurred while performing the installation. End users can
+            select \uicontrol Retry to
+            try again.
+
+        \row
+        \li \c AuthorizationError
+        \li Abort, OK
+        \li Elevated permissions could not be acquired.
+
+        \row
+        \li \c OperationDoesNotExistError
+        \li Abort, Ignore
+        \li An error occurred while trying to perform an operation, but the operation did not exist.
+
+        \row
+        \li \c isAutoDependOnError
+        \li OK
+        \li An error occurred while calling a package script. It was not possible to evaluate
+            if the package has a auto dependency on other packages.
+
+        \row
+        \li \c isDefaultError
+        \li OK
+        \li An error occurred while calling a package script. It was not possible to evaluate
+            if the package will be installed by default.
+
+        \row
+        \li \c DownloadError
+        \li Retry, Cancel
+        \li An error occurred while downloading an archive hash from a remote
+            repository. End users can select \uicontrol Retry to try again.
+
+        \row
+        \li \c archiveDownloadError
+        \li Retry, Cancel
+        \li An error occurred while downloading a archive from a remote repository. End users can
+            select \uicontrol Retry to try again.
+
+        \row
+        \li \c WriteError
+        \li OK
+        \li An error occurred while writing the maintenance tool.
+
+        \row
+        \li \c ElevationError
+        \li OK
+        \li Elevated permissions could not be acquired.
+
+        \row
+        \li \c unknown
+        \li OK
+        \li An unknown error occurred while removing a certain package.
+
+        \row
+        \li \c Error
+        \li OK
+        \li Generic error.
+
+        \row
+        \li \c stopProcessesForUpdates
+        \li Retry, Ignore, Cancel
+        \li An error occurred while updating a package. Some running application or process needs
+            to be quit before the update can be performed. End users can select
+            \uicontrol Retry to try
+            again once they have been stopped.
+
+        \row
+        \li \c Installer_Needs_To_Be_Local_Error
+        \li OK
+        \li The installer binary was started from a network location, but the installation over
+            network is not supported.
+
+        \row
+        \li \c TargetDirectoryInUse
+        \li No
+        \li The installation's target directory already contains an installation.
+
+        \row
+        \li \c WrongTargetDirectory
+        \li OK
+        \li The installation's target directory is a file or symlink.
+
+        \row
+        \li \c AlreadyRunning
+        \li OK
+        \li Another application instance is already running.
+    \endtable
+
+    Example code:
+    \code
+    function Controller()
+    {
+        installer.autoRejectMessageBoxes;
+        installer.setMessageBoxAutomaticAnswer("OverwriteTargetDirectory", QMessageBox.Yes);
+        installer.setMessageBoxAutomaticAnswer("stopProcessesForUpdates", QMessageBox.Ignore);
+    }
+    \endcode
+*/

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>urllib3</DisplayName>
+    <Description>urllib3 package</Description>
+    <Dependencies>com.nextgis.python.all</Dependencies>
+</Package>

@@ -1,6 +1,0 @@
-Shows how to hide top level item's checkbox.
-
-Generate installer with
-
-binarycreator --offline-only -c config/config.xml -p packages installer
-
