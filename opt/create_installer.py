@@ -48,8 +48,8 @@ translate_tool = ''
 packages_data_source_path = ''
 mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 
-connect_timeout = "10.5"
-max_time = "85.5"
+connect_timeout = "11"
+max_time = "180"
 
 repositories = [
     'lib_z', 'lib_openssl', 'lib_gif', 'lib_qhull', 'lib_freetype', 'lib_agg', 
