@@ -28,6 +28,7 @@
 
 #include "link.h"
 #include "utils.h"
+#include "globals.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -88,7 +89,8 @@ public:
             OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, nullptr);
 
         if (m_dirHandle == INVALID_HANDLE_VALUE) {
-            qWarning() << "Cannot open" << path << ":" << QInstaller::windowsErrorString(GetLastError());
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open" << path << ":"
+                << QInstaller::windowsErrorString(GetLastError());
         }
     }
 
@@ -137,17 +139,21 @@ QString readWindowsSymLink(const QString &path)
 Link createJunction(const QString &linkPath, const QString &targetPath)
 {
     if (!QDir().mkpath(linkPath)) {
-        qWarning() << "Cannot create the mount directory" << linkPath;
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create the mount directory" << linkPath;
         return Link(linkPath);
     }
     FileHandleWrapper dirHandle(linkPath);
     if (dirHandle.handle() == INVALID_HANDLE_VALUE) {
-        qWarning() << "Cannot open" << linkPath << ":" << QInstaller::windowsErrorString(GetLastError());
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open" << linkPath << ":"
+            << QInstaller::windowsErrorString(GetLastError());
         return Link(linkPath);
     }
 
-    const QString szDestDir = QString::fromLatin1("\\??\\").arg(targetPath).replace(QLatin1Char('/'),
+    const QString szDestDir = QString::fromLatin1("\\??\\%1").arg(targetPath).replace(QLatin1Char('/'),
         QLatin1Char('\\'));
+
+    // Get string length in bytes, not in characters count
+    const size_t destDirBytes = szDestDir.size() * sizeof(ushort);
 
     // Allocates a block of memory for an array of num elements(1) and initializes all its bits to zero.
     REPARSE_DATA_BUFFER* reparseStructData = (REPARSE_DATA_BUFFER*)calloc(1,
@@ -156,11 +162,11 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
     reparseStructData->ReparseTag = IO_REPARSE_TAG_MOUNT_POINT;
     reparseStructData->MountPointReparseBuffer.PrintNameLength = 0;
     reparseStructData->MountPointReparseBuffer.SubstituteNameOffset = 0;
-    reparseStructData->MountPointReparseBuffer.SubstituteNameLength = szDestDir.length();
-    reparseStructData->MountPointReparseBuffer.PrintNameOffset = szDestDir.length() + sizeof(WCHAR);
+    reparseStructData->MountPointReparseBuffer.SubstituteNameLength = destDirBytes;
+    reparseStructData->MountPointReparseBuffer.PrintNameOffset = destDirBytes + sizeof(WCHAR);
 
     uint spaceAfterGeneralData = sizeof(USHORT) * 5 + sizeof(WCHAR); //should be 12
-    reparseStructData->ReparseDataLength = szDestDir.length() + spaceAfterGeneralData;
+    reparseStructData->ReparseDataLength = destDirBytes + spaceAfterGeneralData;
 
 #ifndef Q_CC_MINGW
     StringCchCopy(reparseStructData->MountPointReparseBuffer.PathBuffer, 1024, (wchar_t*)szDestDir.utf16());
@@ -172,7 +178,7 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
     if (!::DeviceIoControl(dirHandle.handle(), FSCTL_SET_REPARSE_POINT, reparseStructData,
         reparseStructData->ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE, nullptr, 0,
         &bytesReturned, nullptr)) {
-            qWarning() << "Cannot set the reparse point for" << linkPath << "to" << targetPath
+           qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot set the reparse point for" << linkPath << "to" << targetPath
                        << ":" << QInstaller::windowsErrorString(GetLastError());
     }
     return Link(linkPath);
@@ -194,7 +200,8 @@ bool removeJunction(const QString &path)
             REPARSE_GUID_DATA_BUFFER_HEADER_SIZE, nullptr, 0,
             &bytesReturned, nullptr)) {
 
-            qWarning() << "Cannot remove the reparse point" << path << ":" << QInstaller::windowsErrorString(GetLastError());
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot remove the reparse point" << path << ":"
+                << QInstaller::windowsErrorString(GetLastError());
             return false;
         }
     }
@@ -207,7 +214,8 @@ Link createLnSymlink(const QString &linkPath, const QString &targetPath)
     int linkedError = symlink(QFileInfo(targetPath).absoluteFilePath().toUtf8(),
         QFileInfo(linkPath).absoluteFilePath().toUtf8());
     if (linkedError != 0) {
-        qWarning() << "Cannot create a symlink from" << linkPath << "to" << targetPath << ":" << linkedError;
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create a symlink from" << linkPath << "to"
+            << targetPath << ":" << linkedError;
     }
 
 
@@ -234,7 +242,7 @@ Link Link::create(const QString &link, const QString &targetPath)
     if (!linkPathExists)
         linkPathExists = QDir().mkpath(linkPath);
     if (!linkPathExists) {
-        qWarning() << "Cannot create the needed directories" << link;
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create the needed directories" << link;
         return Link(link);
     }
 
@@ -242,8 +250,8 @@ Link Link::create(const QString &link, const QString &targetPath)
     if (QFileInfo(targetPath).isDir())
         return createJunction(link, targetPath);
 
-    qWarning() << "At the moment the" << Q_FUNC_INFO << "can not create anything else as "
-               << "junctions for directories under windows";
+    qCWarning(QInstaller::lcInstallerInstallLog) << "At the moment the" << Q_FUNC_INFO
+        << "can not create anything else as " << "junctions for directories under windows";
     return Link(link);
 #else
     return createLnSymlink(link, targetPath);

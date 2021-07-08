@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,7 +29,10 @@
 #ifndef PERFORMINSTALLATIONFORM_H
 #define PERFORMINSTALLATIONFORM_H
 
+#include "aspectratiolabel.h"
+
 #include <QObject>
+#include <QTextEdit>
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -38,9 +41,9 @@ class QPushButton;
 class QTimer;
 class QWidget;
 class QWinTaskbarButton;
+class QScrollArea;
 QT_END_NAMESPACE
 
-class LazyPlainTextEdit;
 
 namespace QInstaller {
 
@@ -57,7 +60,6 @@ public:
     void startUpdateProgress();
     void stopUpdateProgress();
     void setDetailsButtonEnabled(bool enable);
-    void scrollDetailsToTheEnd();
     bool isShowingDetails() const;
 
 signals:
@@ -69,13 +71,16 @@ public slots:
     void toggleDetails();
     void clearDetailsBrowser();
     void onDownloadStatusChanged(const QString &status);
+    void setImageFromFileName(const QString &fileName);
 
 private:
     QProgressBar *m_progressBar;
     QLabel *m_progressLabel;
     QLabel *m_downloadStatus;
+    QScrollArea *m_productImagesScrollArea;
+    AspectRatioLabel *m_productImagesLabel;
     QPushButton *m_detailsButton;
-    LazyPlainTextEdit *m_detailsBrowser;
+    QTextEdit *m_detailsBrowser;
     QTimer *m_updateTimer;
 
 #ifdef Q_OS_WIN

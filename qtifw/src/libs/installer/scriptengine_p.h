@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,6 +32,7 @@
 #include "component.h"
 #include "packagemanagercore.h"
 #include "packagemanagergui.h"
+#include "globals.h"
 
 #include <QDebug>
 #include <QDesktopServices>
@@ -49,7 +50,7 @@ public:
     ConsoleProxy() {}
 
 public slots :
-        void log(const QString &log) { qDebug().noquote() << log; }
+        void log(const QString &log) { qCDebug(QInstaller::lcInstallerInstallLog).noquote() << log; }
 };
 
 class InstallerProxy : public QObject
@@ -76,15 +77,21 @@ class QFileDialogProxy : public QObject
     Q_DISABLE_COPY(QFileDialogProxy)
 
 public:
-    QFileDialogProxy() {}
+    QFileDialogProxy(PackageManagerCore *core);
 
 public slots :
-    QString getExistingDirectory(const QString &caption, const QString &dir) const {
-        return QFileDialog::getExistingDirectory(0, caption, dir);
-    }
-    QString getOpenFileName(const QString &caption, const QString &dir, const QString &filter) const {
-        return QFileDialog::getOpenFileName(0, caption, dir, filter);
-    }
+    QString getExistingDirectory(const QString &caption, const QString &dir,
+            const QString &identifier = QLatin1String("GetExistingDirectory"));
+
+    QString getOpenFileName(const QString &caption, const QString &dir, const QString &filter,
+            const QString &identifier = QLatin1String("GetExistingFile"));
+
+private:
+    QString getExistingFileOrDirectory(const QString &caption, const QString &identifier,
+                                       bool isDirectory);
+
+private:
+    PackageManagerCore *m_core;
 };
 
 class QDesktopServicesProxy : public QObject
@@ -118,24 +125,6 @@ private:
     ScriptEngine *m_engine;
 };
 
-#if QT_VERSION < 0x050400
-class QCoreApplicationProxy : public QObject
-{
-    Q_OBJECT
-    Q_DISABLE_COPY(QCoreApplicationProxy)
-
-public:
-    QCoreApplicationProxy() {}
-
-public slots:
-    QString qsTr(const QString &text = QString(), const QString &disambiguation = QString(), int n = -1) const
-    {
-        return QCoreApplication::translate(QCoreApplication::applicationName().toUtf8().constData(),
-            text.toUtf8().constData(), disambiguation.toUtf8().constData(), n);
-    }
-};
-#endif
-
 class GuiProxy : public QObject
 {
     Q_OBJECT
@@ -153,6 +142,7 @@ public:
 
     Q_INVOKABLE QString defaultButtonText(int wizardButton) const;
     Q_INVOKABLE void clickButton(int wizardButton, int delayInMs = 0);
+    Q_INVOKABLE void clickButton(const QString &objectName, int delayInMs = 0) const;
     Q_INVOKABLE bool isButtonEnabled(int wizardButton);
 
     Q_INVOKABLE void showSettingsButton(bool show);
@@ -190,8 +180,5 @@ Q_DECLARE_METATYPE(QInstaller::ConsoleProxy*)
 Q_DECLARE_METATYPE(QInstaller::InstallerProxy*)
 Q_DECLARE_METATYPE(QInstaller::QFileDialogProxy*)
 Q_DECLARE_METATYPE(QInstaller::QDesktopServicesProxy*)
-#if QT_VERSION < 0x050400
-Q_DECLARE_METATYPE(QInstaller::QCoreApplicationProxy*)
-#endif
 
 #endif // SCRIPTENGINE_H

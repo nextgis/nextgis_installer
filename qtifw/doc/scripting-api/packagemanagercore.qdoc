@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -11,8 +11,8 @@
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU Free Documentation License Usage
 ** Alternatively, this file may be used under the terms of the GNU Free
@@ -20,7 +20,7 @@
 ** Foundation and appearing in the file included in the packaging of
 ** this file. Please review the following information to ensure
 ** the GNU Free Documentation License version 1.3 requirements
-** will be met: http://www.gnu.org/copyleft/fdl.html.
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
@@ -39,7 +39,7 @@
     If the repository metadata have not been fetched yet,
     the array will be empty.
 
-    \sa component, installer::finishAllComponentsReset(), installer::finishUpdaterComponentsReset()
+    \sa component, finishAllComponentsReset(), finishUpdaterComponentsReset()
 */
 
 /*!
@@ -71,7 +71,7 @@
 
     Emitted when a new root component is added.
 
-    \sa rootComponentsAdded, updaterComponentsAdded
+    \sa rootComponentsAdded(), updaterComponentsAdded()
 */
 
 /*!
@@ -79,7 +79,7 @@
 
     Emitted when a new list of root components is added.
 
-    \sa componentAdded, updaterComponentsAdded
+    \sa componentAdded(), updaterComponentsAdded()
 */
 
 /*!
@@ -87,7 +87,7 @@
 
     Emitted when a new list of updater components is added.
 
-    \sa componentAdded, rootComponentsAdded
+    \sa componentAdded(), rootComponentsAdded()
 */
 
 /*!
@@ -95,7 +95,7 @@
 
     Emitted when a value changes.
 
-    \sa setValue
+    \sa setValue()
 */
 
 /*!
@@ -124,6 +124,13 @@
 */
 
 /*!
+    \qmlsignal installer::metaJobTotalProgress(int progress)
+
+    Triggered when total progress value of the communication with a
+    remote repository changes.
+*/
+
+/*!
     \qmlsignal installer::metaJobInfoMessage(string message)
 
     Triggered with informative updates of the communication with a remote repository.
@@ -134,7 +141,7 @@
 
     Triggered when the list of components starts to get updated.
 
-    \sa finishAllComponentsReset
+    \sa finishAllComponentsReset()
 */
 
 /*!
@@ -142,7 +149,7 @@
 
     Triggered when the list of new root components has been updated.
 
-    \sa startAllComponentsReset
+    \sa startAllComponentsReset()
 */
 
 /*!
@@ -162,7 +169,7 @@
 
     Triggered when installation has started.
 
-    \sa installationFinished installationInterrupted
+    \sa installationFinished(), installationInterrupted()
 */
 
 /*!
@@ -170,7 +177,7 @@
 
     Triggered when installation has been interrupted (cancelled).
 
-    \sa interrupt installationStarted installationFinished
+    \sa interrupt(), installationStarted(), installationFinished()
 */
 
 /*!
@@ -178,7 +185,7 @@
 
     Triggered when installation has finished.
 
-    \sa installationStarted installationInterrupted
+    \sa installationStarted(), installationInterrupted()
 */
 
 /*!
@@ -192,7 +199,7 @@
 
     Triggered when uninstallation has started.
 
-    \sa uninstallationFinished
+    \sa uninstallationFinished()
 */
 
 /*!
@@ -200,7 +207,23 @@
 
     Triggered when uninstallation has finished.
 
-    \sa uninstallationStarted
+    \sa uninstallationStarted()
+*/
+
+/*!
+    \qmlsignal installer::offlineGenerationStarted()
+
+    Triggered when offline installer generation has started.
+
+    \sa offlineGenerationFinished()
+*/
+
+/*!
+    \qmlsignal installer::offlineGenerationFinished
+
+    Triggered when offline installer generation has finished.
+
+    \sa offlineGenerationStarted()
 */
 
 /*!
@@ -223,9 +246,11 @@
 */
 
 /*!
-    \qmlsignal installer::wizardWidgetInsertionRequested(Widget widget, WizardPage page)
+    \qmlsignal installer::wizardWidgetInsertionRequested(Widget widget,
+        WizardPage page, int position)
 
-    Emitted when a \a widget is inserted into \a page by addWizardPageItem.
+    Emitted when a \a widget is inserted into \a page by addWizardPageItem
+    ordered by \a position.
 */
 
 /*!
@@ -239,7 +264,7 @@
 
     Emitted when the visibility of the page with id \a page changes to \a visible.
 
-    \sa setDefaultPageVisible
+    \sa setDefaultPageVisible()
 */
 
 /*!
@@ -266,6 +291,18 @@
 */
 
 /*!
+    \qmlmethod void installer::selectComponent(string id)
+
+    Selects the component with \a id.
+*/
+
+/*!
+    \qmlmethod void installer::deselectComponent(string id)
+
+    Deselects the component with \a id.
+*/
+
+/*!
     \qmlmethod void installer::setCompleteUninstallation(bool complete)
 
     Sets the uninstallation to be \a complete. If \a complete is false, only components deselected
@@ -285,11 +322,17 @@
 */
 
 /*!
+    \qmlmethod void installer::clearComponentsToInstallCalculated()
+
+    Forces a recalculation of components to install.
+*/
+
+/*!
    \qmlmethod void installer::autoAcceptMessageBoxes()
 
    Automatically accept all user message boxes.
 
-   \sa autoRejectMessageBoxes, setMessageBoxAutomaticAnswer
+   \sa autoRejectMessageBoxes(), setMessageBoxAutomaticAnswer()
 */
 
 /*!
@@ -297,7 +340,7 @@
 
    Automatically reject all user message boxes.
 
-   \sa autoAcceptMessageBoxes, setMessageBoxAutomaticAnswer
+   \sa autoAcceptMessageBoxes(), setMessageBoxAutomaticAnswer()
 */
 
 /*!
@@ -307,7 +350,40 @@
 
    This can be used for unattended (automatic) installations.
 
-   \sa QMessageBox, autoAcceptMessageBoxes, autoRejectMessageBoxes
+   \sa QMessageBox, autoAcceptMessageBoxes(), autoRejectMessageBoxes()
+*/
+
+/*!
+    \qmlmethod void installer::setAutoAcceptLicenses()
+
+    Automatically accepts all license agreements required to install the selected components. This
+    can be used to skip the command line license acceptance query. The names of the accepted
+    individual licenses are still printed to a console.
+*/
+
+/*!
+   \qmlmethod void installer::setFileDialogAutomaticAnswer(string identifier, string value)
+
+    Automatically sets the existing directory or filename \a value to QFileDialog with the ID
+   \a identifier.
+
+   \sa removeFileDialogAutomaticAnswer()
+*/
+
+/*!
+   \qmlmethod void installer::removeFileDialogAutomaticAnswer(string identifier)
+
+   Removes the automatic answer from QFileDialog with the ID \a identifier.
+
+   \sa setFileDialogAutomaticAnswer()
+*/
+
+/*!
+   \qmlmethod boolean installer::containsFileDialogAutomaticAnswer(string identifier)
+
+   Returns \c true if QFileDialog  with the ID \a identifier has an automatic answer set.
+
+   \sa setFileDialogAutomaticAnswer(), removeFileDialogAutomaticAnswer()
 */
 
 /*!
@@ -315,7 +391,7 @@
 
    Returns the additional estimated amount of disk space in bytes required after installation.
 
-   \sa requiredTemporaryDiskSpace
+   \sa requiredTemporaryDiskSpace()
 */
 
 /*!
@@ -323,7 +399,7 @@
 
    Returns the estimated required disk space during installation in bytes.
 
-   \sa requiredDiskSpace
+   \sa requiredDiskSpace()
 */
 
 /*!
@@ -345,6 +421,20 @@
 */
 
 /*!
+    \qmlmethod string installer::readConsoleLine(string title, int maxlen)
+
+    Prints \a title to a console and reads console input. Function halts the
+    installer and waits for user input. Function returns a line which user has
+    typed into the console. The maximum allowed line length is set to
+    \a maxlen. If the stream contains lines longer than this, then the line is
+    split after \a maxlen characters. If \a maxlen is 0, the line can be of
+    any length.
+
+    \note This function can only be called when installing from a command line
+    instance without GUI.
+*/
+
+/*!
     \qmlmethod boolean installer::fileExists(string filePath)
 
     Returns \c true if the \a filePath exists; otherwise returns \c false.
@@ -363,7 +453,7 @@
 
     Returns \c true if the operation succeeded.
 
-    \sa removeWizardPage, setDefaultPageVisible
+    \sa removeWizardPage(), setDefaultPageVisible()
 */
 
 /*!
@@ -374,7 +464,7 @@
 
     Returns \c true if the operation succeeded.
 
-    \sa addWizardPage, setDefaultPageVisible, wizardPageRemovalRequested
+    \sa addWizardPage(), setDefaultPageVisible(), wizardPageRemovalRequested()
 */
 
 /*!
@@ -386,25 +476,28 @@
 
     Returns \c true.
 
-    \sa addWizardPage, removeWizardPage
+    \sa addWizardPage(), removeWizardPage()
 */
 
 /*!
     \qmlmethod void installer::setValidatorForCustomPage(Component component, string name,
                                                          string callbackName)
 
-    \sa setValidatorForCustomPageRequested
+    \sa setValidatorForCustomPageRequested()
 */
 
 /*!
-    \qmlmethod boolean installer::addWizardPageItem(Component component, string name, int page)
+    \qmlmethod boolean installer::addWizardPageItem(Component component,
+        string name, int page, int position)
 
     Adds the widget with objectName() \a name registered by \a component as a GUI element
-    into the installer's GUI wizard. The widget is added on \a page.
+    into the installer's GUI wizard. The widget is added on \a page ordered by \a position.
+    If several widgets are added to the same page, the widget with lower position number
+    will be inserted on top.
 
     See \l{Controller Scripting} for the possible values of \a page.
 
-    \sa removeWizardPageItem, wizardWidgetInsertionRequested
+    \sa removeWizardPageItem(), wizardWidgetInsertionRequested()
 */
 
 /*!
@@ -413,7 +506,7 @@
     Removes the widget with objectName() \a name previously added to the installer's wizard
     by \a component.
 
-    \sa addWizardPageItem
+    \sa addWizardPageItem()
 */
 
 /*!
@@ -421,7 +514,7 @@
 
     Registers additional \a repositories.
 
-    \sa setTemporaryRepositories
+    \sa setTemporaryRepositories()
 */
 
 /*!
@@ -430,7 +523,7 @@
     Sets additional \a repositories for this instance of the installer or updater.
     Will be removed after invoking it again.
 
-    \sa addUserRepositories
+    \sa addUserRepositories()
 */
 
 /*!
@@ -456,7 +549,7 @@
 
     Tries to gain admin rights. On success, it returns \c true.
 
-    \sa dropAdminRights
+    \sa dropAdminRights()
 */
 
 /*!
@@ -464,7 +557,7 @@
 
     Drops admin rights gained by gainAdminRights.
 
-    \sa gainAdminRights
+    \sa gainAdminRights()
 */
 
 /*!
@@ -484,6 +577,20 @@
 */
 
 /*!
+    \qmlmethod void installer::setAllowedRunningProcesses(stringlist processes)
+
+    Sets additional \a processes that can run when
+    updating with the maintenance tool.
+*/
+
+/*!
+    \qmlmethod stringlist installer::allowedRunningProcesses()
+
+    Returns processes that are allowed to run when updating with
+    the maintenance tool.
+*/
+
+/*!
     \qmlmethod void installer::setDependsOnLocalInstallerBinary()
 
     Makes sure the installer runs from a local drive. Otherwise the user will get an
@@ -491,7 +598,7 @@
 
     \note This only works on Windows.
 
-    \sa localInstallerBinaryUsed
+    \sa localInstallerBinaryUsed()
 */
 
 /*!
@@ -500,7 +607,7 @@
     Returns \c false if the installer is run on Windows, and the installer has been started from
     a remote file system drive. Otherwise returns \c true.
 
-    \sa setDependsOnLocalInstallerBinary
+    \sa setDependsOnLocalInstallerBinary()
 */
 
 /*!
@@ -524,7 +631,7 @@
 
     \note On Unix, the output is just the output to stdout, not to stderr.
 
-    \sa executeDetached
+    \sa executeDetached()
 */
 
 /*!
@@ -621,6 +728,13 @@
 */
 
 /*!
+    \qmlmethod string installer::key(string value)
+
+    Returns the installer key for \a value. If \a value is not known, empty string is
+    returned.
+*/
+
+/*!
     \qmlmethod void installer::setValue(string key, string value)
 
     Sets the installer value for \a key to \a value.
@@ -669,6 +783,14 @@
 */
 
 /*!
+    \qmlmethod void installer::setInstaller()
+
+    Forces an installer context.
+
+    \sa isInstaller, setUpdater, setUninstaller, setPackageManager
+*/
+
+/*!
     \qmlmethod boolean installer::isInstaller()
 
     Returns \c true if the application, binary, or executable is executed in
@@ -688,7 +810,7 @@
 
     Forces an uninstaller context.
 
-    \sa isUninstaller, setUpdater, setPackageManager
+    \sa isUninstaller, setUpdater, setPackageManager, setInstaller
 */
 
 /*!
@@ -705,7 +827,7 @@
 
     Forces an updater context.
 
-    \sa isUpdater, setUninstaller, setPackageManager
+    \sa isUpdater, setUninstaller, setPackageManager, setInstaller
 */
 
 /*!
@@ -733,6 +855,30 @@
 */
 
 /*!
+    \qmlmethod boolean installer::isOfflineGenerator()
+
+    Returns \c true if the application is executed in offline generation mode.
+*/
+
+/*!
+    \qmlmethod boolean installer::isUserSetBinaryMarker()
+
+    Returns \c true if the magic binary marker has been set by user.
+*/
+
+/*!
+    \qmlmethod boolean installer::isCommandLineDefaultInstall()
+
+    Returns \c true if installation is performed with default components.
+*/
+
+/*!
+    \qmlmethod boolean installer::isCommandLineInstance()
+
+    Returns \c true if running as command line instance.
+*/
+
+/*!
     \qmlmethod boolean installer::runInstaller()
 
     Runs the installer. Returns \c true on success, \c false otherwise.
@@ -748,6 +894,12 @@
     \qmlmethod boolean installer::runPackageUpdater()
 
     Runs the package updater. Returns \c true on success, \c false otherwise.
+*/
+
+/*!
+    \qmlmethod boolean installer::runOfflineGenerator()
+
+    Runs the offline generator. Returns \c true on success, \c false otherwise.
 */
 
 /*!

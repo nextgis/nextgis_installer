@@ -32,10 +32,14 @@
 #include <fileutils.h>
 #include <packagemanagercore.h>
 #include <progresscoordinator.h>
+#include <init.h>
+#include <settings.h>
 
 #include <QDir>
+#include <QFile>
 #include <QTemporaryFile>
 #include <QTest>
+#include <QRegularExpression>
 
 using namespace QInstaller;
 
@@ -118,15 +122,18 @@ private slots:
 
         QVERIFY(core.calculateComponentsToInstall());
         {
-            QTemporaryFile dummy(testDirectory + QLatin1String("/dummy"));
-            dummy.open();
+            QFile dummy(testDirectory + QLatin1String("/dummy"));
+            QVERIFY(dummy.open(QIODevice::ReadWrite));
 
             core.runInstaller();
 
             QVERIFY(QDir(testDirectory).exists());
             QVERIFY(QFileInfo(dummy.fileName()).exists());
+
+            dummy.close();
+            QVERIFY(dummy.remove());
         }
-        QDir().rmdir(testDirectory);
+        QVERIFY(QDir().rmdir(testDirectory));
         ProgressCoordinator::instance()->reset();
     }
 
@@ -281,33 +288,87 @@ private slots:
         QVERIFY(QDir().rmdir(testDirectory));
     }
 
-    void testSubdirectoriesWritable()
+    void testAllowRunningProcess()
     {
+        #ifdef Q_OS_MACOS
+            QSKIP("In macOS the app path and maintenancetool differ, not possible to test running processes.");
+        #endif
         PackageManagerCore core;
-
+        core.setPackageManager();
         const QString testDirectory = QInstaller::generateTemporaryFileName();
         QVERIFY(QDir().mkpath(testDirectory));
-        QVERIFY(QDir(testDirectory).exists());
+        core.setValue(scTargetDir, testDirectory);
 
-        const QString testSubdirectory = testDirectory + "/" + QString::number(qrand() % 1000);
+        QString appFilePath = QCoreApplication::applicationFilePath();
+        core.setAllowedRunningProcesses(QStringList() << appFilePath);
+        const QString warningMessage =  QString("Failure to read packages from ");
+        const QRegularExpression re(warningMessage);
+        QTest::ignoreMessage(QtWarningMsg, re);
+        QTest::ignoreMessage(QtDebugMsg, "No updates available.");
 
-        QVERIFY(QDir().mkpath(testSubdirectory));
-        QVERIFY(QDir(testSubdirectory).exists());
-
-        // should be writable
-        QVERIFY(core.subdirectoriesWritable(testDirectory));
-
-#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
-        QFile dirDevice(testSubdirectory);
-        dirDevice.setPermissions(QFileDevice::ReadOwner | QFileDevice::ExeOwner);
-
-        // should not be writable
-        QVERIFY(!core.subdirectoriesWritable(testDirectory));
-
-        dirDevice.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
-#endif
-        QVERIFY(QDir().rmdir(testSubdirectory));
+        QCOMPARE(PackageManagerCore::Failure, core.updateComponentsSilently(QStringList()));
         QVERIFY(QDir().rmdir(testDirectory));
+    }
+
+    void testDisallowRunningProcess()
+    {
+        #ifdef Q_OS_MACOS
+            QSKIP("In macOS the app path and maintenancetool differ, not possible to test running processes.");
+        #endif
+        PackageManagerCore core;
+        core.setPackageManager();
+        const QString testDirectory = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(testDirectory));
+        core.setValue(scTargetDir, testDirectory);
+
+        const QString warningMessageUp =  QString("Unable to update components. Please stop these processes: ");
+        const QRegularExpression reUp(warningMessageUp);
+        QTest::ignoreMessage(QtWarningMsg, reUp);
+        QVERIFY_EXCEPTION_THROWN(core.updateComponentsSilently(QStringList()), Error);
+
+        const QString warningMessageRm =  QString("Unable to remove components. Please stop these processes: ");
+        const QRegularExpression reRm(warningMessageRm);
+        QTest::ignoreMessage(QtWarningMsg, reRm);
+        QVERIFY_EXCEPTION_THROWN(core.removeInstallationSilently(), Error);
+
+        QVERIFY(QDir().rmdir(testDirectory));
+    }
+
+    void testCoreDataValues()
+    {
+        QHash<QString, QString> userValues;
+
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
+                                                          QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
+                                                          userValues, true);
+        QCOMPARE(core->value("AllUsers"), QLatin1String(""));
+        QCOMPARE(core->value("ProductName"), QLatin1String("Unit Test Application"));
+        QCOMPARE(core->value("ProductVersion"), QLatin1String("1.0.0"));
+        QCOMPARE(core->value("Title"), QLatin1String("Unit Test Application Title"));
+        QCOMPARE(core->value("RootDir"), QDir::rootPath());
+
+        core->deleteLater();
+        core->deleteLater();
+    }
+
+    void testOverwrittenCoreDataValues()
+    {
+        QHash<QString, QString> userValues;
+        userValues.insert("AllUsers", "true");
+        userValues.insert("ProductName", "Overwritten ProductName");
+        userValues.insert("ProductVersion", "2.0.0");
+        userValues.insert("Title", "Overwritten Title");
+        userValues.insert("RootDir", "Overwritten RootDir");
+
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
+                                                          QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
+                                                          userValues, true);
+        QCOMPARE(core->value("AllUsers"), QLatin1String("true"));
+        QCOMPARE(core->value("ProductName"), QLatin1String("Overwritten ProductName"));
+        QCOMPARE(core->value("ProductVersion"), QLatin1String("2.0.0"));
+        QCOMPARE(core->value("Title"), QLatin1String("Overwritten Title"));
+        QCOMPARE(core->value("RootDir"), QLatin1String("Overwritten RootDir"));
+        core->deleteLater();
     }
 };
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -25,14 +25,15 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include "common/repositorygen.h"
 
+#include <repositorygen.h>
 #include <errors.h>
 #include <fileutils.h>
 #include <init.h>
 #include <updater.h>
 #include <settings.h>
 #include <utils.h>
+#include <loggingutils.h>
 #include <lib7z_facade.h>
 
 #include <QDomDocument>
@@ -68,6 +69,11 @@ static void printUsage()
 
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
 
+    std::cout << "  --unite-metadata          Combine all metadata into one 7z. This speeds up metadata " << std::endl;
+    std::cout << "                            download phase." << std::endl;
+
+    std::cout << "  --component-metadata      Creates one metadata 7z per component. " << std::endl;
+
     std::cout << std::endl;
     std::cout << "Example:" << std::endl;
     std::cout << "  " << appName << " -p ../examples/packages repository/"
@@ -99,13 +105,15 @@ int main(int argc, char** argv)
         QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
         bool remove = false;
         bool updateExistingRepositoryWithNewComponents = false;
+        bool createUnifiedMetadata = true;
+        bool createComponentMetadata = true;
 
         //TODO: use a for loop without removing values from args like it is in binarycreator.cpp
         //for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
         while (!args.isEmpty() && args.first().startsWith(QLatin1Char('-'))) {
             if (args.first() == QLatin1String("--verbose") || args.first() == QLatin1String("-v")) {
                 args.removeFirst();
-                setVerbose(true);
+                LoggingHandler::instance().setVerbose(true);
             } else if (args.first() == QLatin1String("--exclude") || args.first() == QLatin1String("-e")) {
                 args.removeFirst();
                 if (!filteredPackages.isEmpty()) {
@@ -143,16 +151,21 @@ int main(int argc, char** argv)
             } else if (args.first() == QLatin1String("--update-new-components")) {
                 args.removeFirst();
                 updateExistingRepositoryWithNewComponents = true;
+                createUnifiedMetadata = false;
             } else if (args.first() == QLatin1String("-p") || args.first() == QLatin1String("--packages")) {
                 args.removeFirst();
                 if (args.isEmpty()) {
                     return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
                         "Error: Packages parameter missing argument"));
                 }
-
-                if (!QFileInfo(args.first()).exists()) {
+                const QDir dir(args.first());
+                if (!dir.exists()) {
                     return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
                         "Error: Package directory not found at the specified location"));
+                }
+                if (dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot).isEmpty()) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Package directory is empty"));
                 }
 
                 packagesDirectories.append(args.first());
@@ -176,7 +189,14 @@ int main(int argc, char** argv)
             } else if (args.first() == QLatin1String("-r") || args.first() == QLatin1String("--remove")) {
                 remove = true;
                 args.removeFirst();
-            } else {
+            } else if (args.first() == QLatin1String("--unite-metadata")) {
+                createComponentMetadata = false;
+                args.removeFirst();
+            } else if (args.first() == QLatin1String("--component-metadata")) {
+                createUnifiedMetadata = false;
+                args.removeFirst();
+            }
+            else {
                 printUsage();
                 return 1;
             }
@@ -197,6 +217,17 @@ int main(int argc, char** argv)
         if (remove)
             QInstaller::removeDirectory(repositoryDir);
 
+        if (updateExistingRepositoryWithNewComponents) {
+            QStringList meta7z = QDir(repositoryDir).entryList(QStringList()
+                << QLatin1String("*_meta.7z"), QDir::Files);
+            if (!meta7z.isEmpty()) {
+                throw QInstaller::Error(QCoreApplication::translate("QInstaller",
+                    "Cannot update \"%1\" with --update-new-components. Use --update instead. "
+                    "Currently it is not possible to update partial components inside one 7z.")
+                    .arg(meta7z.join(QLatin1Char(','))));
+            }
+        }
+
         if (!update && QFile::exists(repositoryDir) && !QDir(repositoryDir).entryList(
             QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty()) {
 
@@ -215,50 +246,12 @@ int main(int argc, char** argv)
         packages.append(preparedPackages);
 
         if (updateExistingRepositoryWithNewComponents) {
-            QDomDocument doc;
-            QFile file(repositoryDir + QLatin1String("/Updates.xml"));
-            if (file.open(QFile::ReadOnly) && doc.setContent(&file)) {
-                const QDomElement root = doc.documentElement();
-                if (root.tagName() != QLatin1String("Updates")) {
-                    throw QInstaller::Error(QCoreApplication::translate("QInstaller",
-                        "Invalid content in \"%1\".").arg(QDir::toNativeSeparators(file.fileName())));
-                }
-                file.close(); // close the file, we read the content already
-
-                // read the already existing updates xml content
-                const QDomNodeList children = root.childNodes();
-                QHash <QString, QInstallerTools::PackageInfo> hash;
-                for (int i = 0; i < children.count(); ++i) {
-                    const QDomElement el = children.at(i).toElement();
-                    if ((!el.isNull()) && (el.tagName() == QLatin1String("PackageUpdate"))) {
-                        QInstallerTools::PackageInfo info;
-                        const QDomNodeList c2 = el.childNodes();
-                        for (int j = 0; j < c2.count(); ++j) {
-                            if (c2.at(j).toElement().tagName() == scName)
-                                info.name = c2.at(j).toElement().text();
-                            else if (c2.at(j).toElement().tagName() == scVersion)
-                                info.version = c2.at(j).toElement().text();
-                        }
-                        hash.insert(info.name, info);
-                    }
-                }
-
-                // remove all components that have no update (decision based on the version tag)
-                for (int i = packages.count() - 1; i >= 0; --i) {
-                    const QInstallerTools::PackageInfo info = packages.at(i);
-                    if (!hash.contains(info.name))
-                        continue;   // the component is not there, keep it
-
-                    if (KDUpdater::compareVersion(info.version, hash.value(info.name).version) < 1)
-                        packages.remove(i); // the version did not change, no need to update the component
-                }
-
-                if (packages.isEmpty()) {
-                    std::cout << QString::fromLatin1("Cannot find new components to update \"%1\".")
-                        .arg(repositoryDir) << std::endl;
-                    return EXIT_SUCCESS;
-                }
-            }
+             QInstallerTools::filterNewComponents(repositoryDir, packages);
+             if (packages.isEmpty()) {
+                 std::cout << QString::fromLatin1("Cannot find new components to update \"%1\".")
+                     .arg(repositoryDir) << std::endl;
+                 return EXIT_SUCCESS;
+             }
         }
 
         QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(packages);
@@ -275,12 +268,27 @@ int main(int argc, char** argv)
         QStringList directories;
         directories.append(packagesDirectories);
         directories.append(repositoryDirectories);
+        QStringList unite7zFiles;
+        foreach (const QString &repositoryDirectory, repositoryDirectories) {
+            QDirIterator it(repositoryDirectory, QStringList(QLatin1String("*_meta.7z"))
+                            , QDir::Files | QDir::CaseSensitive);
+            while (it.hasNext()) {
+                it.next();
+                unite7zFiles.append(it.fileInfo().absoluteFilePath());
+            }
+        }
         QInstallerTools::copyComponentData(directories, repositoryDir, &packages);
         QInstallerTools::copyMetaData(tmpMetaDir, repositoryDir, packages, QLatin1String("{AnyApplication}"),
-            QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
-        QInstallerTools::compressMetaDirectories(tmpMetaDir, tmpMetaDir, pathToVersionMapping);
+            QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), unite7zFiles);
 
-        QDirIterator it(repositoryDir, QStringList(QLatin1String("Updates*.xml")), QDir::Files | QDir::CaseSensitive);
+        QString existing7z = QInstallerTools::existingUniteMeta7z(repositoryDir);
+        if (!existing7z.isEmpty())
+            existing7z = repositoryDir + QDir::separator() + existing7z;
+        QInstallerTools::compressMetaDirectories(tmpMetaDir, existing7z, pathToVersionMapping,
+                                                 createComponentMetadata, createUnifiedMetadata);
+
+        QDirIterator it(repositoryDir, QStringList(QLatin1String("Updates*.xml"))
+                        << QLatin1String("*_meta.7z"), QDir::Files | QDir::CaseSensitive);
         while (it.hasNext()) {
             it.next();
             QFile::remove(it.fileInfo().absoluteFilePath());

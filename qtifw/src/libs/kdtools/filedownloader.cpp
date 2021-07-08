@@ -31,6 +31,8 @@
 #include "ui_authenticationdialog.h"
 
 #include "fileutils.h"
+#include "utils.h"
+#include "loggingutils.h"
 
 #include <QDialog>
 #include <QDir>
@@ -80,97 +82,107 @@ static double calcProgress(qint64 done, qint64 total)
 */
 
 /*!
-    \property FileDownloader::autoRemoveDownloadedFile
+    \property KDUpdater::FileDownloader::autoRemoveDownloadedFile
     \brief Whether the downloaded file should be automatically removed after it
     is downloaded and the class goes out of scope.
 */
 
 /*!
-    \property FileDownloader::url
+    \property KDUpdater::FileDownloader::url
     \brief The URL to download files from.
 */
 
 /*!
-    \property FileDownloader::scheme
+    \property KDUpdater::FileDownloader::scheme
     \brief The scheme to use for downloading files.
     */
 
 /*!
-    \fn FileDownloader::authenticatorChanged(const QAuthenticator &authenticator)
+    \fn KDUpdater::FileDownloader::authenticatorChanged(const QAuthenticator &authenticator)
     This signal is emitted when the authenticator changes to \a authenticator.
 */
 
 /*!
-    \fn FileDownloader::canDownload() const = 0
+    \fn KDUpdater::FileDownloader::canDownload() const = 0
     Returns \c true if the file exists and is readable.
 */
 
 /*!
-    \fn FileDownloader::clone(QObject *parent=0) const = 0
+    \fn KDUpdater::FileDownloader::clone(QObject *parent=0) const = 0
     Clones the local file downloader and assigns it the parent \a parent.
 */
 
 /*!
-    \fn FileDownloader::downloadCanceled()
+    \fn KDUpdater::FileDownloader::downloadCanceled()
     This signal is emitted if downloading a file is canceled.
 */
 
 /*!
-    \fn FileDownloader::downloadedFileName() const = 0
+    \fn KDUpdater::FileDownloader::downloadedFileName() const = 0
     Returns the file name of the downloaded file.
 */
 
 /*!
-    \fn FileDownloader::downloadProgress(double progress)
+    \fn KDUpdater::FileDownloader::downloadProgress(double progress)
     This signal is emitted with the current download \a progress.
 */
 
 /*!
-    \fn FileDownloader::downloadProgress(qint64 bytesReceived, qint64 bytesToReceive)
+    \fn KDUpdater::FileDownloader::downloadProgress(qint64 bytesReceived, qint64 bytesToReceive)
     This signal is emitted with the download progress as the number of received bytes,
     \a bytesReceived, and the total size of the file to download, \a bytesToReceive.
 */
 
 /*!
-    \fn FileDownloader::downloadSpeed(qint64 bytesPerSecond)
+    \fn KDUpdater::FileDownloader::downloadSpeed(qint64 bytesPerSecond)
     This signal is emitted with the download speed in bytes per second as \a bytesPerSecond.
 */
 
 /*!
-    \fn FileDownloader::downloadStarted()
+    \fn KDUpdater::FileDownloader::downloadStarted()
     This signal is emitted when downloading a file starts.
 */
 
 /*!
-    \fn FileDownloader::downloadStatus(const QString &status)
+    \fn KDUpdater::FileDownloader::downloadStatus(const QString &status)
     This signal is emitted with textual representation of the current download \a status in the
     following format: "100 MiB of 150 MiB - (DAYS) (HOURS) (MINUTES) (SECONDS) remaining".
 */
 
 /*!
-    \fn FileDownloader::estimatedDownloadTime(int seconds)
+    \fn KDUpdater::FileDownloader::downloadCompleted()
+    This signal is emitted when downloading a file ends.
+*/
+
+/*!
+    \fn KDUpdater::FileDownloader::downloadAborted(const QString &errorMessage)
+    This signal is emitted when downloading a file is aborted with \a errorMessage.
+*/
+
+/*!
+    \fn KDUpdater::FileDownloader::estimatedDownloadTime(int seconds)
     This signal is emitted with the estimated download time in \a seconds.
 */
 
 /*!
-    \fn FileDownloader::isDownloaded() const = 0
+    \fn KDUpdater::FileDownloader::isDownloaded() const = 0
     Returns \c true if the file is downloaded.
 */
 
 /*!
-    \fn FileDownloader::onError() = 0
+    \fn KDUpdater::FileDownloader::onError() = 0
     Closes the destination file if an error occurs during copying and stops
     the download speed timer.
 */
 
 /*!
-    \fn FileDownloader::onSuccess() = 0
+    \fn KDUpdater::FileDownloader::onSuccess() = 0
     Closes the destination file after it has been successfully copied and stops
     the download speed timer.
 */
 
 /*!
-    \fn FileDownloader::setDownloadedFileName(const QString &name) = 0
+    \fn KDUpdater::FileDownloader::setDownloadedFileName(const QString &name) = 0
     Sets the file name of the downloaded file to \a name.
 */
 
@@ -424,7 +436,7 @@ void KDUpdater::FileDownloader::stopDownloadDeadlineTimer()
 }
 
 /*!
-    Sets the download into a paused state.
+    Sets the download into a \a paused state.
 */
 void KDUpdater::FileDownloader::setDownloadPaused(bool paused)
 {
@@ -432,7 +444,7 @@ void KDUpdater::FileDownloader::setDownloadPaused(bool paused)
 }
 
 /*!
-    Gets the download paused state.
+    Returns the download paused state.
 */
 bool KDUpdater::FileDownloader::isDownloadPaused()
 {
@@ -440,7 +452,7 @@ bool KDUpdater::FileDownloader::isDownloadPaused()
 }
 
 /*!
-    Sets the download into a paused state.
+    Sets the download into a \a resumed state.
 */
 void KDUpdater::FileDownloader::setDownloadResumed(bool resumed)
 {
@@ -448,7 +460,7 @@ void KDUpdater::FileDownloader::setDownloadResumed(bool resumed)
 }
 
 /*!
-    Gets the download resumed state.
+    Returns the download resumed state.
 */
 bool KDUpdater::FileDownloader::isDownloadResumed()
 {
@@ -481,7 +493,7 @@ void KDUpdater::FileDownloader::clearBytesDownloadedBeforeResume()
 }
 
 /*!
-    Updates the amount of bytes downloaded before download resume.
+    Updates the amount of \a bytes downloaded before download resumes.
 */
 void KDUpdater::FileDownloader::updateBytesDownloadedBeforeResume(qint64 bytes)
 {
@@ -802,9 +814,9 @@ void KDUpdater::LocalFileDownloader::doDownload()
     QString localFile = this->url().toLocalFile();
     d->source = new QFile(localFile, this);
     if (!d->source->open(QFile::ReadOnly)) {
-        onError();
         setDownloadAborted(tr("Cannot open file \"%1\" for reading: %2").arg(QFileInfo(localFile)
             .fileName(), d->source->errorString()));
+        onError();
         return;
     }
 
@@ -818,9 +830,9 @@ void KDUpdater::LocalFileDownloader::doDownload()
     }
 
     if (!d->destination->isOpen()) {
-        onError();
         setDownloadAborted(tr("Cannot open file \"%1\" for writing: %2")
             .arg(QFileInfo(d->destination->fileName()).fileName(), d->destination->errorString()));
+        onError();
         return;
     }
 
@@ -891,10 +903,10 @@ void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent *event)
             if (numWritten < 0) {
                 killTimer(d->timerId);
                 d->timerId = -1;
-                onError();
                 setDownloadAborted(tr("Writing to file \"%1\" failed: %2").arg(
                                        QDir::toNativeSeparators(d->destination->fileName()),
                                        d->destination->errorString()));
+                onError();
                 return;
             }
             toWrite -= numWritten;
@@ -1079,11 +1091,11 @@ void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == d->timerId) {
         if (!d->destFile.isOpen()) {
-            onError();
             killTimer(d->timerId);
             emit downloadProgress(1);
             setDownloadAborted(tr("Cannot read resource file \"%1\": %2").arg(downloadedFileName(),
                 d->destFile.errorString()));
+            onError();
             return;
         }
 
@@ -1388,7 +1400,10 @@ void KDUpdater::HttpDownloader::httpReqFinished()
         if (d->http == 0)
             return;
         const QUrl url = d->http->url();
-        if (url.isValid() && QInstaller::lcNetwork().isDebugEnabled()){
+        // Only print host information when the logging category is enabled
+        // and output verbosity is set above standard level.
+        if (url.isValid() && QInstaller::lcServer().isDebugEnabled()
+                && LoggingHandler::instance().verboseLevel() == LoggingHandler::Detailed) {
             const QFileInfo fi(d->http->url().toString());
             if (fi.suffix() != QLatin1String("sha1")){
                 const QString hostName = url.host();
@@ -1396,7 +1411,7 @@ void KDUpdater::HttpDownloader::httpReqFinished()
                 QStringList hostAddresses;
                 foreach (const QHostAddress &address, info.addresses())
                     hostAddresses << address.toString();
-                qCDebug(QInstaller::lcNetwork) << "Using host:" << hostName
+                qCDebug(QInstaller::lcServer) << "Using host:" << hostName
                         << "for" << url.fileName() << "\nIP:" << hostAddresses;
             }
         }
@@ -1565,7 +1580,7 @@ void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QS
             errorString += QLatin1String(", ");
         errorString += error.errorString();
     }
-    qDebug() << errorString;
+    qCWarning(QInstaller::lcInstallerInstallLog) << errorString;
 
     const QStringList arguments = QCoreApplication::arguments();
     if (arguments.contains(QLatin1String("--script")) || arguments.contains(QLatin1String("Script"))

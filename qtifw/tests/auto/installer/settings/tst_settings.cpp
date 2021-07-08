@@ -1,3 +1,31 @@
+/**************************************************************************
+**
+** Copyright (C) 2020 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
+**
+** $QT_END_LICENSE$
+**
+**************************************************************************/
+
 #include "settings.h"
 #include "errors.h"
 #include "repository.h"
@@ -45,11 +73,12 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.watermark(), QString());
     QCOMPARE(settings.banner(), QString());
     QCOMPARE(settings.background(), QString());
+    QCOMPARE(settings.pageListPixmap(), QString());
 #if defined(Q_OS_WIN)
     QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.ico"));
     QCOMPARE(settings.installerWindowIcon(), QLatin1String(":/installer.ico"));
     QCOMPARE(settings.systemIconSuffix(), QLatin1String(".ico"));
-#elif defined(Q_OS_OSX)
+#elif defined(Q_OS_MACOS)
     QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.icns"));
     QCOMPARE(settings.installerWindowIcon(), QLatin1String(":/installer.icns"));
     QCOMPARE(settings.systemIconSuffix(), QLatin1String(".icns"));
@@ -59,8 +88,12 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.systemIconSuffix(), QLatin1String(".png"));
 #endif
     QCOMPARE(settings.wizardStyle(), QString());
-    QCOMPARE(settings.wizardDefaultWidth(), 0);
+    QCOMPARE(settings.wizardDefaultWidth(), settings.wizardShowPageList() ? 800 : 0);
     QCOMPARE(settings.wizardDefaultHeight(), 0);
+    QCOMPARE(settings.wizardMinimumWidth(), 0);
+    QCOMPARE(settings.wizardMinimumHeight(), 0);
+    QCOMPARE(settings.wizardShowPageList(), true);
+    QCOMPARE(settings.productImages(), QStringList());
     QCOMPARE(settings.titleColor(), QString());
     QCOMPARE(settings.runProgram(), QString());
     QCOMPARE(settings.runProgramArguments(), QStringList());
@@ -75,6 +108,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.allowSpaceInPath(), true);
     QCOMPARE(settings.allowNonAsciiCharacters(), false);
     QCOMPARE(settings.disableAuthorizationFallback(), false);
+    QCOMPARE(settings.disableCommandLineInterface(), false);
     QCOMPARE(settings.createLocalRepository(), false);
     QCOMPARE(settings.installActionColumnVisible(), false);
 
@@ -212,6 +246,8 @@ void tst_Settings::loadConfigWithValidLengthUnits()
         Settings settings = Settings::fromFileAndPrefix(":///data/length_units_valid_px.xml", ":///data");
         QCOMPARE(settings.wizardDefaultWidth(), 800);
         QCOMPARE(settings.wizardDefaultHeight(), 600);
+        QCOMPARE(settings.wizardMinimumWidth(), 640);
+        QCOMPARE(settings.wizardMinimumHeight(), 480);
 
         // Cannot test the parsed values for these units portably since the
         // pixel value depends on the font metrics. Let's just check for parse
@@ -229,6 +265,8 @@ void tst_Settings::loadConfigWithInvalidLengthUnits()
         Settings settings = Settings::fromFileAndPrefix(":///data/length_units_invalid.xml", ":///data");
         QCOMPARE(settings.wizardDefaultWidth(), 0);
         QCOMPARE(settings.wizardDefaultHeight(), 0);
+        QCOMPARE(settings.wizardMinimumWidth(), 0);
+        QCOMPARE(settings.wizardMinimumHeight(), 0);
     } catch (const Error &error) {
         QFAIL(qPrintable(QString::fromLatin1("Exception caught: %1").arg(error.message())));
     }

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -25,19 +25,15 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include <init.h>
+#include "../shared/packagemanager.h"
+
 #include <packagemanagercore.h>
 #include <consumeoutputoperation.h>
 #include <qinstallerglobal.h>
-#include <fileutils.h>
 #include <errors.h>
 
-#include <QObject>
 #include <QTest>
 #include <QProcess>
-#include <QDir>
-#include <QEventLoop>
-#include <QDebug>
 
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
@@ -58,6 +54,8 @@ private slots:
         m_fakeQtPath =  QDir::toNativeSeparators(qApp->applicationDirPath()) + QDir::separator()
             + "fakeQt" + QDir::separator();
         QVERIFY(QDir().mkpath(m_fakeQtPath + "bin"));
+        m_testOutput = getOutputFrom(QUOTE(QMAKE_BINARY), QStringList("-query"));
+        qputenv("qmakePath", QUOTE(QMAKE_BINARY)); //Read from script
     }
 
     void testMissingArguments()
@@ -81,15 +79,28 @@ private slots:
 
     void testGetOutputFromQmake()
     {
-        QString testOutput = getOutputFrom(QUOTE(QMAKE_BINARY), QStringList("-query"));
-
         ConsumeOutputOperation operation(&m_core);
 
         operation.setArguments(QStringList() << "testConsumeOutputKey" << QUOTE(QMAKE_BINARY) << "-query");
         QVERIFY2(operation.performOperation(), qPrintable(operation.errorString()));
         QCOMPARE(Operation::Error(operation.error()), Operation::NoError);
 
-        QCOMPARE(m_core.value("testConsumeOutputKey"), testOutput);
+        QCOMPARE(m_core.value("testConsumeOutputKey"), m_testOutput);
+    }
+
+    void testPerformingFromCLI()
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, ":///data/repository");
+
+        core->installDefaultComponentsSilently();
+        QCOMPARE(core->value("testConsumeOutputKeyFromScript"), m_testOutput);
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
     }
 
     void cleanupTestCase()
@@ -99,6 +110,7 @@ private slots:
         } catch (const QInstaller::Error &error) {
             QFAIL(qPrintable(error.message()));
         }
+        qunsetenv("qmakePath");
     }
 
 private:
@@ -119,6 +131,7 @@ private:
 
     PackageManagerCore m_core;
     QString m_fakeQtPath;
+    QString m_testOutput;
 };
 
 QTEST_MAIN(tst_consumeoutputoperationtest)

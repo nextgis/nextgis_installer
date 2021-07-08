@@ -29,6 +29,7 @@
 
 #include "installerbasecommons.h"
 #include "settingsdialog.h"
+#include "globals.h"
 
 #include <packagemanagercore.h>
 
@@ -111,7 +112,7 @@ int TabController::init()
         // this should called as early as possible, to handle error message boxes for example
         if (!d->m_controlScript.isEmpty()) {
             d->m_gui->loadControlScript(d->m_controlScript);
-            qDebug() << "Using control script:" << d->m_controlScript;
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Using control script:" << d->m_controlScript;
         }
 
         connect(d->m_gui, &QWizard::currentIdChanged, this, &TabController::onCurrentIdChanged);
@@ -165,6 +166,23 @@ void TabController::restartWizard()
 void TabController::onSettingsButtonClicked()
 {
     SettingsDialog dialog(d->m_core);
+    // set custom stylesheet
+    const QString styleSheetFile = d->m_core->settings().styleSheet();
+    if (!styleSheetFile.isEmpty()) {
+        QFile sheet(styleSheetFile);
+        if (sheet.exists()) {
+            if (sheet.open(QIODevice::ReadOnly)) {
+                dialog.setStyleSheet(QString::fromLatin1(sheet.readAll()));
+            } else {
+                qCWarning(QInstaller::lcDeveloperBuild) << "The specified style sheet file "
+                    "can not be opened.";
+            }
+        } else {
+            qCWarning(QInstaller::lcDeveloperBuild) << "A style sheet file is specified, "
+                "but it does not exist.";
+        }
+    }
+
     connect(&dialog, &SettingsDialog::networkSettingsChanged,
             this, &TabController::onNetworkSettingsChanged);
     dialog.exec();

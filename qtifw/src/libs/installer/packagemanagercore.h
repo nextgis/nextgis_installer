@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,6 +32,7 @@
 #include "protocol.h"
 #include "repository.h"
 #include "qinstallerglobal.h"
+#include "utils.h"
 
 #include <QtCore/QHash>
 #include <QtCore/QObject>
@@ -62,25 +63,20 @@ public:
     PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &ops,
         const QString &socketName = QString(),
         const QString &key = QLatin1String(Protocol::DefaultAuthorizationKey),
-        Protocol::Mode mode = Protocol::Mode::Production);
+        Protocol::Mode mode = Protocol::Mode::Production,
+        const QHash<QString, QString> &params = QHash<QString, QString>(),
+        const bool commandLineInstance = false);
     ~PackageManagerCore();
-
-    enum UnstableError {
-        DepencyToUnstable = 0,
-        ShaMismatch,
-        ScriptLoadingFailed,
-        MissingDependency
-    };
-     Q_ENUM(UnstableError)
 
     // status
     enum Status {
         Success = EXIT_SUCCESS,
         Failure = EXIT_FAILURE,
-        Running,
-        Canceled,
-        Unfinished,
-        ForceUpdate
+        Running = 2,
+        Canceled = 3,
+        Unfinished = 4,
+        ForceUpdate = 5,
+        EssentialUpdated = 6
     };
     Status status() const;
     QString error() const;
@@ -116,13 +112,19 @@ public:
     static bool noForceInstallation();
     static void setNoForceInstallation(bool value);
 
+    static bool noDefaultInstallation();
+    static void setNoDefaultInstallation(bool value);
+
     static bool createLocalRepositoryFromBinary();
     static void setCreateLocalRepositoryFromBinary(bool create);
 
     static Component *componentByName(const QString &name, const QList<Component *> &components);
 
+    // NEXTGIS: Add release message from repka
+    QString releaseMessage() const;
+    // End NextGIS
+
     bool directoryWritable(const QString &path) const;
-    bool subdirectoriesWritable(const QString &path) const;
 
     bool fetchLocalPackagesTree();
     LocalPackagesHash localInstalledPackages();
@@ -166,17 +168,16 @@ public:
     Q_INVOKABLE static QString findPath(const QString &name, const QStringList &paths = QStringList());
 
     Q_INVOKABLE void setInstallerBaseBinary(const QString &path);
+    void setOfflineBaseBinary(const QString &path);
+
+    void addResourcesForOfflineGeneration(const QString &rcPath);
 
     // parameter handling
     Q_INVOKABLE bool containsValue(const QString &key) const;
     Q_INVOKABLE void setValue(const QString &key, const QString &value);
     Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString()) const;
     Q_INVOKABLE QStringList values(const QString &key, const QStringList &defaultValue = QStringList()) const;
-
-    // a way to have global flags shareable from a component script to another one
-    // Deprecated since 2.0.0
-    Q_INVOKABLE bool sharedFlag(const QString &key) const;
-    Q_INVOKABLE void setSharedFlag(const QString &key, bool value = true);
+    Q_INVOKABLE QString key(const QString &value) const;
 
     QString replaceVariables(const QString &str) const;
     QByteArray replaceVariables(const QByteArray &str) const;
@@ -185,8 +186,13 @@ public:
     void writeMaintenanceTool();
     void writeMaintenanceConfigFiles();
 
+    void disableWriteMaintenanceTool(bool disable = true);
+
     QString maintenanceToolName() const;
     QString installerBinaryPath() const;
+
+    void setOfflineBinaryName(const QString &name);
+    QString offlineBinaryName() const;
 
     bool testChecksum() const;
     void setTestChecksum(bool test);
@@ -197,12 +203,25 @@ public:
     Q_INVOKABLE void autoAcceptMessageBoxes();
     Q_INVOKABLE void autoRejectMessageBoxes();
     Q_INVOKABLE void setMessageBoxAutomaticAnswer(const QString &identifier, int button);
+    Q_INVOKABLE void acceptMessageBoxDefaultButton();
+
+    Q_INVOKABLE void setAutoAcceptLicenses();
+    Q_INVOKABLE void setFileDialogAutomaticAnswer(const QString &identifier, const QString &value);
+    Q_INVOKABLE void removeFileDialogAutomaticAnswer(const QString &identifier);
+    Q_INVOKABLE bool containsFileDialogAutomaticAnswer(const QString &identifier) const;
+    QHash<QString, QString> fileDialogAutomaticAnswers() const;
+
+    void setAutoConfirmCommand();
 
     quint64 size(QInstaller::Component *component, const QString &value) const;
 
     Q_INVOKABLE bool isFileExtensionRegistered(const QString &extension) const;
     Q_INVOKABLE bool fileExists(const QString &filePath) const;
     Q_INVOKABLE QString readFile(const QString &filePath, const QString &codecName) const;
+    Q_INVOKABLE QString readConsoleLine(const QString &title = QString(), qint64 maxlen = 0) const;
+
+    bool checkTargetDir(const QString &targetDirectory);
+    QString targetDirWarning(const QString &targetDirectory) const;
 
 public:
     ScriptEngine *componentScriptEngine() const;
@@ -215,10 +234,6 @@ public:
 
     QList<Component *> components(ComponentTypes mask) const;
     Component *componentByName(const QString &identifier) const;
-
-    // NEXTGIS: Add release message from repka
-    QString releaseMessage() const;
-    // End NextGIS
 
     Q_INVOKABLE bool calculateComponentsToInstall() const;
     QList<Component*> orderedComponentsToInstall() const;
@@ -234,9 +249,17 @@ public:
 
     ComponentModel *defaultComponentModel() const;
     ComponentModel *updaterComponentModel() const;
-    void updateComponentsSilently();
+    void listInstalledPackages(const QString &regexp = QString());
+    void listAvailablePackages(const QString &regexp);
+    PackageManagerCore::Status updateComponentsSilently(const QStringList &componentsToUpdate);
+    PackageManagerCore::Status installSelectedComponentsSilently(const QStringList& components);
+    PackageManagerCore::Status installDefaultComponentsSilently();
+    PackageManagerCore::Status uninstallComponentsSilently(const QStringList& components);
+    PackageManagerCore::Status removeInstallationSilently();
+    PackageManagerCore::Status createOfflineInstaller(const QStringList &componentsToAdd);
 
     // convenience
+    Q_INVOKABLE void setInstaller();
     Q_INVOKABLE bool isInstaller() const;
     Q_INVOKABLE bool isOfflineOnly() const;
 
@@ -249,6 +272,16 @@ public:
     Q_INVOKABLE void setPackageManager();
     Q_INVOKABLE bool isPackageManager() const;
 
+    void setOfflineGenerator(bool offlineGenerator = true);
+    Q_INVOKABLE bool isOfflineGenerator() const;
+
+    void setUserSetBinaryMarker(qint64 magicMarker);
+    Q_INVOKABLE bool isUserSetBinaryMarker() const;
+
+    void setCommandLineInstance(bool commandLineInstance);
+    Q_INVOKABLE bool isCommandLineInstance() const;
+    Q_INVOKABLE bool isCommandLineDefaultInstall() const;
+
     bool isMaintainer() const;
 
     bool isVerbose() const;
@@ -257,21 +290,29 @@ public:
     Q_INVOKABLE bool gainAdminRights();
     Q_INVOKABLE void dropAdminRights();
 
+    void setCheckAvailableSpace(bool check);
+    bool checkAvailableSpace(QString &message) const;
+
     Q_INVOKABLE quint64 requiredDiskSpace() const;
     Q_INVOKABLE quint64 requiredTemporaryDiskSpace() const;
 
     Q_INVOKABLE bool isProcessRunning(const QString &name) const;
     Q_INVOKABLE bool killProcess(const QString &absoluteFilePath) const;
+    Q_INVOKABLE void setAllowedRunningProcesses(const QStringList &processes);
+    Q_INVOKABLE QStringList allowedRunningProcesses() const;
 
     Settings &settings() const;
 
     Q_INVOKABLE bool addWizardPage(QInstaller::Component *component, const QString &name, int page);
     Q_INVOKABLE bool removeWizardPage(QInstaller::Component *component, const QString &name);
-    Q_INVOKABLE bool addWizardPageItem(QInstaller::Component *component, const QString &name, int page);
+    Q_INVOKABLE bool addWizardPageItem(QInstaller::Component *component, const QString &name,
+                                       int page, int position = 100);
     Q_INVOKABLE bool removeWizardPageItem(QInstaller::Component *component, const QString &name);
     Q_INVOKABLE bool setDefaultPageVisible(int page, bool visible);
     Q_INVOKABLE void setValidatorForCustomPage(QInstaller::Component *component, const QString &name,
                                                const QString &callbackName);
+    Q_INVOKABLE void selectComponent(const QString &id);
+    Q_INVOKABLE void deselectComponent(const QString &id);
 
     void rollBackInstallation();
 
@@ -290,17 +331,23 @@ public:
     static QString checkableName(const QString &name);
     static void parseNameAndVersion(const QString &requirement, QString *name, QString *version);
     static QStringList parseNames(const QStringList &requirements);
+    void commitSessionOperations();
+    void clearLicenses();
+    QHash<QString, QMap<QString, QString>> sortedLicenses();
+    void addLicenseItem(const QHash<QString, QVariantMap> &licenses);
 
 public Q_SLOTS:
     bool runInstaller();
     bool runUninstaller();
     bool runPackageUpdater();
+    bool runOfflineGenerator();
     void interrupt();
     void setCanceled();
     void languageChanged();
     void setCompleteUninstallation(bool complete);
     void cancelMetaInfoJob();
     void componentsToInstallNeedsRecalculation();
+    void clearComponentsToInstallCalculated();
 
 Q_SIGNALS:
     void aboutCalculateComponentsToInstall() const;
@@ -312,6 +359,7 @@ Q_SIGNALS:
     void updaterComponentsAdded(QList<QInstaller::Component*> components);
     void valueChanged(const QString &key, const QString &value);
     void statusChanged(QInstaller::PackageManagerCore::Status);
+    void defaultTranslationsLoadedForLanguage(QLocale::Language);
     void currentPageChanged(int page);
     void finishButtonClicked();
 
@@ -331,11 +379,14 @@ Q_SIGNALS:
     void updateFinished();
     void uninstallationStarted();
     void uninstallationFinished();
+    void offlineGenerationStarted();
+    void offlineGenerationFinished();
     void titleMessageChanged(const QString &title);
 
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardPageRemovalRequested(QWidget *widget);
-    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
+    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page,
+                                        int position);
     void wizardWidgetRemovalRequested(QWidget *widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
     void setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,
@@ -346,6 +397,8 @@ Q_SIGNALS:
 
     void guiObjectChanged(QObject *gui);
     void unstableComponentFound(const QString &type, const QString &errorMessage, const QString &component);
+    void installerBinaryMarkerChanged(qint64 magicMarker);
+    void componentsRecalculated();
 
 private:
     struct Data {
@@ -367,10 +420,13 @@ private:
     QList<Component *> componentsMarkedForInstallation() const;
 
     bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesHash installedPackages);
+    bool componentUninstallableFromCommandLine(const QString &componentName);
+    bool checkComponentsForInstallation(const QStringList &components, QString &errorMessage);
 
 private:
     PackageManagerCorePrivate *const d;
     friend class PackageManagerCorePrivate;
+    QHash<QString, QString> m_fileDialogAutomaticAnswers;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...
@@ -382,5 +438,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(PackageManagerCore::ComponentTypes)
 }
 
 Q_DECLARE_METATYPE(QInstaller::PackageManagerCore*)
+Q_DECLARE_METATYPE(QInstaller::PackageManagerCore::Status)
 
 #endif  // PACKAGEMANAGERCORE_H

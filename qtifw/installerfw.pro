@@ -1,11 +1,10 @@
 TEMPLATE = subdirs
-SUBDIRS += src tools
+SUBDIRS += src tools doc
 tools.depends = src
 
 requires(!cross_compile)
 
 include (installerfw.pri)
-include (doc/doc.pri)
 
 BUILD_TESTS = $$(BUILDTESTS)
 isEmpty(BUILD_TESTS):BUILD_TESTS=$${BUILDTESTS}
@@ -21,7 +20,7 @@ isEmpty(BUILD_EXAMPLES):BUILD_EXAMPLES=$${BUILDEXAMPLES}
     examples.depends = src
 }
 
-!minQtVersion(5, 9, 5) {
+!minQtVersion(5, 12, 7) {
     message("Cannot build Qt Installer Framework with Qt version $${QT_VERSION}.")
-    error("Use at least Qt 5.9.5.")
+    error("Use at least Qt 5.12.7.")
 }

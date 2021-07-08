@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,6 +38,12 @@ class INSTALLER_EXPORT ElevatedExecuteOperation : public QObject, public Operati
     Q_OBJECT
 
 public:
+    enum Error {
+        NoError = 0,
+        Error,
+        NeedsRerun
+    };
+
     explicit ElevatedExecuteOperation(PackageManagerCore *core);
     ~ElevatedExecuteOperation();
 

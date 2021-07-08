@@ -34,6 +34,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::LineReplaceOperation
+    \internal
+*/
+
 LineReplaceOperation::LineReplaceOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {
@@ -57,6 +63,14 @@ bool LineReplaceOperation::performOperation()
     const QString fileName = args.at(0);
     const QString searchString = args.at(1);
     const QString replaceString = args.at(2);
+
+    if (searchString.isEmpty()) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid argument in %1: Empty search "
+            "argument is not supported.").arg(name()));
+
+        return false;
+    }
 
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {

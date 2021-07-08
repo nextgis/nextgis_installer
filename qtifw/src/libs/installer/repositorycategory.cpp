@@ -28,10 +28,17 @@
 
 #include "repositorycategory.h"
 #include "filedownloaderfactory.h"
+#include "constants.h"
 
 #include <QDataStream>
 #include <QFileInfo>
 #include <QStringList>
+
+/*!
+    \fn inline uint QInstaller::qHash(const RepositoryCategory &repository)
+
+    Returns a hash of the repository category \a repository.
+*/
 
 namespace QInstaller {
 
@@ -87,11 +94,17 @@ void RepositoryCategory::setDisplayName(const QString &displayname)
     m_displayname = displayname;
 }
 
+/*!
+    Returns the Tooltip for the category to be displayed.
+*/
 QString RepositoryCategory::tooltip() const
 {
     return m_tooltip;
 }
 
+/*!
+    Sets the Tooltip of the category to \a tooltip.
+*/
 void RepositoryCategory::setTooltip(const QString &tooltip)
 {
     m_tooltip = tooltip;
@@ -102,24 +115,28 @@ void RepositoryCategory::setTooltip(const QString &tooltip)
 */
 QSet<Repository> RepositoryCategory::repositories() const
 {
-    return variantListToSet<Repository>(m_data.values(QLatin1String("Repositories")));
+    return variantListToSet<Repository>(m_data.values(scRepositories));
 }
 
 /*!
-    Inserts a set of \a repositories to the category.
+    Inserts a set of \a repositories to the category. Removes old \a repositories
+    if \a replace is set to \c true.
 */
-void RepositoryCategory::setRepositories(const QSet<Repository> repositories)
+void RepositoryCategory::setRepositories(const QSet<Repository> repositories, const bool replace)
 {
+    if (replace)
+        m_data.remove(scRepositories);
+
     foreach (const Repository &repository, repositories)
-        m_data.insertMulti(QLatin1String("Repositories"), QVariant().fromValue(repository));
+        m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
 }
 
 /*!
     Inserts \a repository to the category.
 */
-void RepositoryCategory::addRepository(const Repository repository)
+void RepositoryCategory::addRepository(const Repository &repository)
 {
-    m_data.insertMulti(QLatin1String("Repositories"), QVariant().fromValue(repository));
+    m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
 }
 
 /*!
@@ -157,11 +174,17 @@ bool RepositoryCategory::operator!=(const RepositoryCategory &other) const
     return !(*this == other);
 }
 
+/*!
+    \internal
+*/
 QDataStream &operator>>(QDataStream &istream, RepositoryCategory &repository)
 {
     return istream;
 }
 
+/*!
+    \internal
+*/
 QDataStream &operator<<(QDataStream &ostream, const RepositoryCategory &repository)
 {
     return ostream << repository.m_displayname.toUtf8().toBase64() << repository.m_data;

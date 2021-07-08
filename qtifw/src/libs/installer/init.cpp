@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -47,6 +47,7 @@
 #include "licenseoperation.h"
 #include "settingsoperation.h"
 #include "consumeoutputoperation.h"
+#include "loggingutils.h"
 
 #include "ng_fileenvironmentvariablesoperation.h"
 #include "ng_copyonlyoperation.h"
@@ -55,15 +56,11 @@
 #endif
 
 #include "lib7z_facade.h"
-#include "utils.h"
 
 #include "updateoperationfactory.h"
 #include "filedownloaderfactory.h"
 
 #include <QtPlugin>
-#include <QElapsedTimer>
-
-#include <iostream>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -75,73 +72,10 @@ static void initResources()
 }
 #endif
 
-static QString trimAndPrepend(QtMsgType type, const QString &msg)
-{
-    QString ba(msg);
-    // last character is a space from qDebug
-    if (ba.endsWith(QLatin1Char(' ')))
-        ba.chop(1);
-
-    // remove quotes if the whole message is surrounded with them
-    if (ba.startsWith(QLatin1Char('"')) && ba.endsWith(QLatin1Char('"')))
-        ba = ba.mid(1, ba.length() - 2);
-
-    // prepend the message type, skip QtDebugMsg
-    switch (type) {
-        case QtWarningMsg:
-            ba.prepend(QStringLiteral("Warning: "));
-        break;
-
-        case QtCriticalMsg:
-            ba.prepend(QStringLiteral("Critical: "));
-        break;
-
-        case QtFatalMsg:
-            ba.prepend(QStringLiteral("Fatal: "));
-        break;
-
-        default:
-            break;
-    }
-    return ba;
-}
-
-// start timer on construction (so we can use it as static member)
-class Uptime : public QElapsedTimer {
-public:
-    Uptime() { start(); }
-};
-
-void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
-{
-    // suppress warning from QPA minimal plugin
-    if (msg.contains(QLatin1String("This plugin does not support propagateSizeHints")))
-        return;
-
-    static Uptime uptime;
-
-    QString ba = QLatin1Char('[') + QString::number(uptime.elapsed()) + QStringLiteral("] ")
-            + trimAndPrepend(type, msg);
-
-    if (type != QtDebugMsg && context.file) {
-        ba += QString(QStringLiteral(" (%1:%2, %3)")).arg(
-                    QString::fromLatin1(context.file)).arg(context.line).arg(
-                    QString::fromLatin1(context.function));
-    }
-
-    if (VerboseWriter *log = VerboseWriter::instance())
-        log->appendLine(ba);
-
-    if (type != QtDebugMsg || isVerbose())
-        std::cout << qPrintable(ba) << std::endl;
-
-    if (type == QtFatalMsg) {
-        QtMessageHandler oldMsgHandler = qInstallMessageHandler(nullptr);
-        qt_message_output(type, context, msg);
-        qInstallMessageHandler(oldMsgHandler);
-    }
-}
-
+/*!
+    Initializes the 7z library and installer resources. Registers
+    custom operations and installs a custom message handler.
+*/
 void QInstaller::init()
 {
     Lib7z::initSevenZ();
@@ -181,5 +115,8 @@ void QInstaller::init()
 
     FileDownloaderFactory::setFollowRedirects(true);
 
-   qInstallMessageHandler(messageHandler);
+    auto messageHandler = [](QtMsgType type, const QMessageLogContext &context, const QString &msg) {
+        LoggingHandler::instance().messageHandler(type, context, msg);
+    };
+    qInstallMessageHandler(messageHandler);
 }

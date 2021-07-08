@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -41,8 +41,10 @@
 #include "productkeycheck.h"
 #include "repositorycategory.h"
 #include "componentselectionpage_p.h"
+#include "loggingutils.h"
 
 #include "sysinfo.h"
+#include "globals.h"
 
 #include <QApplication>
 
@@ -66,6 +68,7 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QSplitter>
 #include <QStringListModel>
 #include <QTextBrowser>
 
@@ -122,7 +125,7 @@ public:
         return m_widget;
     }
 
-    bool isComplete() const
+    bool isComplete() const Q_DECL_OVERRIDE
     {
         return m_widget->property("complete").toBool();
     }
@@ -251,41 +254,32 @@ public:
 */
 
 /*!
-    \fn void PackageManagerGui::interrupted()
+    \fn void QInstaller::PackageManagerGui::interrupted()
     \sa {gui::interrupted}{gui.interrupted}
 */
 
 /*!
-    \fn void PackageManagerGui::languageChanged()
+    \fn void QInstaller::PackageManagerGui::languageChanged()
     \sa {gui::languageChanged}{gui.languageChanged}
 */
 
 /*!
-    \fn void PackageManagerGui::finishButtonClicked()
+    \fn void QInstaller::PackageManagerGui::finishButtonClicked()
     \sa {gui::finishButtonClicked}{gui.finishButtonClicked}
 */
 
 /*!
-    \fn void PackageManagerGui::gotRestarted()
+    \fn void QInstaller::PackageManagerGui::gotRestarted()
     \sa {gui::gotRestarted}{gui.gotRestarted}
 */
 
 /*!
-    \fn void PackageManagerGui::settingsButtonClicked()
+    \fn void QInstaller::PackageManagerGui::settingsButtonClicked()
     \sa {gui::settingsButtonClicked}{gui.settingsButtonClicked}
 */
 
 /*!
-    \fn void PackageManagerGui::setValidatorForCustomPageRequested(QInstaller::Component *component,
-        const QString &name,
-        const QString &callbackName)
-
-    Sets a validator for the custom page specified by \a name and
-    \a callbackName requested by \a component.
-*/
-
-/*!
-    \fn void PackageManagerGui::packageManagerCore() const
+    \fn void QInstaller::PackageManagerGui::packageManagerCore() const
 
     Returns the package manager core.
 */
@@ -305,11 +299,14 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
     setWindowFlags(windowFlags() &~ Qt::WindowContextHelpButtonHint);
 
-#ifndef Q_OS_OSX
+#ifndef Q_OS_MACOS
     setWindowIcon(QIcon(m_core->settings().installerWindowIcon()));
-#else
-    setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
 #endif
+    if (!m_core->settings().wizardShowPageList()) {
+        QString pixmapStr = m_core->settings().background();
+        QInstaller::replaceHighDpiImage(pixmapStr);
+        setPixmap(QWizard::BackgroundPixmap, pixmapStr);
+    }
 #ifdef Q_OS_LINUX
     setWizardStyle(QWizard::ModernStyle);
     setSizeGripEnabled(true);
@@ -323,17 +320,52 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     if (!styleSheetFile.isEmpty()) {
         QFile sheet(styleSheetFile);
         if (sheet.exists()) {
-            if (sheet.open(QIODevice::ReadOnly))
+            if (sheet.open(QIODevice::ReadOnly)) {
                 setStyleSheet(QString::fromLatin1(sheet.readAll()));
-            else
-                qWarning() << "The specified style sheet file can not be opened.";
+            } else {
+                qCWarning(QInstaller::lcDeveloperBuild) << "The specified style sheet file "
+                    "can not be opened.";
+            }
         } else {
-            qWarning() << "A style sheet file is specified, but it does not exist.";
+            qCWarning(QInstaller::lcDeveloperBuild) << "A style sheet file is specified, "
+                "but it does not exist.";
         }
     }
 
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
+
+    if (m_core->settings().wizardShowPageList()) {
+        QWidget *sideWidget = new QWidget(this);
+        sideWidget->setObjectName(QLatin1String("SideWidget"));
+
+        m_pageListWidget = new QListWidget(sideWidget);
+        m_pageListWidget->setObjectName(QLatin1String("PageListWidget"));
+        m_pageListWidget->viewport()->setAutoFillBackground(false);
+        m_pageListWidget->setFrameShape(QFrame::NoFrame);
+        m_pageListWidget->setMinimumWidth(200);
+        // The widget should be view-only but we do not want it to be grayed out,
+        // so instead of calling setEnabled(false), do not accept focus.
+        m_pageListWidget->setFocusPolicy(Qt::NoFocus);
+        m_pageListWidget->setSelectionMode(QAbstractItemView::NoSelection);
+        m_pageListWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+
+        QVBoxLayout *sideWidgetLayout = new QVBoxLayout(sideWidget);
+
+        QString pageListPixmap = m_core->settings().pageListPixmap();
+        if (!pageListPixmap.isEmpty()) {
+            QInstaller::replaceHighDpiImage(pageListPixmap);
+            QLabel *pageListPixmapLabel = new QLabel(sideWidget);
+            pageListPixmapLabel->setObjectName(QLatin1String("PageListPixmapLabel"));
+            pageListPixmapLabel->setPixmap(pageListPixmap);
+            pageListPixmapLabel->setMinimumWidth(QPixmap(pageListPixmap).width());
+            sideWidgetLayout->addWidget(pageListPixmapLabel);
+        }
+        sideWidgetLayout->addWidget(m_pageListWidget);
+        sideWidget->setLayout(sideWidgetLayout);
+
+        setSideWidget(sideWidget);
+    }
 
     connect(this, &QDialog::rejected, m_core, &PackageManagerCore::setCanceled);
     connect(this, &PackageManagerGui::interrupted, m_core, &PackageManagerCore::interrupt);
@@ -389,10 +421,69 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     QTimer::singleShot(30, this, SLOT(setMaxSize()));
 }
 
+/*!
+    Limits installer maximum size to screen size.
+*/
 void PackageManagerGui::setMaxSize()
 {
-    setMaximumSize(qApp->desktop()->availableGeometry(this).size());
+    QSize size = qApp->desktop()->availableGeometry(this).size();
+    int windowFrameHeight = frameGeometry().height() - geometry().height();
+    int availableHeight = size.height() - windowFrameHeight;
+
+    size.setHeight(availableHeight);
+    setMaximumSize(size);
 }
+
+/*!
+    Updates the installer page list.
+*/
+void PackageManagerGui::updatePageListWidget()
+{
+    if (!m_core->settings().wizardShowPageList() || !m_pageListWidget)
+        return;
+
+    static const QRegularExpression regExp1 {QLatin1String("(.)([A-Z][a-z]+)")};
+    static const QRegularExpression regExp2 {QLatin1String("([a-z0-9])([A-Z])")};
+
+    m_pageListWidget->clear();
+    foreach (int id, pageIds()) {
+        PackageManagerPage *page = qobject_cast<PackageManagerPage *>(pageById(id));
+        if (!page->showOnPageList())
+            continue;
+
+        // Use page list title if set, otherwise try to use the normal title. If that
+        // is not set either, use the object name with spaces added between words.
+        QString itemText;
+        if (!page->pageListTitle().isEmpty()) {
+            itemText = page->pageListTitle();
+        } else if (!page->title().isEmpty()) {
+            // Title may contain formatting, return only contained plain text
+            QTextDocument doc;
+            doc.setHtml(page->title());
+            itemText = doc.toPlainText().trimmed();
+        } else {
+            // Remove "Page" suffix from object name if exists and add spaces between words
+            itemText = page->objectName();
+            itemText.remove(QLatin1String("Page"), Qt::CaseInsensitive);
+            itemText.replace(regExp1, QLatin1String("\\1 \\2"));
+            itemText.replace(regExp2, QLatin1String("\\1 \\2"));
+        }
+        QListWidgetItem *item = new QListWidgetItem(itemText, m_pageListWidget);
+        item->setSizeHint(QSize(item->sizeHint().width(), 30));
+
+        // Give visual indication about current & non-visited pages
+        if (id == d->m_currentId) {
+            QFont currentItemFont = item->font();
+            currentItemFont.setBold(true);
+            item->setFont(currentItemFont);
+            // Current item should be always visible on the list
+            m_pageListWidget->scrollToItem(item);
+        } else if (id > d->m_currentId) {
+            item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+        }
+    }
+}
+
 /*!
     Destructs a package manager UI.
 */
@@ -408,7 +499,7 @@ PackageManagerGui::~PackageManagerGui()
     \list
         \li \c Classic - Classic UI style for Windows 7 and earlier.
         \li \c Modern - Modern UI style for Windows 8.
-        \li \c Mac - UI style for OS X.
+        \li \c Mac - UI style for macOS.
         \li \c Aero - Aero Peek for Windows 7.
     \endlist
 */
@@ -461,7 +552,7 @@ void PackageManagerGui::setTextItems(QObject *object, const QStringList &items)
         return;
     }
 
-    qDebug() << "Cannot set text items on object of type"
+    qCWarning(QInstaller::lcDeveloperBuild) << "Cannot set text items on object of type"
              << object->metaObject()->className() << ".";
 }
 
@@ -518,7 +609,21 @@ void PackageManagerGui::clickButton(int wb, int delay)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb)))
         QTimer::singleShot(delay, b, &QAbstractButton::click);
     else
-        qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
+        qCWarning(QInstaller::lcDeveloperBuild) << "Button with type: " << d->buttonType(wb) << "not found!";
+}
+
+/*!
+    Clicks the button specified by \a objectName after the delay specified by \a delay.
+
+    \sa {gui::clickButton}{gui.clickButton}
+*/
+void PackageManagerGui::clickButton(const QString &objectName, int delay) const
+{
+    QPushButton *button = findChild<QPushButton *>(objectName);
+    if (button)
+        QTimer::singleShot(delay, button, &QAbstractButton::click);
+    else
+        qCWarning(QInstaller::lcDeveloperBuild) << "Button with objectname: " << objectName << "not found!";
 }
 
 /*!
@@ -537,7 +642,7 @@ bool PackageManagerGui::isButtonEnabled(int wb)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb)))
         return b->isEnabled();
 
-    qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
+    qCWarning(QInstaller::lcDeveloperBuild) << "Button with type: " << d->buttonType(wb) << "not found!";
     return false;
 }
 
@@ -570,7 +675,7 @@ void PackageManagerGui::loadControlScript(const QString &scriptPath)
 {
     d->m_controlScriptContext = m_core->controlScriptEngine()->loadInContext(
         QLatin1String("Controller"), scriptPath);
-    qDebug() << "Loaded control script" << scriptPath;
+    qCDebug(QInstaller::lcInstallerInstallLog) << "Loaded control script" << scriptPath;
 }
 
 /*!
@@ -584,7 +689,8 @@ void PackageManagerGui::callControlScriptMethod(const QString &methodName)
         const QJSValue returnValue = m_core->controlScriptEngine()->callScriptMethod(
             d->m_controlScriptContext, methodName);
         if (returnValue.isUndefined()) {
-            qDebug() << "Control script callback" << methodName << "does not exist.";
+            qCDebug(QInstaller::lcDeveloperBuild) << "Control script callback" << methodName
+                << "does not exist.";
             return;
         }
     } catch (const QInstaller::Error &e) {
@@ -643,7 +749,16 @@ void PackageManagerGui::showEvent(QShowEvent *event)
                 }
             }
         }
-        setMinimumSize(size());
+        QSize minimumSize;
+        minimumSize.setWidth(m_core->settings().wizardMinimumWidth()
+            ? m_core->settings().wizardMinimumWidth()
+            : width());
+
+        minimumSize.setHeight(m_core->settings().wizardMinimumHeight()
+            ? m_core->settings().wizardMinimumHeight()
+            : height());
+
+        setMinimumSize(minimumSize);
         if (minimumWidth() < m_core->settings().wizardDefaultWidth())
             resize(m_core->settings().wizardDefaultWidth(), height());
         if (minimumHeight() < m_core->settings().wizardDefaultHeight())
@@ -670,6 +785,7 @@ void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
 
     // add it
     setPage(pageId, new DynamicInstallerPage(widget, m_core));
+    updatePageListWidget();
 }
 
 /*!
@@ -688,17 +804,35 @@ void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
         packageManagerCore()->controlScriptEngine()->removeFromGlobalObject(dynamicPage);
         packageManagerCore()->componentScriptEngine()->removeFromGlobalObject(dynamicPage);
     }
+    updatePageListWidget();
 }
 
 /*!
-    Requests the insertion of \a widget on \a page.
+    Requests the insertion of \a widget on \a page. Widget with lower
+    \a position number will be inserted on top.
 */
 void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
-    QInstaller::PackageManagerCore::WizardPage page)
+    QInstaller::PackageManagerCore::WizardPage page, int position)
 {
     Q_ASSERT(widget);
-    if (QWizardPage *const p = QWizard::page(page)) {
-        p->layout()->addWidget(widget);
+
+    if (PackageManagerPage *p = qobject_cast<PackageManagerPage *>(QWizard::page(page))) {
+        p->m_customWidgets.insert(position, widget);
+        if (p->m_customWidgets.count() > 1 ) {
+            //Reorder the custom widgets based on their position
+            QMultiMap<int, QWidget*>::Iterator it = p->m_customWidgets.begin();
+            while (it != p->m_customWidgets.end()) {
+                p->layout()->removeWidget(it.value());
+                ++it;
+            }
+            it = p->m_customWidgets.begin();
+            while (it != p->m_customWidgets.end()) {
+                p->layout()->addWidget(it.value());
+                ++it;
+            }
+        } else {
+            p->layout()->addWidget(widget);
+        }
         packageManagerCore()->controlScriptEngine()->addToGlobalObject(p);
         packageManagerCore()->componentScriptEngine()->addToGlobalObject(p);
     }
@@ -710,6 +844,12 @@ void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
 void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
 {
     Q_ASSERT(widget);
+
+    const QList<int> pages = pageIds();
+    foreach (int id, pages) {
+        PackageManagerPage *managerPage = qobject_cast<PackageManagerPage *>(page(id));
+        managerPage->removeCustomWidget(widget);
+    }
     widget->setParent(nullptr);
     packageManagerCore()->controlScriptEngine()->removeFromGlobalObject(widget);
     packageManagerCore()->componentScriptEngine()->removeFromGlobalObject(widget);
@@ -727,6 +867,7 @@ void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
         d->m_defaultPages[p] = page(p);
         removePage(p);
     }
+    updatePageListWidget();
 }
 
 /*!
@@ -752,7 +893,7 @@ QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
         if (p && p->objectName() == name)
             return p;
     }
-    qWarning() << "No page found for object name" << name;
+    qCDebug(QInstaller::lcDeveloperBuild) << "No page found for object name" << name;
     return nullptr;
 }
 
@@ -780,7 +921,7 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
             return dp->widget();
         return p;
     }
-    qWarning() << "No page found for object name" << name;
+    qCDebug(QInstaller::lcDeveloperBuild) << "No page found for object name" << name;
     return nullptr;
 }
 
@@ -874,6 +1015,8 @@ void PackageManagerGui::showSettingsButton(bool show)
     d->m_showSettingsButton = show;
     setOption(QWizard::HaveCustomButton1, show);
     setButtonText(QWizard::CustomButton1, tr("Settings"));
+    button(QWizard::CustomButton1)->setToolTip(
+        PackageManagerGui::tr("Specify proxy settings and configure repositories for add-on components."));
 
     updateButtonLayout();
 }
@@ -953,7 +1096,8 @@ void PackageManagerGui::dependsOnLocalInstallerBinary()
 /*!
     Called when the current page changes to \a newId. Calls the leaving() method for the old page
     and the entering() method for the new one. Also, executes the control script associated with the
-    new page by calling executeControlScript().
+    new page by calling executeControlScript(). Updates the page list set as QWizard::sideWidget().
+
 
     Emits the left() and entered() signals.
 */
@@ -971,6 +1115,7 @@ void PackageManagerGui::currentPageChanged(int newId)
     if (newPage) {
         newPage->entering();
         emit newPage->entered();
+        updatePageListWidget();
     }
 
     executeControlScript(newId);
@@ -986,55 +1131,49 @@ void PackageManagerGui::currentPageChanged(int newId)
 */
 
 /*!
-    \fn PackageManagerPage::~PackageManagerPage()
+    \fn QInstaller::PackageManagerPage::~PackageManagerPage()
 
     Destructs a package manager page.
 */
 
 /*!
-    \fn PackageManagerPage::gui() const
+    \fn QInstaller::PackageManagerPage::gui() const
 
     Returns the wizard this page belongs to.
 */
 
 /*!
-    \fn PackageManagerPage::isInterruptible() const
+    \fn QInstaller::PackageManagerPage::isInterruptible() const
 
     Returns \c true if the installation can be interrupted.
 */
 
 /*!
-    \fn PackageManagerPage::setValidatePageComponent(QInstaller::Component *component)
-
-    Sets \a component as the component that validates the page.
-*/
-
-/*!
-    \fn PackageManagerPage::settingsButtonRequested() const
+    \fn QInstaller::PackageManagerPage::settingsButtonRequested() const
 
     Returns \c true if the page requests the wizard to show the \uicontrol Settings button.
 */
 
 /*!
-    \fn PackageManagerPage::setSettingsButtonRequested(bool request)
+    \fn QInstaller::PackageManagerPage::setSettingsButtonRequested(bool request)
 
     Determines that the page should request the \uicontrol Settings button if \a request is \c true.
 */
 
 /*!
-    \fn PackageManagerPage::entered()
+    \fn QInstaller::PackageManagerPage::entered()
 
     This signal is called when a page is entered.
 */
 
 /*!
-    \fn PackageManagerPage::left()
+    \fn QInstaller::PackageManagerPage::left()
 
     This signal is called when a page is left.
 */
 
 /*!
-    \fn PackageManagerPage::entering()
+    \fn QInstaller::PackageManagerPage::entering()
 
     Called when end users enter the page and the PackageManagerGui:currentPageChanged()
     signal is triggered. Supports the QWizardPage::​initializePage() function to ensure
@@ -1044,7 +1183,13 @@ void PackageManagerGui::currentPageChanged(int newId)
 */
 
 /*!
-    \fn PackageManagerPage::leaving()
+    \fn QInstaller::PackageManagerPage::showOnPageListChanged()
+
+    Called when page visibility on page list has changed and refresh is needed.
+*/
+
+/*!
+    \fn QInstaller::PackageManagerPage::leaving()
 
     Called when end users leave the page and the PackageManagerGui:currentPageChanged()
     signal is triggered.
@@ -1055,19 +1200,26 @@ void PackageManagerGui::currentPageChanged(int newId)
 */
 PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     : m_complete(true)
+    , m_titleColor(QString())
     , m_needsSettingsButton(false)
     , m_core(core)
     , validatorComponent(nullptr)
+    , m_showOnPageList(true)
 {
-    if (!m_core->settings().titleColor().isEmpty()) {
+    if (!m_core->settings().titleColor().isEmpty())
         m_titleColor = m_core->settings().titleColor();
-    } else {
-        QColor defaultColor = style()->standardPalette().text().color();
-        m_titleColor = defaultColor.name();
+
+    if (!m_core->settings().wizardShowPageList())
+        setPixmap(QWizard::WatermarkPixmap, wizardPixmap(scWatermark));
+
+    setPixmap(QWizard::BannerPixmap, wizardPixmap(scBanner));
+    setPixmap(QWizard::LogoPixmap, wizardPixmap(scLogo));
+
+    // Can't use PackageManagerPage::gui() here as the page is not set yet
+    if (PackageManagerGui *gui = qobject_cast<PackageManagerGui *>(core->guiObject())) {
+        connect(this, &PackageManagerPage::showOnPageListChanged,
+                gui, &PackageManagerGui::updatePageListWidget);
     }
-    setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
-    setPixmap(QWizard::BannerPixmap, bannerPixmap());
-    setPixmap(QWizard::LogoPixmap, logoPixmap());
 }
 
 /*!
@@ -1079,39 +1231,26 @@ PackageManagerCore *PackageManagerPage::packageManagerCore() const
 }
 
 /*!
-    Returns the watermark pixmap specified in the \c <Watermark> element of the package information
-    file.
+    Returns the pixmap specified by \a pixmapType. \a pixmapType can be \c <Banner>,
+    \c <Logo> or \c <Watermark> element of the package information file. If @2x image
+    is provided, returns that instead for high DPI displays.
 */
-QPixmap PackageManagerPage::watermarkPixmap() const
+QPixmap PackageManagerPage::wizardPixmap(const QString &pixmapType) const
 {
-    return QPixmap(m_core->value(QLatin1String("WatermarkPixmap")));
-}
-
-/*!
-    Returns the banner pixmap specified in the \c <Banner> element of the package information file.
-    Only used by the modern UI style.
-*/
-QPixmap PackageManagerPage::bannerPixmap() const
-{
-    QPixmap banner(m_core->value(QLatin1String("BannerPixmap")));
-
-    if (!banner.isNull()) {
-        int width;
-        if (m_core->settings().containsValue(QLatin1String("WizardDefaultWidth")) )
-            width = m_core->settings().wizardDefaultWidth();
-        else
-            width = size().width();
-        banner = banner.scaledToWidth(width, Qt::SmoothTransformation);
+    QString pixmapStr = m_core->value(pixmapType);
+    QInstaller::replaceHighDpiImage(pixmapStr);
+    QPixmap pixmap(pixmapStr);
+    if (pixmapType == scBanner) {
+        if (!pixmap.isNull()) {
+            int width;
+            if (m_core->settings().containsValue(QLatin1String("WizardDefaultWidth")) )
+                width = m_core->settings().wizardDefaultWidth();
+            else
+                width = size().width();
+            pixmap = pixmap.scaledToWidth(width, Qt::SmoothTransformation);
+        }
     }
-    return banner;
-}
-
-/*!
-    Returns the logo pixmap specified in the \c <Logo> element of the package information file.
-*/
-QPixmap PackageManagerPage::logoPixmap() const
-{
-    return QPixmap(m_core->value(QLatin1String("LogoPixmap")));
+    return pixmap;
 }
 
 /*!
@@ -1138,6 +1277,44 @@ void PackageManagerPage::setColoredTitle(const QString &title)
 void PackageManagerPage::setColoredSubTitle(const QString &subTitle)
 {
     setSubTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, subTitle));
+}
+
+/*!
+    Sets the title shown on installer page indicator for this page to \a title.
+    Pages that do not set this will use a fallback title instead.
+*/
+void PackageManagerPage::setPageListTitle(const QString &title)
+{
+    m_pageListTitle = title;
+}
+
+/*!
+    Returns the title shown on installer page indicator for this page. If empty,
+    a fallback title is being used instead.
+*/
+QString PackageManagerPage::pageListTitle() const
+{
+    return m_pageListTitle;
+}
+
+/*!
+    Sets the page visibility on installer page indicator based on \a show.
+    All pages are shown by default.
+*/
+void PackageManagerPage::setShowOnPageList(bool show)
+{
+    if (m_showOnPageList != show)
+        emit showOnPageListChanged();
+
+    m_showOnPageList = show;
+}
+
+/*!
+    Returns \c true if the page should be shown on installer page indicator.
+*/
+bool PackageManagerPage::showOnPageList() const
+{
+    return m_showOnPageList;
 }
 
 /*!
@@ -1184,6 +1361,18 @@ bool PackageManagerPage::validatePage()
     return true;
 }
 
+/*!
+    \internal
+*/
+void PackageManagerPage::removeCustomWidget(const QWidget *widget)
+{
+    for (auto it = m_customWidgets.begin(); it != m_customWidgets.end();) {
+        if (it.value() == widget)
+            it = m_customWidgets.erase(it);
+        else
+            ++it;
+    }
+}
 /*!
     Inserts \a widget at the position specified by \a offset in relation to
     another widget specified by \a siblingName. The default position is directly
@@ -1252,7 +1441,7 @@ int PackageManagerPage::nextId() const
 */
 
 /*!
-    \fn IntroductionPage::packageManagerCoreTypeChanged()
+    \fn QInstaller::IntroductionPage::packageManagerCoreTypeChanged()
 
     This signal is emitted when the package manager core type changes.
 */
@@ -1289,19 +1478,16 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     m_packageManager = new QRadioButton(tr("&Add or remove components"), this);
     m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
     boxLayout->addWidget(m_packageManager);
-    m_packageManager->setChecked(core->isPackageManager());
     connect(m_packageManager, &QAbstractButton::toggled, this, &IntroductionPage::setPackageManager);
 
     m_updateComponents = new QRadioButton(tr("&Update components"), this);
     m_updateComponents->setObjectName(QLatin1String("UpdaterRadioButton"));
     boxLayout->addWidget(m_updateComponents);
-    m_updateComponents->setChecked(core->isUpdater());
     connect(m_updateComponents, &QAbstractButton::toggled, this, &IntroductionPage::setUpdater);
 
     m_removeAllComponents = new QRadioButton(tr("&Remove all components"), this);
     m_removeAllComponents->setObjectName(QLatin1String("UninstallerRadioButton"));
     boxLayout->addWidget(m_removeAllComponents);
-    m_removeAllComponents->setChecked(core->isUninstaller());
     connect(m_removeAllComponents, &QAbstractButton::toggled,
             this, &IntroductionPage::setUninstaller);
     connect(m_removeAllComponents, &QAbstractButton::toggled,
@@ -1331,8 +1517,6 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     layout->addWidget(widget);
     layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
-    core->setCompleteUninstallation(core->isUninstaller());
-
     connect(core, &PackageManagerCore::metaJobProgress, this, &IntroductionPage::onProgressChanged);
     connect(core, &PackageManagerCore::metaJobTotalProgress, this, &IntroductionPage::setTotalProgress);
     connect(core, &PackageManagerCore::metaJobInfoMessage, this, &IntroductionPage::setMessage);
@@ -1361,9 +1545,6 @@ int IntroductionPage::nextId() const
     if (packageManagerCore()->isUninstaller())
         return PackageManagerCore::ReadyForInstallation;
 
-    if (packageManagerCore()->isMaintainer())
-        return PackageManagerCore::ComponentSelection;
-
     return PackageManagerPage::nextId();
 }
 
@@ -1379,7 +1560,9 @@ bool IntroductionPage::validatePage()
         return true;
 
     setComplete(false);
-    if (!validRepositoriesAvailable()) {
+    bool isOfflineOnlyInstaller = core->isInstaller() && core->isOfflineOnly();
+    // If not offline only installer, at least one valid repository needs to be available
+    if (!isOfflineOnlyInstaller && !validRepositoriesAvailable()) {
         setErrorMessage(QLatin1String("<font color=\"red\">") + tr("At least one valid and enabled "
             "repository required for this action to succeed.") + QLatin1String("</font>"));
         return isComplete();
@@ -1528,7 +1711,7 @@ void IntroductionPage::onProgressChanged(int progress)
 }
 
 /*!
-    Sets total \a progress value to progress bar.
+    Sets total \a totalProgress value to progress bar.
 */
 void IntroductionPage::setTotalProgress(int totalProgress)
 {
@@ -1566,14 +1749,12 @@ void IntroductionPage::setErrorMessage(const QString &error)
 bool IntroductionPage::validRepositoriesAvailable() const
 {
     const PackageManagerCore *const core = packageManagerCore();
-    bool valid = (core->isInstaller() && core->isOfflineOnly()) || core->isUninstaller();
+    bool valid = false;
 
-    if (!valid) {
-        foreach (const Repository &repo, core->settings().repositories()) {
-            if (repo.isEnabled() && repo.isValid()) {
-                valid = true;
-                break;
-            }
+    foreach (const Repository &repo, core->settings().repositories()) {
+        if (repo.isEnabled() && repo.isValid()) {
+            valid = true;
+            break;
         }
     }
     return valid;
@@ -1588,6 +1769,8 @@ void IntroductionPage::setUpdater(bool value)
         gui()->showSettingsButton(true);
         packageManagerCore()->setUpdater();
         emit packageManagerCoreTypeChanged();
+
+        gui()->updatePageListWidget();
     }
 }
 
@@ -1598,6 +1781,8 @@ void IntroductionPage::setUninstaller(bool value)
         gui()->showSettingsButton(false);
         packageManagerCore()->setUninstaller();
         emit packageManagerCoreTypeChanged();
+
+        gui()->updatePageListWidget();
     }
 }
 
@@ -1608,6 +1793,31 @@ void IntroductionPage::setPackageManager(bool value)
         gui()->showSettingsButton(true);
         packageManagerCore()->setPackageManager();
         emit packageManagerCoreTypeChanged();
+
+        gui()->updatePageListWidget();
+    }
+}
+/*!
+    Initializes the page.
+*/
+void IntroductionPage::initializePage()
+{
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isPackageManager()) {
+        m_packageManager->setChecked(true);
+    } else if (core->isUpdater()) {
+        m_updateComponents->setChecked(true);
+    } else if (core->isUninstaller()) {
+        // If we are running maintenance tool and the default uninstaller
+        // marker is not overridden, set the default checked radio button
+        // based on if we have valid repositories available.
+        if (!core->isUserSetBinaryMarker() && validRepositoriesAvailable()) {
+            m_packageManager->setChecked(true);
+        } else {
+            // No repositories available, default to complete uninstallation.
+            m_removeAllComponents->setChecked(true);
+            core->setCompleteUninstallation(true);
+        }
     }
 }
 
@@ -1727,7 +1937,6 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
 
     m_licenseListWidget = new QListWidget(this);
     m_licenseListWidget->setObjectName(QLatin1String("LicenseListWidget"));
-    m_licenseListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     connect(m_licenseListWidget, &QListWidget::currentItemChanged,
         this, &LicenseAgreementPage::currentItemChanged);
 
@@ -1736,20 +1945,23 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_textBrowser->setOpenLinks(false);
     m_textBrowser->setOpenExternalLinks(true);
     m_textBrowser->setObjectName(QLatin1String("LicenseTextBrowser"));
-    m_textBrowser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     connect(m_textBrowser, &QTextBrowser::anchorClicked, this, &LicenseAgreementPage::openLicenseUrl);
 
-    QVBoxLayout *licenseBoxLayout = new QVBoxLayout();
-    licenseBoxLayout->addWidget(m_licenseListWidget);
-    licenseBoxLayout->addWidget(m_textBrowser);
+    QSplitter *licenseSplitter = new QSplitter(this);
+    licenseSplitter->setOrientation(Qt::Vertical);
+    licenseSplitter->setChildrenCollapsible(false);
+    licenseSplitter->addWidget(m_licenseListWidget);
+    licenseSplitter->addWidget(m_textBrowser);
+    licenseSplitter->setStretchFactor(0, 1);
+    licenseSplitter->setStretchFactor(1, 3);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addLayout(licenseBoxLayout);
+    layout->addWidget(licenseSplitter);
 
-    m_acceptRadioButton = new QRadioButton(this);
-    m_acceptRadioButton->setShortcut(QKeySequence(tr("Alt+A", "agree license")));
-    m_acceptRadioButton->setObjectName(QLatin1String("AcceptLicenseRadioButton"));
-    ClickForwarder *acceptClickForwarder = new ClickForwarder(m_acceptRadioButton);
+    m_acceptCheckBox = new QCheckBox(this);
+    m_acceptCheckBox->setShortcut(QKeySequence(tr("Alt+A", "agree license")));
+    m_acceptCheckBox->setObjectName(QLatin1String("AcceptLicenseCheckBox"));
+    ClickForwarder *acceptClickForwarder = new ClickForwarder(m_acceptCheckBox);
 
     m_acceptLabel = new QLabel;
     m_acceptLabel->setWordWrap(true);
@@ -1757,29 +1969,13 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_acceptLabel->setObjectName(QLatin1String("AcceptLicenseLabel"));
     m_acceptLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
-    m_rejectRadioButton = new QRadioButton(this);
-    ClickForwarder *rejectClickForwarder = new ClickForwarder(m_rejectRadioButton);
-    m_rejectRadioButton->setObjectName(QString::fromUtf8("RejectLicenseRadioButton"));
-    m_rejectRadioButton->setShortcut(QKeySequence(tr("Alt+D", "do not agree license")));
-
-    m_rejectLabel = new QLabel;
-    m_rejectLabel->setWordWrap(true);
-    m_rejectLabel->installEventFilter(rejectClickForwarder);
-    m_rejectLabel->setObjectName(QLatin1String("RejectLicenseLabel"));
-    m_rejectLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-
     QGridLayout *gridLayout = new QGridLayout;
     gridLayout->setColumnStretch(1, 1);
-    gridLayout->addWidget(m_acceptRadioButton, 0, 0);
+    gridLayout->addWidget(m_acceptCheckBox, 0, 0);
     gridLayout->addWidget(m_acceptLabel, 0, 1);
-    gridLayout->addWidget(m_rejectRadioButton, 1, 0);
-    gridLayout->addWidget(m_rejectLabel, 1, 1);
     layout->addLayout(gridLayout);
 
-    connect(m_acceptRadioButton, &QAbstractButton::toggled, this, &QWizardPage::completeChanged);
-    connect(m_rejectRadioButton, &QAbstractButton::toggled, this, &QWizardPage::completeChanged);
-
-    m_rejectRadioButton->setChecked(true);
+    connect(m_acceptCheckBox, &QAbstractButton::toggled, this, &QWizardPage::completeChanged);
 }
 
 /*!
@@ -1794,13 +1990,17 @@ void LicenseAgreementPage::entering()
 
     packageManagerCore()->calculateComponentsToInstall();
     foreach (QInstaller::Component *component, packageManagerCore()->orderedComponentsToInstall())
-        addLicenseItem(component->licenses());
+        packageManagerCore()->addLicenseItem(component->licenses());
+
+    createLicenseWidgets();
 
     const int licenseCount = m_licenseListWidget->count();
     if (licenseCount > 0) {
         m_licenseListWidget->setVisible(licenseCount > 1);
         m_licenseListWidget->setCurrentItem(m_licenseListWidget->item(0));
     }
+
+    packageManagerCore()->clearLicenses();
 
     updateUi();
 }
@@ -1811,7 +2011,7 @@ void LicenseAgreementPage::entering()
 */
 bool LicenseAgreementPage::isComplete() const
 {
-    return m_acceptRadioButton->isChecked();
+    return m_acceptCheckBox->isChecked();
 }
 
 void LicenseAgreementPage::openLicenseUrl(const QUrl &url)
@@ -1825,12 +2025,22 @@ void LicenseAgreementPage::currentItemChanged(QListWidgetItem *current)
         m_textBrowser->setText(current->data(Qt::UserRole).toString());
 }
 
-void LicenseAgreementPage::addLicenseItem(const QHash<QString, QPair<QString, QString> > &hash)
+void LicenseAgreementPage::createLicenseWidgets()
 {
-    for (QHash<QString, QPair<QString, QString> >::const_iterator it = hash.begin();
-        it != hash.end(); ++it) {
-            QListWidgetItem *item = new QListWidgetItem(it.key(), m_licenseListWidget);
-            item->setData(Qt::UserRole, it.value().second);
+    QHash<QString, QMap<QString, QString>> priorityHash = packageManagerCore()->sortedLicenses();
+
+    QStringList priorities = priorityHash.keys();
+    priorities.sort();
+
+    for (int i = priorities.length() - 1; i >= 0; --i) {
+        QString priority = priorities.at(i);
+        QMap<QString, QString> licenses = priorityHash.value(priority);
+        QStringList licenseNames = licenses.keys();
+        licenseNames.sort(Qt::CaseInsensitive);
+        for (QString licenseName : licenseNames) {
+            QListWidgetItem *item = new QListWidgetItem(licenseName, m_licenseListWidget);
+            item->setData(Qt::UserRole, licenses.value(licenseName));
+        }
     }
 }
 
@@ -1838,23 +2048,19 @@ void LicenseAgreementPage::updateUi()
 {
     QString subTitleText;
     QString acceptButtonText;
-    QString rejectButtonText;
     if (m_licenseListWidget->count() == 1) {
         subTitleText = tr("Please read the following license agreement. You must accept the terms "
                           "contained in this agreement before continuing with the installation.");
         acceptButtonText = tr("I accept the license.");
-        rejectButtonText = tr("I do not accept the license.");
     } else {
         subTitleText = tr("Please read the following license agreements. You must accept the terms "
                           "contained in these agreements before continuing with the installation.");
         acceptButtonText = tr("I accept the licenses.");
-        rejectButtonText = tr("I do not accept the licenses.");
     }
     m_licenseListWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     setColoredSubTitle(subTitleText);
 
     m_acceptLabel->setText(acceptButtonText);
-    m_rejectLabel->setText(rejectButtonText);
 
 }
 
@@ -1927,6 +2133,10 @@ void ComponentSelectionPage::entering()
     d->showCompressedRepositoryButton();
 }
 
+/*!
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+*/
 void ComponentSelectionPage::leaving()
 {
     d->hideCompressedRepositoryButton();
@@ -1978,9 +2188,7 @@ void ComponentSelectionPage::selectDefault()
 */
 void ComponentSelectionPage::selectComponent(const QString &id)
 {
-    const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
-    if (idx.isValid())
-        d->m_currentModel->setData(idx, Qt::Checked, Qt::CheckStateRole);
+    d->m_core->selectComponent(id);
 }
 
 /*!
@@ -1988,16 +2196,24 @@ void ComponentSelectionPage::selectComponent(const QString &id)
 */
 void ComponentSelectionPage::deselectComponent(const QString &id)
 {
-    const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
-    if (idx.isValid())
-        d->m_currentModel->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
+    d->m_core->deselectComponent(id);
 }
 
+/*!
+   Adds the possibility to install a compressed repository on component selection
+   page. A new button which opens a file browser is added for compressed
+   repository selection.
+*/
 void ComponentSelectionPage::allowCompressedRepositoryInstall()
 {
     d->allowCompressedRepositoryInstall();
 }
 
+/*!
+    Adds an additional virtual component with the \a name to be installed.
+
+    Returns \c true if the virtual component is found and not installed.
+*/
 bool ComponentSelectionPage::addVirtualComponentToUninstall(const QString &name)
 {
     PackageManagerCore *core = packageManagerCore();
@@ -2007,7 +2223,7 @@ bool ComponentSelectionPage::addVirtualComponentToUninstall(const QString &name)
     if (component && component->isInstalled() && component->isVirtual()) {
         component->setCheckState(Qt::Unchecked);
         core->componentsToInstallNeedsRecalculation();
-        qDebug() << "Virtual component " << name << " was selected for uninstall by script.";
+        qCDebug(QInstaller::lcDeveloperBuild) << "Virtual component " << name << " was selected for uninstall by script.";
         return true;
     }
     return false;
@@ -2089,6 +2305,7 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     connect(browseButton, &QAbstractButton::clicked, this, &TargetDirectoryPage::dirRequested);
     browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
     browseButton->setText(tr("B&rowse..."));
+    browseButton->setToolTip(TargetDirectoryPage::tr("Browse file system to choose the installation directory."));
     hlayout->addWidget(browseButton);
 
     layout->addLayout(hlayout);
@@ -2139,6 +2356,7 @@ void TargetDirectoryPage::initializePage()
             targetDir += productName();
         }
     }
+
     // NEXTGIS: change the default dir for Windows. Added in order to allow users without admin
     // permissions install software by default.
     #if defined(Q_OS_WIN)
@@ -2171,15 +2389,7 @@ void TargetDirectoryPage::initializePage()
 }
 
 /*!
-    Checks whether the target directory exists and has contents:
-
-    \list
-        \li Returns \c true if the directory exists and is empty.
-        \li Returns \c false if the directory already exists and contains an installation.
-        \li Returns \c false if the target is a file or a symbolic link.
-        \li Returns \c true or \c false if the directory exists but is not empty, depending on the
-            choice that the end users make in the displayed message box.
-    \endlist
+    Returns \c true if the target directory exists and has correct content.
 */
 bool TargetDirectoryPage::validatePage()
 {
@@ -2195,37 +2405,7 @@ bool TargetDirectoryPage::validatePage()
     if (!QVariant(remove).toBool())
         return true;
 
-    const QString targetDir = this->targetDir();
-    const QDir dir(targetDir);
-    // the directory exists and is empty...
-    if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
-        return true;
-
-    const QFileInfo fi(targetDir);
-    if (fi.isDir()) {
-        QString fileName = packageManagerCore()->settings().maintenanceToolName();
-#if defined(Q_OS_OSX)
-        if (QInstaller::isInBundle(QCoreApplication::applicationDirPath()))
-            fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
-#elif defined(Q_OS_WIN)
-        fileName += QLatin1String(".exe");
-#endif
-
-        QFileInfo fi2(targetDir + QDir::separator() + fileName);
-        if (fi2.exists()) {
-            return failWithError(QLatin1String("TargetDirectoryInUse"), tr("The directory you selected already "
-                "exists and contains an installation. Choose a different target for installation."));
-        }
-
-        return askQuestion(QLatin1String("OverwriteTargetDirectory"),
-            tr("You have selected an existing, non-empty directory for installation.\nNote that it will be "
-            "completely wiped on uninstallation of this application.\nIt is not advisable to install into "
-            "this directory as installation might fail.\nDo you want to continue?"));
-    } else if (fi.isFile() || fi.isSymLink()) {
-        return failWithError(QLatin1String("WrongTargetDirectory"), tr("You have selected an existing file "
-            "or symlink, please choose a different target for installation."));
-    }
-    return true;
+    return this->packageManagerCore()->checkTargetDir(targetDir());
 }
 
 /*!
@@ -2264,121 +2444,9 @@ void TargetDirectoryPage::dirRequested()
 */
 bool TargetDirectoryPage::isComplete() const
 {
-    m_warningLabel->setText(targetDirWarning());
+    m_warningLabel->setText(packageManagerCore()->targetDirWarning(targetDir()));
     return m_warningLabel->text().isEmpty();
 }
-
-/*!
-    Returns a warning if the path to the target directory is not set or if it
-    is invalid. Installation can continue only after a valid target path is given.
-*/
-QString TargetDirectoryPage::targetDirWarning() const
-{
-    if (targetDir().isEmpty())
-        return tr("The installation path cannot be empty, please specify a valid directory.");
-
-    QDir target(targetDir());
-    if (target.isRelative())
-        return tr("The installation path cannot be relative, please specify an absolute path.");
-
-    QString nativeTargetDir = QDir::toNativeSeparators(target.absolutePath());
-    if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
-        for (int i = 0; i < nativeTargetDir.length(); ++i) {
-            if (nativeTargetDir.at(i).unicode() & 0xff80) {
-                return tr("The path or installation directory contains non ASCII characters. This "
-                    "is currently not supported! Please choose a different path or installation "
-                    "directory.");
-            }
-        }
-    }
-
-    target = target.canonicalPath();
-    if (!target.isEmpty() && (target == QDir::root() || target == QDir::home())) {
-        return tr("As the install directory is completely deleted, installing in %1 is forbidden.")
-            .arg(QDir::toNativeSeparators(target.path()));
-    }
-
-#ifdef Q_OS_WIN
-    // folder length (set by user) + maintenance tool name length (no extension) + extra padding
-    if ((nativeTargetDir.length()
-        + packageManagerCore()->settings().maintenanceToolName().length() + 20) >= MAX_PATH) {
-        return tr("The path you have entered is too long, please make sure to "
-            "specify a valid path.");
-    }
-
-    static QRegularExpression reg(QLatin1String(
-        "^(?<drive>[a-zA-Z]:\\\\)|"
-        "^(\\\\\\\\(?<path>\\w+)\\\\)|"
-        "^(\\\\\\\\(?<ip>\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\\\)"));
-    const QRegularExpressionMatch regMatch = reg.match(nativeTargetDir);
-
-    const QString ipMatch = regMatch.captured(QLatin1String("ip"));
-    const QString pathMatch = regMatch.captured(QLatin1String("path"));
-    const QString driveMatch = regMatch.captured(QLatin1String("drive"));
-
-    if (ipMatch.isEmpty() && pathMatch.isEmpty() && driveMatch.isEmpty()) {
-        return tr("The path you have entered is not valid, please make sure to "
-            "specify a valid target.");
-    }
-
-    if (!driveMatch.isEmpty()) {
-        bool validDrive = false;
-        const QFileInfo drive(driveMatch);
-        foreach (const QFileInfo &driveInfo, QDir::drives()) {
-            if (drive == driveInfo) {
-                validDrive = true;
-                break;
-            }
-        }
-        if (!validDrive) {  // right now we can only verify local drives
-            return tr("The path you have entered is not valid, please make sure to "
-                "specify a valid drive.");
-        }
-        nativeTargetDir = nativeTargetDir.mid(2);
-    }
-
-    if (nativeTargetDir.endsWith(QLatin1Char('.')))
-        return tr("The installation path must not end with '.', please specify a valid directory.");
-
-    QString ambiguousChars = QLatin1String("[\"~<>|?*!@#$%^&:,; ]"
-        "|(\\\\CON)(\\\\|$)|(\\\\PRN)(\\\\|$)|(\\\\AUX)(\\\\|$)|(\\\\NUL)(\\\\|$)|(\\\\COM\\d)(\\\\|$)|(\\\\LPT\\d)(\\\\|$)");
-#else // Q_OS_WIN
-    QString ambiguousChars = QStringLiteral("[~<>|?*!@#$%^&:,; \\\\]");
-#endif // Q_OS_WIN
-
-    if (packageManagerCore()->settings().allowSpaceInPath())
-        ambiguousChars.remove(QLatin1Char(' '));
-
-    static QRegularExpression ambCharRegEx(ambiguousChars, QRegularExpression::CaseInsensitiveOption);
-    // check if there are not allowed characters in the target path
-    QRegularExpressionMatch match = ambCharRegEx.match(nativeTargetDir);
-    if (match.hasMatch()) {
-        return tr("The installation path must not contain \"%1\", "
-            "please specify a valid directory.").arg(match.captured(0));
-    }
-
-    return QString();
-}
-
-/*!
-    Returns \c true if a warning message specified by \a message with the
-    identifier \a identifier is presented to end users for acknowledgment.
-*/
-bool TargetDirectoryPage::askQuestion(const QString &identifier, const QString &message)
-{
-    QMessageBox::StandardButton bt =
-        MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(), identifier,
-        tr("Warning"), message, QMessageBox::Yes | QMessageBox::No);
-    return bt == QMessageBox::Yes;
-}
-
-bool TargetDirectoryPage::failWithError(const QString &identifier, const QString &message)
-{
-    MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), identifier,
-        tr("Error"), message);
-    return false;
-}
-
 
 // -- StartMenuDirectoryPage
 
@@ -2408,7 +2476,7 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     startMenuPath = core->value(QLatin1String("UserStartMenuProgramsPath"));
     QStringList dirs = QDir(startMenuPath).entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
     if (core->value(scAllUsers, scFalse) == scTrue) {
-        startMenuPath = core->value(QLatin1String("AllUsersStartMenuProgramsPath"));
+        startMenuPath = core->value(scAllUsersStartMenuProgramsPath);
         dirs += QDir(startMenuPath).entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
     }
     dirs.removeDuplicates();
@@ -2479,6 +2547,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ReadyForInstallationPage"));
+    updatePageListTitle();
 
     QVBoxLayout *baseLayout = new QVBoxLayout();
     baseLayout->setObjectName(QLatin1String("BaseLayout"));
@@ -2507,6 +2576,9 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
 
     setCommitPage(true);
     setLayout(baseLayout);
+
+    connect(core, &PackageManagerCore::installerBinaryMarkerChanged,
+            this, &ReadyForInstallationPage::updatePageListTitle);
 }
 
 /*!
@@ -2545,102 +2617,17 @@ void ReadyForInstallationPage::entering()
     QString htmlOutput;
     bool componentsOk = packageManagerCore()->calculateComponents(&htmlOutput);
     m_taskDetailsBrowser->setHtml(htmlOutput);
-    m_taskDetailsBrowser->setVisible(!componentsOk || isVerbose());
+    m_taskDetailsBrowser->setVisible(!componentsOk || LoggingHandler::instance().isVerbose());
     setComplete(componentsOk);
 
-    const VolumeInfo tempVolume = VolumeInfo::fromPath(QDir::tempPath());
-    const VolumeInfo targetVolume = VolumeInfo::fromPath(packageManagerCore()->value(scTargetDir));
-
-    const quint64 tempVolumeAvailableSize = tempVolume.availableSize();
-    const quint64 installVolumeAvailableSize = targetVolume.availableSize();
-
-    // at the moment there is no better way to check this
-    if (targetVolume.size() == 0 && installVolumeAvailableSize == 0) {
-        qDebug().nospace() << "Cannot determine available space on device. "
-                              "Volume descriptor: " << targetVolume.volumeDescriptor()
-                           << ", Mount path: " << targetVolume.mountPath() << ". Continue silently.";
-        return;     // TODO: Shouldn't this also disable the "Next" button?
-    }
-
-    const bool tempOnSameVolume = (targetVolume == tempVolume);
-    if (tempOnSameVolume) {
-        qDebug() << "Tmp and install directories are on the same volume. Volume mount point:"
-            << targetVolume.mountPath() << "Free space available:"
-            << humanReadableSize(installVolumeAvailableSize);
+    QString spaceInfo;
+    if (packageManagerCore()->checkAvailableSpace(spaceInfo)) {
+        m_msgLabel->setText(QString::fromLatin1("%1 %2").arg(m_msgLabel->text(), spaceInfo));
     } else {
-        qDebug() << "Tmp is on a different volume than the installation directory. Tmp volume mount point:"
-            << tempVolume.mountPath() << "Free space available:"
-            << humanReadableSize(tempVolumeAvailableSize) << "Install volume mount point:"
-            << targetVolume.mountPath() << "Free space available:"
-            << humanReadableSize(installVolumeAvailableSize);
-    }
-
-    const quint64 extraSpace = 256 * 1024 * 1024LL;
-    quint64 required(packageManagerCore()->requiredDiskSpace());
-    quint64 tempRequired(packageManagerCore()->requiredTemporaryDiskSpace());
-    if (required < extraSpace) {
-        required += 0.1 * required;
-        tempRequired += 0.1 * tempRequired;
-    } else {
-        required += extraSpace;
-        tempRequired += extraSpace;
-    }
-
-    quint64 repositorySize = 0;
-    const bool createLocalRepository = packageManagerCore()->createLocalRepositoryFromBinary();
-    if (createLocalRepository && packageManagerCore()->isInstaller()) {
-        repositorySize = QFile(QCoreApplication::applicationFilePath()).size();
-        // if we create a local repository, take that space into account as well
-        required += repositorySize;
-    }
-
-    qDebug() << "Installation space required:" << humanReadableSize(required) << "Temporary space "
-        "required:" << humanReadableSize(tempRequired) << "Local repository size:"
-        << humanReadableSize(repositorySize);
-
-    if (tempOnSameVolume && (installVolumeAvailableSize <= (required + tempRequired))) {
-        m_msgLabel->setText(tr("Not enough disk space to store temporary files and the "
-            "installation. %1 are available, while %2 are at least required.")
-            .arg(humanReadableSize(installVolumeAvailableSize),
-            humanReadableSize(required + tempRequired)));
+        m_msgLabel->setText(spaceInfo);
         setComplete(false);
-        return;
     }
-
-    if (installVolumeAvailableSize < required) {
-        m_msgLabel->setText(tr("Not enough disk space to store all selected components! %1 are available "
-            "while %2 are at least required.").arg(humanReadableSize(installVolumeAvailableSize),
-            humanReadableSize(required)));
-        setComplete(false);
-        return;
-    }
-
-    if (tempVolumeAvailableSize < tempRequired) {
-        m_msgLabel->setText(tr("Not enough disk space to store temporary files! %1 are available "
-            "while %2 are at least required.").arg(humanReadableSize(tempVolumeAvailableSize),
-            humanReadableSize(tempRequired)));
-        setComplete(false);
-        return;
-    }
-
-    if (installVolumeAvailableSize - required < 0.01 * targetVolume.size()) {
-        // warn for less than 1% of the volume's space being free
-        m_msgLabel->setText(tr("The volume you selected for installation seems to have sufficient "
-            "space for installation, but there will be less than 1% of the volume's space "
-            "available afterwards. %1").arg(m_msgLabel->text()));
-    } else if (installVolumeAvailableSize - required < 100 * 1024 * 1024LL) {
-        // warn for less than 100MB being free
-        m_msgLabel->setText(tr("The volume you selected for installation seems to have sufficient "
-            "space for installation, but there will be less than 100 MB available afterwards. %1")
-            .arg(m_msgLabel->text()));
-    }
-
-    m_msgLabel->setText(QString::fromLatin1("%1 %2").arg(m_msgLabel->text(),
-            tr("Installation will use %1 of disk space.")
-            .arg(humanReadableSize(packageManagerCore()->requiredDiskSpace()))));
 }
-
-
 
 /*!
     Called when end users leave the page and the PackageManagerGui:currentPageChanged()
@@ -2649,6 +2636,20 @@ void ReadyForInstallationPage::entering()
 void ReadyForInstallationPage::leaving()
 {
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
+}
+
+/*!
+    Updates page list title based on installer binary type.
+*/
+void ReadyForInstallationPage::updatePageListTitle()
+{
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isInstaller())
+        setPageListTitle(tr("Ready to Install"));
+    else if (core->isMaintainer())
+        setPageListTitle(tr("Ready to Update"));
+    else if (core->isUninstaller())
+        setPageListTitle(tr("Ready to Uninstall"));
 }
 
 // -- PerformInstallationPage
@@ -2663,13 +2664,13 @@ void ReadyForInstallationPage::leaving()
 */
 
 /*!
-    \fn PerformInstallationPage::isInterruptible() const
+    \fn QInstaller::PerformInstallationPage::isInterruptible() const
 
     Returns \c true if the installation can be interrupted.
 */
 
 /*!
-    \fn PerformInstallationPage::setAutomatedPageSwitchEnabled(bool request)
+    \fn QInstaller::PerformInstallationPage::setAutomatedPageSwitchEnabled(bool request)
 
     Enables automatic switching of pages when \a request is \c true.
 */
@@ -2684,8 +2685,10 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("PerformInstallationPage"));
+    updatePageListTitle();
 
     m_performInstallationForm->setupUi(this);
+    m_imageChangeTimer.setInterval(10000);
 
     connect(ProgressCoordinator::instance(), &ProgressCoordinator::detailTextChanged,
         m_performInstallationForm, &PerformInstallationForm::appendProgressDetails);
@@ -2708,6 +2711,12 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
             this, &PerformInstallationPage::setTitleMessage);
     connect(this, &PerformInstallationPage::setAutomatedPageSwitchEnabled,
             core, &PackageManagerCore::setAutomatedPageSwitchEnabled);
+
+    connect(core, &PackageManagerCore::installerBinaryMarkerChanged,
+            this, &PerformInstallationPage::updatePageListTitle);
+
+    connect(&m_imageChangeTimer, &QTimer::timeout,
+            this, &PerformInstallationPage::changeCurrentImage);
 
     m_performInstallationForm->setDetailsWidgetVisible(true);
 
@@ -2741,6 +2750,17 @@ void PerformInstallationPage::entering()
 {
     setComplete(false);
 
+    m_performInstallationForm->enableDetails();
+    emit setAutomatedPageSwitchEnabled(true);
+
+    changeCurrentImage();
+    // No need to start the timer if we only have one, or no images
+    if (packageManagerCore()->settings().productImages().count() > 1)
+        m_imageChangeTimer.start();
+
+    if (LoggingHandler::instance().isVerbose()) {
+        m_performInstallationForm->toggleDetails();
+    }
     if (packageManagerCore()->isUninstaller()) {
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setColoredTitle(tr("Uninstalling %1").arg(productName()));
@@ -2757,12 +2777,6 @@ void PerformInstallationPage::entering()
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
     }
-
-    m_performInstallationForm->enableDetails();
-    emit setAutomatedPageSwitchEnabled(true);
-
-    if (isVerbose())
-        m_performInstallationForm->toggleDetails();
 }
 
 /*!
@@ -2772,6 +2786,21 @@ void PerformInstallationPage::entering()
 void PerformInstallationPage::leaving()
 {
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
+    m_imageChangeTimer.stop();
+}
+
+/*!
+    Updates page list title based on installer binary type.
+*/
+void PerformInstallationPage::updatePageListTitle()
+{
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isInstaller())
+        setPageListTitle(tr("Installing"));
+    else if (core->isMaintainer())
+        setPageListTitle(tr("Updating"));
+    else if (core->isUninstaller())
+        setPageListTitle(tr("Uninstalling"));
 }
 
 // -- public slots
@@ -2782,6 +2811,27 @@ void PerformInstallationPage::leaving()
 void PerformInstallationPage::setTitleMessage(const QString &title)
 {
     setColoredTitle(title);
+}
+
+/*!
+    Changes the currently shown product image to the next available
+    image from installer configuration.
+*/
+void PerformInstallationPage::changeCurrentImage()
+{
+    const QStringList productImages = packageManagerCore()->settings().productImages();
+    if (productImages.isEmpty())
+        return;
+
+    const QString nextImage = (m_currentImage.isEmpty() || m_currentImage == productImages.last())
+       ? productImages.first()
+       : productImages.at(productImages.indexOf(m_currentImage) + 1);
+
+    // Do not update the pixmap if there was only one image available
+    if (nextImage != m_currentImage) {
+        m_performInstallationForm->setImageFromFileName(nextImage);
+        m_currentImage = nextImage;
+    }
 }
 
 // -- private slots
@@ -2795,7 +2845,6 @@ void PerformInstallationPage::installationFinished()
 {
     m_performInstallationForm->stopUpdateProgress();
     if (!isAutoSwitching()) {
-        m_performInstallationForm->scrollDetailsToTheEnd();
         m_performInstallationForm->setDetailsButtonEnabled(false);
 
         setComplete(true);
@@ -2842,6 +2891,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
 {
     setObjectName(QLatin1String("FinishedPage"));
     setColoredTitle(tr("Completing the %1 Wizard").arg(productName()));
+    setPageListTitle(tr("Finished"));
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
@@ -2875,7 +2925,7 @@ void FinishedPage::entering()
     }
 
     if (packageManagerCore()->isMaintainer()) {
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         gui()->setOption(QWizard::NoCancelButton, false);
 #endif
         if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton)) {
@@ -2939,7 +2989,7 @@ void FinishedPage::entering()
 */
 void FinishedPage::leaving()
 {
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     gui()->setOption(QWizard::NoCancelButton, true);
 #endif
 
@@ -2965,7 +3015,7 @@ void FinishedPage::handleFinishClicked()
     if (!m_runItCheckBox->isChecked() || program.isEmpty())
         return;
 
-    qDebug() << "starting" << program << args;
+    qCDebug(QInstaller::lcInstallerInstallLog) << "starting" << program << args;
     QProcess::startDetached(program, args);
 }
 
@@ -2999,7 +3049,7 @@ void FinishedPage::cleanupChangedConnects()
 */
 
 /*!
-    \fn RestartPage::restart()
+    \fn QInstaller::RestartPage::restart()
 
     This signal is emitted when the installer is restarted.
 */
@@ -3013,6 +3063,8 @@ RestartPage::RestartPage(PackageManagerCore *core)
     setObjectName(QLatin1String("RestartPage"));
     setColoredTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
 
+    // Never show this page on the page list
+    setShowOnPageList(false);
     setFinalPage(false);
 }
 

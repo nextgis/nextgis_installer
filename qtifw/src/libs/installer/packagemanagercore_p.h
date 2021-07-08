@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -67,12 +67,6 @@ class PackageManagerCorePrivate : public QObject
     Q_DISABLE_COPY(PackageManagerCorePrivate)
 
 public:
-    enum OperationType {
-        Backup,
-        Perform,
-        Undo
-    };
-
     explicit PackageManagerCorePrivate(PackageManagerCore *core);
     explicit PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<OperationBlob> &performedOperations);
@@ -80,8 +74,8 @@ public:
 
     static bool isProcessRunning(const QString &name, const QList<ProcessInfo> &processes);
 
-    static bool performOperationThreaded(Operation *op, PackageManagerCorePrivate::OperationType type
-        = PackageManagerCorePrivate::Perform);
+    static bool performOperationThreaded(Operation *op, UpdateOperation::OperationType type
+        = UpdateOperation::Perform);
 
     void initialize(const QHash<QString, QString> &params);
     bool isOfflineOnly() const;
@@ -93,15 +87,16 @@ public:
     QString registerPath();
 
     bool directoryWritable(const QString &path) const;
-    bool subdirectoriesWritable(const QString &path) const;
 
     QString maintenanceToolName() const;
     QString installerBinaryPath() const;
+    QString offlineBinaryName() const;
 
     void writeMaintenanceConfigFiles();
     void readMaintenanceConfigFiles(const QString &targetDir);
 
     void writeMaintenanceTool(OperationList performedOperations);
+    void writeOfflineBaseBinary();
 
     QString componentsXmlPath() const;
     QString configurationFileName() const;
@@ -129,11 +124,13 @@ public:
     bool runUninstaller();
     bool isUninstaller() const;
 
-    void runUpdater();
     bool isUpdater() const;
 
     bool runPackageUpdater();
     bool isPackageManager() const;
+
+    bool runOfflineGenerator();
+    bool isOfflineGenerator() const;
 
     QString replaceVariables(const QString &str) const;
     QByteArray replaceVariables(const QByteArray &str) const;
@@ -165,11 +162,16 @@ public:
     void installComponent(Component *component, double progressOperationSize,
         bool adminRightsGained = false);
 
+    bool runningProcessesFound();
+    void setComponentSelection(const QString &id, Qt::CheckState state);
+
 signals:
     void installationStarted();
     void installationFinished();
     void uninstallationStarted();
     void uninstallationFinished();
+    void offlineGenerationStarted();
+    void offlineGenerationFinished();
 
 public:
     UpdateFinder *m_updateFinder;
@@ -185,11 +187,16 @@ public:
     bool m_needsHardRestart;
     bool m_testChecksum;
     bool m_launchedAsRoot;
+    bool m_commandLineInstance;
+    bool m_defaultInstall;
+    bool m_userSetBinaryMarker;
+    bool m_checkAvailableSpace;
     bool m_completeUninstall;
     bool m_needToWriteMaintenanceTool;
     PackageManagerCoreData m_data;
-    QHash<QString, bool> m_sharedFlags;
     QString m_installerBaseBinaryUnreplaced;
+    QString m_offlineBaseBinaryUnreplaced;
+    QStringList m_offlineGeneratorResourceCollections;
 
     QList<QInstaller::Component*> m_rootComponents;
     QList<QInstaller::Component*> m_rootDependencyReplacements;
@@ -207,6 +214,10 @@ public:
     OperationList m_performedOperationsCurrentSession;
 
     bool m_dependsOnLocalInstallerBinary;
+    QStringList m_allowedRunningProcesses;
+    bool m_autoAcceptLicenses;
+    bool m_disableWriteMaintenanceTool;
+    bool m_autoConfirmCommand;
 
 private slots:
     void infoMessage(Job *, const QString &message) {
@@ -237,12 +248,16 @@ private:
     PackagesList remotePackages();
     PackagesList compressedPackages();
     LocalPackagesHash localInstalledPackages();
-    bool fetchMetaInformationFromRepositories();
+    bool fetchMetaInformationFromRepositories(DownloadType type = DownloadType::All);
     bool fetchMetaInformationFromCompressedRepositories();
     bool addUpdateResourcesFromRepositories(bool parseChecksum, bool compressedRepository = false);
     void processFilesForDelayedDeletion();
     void findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result);
     QStringList runningInstallerProcesses(const QStringList &exludeFiles);
+    bool calculateComponentsAndRun();
+    bool acceptLicenseAgreements() const;
+    bool askUserAcceptLicense(const QString &name, const QString &content) const;
+    bool askUserConfirmCommand() const;
 
 private:
     PackageManagerCore *m_core;
@@ -255,6 +270,7 @@ private:
     qint64 m_magicBinaryMarker;
     bool m_componentsToInstallCalculated;
     bool m_foundEssentialUpdate;
+    bool m_offlineGenerator;
 
     mutable ScriptEngine *m_componentScriptEngine;
     mutable ScriptEngine *m_controlScriptEngine;
@@ -272,6 +288,7 @@ private:
 
     QObject *m_guiObject;
     QScopedPointer<RemoteFileEngineHandler> m_remoteFileEngineHandler;
+    QHash<QString, QVariantMap> m_licenseItems;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

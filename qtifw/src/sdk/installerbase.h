@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -30,6 +30,7 @@
 #define INSTALLERBASE_H
 
 #include "sdkapp.h"
+#include "commandlineparser.h"
 
 namespace QInstaller {
     class PackageManagerCore;
@@ -49,9 +50,6 @@ public:
 private:
     void dumpResourceTree() const;
     QStringList repositories(const QString &list) const;
-
-private:
-    QInstaller::PackageManagerCore *m_core;
 };
 
 #endif // INSTALLERBASE_H

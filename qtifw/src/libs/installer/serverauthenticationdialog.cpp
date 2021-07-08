@@ -34,6 +34,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ServerAuthenticationDialog
+    \internal
+*/
+
 ServerAuthenticationDialog::ServerAuthenticationDialog(const QString &m, const FileTaskItem &item)
     : ui(new Ui::ServerAuthenticationDialog)
 {

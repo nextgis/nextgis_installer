@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -11,8 +11,8 @@
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU Free Documentation License Usage
 ** Alternatively, this file may be used under the terms of the GNU Free
@@ -20,21 +20,20 @@
 ** Foundation and appearing in the file included in the packaging of
 ** this file. Please review the following information to ensure
 ** the GNU Free Documentation License version 1.3 requirements
-** will be met: http://www.gnu.org/copyleft/fdl.html.
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
 /*!
-    \contentspage{index.html}{Qt Installer Framework}
     \previouspage scripting.html
     \page operations.html
     \nextpage ifw-tools.html
 
     \title Operations
 
-    The operations are prepared by component and controller scripts and performed by the
-    installer.
+    The operations are prepared by component and controller scripts or component.xml
+    and performed by the installer.
     \note Operations are performed threaded.
 
     Internally, each operation has a \e DO step that contains instructions for
@@ -43,7 +42,19 @@
 
     \section1 Summary of Operations
 
-    The following table summarizes the available operations and their syntax.
+    The following table summarizes the available operations and their syntax in component
+    and controller scripts. Syntax for operations in component.xml is:
+    \code
+    <Operations>
+      <Operation name="operation">
+        <Argument>argument1</Argument>
+        <Argument>argument2</Argument>
+      </Operation>
+    </Operations>
+    \endcode
+    \note The argument order in component.xml is the same as in scripting, except for
+    \c Extract operation where the argument \c archive is optional, and must be defined
+    as the last argument.
 
     \table
         \header
@@ -62,6 +73,10 @@
             \li SimpleMoveFile
             \li "SimpleMoveFile" \c source \c target
             \li Moves a file from \c source to \c target.
+
+            \note Files will be moved from \c target to \c source during uninstallation.
+            If you want to move the files persistently, you can overwrite the \e UNDO
+            by passing \e UNDOOPERATION and \e "", to the end of the argument list.
         \row
             \li Delete
             \li "Delete" \c filename
@@ -78,6 +93,9 @@
             \li CopyDirectory
             \li "CopyDirectory" \c sourcePath \c targetPath
             \li Copies a directory from \c sourcePath to \c targetPath.
+            \note Directories will be reset during uninstallation. If you want to copy the
+                directory persistently, you can overwrite the \e UNDO by passing \e UNDOOPERATION
+                and \e "", to the end of the argument list.
         \row
             \li AppendFile
             \li "AppendFile" \c filename \c text
@@ -90,8 +108,16 @@
                 is treated as ASCII text.
         \row
             \li Replace
-            \li "Replace" \c file \c search \ replace
-            \li Opens \c file to find \c search string and replaces that with the \c replace string.
+            \li "Replace" \c file \c search \c replace \c mode
+            \li Opens \c file to find \c search string and replaces that with the \c replace string,
+                using \c mode that can be either \c string or \c regex. For regular expressions
+                containing capturing groups, occurrences of \c \1, \c \2, ..., in \c replace are
+                replaced with the string captured by the corresponding capturing group.
+
+                Note that testing the operation using \c devtool does not support commas inside the
+                \c search pattern as they are used as argument separators. When using \c regex mode you
+                should also ensure the \c search pattern adheres to \c QRegularExpression class
+                documentation, particularly to the escaping rules for characters.
         \row
             \li LineReplace
             \li "LineReplace" \c file \c search \c replace
@@ -122,19 +148,21 @@
             \li Creates a shortcut from the file specified by \c filename to
                 \c linkname.
                 On Windows, this creates a .lnk file which can have
-                \c arguments. Furthermore, on Windows, \c filename can be
+                \c arguments. Furthermore, \c filename can be
                 an HTTP or FTP URL in which case a URL shortcut is created.
-                On Unix, this creates a symbolic link.
+                The operation is currently not implemented on other platforms.
         \row
             \li CreateDesktopEntry
             \li "CreateDesktopEntry" \c {filename "key=value[ key2=value2[ key3=value3]]]"}
             \li Creates a .desktop initialization file, as specified by
-                freedesktop.org.
+                freedesktop.org. This operation is useful only on X11 or
+                Wayland based Linux distributions.
 
                 If \c filename is absolute, the desktop entry is stored there.
                 Otherwise, it is stored in the location specified in
                 \c{$XDG_DATA_HOME/applications}, including the default path,
-                as defined by freedesktop.org.
+                as defined by freedesktop.org. For system-wide installations,
+                it is stored in \c {/usr/local/share/applications} instead.
 
                 The key-value pairs are written to the file.
 
@@ -144,8 +172,8 @@
             \li "InstallIcons" \c directory \c [Vendorprefix]
             \li Installs the contents of \c directory into a location, as
                 specified by freedesktop.org. That is, into
-                \c {$XDG_DATA_HOME/icons} or
-                \c {$HOME/.local/share/icons}. The files are removed from their initial
+                \c {$XDG_DATA_HOME/icons}, \c {$HOME/.local/share/icons} or
+                \c {/usr/local/share/icons}. The files are removed from their initial
                 location. Make sure to add this operation after the operation
                 that extracts the files from the archive.
                 If you provide a \c Vendorprefix it replaces all characters up to the
@@ -154,6 +182,8 @@
             \li Extract
             \li "Extract" \c archive \c targetdirectory
             \li Extracts \c archive to \c targetdirectory.
+                Extract operations are called before other operations. Note that in component.xml
+                argument \c archive is optional and thus must be defined as the last parameter.
 
         \row
             \li GlobalConfig
@@ -172,6 +202,10 @@
                 registry) or by \c application and \c company name. Set \c scope
                 to "SystemScope" to create an entry in the system scope.
 
+                \note GlobalConfig will be reset during uninstallation. If you want to make the
+                config persistent, you can overwrite the \e UNDO by passing \e UNDOOPERATION and
+                \e "", to the end of the argument list.
+
                 \note The operation is using QSettings to store the key value pair. QSettings
                 always treats backslash as a special character and provides no API for reading
                 or writing such entries. Do not use slashes ('/' and '\\') in section or key names;
@@ -188,6 +222,8 @@
                 persistently. This is currently only supported on Windows.
                 If \c system is set to \c true, the persistent variable is set
                 system-wide, not only for the current user.
+                Note, if you set path to environment variable, use '\\' as separator, for example:
+                @Targetdir@\\lib\\system.
         \row
             \li RegisterFileType
             \li "RegisterFileType" \c extension \c command [\c description [\c contentType [\c icon]]].
@@ -195,6 +231,9 @@
                 \c command. Optionally, you can specify \c description,
                 \c contentType, and \c icon. This is currently only supported on
                 Windows.
+                \note File type will be unregistered during uninstallation. If you want keep the
+                type registered, you can overwrite the \e UNDO by passing \e UNDOOPERATION
+                and \e "", to the end of the argument list.
         \row
             \li ConsumeOutput
             \li "ConsumeOutput" \c installerKeyName \c executablePath \c processArguments
@@ -205,14 +244,17 @@
         \row
             \li CreateLink
             \li "CreateLink" \c linkPath \c targetPath
-            \li Creates a link from the location specified by \c linkPath to
-                the location specified by \c targetPath.
+            \li Creates a link in the location specified by \c linkPath that
+                points to the location specified by \c targetPath.
         \row
             \li CreateLocalRepository
             \li "CreateLocalRepository" \c binaryPath \c repoPath
             \li Creates a local repository in the directory specified by
                 \c repoPath. For offline installers, stores binary data in the
                 directory specified by \c binaryPath.
+                \note The repository will be deleted during uninstallation. If you want keep
+                the repository, you can overwrite the \e UNDO by passing \e UNDOOPERATION
+                and \e "", to the end of the argument list.
         \row
             \li FakeStopProcessForUpdate
             \li "FakeStopProcessForUpdate" \c processlist
@@ -235,10 +277,10 @@
             \li Restarts the updater or package manager specified by \c core.
         \row
             \li Settings
-            \li "Settings" \c path \c method \c key \c aValue
-            \li Sets or removes the value \c aValue of \c key in the settings file
-                or registry located at \c path, depending on the value of
-                \c method: \c set, \c remove, \c add_array_value, and \c remove_array_value.
+            \li "Settings" \c path \c method \c key \c value
+            \li Sets or removes the \c value of \c key in the settings file located at
+                \c path, depending on the value of \c method: \c set, \c remove,
+                \c add_array_value, and \c remove_array_value.
     \endtable
 
     The Extract, License, and MinimumProgress operations are automatically added for matching
@@ -250,7 +292,7 @@
 
     For example, to test copying a file:
     \code
-    devtool --operation DO,Copy,<source>,<target>
+    devtool operation <binary> DO,Copy,<source>,<target>
     \endcode
 
 */

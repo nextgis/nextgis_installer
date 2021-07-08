@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -50,7 +50,11 @@
 
 #include <QtUiTools/QUiLoader>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,14,0)
+#include <private/qv4engine_p.h>
+#else
 #include <private/qv8engine_p.h>
+#endif
 #include <private/qv4scopedvalue_p.h>
 #include <private/qv4object_p.h>
 
@@ -70,8 +74,23 @@ static const QLatin1String scExpandedByDefault("ExpandedByDefault");
 static const QLatin1String scUnstable("Unstable");
 
 /*!
+    \enum QInstaller::Component::UnstableError
+
+    This enum type holds the component unstable error reason:
+
+    \value  DepencyToUnstable
+            Component has a dependency to an unstable component.
+    \value  ShaMismatch
+            Component has packages with non-matching SHA values.
+    \value  ScriptLoadingFailed
+            Component script has errors or loading fails.
+    \value  MissingDependency
+            Component has dependencies to missing components.
+*/
+
+/*!
     \inmodule QtInstallerFramework
-    \class Component::SortingPriorityLessThan
+    \class QInstaller::Component::SortingPriorityLessThan
     \brief The SortingPriorityLessThan class sets an increasing sorting order for child components.
 
     If the component contains several children and has this sorting priority set, the child list
@@ -79,14 +98,14 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \fn Component::SortingPriorityLessThan::operator() (const Component *lhs, const Component *rhs) const
+    \fn QInstaller::Component::SortingPriorityLessThan::operator() (const Component *lhs, const Component *rhs) const
 
     Returns \c true if \a lhs is less than \a rhs; otherwise returns \c false.
 */
 
 /*!
     \inmodule QtInstallerFramework
-    \class Component::SortingPriorityGreaterThan
+    \class QInstaller::Component::SortingPriorityGreaterThan
     \brief The SortingPriorityGreaterThan class sets a decreasing sorting priority for child
     components.
 
@@ -95,7 +114,7 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \fn Component::SortingPriorityGreaterThan::operator() (const Component *lhs, const Component *rhs) const
+    \fn QInstaller::Component::SortingPriorityGreaterThan::operator() (const Component *lhs, const Component *rhs) const
 
     Returns \c true if \a lhs is greater than \a rhs; otherwise returns \c false.
 */
@@ -107,20 +126,20 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \property Component::name
+    \property QInstaller::Component::name
 
     \brief The name of the component as set in the \c <Name> tag of the package
     information file.
 */
 
 /*!
-    \property Component::displayName
+    \property QInstaller::Component::displayName
 
     \brief The name of the component as shown in the user interface.
 */
 
 /*!
-    \property Component::autoCreateOperations
+    \property QInstaller::Component::autoCreateOperations
 
     \brief Whether some standard operations for the component should be
     automatically created when the installation starts.
@@ -129,7 +148,7 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \property Component::archives
+    \property QInstaller::Component::archives
 
     \brief The list of archive URLs registered for the component.
 
@@ -139,25 +158,25 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \property Component::dependencies
+    \property QInstaller::Component::dependencies
 
     \brief The components this component depends on. This is a read-only property.
 */
 
 /*!
-    \property Component::autoDependencies
+    \property QInstaller::Component::autoDependencies
 
     \brief The value of the \c <AutoDependOn> element in the package information file.
 */
 
 /*!
-    \property Component::fromOnlineRepository
+    \property QInstaller::Component::fromOnlineRepository
 
     \brief Whether this component has been loaded from an online repository.
 */
 
 /*!
-    \property Component::repositoryUrl
+    \property QInstaller::Component::repositoryUrl
 
     \brief The repository URL the component is downloaded from.
 
@@ -165,7 +184,7 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \property Component::default
+    \property QInstaller::Component::default
 
     \brief Whether the component is a default one. This is a read-only property.
 
@@ -173,25 +192,43 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \property Component::installed
+    \property QInstaller::Component::installed
 
     \brief Whether the component is installed.  This is a read-only property.
 */
 
 /*!
-    \property Component::enabled
+    \property QInstaller::Component::enabled
 
     \brief Whether the component is currently enabled. The property is both readable and writable.
 */
 
 /*!
-    \fn Component::loaded()
+    \property QInstaller::Component::unstable
+
+    \brief Whether the component is unstable. This is a read-only property.
+
+    \note Unstable components cannot be selected for installation.
+*/
+
+/*!
+    \property QInstaller::Component::treeName
+
+    \brief The tree name of the component. Specifies the location of the component in the install tree view.
+
+    \note If the tree name is not set, the tree view is organized based on the component name.
+
+    \note Must be unique, the tree name must not conflict with other component's names or tree names.
+*/
+
+/*!
+    \fn QInstaller::Component::loaded()
 
     \sa {component::loaded}{component.loaded}
 */
 
 /*!
-    \fn Component::valueChanged(const QString &key, const QString &value)
+    \fn QInstaller::Component::valueChanged(const QString &key, const QString &value)
 
     Emitted when the value of the variable with the name \a key changes to \a value.
 
@@ -199,7 +236,7 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \fn Component::virtualStateChanged()
+    \fn QInstaller::Component::virtualStateChanged()
 
     \sa {component::virtualStateChanged}{component.virtualStateChanged}
 */
@@ -210,6 +247,7 @@ static const QLatin1String scUnstable("Unstable");
 */
 Component::Component(PackageManagerCore *core)
     : d(new ComponentPrivate(core, this))
+    , m_defaultArchivePath(QLatin1String("@TargetDir@"))
 {
     setPrivate(d);
 
@@ -246,6 +284,7 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
 {
     setValue(scName, package.name);
     setValue(scDisplayName, package.title);
+    setValue(scTreeName, package.treeName);
     setValue(scDescription, package.description);
     setValue(scVersion, package.version);
     setValue(scInheritVersion, package.inheritVersionFrom);
@@ -257,10 +296,6 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
     setValue(scAutoDependOn, package.autoDependencies.join(QLatin1String(",")));
 
     setValue(scForcedInstallation, package.forcedInstallation ? scTrue : scFalse);
-    if (package.forcedInstallation & !PackageManagerCore::noForceInstallation()) {
-        setCheckable(false);
-        setCheckState(Qt::Checked);
-    }
     setValue(scVirtual, package.virtualComp ? scTrue : scFalse);
     setValue(scCurrentState, scInstalled);
     setValue(scCheckable, package.checkable ? scTrue : scFalse);
@@ -277,6 +312,7 @@ void Component::loadDataFromPackage(const Package &package)
 
     setValue(scName, package.data(scName).toString());
     setValue(scDisplayName, package.data(scDisplayName).toString());
+    setValue(scTreeName, package.data(scTreeName).toString());
     setValue(scDescription, package.data(scDescription).toString());
     setValue(scDefault, package.data(scDefault).toString());
     setValue(scAutoDependOn, package.data(scAutoDependOn).toString());
@@ -290,6 +326,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scSortingPriority, package.data(scSortingPriority).toString());
 
     setValue(scEssential, package.data(scEssential).toString());
+    setValue(scForcedUpdate, package.data(scForcedUpdate).toString());
     setValue(scUpdateText, package.data(scUpdateText).toString());
     setValue(scNewComponent, package.data(scNewComponent).toString());
     setValue(scRequiresAdminRights, package.data(scRequiresAdminRights).toString());
@@ -304,25 +341,24 @@ void Component::loadDataFromPackage(const Package &package)
     if (PackageManagerCore::noForceInstallation())
         forced = scFalse;
     setValue(scForcedInstallation, forced);
-    if (forced == scTrue) {
-        setCheckable(false);
-        setCheckState(Qt::Checked);
-    }
 
     setLocalTempPath(QInstaller::pathFromUrl(package.packageSource().url));
     const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()
         .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
     if (!uis.isEmpty())
         loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), uis);
-
+#ifndef IFW_DISABLE_TRANSLATIONS
     const QStringList qms = package.data(QLatin1String("Translations")).toString()
         .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
     if (!qms.isEmpty())
         loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), qms);
-
+#endif
     QHash<QString, QVariant> licenseHash = package.data(QLatin1String("Licenses")).toHash();
     if (!licenseHash.isEmpty())
         loadLicenses(QString::fromLatin1("%1/%2/").arg(localTempPath(), name()), licenseHash);
+    QVariant operationsVariant = package.data(QLatin1String("Operations"));
+    if (operationsVariant.canConvert<QList<QPair<QString, QVariant>>>())
+        m_operationsList = operationsVariant.value<QList<QPair<QString, QVariant>>>();
 }
 
 /*!
@@ -387,6 +423,8 @@ void Component::setValue(const QString &key, const QString &value)
 
     if (d->m_vars.value(key) == normalizedValue)
         return;
+    if (key == scDefault && d->m_core->noDefaultInstallation())
+        normalizedValue = scFalse;
 
     if (key == scName)
         d->m_componentName = normalizedValue;
@@ -394,6 +432,12 @@ void Component::setValue(const QString &key, const QString &value)
         this->setCheckable(normalizedValue.toLower() == scTrue);
     if (key == scExpandedByDefault)
         this->setExpandedByDefault(normalizedValue.toLower() == scTrue);
+    if (key == scForcedInstallation) {
+        if (value == scTrue && !PackageManagerCore::noForceInstallation()) {
+            setCheckable(false);
+            setCheckState(Qt::Checked);
+        }
+    }
 
     d->m_vars[key] = normalizedValue;
     emit valueChanged(key, normalizedValue);
@@ -491,6 +535,16 @@ QString Component::displayName() const
 }
 
 /*!
+    Returns this component's location in the tree view. If the tree name is not
+    set, returns the component name. The tree name must be unique, it must not
+    conflict with other tree names or component names.
+*/
+QString Component::treeName() const
+{
+    return d->m_vars.value(scTreeName, name());
+}
+
+/*!
     Loads the component script into the script engine.
 */
 void Component::loadComponentScript()
@@ -524,13 +578,13 @@ void Component::loadComponentScript(const QString &fileName)
                 Component *dependencyComponent = packageManagerCore()->componentByName
                         (PackageManagerCore::checkableName(dependency));
                 if (dependencyComponent && dependencyComponent->isUnstable())
-                    setUnstable(PackageManagerCore::UnstableError::DepencyToUnstable, QLatin1String("Dependent on unstable component"));
+                    setUnstable(Component::UnstableError::DepencyToUnstable, QLatin1String("Dependent on unstable component"));
             }
         }
     } catch (const Error &error) {
         if (packageManagerCore()->settings().allowUnstableComponents()) {
-            setUnstable(PackageManagerCore::UnstableError::ScriptLoadingFailed, error.message());
-            qWarning() << error.message();
+            setUnstable(Component::UnstableError::ScriptLoadingFailed, error.message());
+            qCWarning(QInstaller::lcDeveloperBuild) << error.message();
         } else {
             throw error;
         }
@@ -615,13 +669,14 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
 
 /*!
   Loads the text of the licenses contained in \a licenseHash from \a directory.
-  This is saved into a new hash containing the filename and the text of that file.
+  This is saved into a new hash containing the filename, the text and the priority of that file.
 */
 void Component::loadLicenses(const QString &directory, const QHash<QString, QVariant> &licenseHash)
 {
     QHash<QString, QVariant>::const_iterator it;
     for (it = licenseHash.begin(); it != licenseHash.end(); ++it) {
-        const QString &fileName = it.value().toString();
+        QVariantMap license = it.value().toMap();
+        const QString &fileName = license.value(QLatin1String("file")).toString();
 
         if (!ProductKeyCheck::instance()->isValidLicenseTextFile(fileName))
             continue;
@@ -655,13 +710,47 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
         }
         QTextStream stream(&file);
         stream.setCodec("UTF-8");
-        d->m_licenses.insert(it.key(), qMakePair(fileName, stream.readAll()));
+        license.insert(QLatin1String("content"), stream.readAll());
+        d->m_licenses.insert(it.key(), license);
     }
 }
 
+/*!
+  Loads all operations defined in the component.xml except Extract operation.
+  Operations are added to the list of operations needed to install this component.
+*/
+void Component::loadXMLOperations()
+{
+    for (auto operation: m_operationsList) {
+        if (operation.first != QLatin1String("Extract"))
+           addOperation(operation.first, operation.second.toStringList());
+    }
+}
 
 /*!
-    \property Component::userInterfaces
+  Loads all Extract operations defined in the component.xml.
+  Operations are overwriting the default implementation of Extract operation.
+*/
+void Component::loadXMLExtractOperations()
+{
+    for (auto operation: m_operationsList) {
+        if (operation.first == QLatin1String("Extract")) {
+            // Create hash for Extract operations. Operation has a mandatory extract folder as
+            // first argument and optional archive name as second argument.
+            const QStringList &operationArgs = operation.second.toStringList();
+            if (operationArgs.count() == 2) {
+                const QString archiveName = value(scVersion) + operationArgs.at(1);
+                const QString archivePath = QString::fromLatin1("installer://%1/%2").arg(name()).arg(archiveName);
+                m_archivesHash.insert(archivePath, operationArgs.at(0));
+            } else if (operationArgs.count() == 1) {
+                m_defaultArchivePath = operationArgs.at(0);
+            }
+        }
+    }
+}
+
+/*!
+    \property QInstaller::Component::userInterfaces
 
     \brief A list of all user interface class names known to this component.
 */
@@ -671,9 +760,9 @@ QStringList Component::userInterfaces() const
 }
 
 /*!
-    Returns a hash that contains the file names and text of license files for the component.
+    Returns a hash that contains the file names, text and priorities of license files for the component.
 */
-QHash<QString, QPair<QString, QString> > Component::licenses() const
+QHash<QString, QVariantMap> Component::licenses() const
 {
     return d->m_licenses;
 }
@@ -767,8 +856,11 @@ void Component::createOperationsForArchive(const QString &archive)
     const bool isZip = Lib7z::isSupportedArchive(archive);
 
     if (isZip) {
-        // archives get completely extracted per default (if the script isn't doing other stuff)
-        addOperation(QLatin1String("Extract"), QStringList() << archive << QLatin1String("@TargetDir@"));
+        // component.xml can override this value
+        if (m_archivesHash.contains(archive))
+            addOperation(QLatin1String("Extract"), QStringList() << archive << m_archivesHash.value(archive));
+        else
+            addOperation(QLatin1String("Extract"), QStringList() << archive << m_defaultArchivePath);
     } else {
         createOperationsForPath(archive);
     }
@@ -795,10 +887,11 @@ void Component::createOperations()
             d->m_operationsCreated = true;
             return;
     }
-
+    loadXMLExtractOperations();
     foreach (const QString &archive, archives())
         createOperationsForArchive(archive);
 
+    loadXMLOperations();
     d->m_operationsCreated = true;
 }
 
@@ -847,8 +940,7 @@ QStringList Component::archives() const
 void Component::addDownloadableArchive(const QString &path)
 {
     Q_ASSERT(isFromOnlineRepository());
-
-    qDebug() << "addDownloadable" << path;
+    qCDebug(QInstaller::lcDeveloperBuild) << "addDownloadable" << path;
     d->m_downloadableArchives.append(d->m_vars.value(scVersion) + path);
 }
 
@@ -939,9 +1031,11 @@ OperationList Component::operations() const
             d->m_licenseOperation->setValue(QLatin1String("component"), name());
 
             QVariantMap licenses;
-            const QList<QPair<QString, QString> > values = d->m_licenses.values();
-            for (int i = 0; i < values.count(); ++i)
-                licenses.insert(values.at(i).first, values.at(i).second);
+            const QList<QVariantMap> values = d->m_licenses.values();
+            for (int i = 0; i < values.count(); ++i) {
+                licenses.insert(values.at(i).value(QLatin1String("file")).toString(),
+                        values.at(i).value(QLatin1String("content")));
+            }
             d->m_licenseOperation->setValue(QLatin1String("licenses"), licenses);
             d->m_operations.append(d->m_licenseOperation);
         }
@@ -1015,7 +1109,7 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
         const QMessageBox::StandardButton button =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
             QLatin1String("OperationDoesNotExistError"), tr("Error"), tr("Error: Operation %1 does not exist.")
-                .arg(operationName), QMessageBox::Abort | QMessageBox::Ignore);
+                .arg(operationName), QMessageBox::Abort | QMessageBox::Ignore, QMessageBox::Abort);
         if (button == QMessageBox::Abort)
             d->m_operationsCreatedSuccessfully = false;
         return operation;
@@ -1024,7 +1118,13 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
     if (operation->name() == QLatin1String("Delete"))
         operation->setValue(QLatin1String("performUndo"), false);
 
-    operation->setArguments(d->m_core->replaceVariables(parameters));
+    // Operation can contain variables which are resolved when performing the operation
+    if (operation->requiresUnreplacedVariables())
+        operation->setArguments(parameters);
+    else
+        operation->setArguments(d->m_core->replaceVariables(parameters));
+
+
     operation->setValue(QLatin1String("component"), name());
     return operation;
 }
@@ -1090,6 +1190,8 @@ bool Component::addOperation(QQmlV4Function *func)
     The variables that the parameters contain, such as \c @TargetDir@, are replaced with their
     values.
 
+    Returns \c true if the operation is created; otherwise returns \c false.
+
     \sa {component::addOperation}{component.addOperation}
 */
 bool Component::addOperation(const QString &operation, const QStringList &parameters)
@@ -1118,6 +1220,8 @@ bool Component::addElevatedOperation(QQmlV4Function *func)
     The variables that the parameters contain, such as \c @TargetDir@, are replaced with their
     values. The operation is executed with elevated rights.
 
+    Returns \c true if the operation is created; otherwise returns \c false.
+
     \sa {component::addElevatedOperation}{component.addElevatedOperation}
 */
 bool Component::addElevatedOperation(const QString &operation, const QStringList &parameters)
@@ -1134,6 +1238,8 @@ bool Component::addElevatedOperation(const QString &operation, const QStringList
     Specifies whether operations should be automatically created when the installation starts. This
     would be done by calling createOperations(). If you set this to \c false, it is completely up
     to the component's script to create all operations.
+
+    Returns \c false when component's script will create all operations; otherwise returns \c true.
 
     \sa {component::autoCreateOperations}{component.autoCreateOperations}
 */
@@ -1215,7 +1321,7 @@ QStringList Component::dependencies() const
     Adds the component specified by \a newDependOn to the automatic depend-on list.
 
     \sa {component::addAutoDependOn}{component.addAutoDependOn}
-    \sa dependencies
+    \sa autoDependencies
 */
 
 void Component::addAutoDependOn(const QString &newDependOn)
@@ -1255,6 +1361,23 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
     if (autoDependOnList.isEmpty())
         return false;
 
+    // If there is an essential update and autodepend on is not for essential
+    // update component, do not add the autodependency to an installed component as
+    // essential updates needs to be installed first, otherwise non-essential components
+    // will be installed
+    if (packageManagerCore()->foundEssentialUpdate()) {
+        const QSet<QString> autoDependOnSet = autoDependOnList.toSet();
+        if (componentsToInstall.contains(autoDependOnSet)) {
+            foreach (const QString &autoDep, autoDependOnSet) {
+                Component *component = packageManagerCore()->componentByName(autoDep);
+                if ((component->value(scEssential, scFalse).toLower() == scTrue)
+                        || component->isForcedUpdate()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     QSet<QString> components = componentsToInstall;
     const QStringList installedPackages = d->m_core->localInstalledPackages().keys();
     foreach (const QString &name, installedPackages)
@@ -1291,7 +1414,8 @@ bool Component::isDefault() const
         }
         if (!valueFromScript.isError())
             return valueFromScript.toBool();
-        qDebug() << "Value from script is not valid." << (valueFromScript.toString().isEmpty()
+        qCWarning(QInstaller::lcDeveloperBuild) << "Value from script is not valid."
+            << (valueFromScript.toString().isEmpty()
             ? QString::fromLatin1("Unknown error.") : valueFromScript.toString());
         return false;
     }
@@ -1299,7 +1423,7 @@ bool Component::isDefault() const
     return d->m_vars.value(scDefault).compare(scTrue, Qt::CaseInsensitive) == 0;
 }
 
-bool Component::isInstalled(const QString version) const
+bool Component::isInstalled(const QString &version) const
 {
     if (version.isEmpty()) {
         return scInstalled == d->m_vars.value(scCurrentState);
@@ -1356,6 +1480,17 @@ bool Component::componentChangeRequested()
     return updateRequested() || isSelectedForInstallation() || uninstallationRequested();
 }
 
+/*!
+    Returns \c true if the component is installed and has a \c ForcedUpdate flag set.
+    ForcedUpdate components will be updated together with essential components before
+    any other component can be updated or installed.
+
+    \sa {component::isForcedUpdate}{component.isForcedUpdate}
+*/
+bool Component::isForcedUpdate()
+{
+    return isInstalled() && (value(scForcedUpdate, scFalse).toLower() == scTrue);
+}
 
 /*!
     \sa {component::setUninstalled}{component.setUninstalled}
@@ -1375,12 +1510,20 @@ bool Component::isUninstalled() const
     return scUninstalled == d->m_vars.value(scCurrentState);
 }
 
+/*!
+    Returns \c true if this component is unstable.
+*/
+
 bool Component::isUnstable() const
 {
     return scTrue == d->m_vars.value(scUnstable);
 }
 
-void Component::setUnstable(PackageManagerCore::UnstableError error, const QString &errorMessage)
+/*!
+    Sets this component, all its child components and all the components depending on
+    this component unstable with the error code \a error and message \a errorMessage.
+*/
+void Component::setUnstable(Component::UnstableError error, const QString &errorMessage)
 {
     QList<Component*> dependencies = d->m_core->dependees(this);
     // Mark this component unstable
@@ -1398,7 +1541,7 @@ void Component::setUnstable(PackageManagerCore::UnstableError error, const QStri
     foreach (Component *descendant, this->descendantComponents()) {
         descendant->markComponentUnstable();
     }
-    QMetaEnum metaEnum = QMetaEnum::fromType<PackageManagerCore::UnstableError>();
+    QMetaEnum metaEnum = QMetaEnum::fromType<Component::UnstableError>();
     emit packageManagerCore()->unstableComponentFound(QLatin1String(metaEnum.valueToKey(error)), errorMessage, this->name());
 }
 

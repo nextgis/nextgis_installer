@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -25,16 +25,13 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+#include "../shared/packagemanager.h"
 
-#include <init.h>
 #include <updateoperations.h>
 #include <utils.h>
+#include <packagemanagercore.h>
 
-#include <QDir>
-#include <QObject>
 #include <QTest>
-#include <QFile>
-#include <QDebug>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -42,6 +39,33 @@ using namespace QInstaller;
 class tst_copyoperationtest : public QObject
 {
     Q_OBJECT
+
+private:
+    void installFromCLI(const QString &repository)
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir, repository);
+        core->installDefaultComponentsSilently();
+
+        QFile copiedFile(installDir + QDir::separator() + "AnotherFolder/A.txt");
+        QVERIFY(copiedFile.exists());
+        QFile originalFile(installDir + QDir::separator() + "A.txt");
+        QVERIFY(originalFile.exists());
+
+        QByteArray destinationFileHash = QInstaller::calculateHash(copiedFile.fileName(), QCryptographicHash::Sha1);
+        QByteArray testFileHash = QInstaller::calculateHash(originalFile.fileName(), QCryptographicHash::Sha1);
+        QVERIFY(testFileHash == destinationFileHash);
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+        core->uninstallComponentsSilently(QStringList() << "A");
+        QVERIFY(!copiedFile.exists());
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
+    }
 
 private slots:
     void initTestCase()
@@ -134,6 +158,16 @@ private slots:
         currentFileHash = QInstaller::calculateHash(m_testDestinationFilePath, QCryptographicHash::Sha1);
         QVERIFY(testFileHash == currentFileHash);
     }
+
+    void testCopyFromScript()
+    {
+        installFromCLI(":///data/repository");
+    }
+    void testCopyFromComponentXML()
+    {
+        installFromCLI(":///data/xmloperationrepository");
+    }
+
     void init()
     {
         QVERIFY2(!QFileInfo(m_testDestinationFilePath).exists(), QString("Destination \"%1\" should not exist "

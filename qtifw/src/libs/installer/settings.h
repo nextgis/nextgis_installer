@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -80,6 +80,7 @@ public:
     QString watermark() const;
     QString banner() const;
     QString background() const;
+    QString pageListPixmap() const;
     QString installerApplicationIcon() const;
     QString installerWindowIcon() const;
     QString systemIconSuffix() const;
@@ -88,6 +89,11 @@ public:
     QString titleColor() const;
     int wizardDefaultWidth() const;
     int wizardDefaultHeight() const;
+    int wizardMinimumWidth() const;
+    int wizardMinimumHeight() const;
+    bool wizardShowPageList() const;
+    QStringList productImages() const;
+    void setProductImages(const QStringList &images);
 
     QString applicationName() const;
     QString version() const;
@@ -115,12 +121,15 @@ public:
     QSet<Repository> repositories() const;
 
     QSet<Repository> defaultRepositories() const;
-    QSet<RepositoryCategory> repositoryCategories() const;
-    QMap<QString, RepositoryCategory> organizedRepositoryCategories() const;
     void setDefaultRepositories(const QSet<Repository> &repositories);
     void addDefaultRepositories(const QSet<Repository> &repositories);
-    void addRepositoryCategories(const QSet<RepositoryCategory> &repositories);
     Settings::Update updateDefaultRepositories(const RepoHash &updates);
+
+    QSet<RepositoryCategory> repositoryCategories() const;
+    QMap<QString, RepositoryCategory> organizedRepositoryCategories() const;
+    void setRepositoryCategories(const QSet<RepositoryCategory> &repositories);
+    void addRepositoryCategories(const QSet<RepositoryCategory> &repositories);
+    Settings::Update updateRepositoryCategories(const RepoHash &updates);
 
     QSet<Repository> temporaryRepositories() const;
     void setTemporaryRepositories(const QSet<Repository> &repositories, bool replace);
@@ -134,6 +143,7 @@ public:
     bool allowSpaceInPath() const;
     bool allowNonAsciiCharacters() const;
     bool disableAuthorizationFallback() const;
+    bool disableCommandLineInterface() const;
 
     bool containsValue(const QString &key) const;
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;

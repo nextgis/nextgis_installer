@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -25,14 +25,15 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+
+#include "../shared/packagemanager.h"
 #include <utils.h>
 #include <settingsoperation.h>
-#include <qinstallerglobal.h>
+#include <packagemanagercore.h>
+#include <settings.h>
 
-#include <QObject>
 #include <QTest>
 #include <QSettings>
-#include <QDir>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -278,6 +279,34 @@ private slots:
             QCOMPARE(verifySettings.value(testKeys.at(0)), verifySettings.value(testKeys.at(1)));
             QCOMPARE(verifySettings.value(testKeys.at(1)), verifySettings.value(testKeys.at(2)));
         }
+    }
+
+    void testPerformingFromCLI()
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, ":///data/repository");
+
+        QSettings testSettings(QDir(m_testSettingsDirPath).filePath(m_testSettingsFilename),
+            QSettings::IniFormat);
+        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1").toStringList(),
+                 QStringList() << "value1" << "value2" << "value3");
+
+        core->installDefaultComponentsSilently();
+
+        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1").toStringList(),
+                 QStringList() << "value1" << "value2" << "value3" << "valueFromScript");
+
+        core->commitSessionOperations();
+        core->setPackageManager();
+        core->uninstallComponentsSilently(QStringList() << "A");
+
+        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1").toStringList(),
+                 QStringList() << "value1" << "value2" << "value3");
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
     }
 
     // called after all tests

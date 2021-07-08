@@ -28,6 +28,7 @@
 
 #include "filedownloaderfactory.h"
 #include "filedownloader_p.h"
+#include "globals.h"
 
 #include <QtNetwork/QSslSocket>
 
@@ -68,7 +69,7 @@ FileDownloaderFactory::FileDownloaderFactory()
     if (QSslSocket::supportsSsl())
         registerFileDownloader<HttpDownloader>(QLatin1String("https"));
     else
-        qWarning() << "Cannot register file downloader for https protocol: QSslSocket::supportsSsl() returns false";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot register file downloader for https protocol: QSslSocket::supportsSsl() returns false";
 #endif
 
     d->m_followRedirects = false;
@@ -180,13 +181,13 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *pa
 */
 
 /*!
-    \fn FileDownloaderProxyFactory::~FileDownloaderProxyFactory()
+    \fn KDUpdater::FileDownloaderProxyFactory::~FileDownloaderProxyFactory()
 
     Destroys the file downloader proxy factory.
 */
 
 /*!
-    \fn FileDownloaderProxyFactory::clone() const
+    \fn KDUpdater::FileDownloaderProxyFactory::clone() const
 
     Clones a file downloader proxy factory.
 */

@@ -35,6 +35,7 @@
 #include "lib7z_extract.h"
 #include "lib7z_list.h"
 #include "lib7z_guid.h"
+#include "globals.h"
 
 #ifndef Q_OS_WIN
 #   include "StdAfx.h"
@@ -114,11 +115,91 @@ void registerCodecByteSwap();
 
 namespace Lib7z {
 
+/*!
+    \inmodule Lib7z
+    \class Lib7z::File
+    \internal
+*/
+
+/*!
+    \inmodule Lib7z
+    \class Lib7z::UpdateCallback
+    \internal
+*/
+
+/*!
+    \inmodule Lib7z
+    \class Lib7z::SevenZipException
+    \brief The SevenZipException provides a class for lib7z exceptions.
+*/
+
+/*!
+    \fn explicit Lib7z::SevenZipException::SevenZipException(const QString &msg)
+
+    Constructs an instance of SevenZipException with error message \a msg.
+*/
+
+/*!
+    \fn explicit Lib7z::SevenZipException::SevenZipException(const char *msg)
+
+    Constructs an instance of SevenZipException with error message \a msg.
+*/
+
+/*!
+    \inmodule Lib7z
+    \class Lib7z::PercentPrinter
+    \brief The PercentPrinter class displays the archiving process.
+*/
+
+/*!
+    \fn void Lib7z::PercentPrinter::PrintRatio()
+
+    Prints ratio.
+*/
+
+/*!
+    \fn void Lib7z::PercentPrinter::ClosePrint()
+
+    Closes print.
+*/
+
+/*!
+    \fn void Lib7z::PercentPrinter::RePrintRatio()
+
+    Reprints ratio.
+*/
+
+/*!
+    \fn void Lib7z::PercentPrinter::PrintNewLine()
+
+    Prints new line.
+*/
+
+/*!
+    \fn void Lib7z::PercentPrinter::PrintString(const char *s)
+
+   Prints string \a s.
+*/
+
+/*!
+    \fn void Lib7z::PercentPrinter::PrintString(const wchar_t *s)
+
+    Prints string \a s.
+*/
+
+/*!
+    \fn bool Lib7z::operator==(const File &lhs, const File &rhs);
+
+    Returns \c true if \a lhs and \a rhs are equal; otherwise returns \c false.
+*/
 
 // -- 7z init codecs, archives
 
 std::once_flag gOnceFlag;
 
+/*!
+    Initializes 7z and registers codecs and compression methods.
+*/
 void initSevenZ()
 {
     std::call_once(gOnceFlag, [] {
@@ -213,7 +294,7 @@ QString errorMessageFrom7zResult(const LONG  &extractResult)
     return errorMessage;
 }
 
-/*!
+/*
     RAII class to create a directory (tryCreate()) and delete it on destruction unless released.
 */
 struct DirectoryGuard
@@ -232,10 +313,10 @@ struct DirectoryGuard
             return;
         QDir dir(m_path);
         if (!dir.rmdir(m_path))
-            qWarning() << "Cannot delete directory " << m_path;
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot delete directory " << m_path;
     }
 
-    /*!
+    /*
         Tries to create the directory structure.
         Returns a list of every directory created.
     */
@@ -485,6 +566,9 @@ bool operator==(const File &lhs, const File &rhs)
         || rhs.permissions == static_cast<QFile::Permissions>(-1));
 }
 
+/*!
+   Returns a list of files belonging to an \a archive.
+*/
 QVector<File> listArchive(QFileDevice *archive)
 {
     LIB7Z_ASSERTS(archive, Readable)
@@ -558,15 +642,24 @@ QVector<File> listArchive(QFileDevice *archive)
     return QVector<File>(); // never reached
 }
 
+/*!
+    \inmodule Lib7z
+    \class Lib7z::ExtractCallback
+    \brief Provides a callback for archive extraction.
+*/
 
-// -- ExtractCallback
-
+/*!
+    \internal
+*/
 STDMETHODIMP ExtractCallback::SetTotal(UInt64 t)
 {
     total = t;
     return S_OK;
 }
 
+/*!
+    \internal
+*/
 STDMETHODIMP ExtractCallback::SetCompleted(const UInt64 *c)
 {
     completed = *c;
@@ -575,8 +668,12 @@ STDMETHODIMP ExtractCallback::SetCompleted(const UInt64 *c)
     return S_OK;
 }
 
-// this method will be called by CFolderOutStream::OpenFile to stream via
-// CDecoder::CodeSpec extracted content to an output stream.
+/*!
+    \internal
+
+    This method will be called by CFolderOutStream::OpenFile to stream via
+    CDecoder::CodeSpec extracted content to an output stream.
+*/
 STDMETHODIMP ExtractCallback::GetStream(UInt32 index, ISequentialOutStream **outStream, Int32 /*askExtractMode*/)
 {
     *outStream = nullptr;
@@ -637,11 +734,17 @@ STDMETHODIMP ExtractCallback::GetStream(UInt32 index, ISequentialOutStream **out
     return S_OK;
 }
 
+/*!
+    \internal
+*/
 STDMETHODIMP ExtractCallback::PrepareOperation(Int32 /*askExtractMode*/)
 {
     return S_OK;
 }
 
+/*!
+    \internal
+*/
 STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*/)
 {
     if (targetDir.isEmpty())
@@ -732,6 +835,30 @@ STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*
 }
 
 /*!
+    \enum Lib7z::TmpFile
+
+    This enum type holds the temp file mode:
+
+    \value  No
+            File is not a temporary file.
+    \value  Yes
+            File is a tmp file.
+*/
+
+/*!
+    \enum Lib7z::Compression
+
+    This enum specifies the compression ratio of an archive:
+
+    \value  Non
+    \value  Fastest
+    \value  Fast
+    \value  Normal
+    \value  Maximum
+    \value  Ultra
+*/
+
+/*!
     \namespace Lib7z
     \inmodule QtInstallerFramework
     \brief  The Lib7z namespace contains miscellaneous identifiers used throughout the Lib7z library.
@@ -745,6 +872,47 @@ STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*
     is returned, the extraction will be aborted. The default implementation returns \c true.
 */
 
+/*!
+    \fn bool Lib7z::ExtractCallback::setArchive(CArc *carc)
+
+    Sets \a carc as archive.
+*/
+
+/*!
+   \fn void Lib7z::ExtractCallback::setTarget(const QString &dir)
+
+    Sets the target directory to \a dir.
+*/
+
+/*!
+    \fn void Lib7z::ExtractCallback::setCurrentFile(const QString &filename)
+
+    Sets the current file to \a filename.
+*/
+
+/*!
+    \fn virtual Lib7z::ExtractCallback::setCompleted(quint64 completed, quint64 total)
+
+    Always returns \c true.
+*/
+
+/*!
+    \fn ULONG Lib7z::ExtractCallback::AddRef()
+
+    \internal
+*/
+
+/*!
+    \fn LONG Lib7z::ExtractCallback::QueryInterface(const GUID &iid, void **outObject)
+
+    \internal
+*/
+
+/*!
+    \fn ULONG Lib7z::ExtractCallback::Release()
+
+    \internal
+*/
 
 // -- UpdateCallback
 
@@ -841,7 +1009,7 @@ HRESULT UpdateCallback::SetOperationResult(Int32)
     return S_OK;
 }
 
-/*!
+/*
     Function to create an empty 7z container. Using a temporary file only is not working, since
     7z checks the output file for a valid signature, otherwise it rejects overwriting the file.
 */
@@ -861,9 +1029,9 @@ static QString createTmp7z()
 }
 
 /*!
-    Creates an archive using the given file device \a archive. \a sourcePaths can contain one or
-    more files, one or more directories or a combination of files and folders. The \c * wildcard
-    is supported also. The value of \a level specifies the compression ratio, the default is set
+    Creates an archive using the given file device \a archive. \a sources can contain one or
+    more files, one or more directories or a combination of files and folders. Also, \c * wildcard
+    is supported. The value of \a level specifies the compression ratio, the default is set
     to \c 5 (Normal compression). The \a callback can be used to get information about the archive
     creation process. If no \a callback is given, an empty implementation is used.
 
@@ -877,7 +1045,7 @@ void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sou
     LIB7Z_ASSERTS(archive, Writable)
 
     const QString tmpArchive = createTmp7z();
-    Lib7z::createArchive(tmpArchive, sources, QTmpFile::No, level, callback);
+    Lib7z::createArchive(tmpArchive, sources, TmpFile::No, level, callback);
 
     try {
         QFile source(tmpArchive);
@@ -889,10 +1057,10 @@ void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sou
 }
 
 /*!
-    Creates an archive with the given filename \a archive. \a sourcePaths can contain one or more
-    files, one or more directories or a combination of files and folders. Also the \c * wildcard
+    Creates an archive with the given filename \a archive. \a sources can contain one or more
+    files, one or more directories or a combination of files and folders. Also, \c * wildcard
     is supported. To be able to use the function during an elevated installation, set \a mode to
-    \c QTmpFile::Yes. The value of \a level specifies the compression ratio, the default is set
+    \c TmpFile::Yes. The value of \a level specifies the compression ratio, the default is set
     to \c 5 (Normal compression). The \a callback can be used to get information about the archive
     creation process. If no \a callback is given, an empty implementation is used.
 
@@ -901,12 +1069,12 @@ void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sou
     \note Filenames are stored case-sensitive with UTF-8 encoding.
     \note The ownership of \a callback is transferred to the function and gets delete on exit.
 */
-void createArchive(const QString &archive, const QStringList &sources, QTmpFile mode,
+void createArchive(const QString &archive, const QStringList &sources, TmpFile mode,
     Compression level, UpdateCallback *callback)
 {
     try {
         QString target = archive;
-        if (mode == QTmpFile::Yes)
+        if (mode == TmpFile::Yes)
             target = createTmp7z();
 
         CArcCmdLineOptions options;
@@ -959,7 +1127,7 @@ void createArchive(const QString &archive, const QStringList &sources, QTmpFile 
             throw SevenZipException(errorMsg);
         }
 
-        if (mode == QTmpFile::Yes) {
+        if (mode == TmpFile::Yes) {
             QFile org(archive);
             if (org.exists() && !org.remove()) {
                 throw SevenZipException(QCoreApplication::translate("Lib7z", "Cannot remove "

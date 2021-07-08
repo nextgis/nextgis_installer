@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -33,13 +33,22 @@
 #include <QtCore/QSet>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomNodeList>
 
 QT_BEGIN_NAMESPACE
 class QFileInfo;
+class QFile;
 class QUrl;
 QT_END_NAMESPACE
 
 namespace QInstaller {
+
+enum DefaultFilePermissions {
+    NonExecutable = 0x6644,
+    Executable = 0x7755
+};
+
 class INSTALLER_EXPORT TempDirDeleter
 {
 public:
@@ -52,11 +61,6 @@ public:
     void add(const QString &path);
     void add(const QStringList &paths);
 
-    void releaseAll();
-    void release(const QString &path);
-    void passAndReleaseAll(TempDirDeleter &tdd);
-    void passAndRelease(TempDirDeleter &tdd, const QString &path);
-
     void releaseAndDeleteAll();
     void releaseAndDelete(const QString &path);
 
@@ -67,18 +71,13 @@ private:
 
     QString INSTALLER_EXPORT humanReadableSize(const qint64 &size, int precision = 2);
 
-    /*!
-        Removes the directory at \a path recursively.
-        @param path The directory to remove
-        @param ignoreErrors if @p true, errors will be silently ignored. Otherwise an exception will be thrown
-            if removing fails.
-
-        @throws QInstaller::Error if the directory cannot be removed and ignoreErrors is @p false
-    */
     void INSTALLER_EXPORT removeFiles(const QString &path, bool ignoreErrors = false);
     void INSTALLER_EXPORT removeDirectory(const QString &path, bool ignoreErrors = false);
     void INSTALLER_EXPORT removeDirectoryThreaded(const QString &path, bool ignoreErrors = false);
     void INSTALLER_EXPORT removeSystemGeneratedFiles(const QString &path);
+
+    bool INSTALLER_EXPORT setDefaultFilePermissions(const QString &fileName, DefaultFilePermissions permissions);
+    bool INSTALLER_EXPORT setDefaultFilePermissions(QFile *file, DefaultFilePermissions permissions);
 
     QString INSTALLER_EXPORT generateTemporaryFileName(const QString &templ=QString());
 
@@ -95,19 +94,17 @@ private:
     bool INSTALLER_EXPORT isInBundle(const QString &path, QString *bundlePath = 0);
 
     QString replacePath(const QString &path, const QString &pathBefore, const QString &pathAfter);
+    void replaceHighDpiImage(QString &imagePath);
+
+    void INSTALLER_EXPORT trimmedCopyConfigData(const QString &source, const QString &target, const QStringList &elementsToRemoveTags);
+    void copyConfigChildElements(QDomDocument &dom, const QDomNodeList &objects, const QString &sourceDir, const QString &targetDir);
 
 #ifdef Q_OS_WIN
     QString INSTALLER_EXPORT getLongPathName(const QString &name);
     QString INSTALLER_EXPORT getShortPathName(const QString &name);
 
-    /*!
-        Makes sure that capitalization of directories is canonical.
-    */
     QString INSTALLER_EXPORT normalizePathName(const QString &name);
 
-    /*!
-        Sets the .ico file at \a icon as application icon for \a application.
-    */
     void INSTALLER_EXPORT setApplicationIcon(const QString &application, const QString &icon);
 #endif
 }

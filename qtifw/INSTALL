@@ -15,9 +15,9 @@ http://code.qt.io/cgit/installer-framework/installer-framework.git/
 Build a static Qt
 ---------------------
 
-Building the Qt Installer Framework from sources requires Qt version 5.9.x.
+Building the Qt Installer Framework from sources requires at least Qt version 5.12.7.
 Supported compilers are MSVC 2013 or newer, GCC 4.7 or newer,
-and Clang 3.1 or newer.
+and Clang 3.1 or newer. Currently, the tested combination for Windows is Qt 5.12.7 with MSVC 2015.
 
 If you want to ship your installer as a single file you have to build
 Qt and the Qt Installer Framework statically.
@@ -40,9 +40,9 @@ Recommended configuration options for Linux:
 configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -no-glib -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -no-egl -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -no-libudev
 Build Qt:
 make module-qtbase module-qtdeclarative module-qttools module-qttranslations
-### OS X
+### macOS
 
-Recommended configuration options for OS X:
+Recommended configuration options for macOS:
 
 configure -prefix $PWD/qtbase -release -static -no-securetransport -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -no-freetype
 Build Qt:

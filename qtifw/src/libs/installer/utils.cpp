@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -28,6 +28,8 @@
 
 #include "utils.h"
 
+#include "fileutils.h"
+
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
@@ -49,6 +51,9 @@
 #include <time.h>
 #endif
 
+/*!
+    \internal
+*/
 void QInstaller::uiDetachedWait(int ms)
 {
     QTime timer;
@@ -72,7 +77,7 @@ void QInstaller::uiDetachedWait(int ms)
 
     The process will be started in the directory \a workingDirectory.
 
-    If the function is successful then \a *pid is set to the process identifier of the started
+    If the function is successful then \a pid is set to the process identifier of the started
     process.
 
     Additional note: The difference in using this function over its equivalent from QProcess
@@ -108,7 +113,11 @@ bool QInstaller::startDetached(const QString &program, const QStringList &argume
     return success;
 }
 
-// Returns ["en-us", "en"] for "en-us"
+/*!
+    \internal
+
+    Returns ["en-us", "en"] for "en-us".
+*/
 QStringList QInstaller::localeCandidates(const QString &locale_)
 {
     QStringList candidates;
@@ -124,24 +133,34 @@ QStringList QInstaller::localeCandidates(const QString &locale_)
     return candidates;
 }
 
-
-static bool verb = false;
-
-void QInstaller::setVerbose(bool v)
+/*!
+    Returns a list of mutually exclusive options passed to the \a parser, if there is
+    at least one mutually exclusive pair of options set. Otherwise returns an empty
+    \c QStringList. The options considered mutual are provided with \a options.
+*/
+QStringList QInstaller::checkMutualOptions(CommandLineParser &parser, const QStringList &options)
 {
-    verb = v;
+    QStringList mutual;
+    foreach (const QString &option, options) {
+        if (parser.isSet(option))
+            mutual << option;
+    }
+    return mutual.count() > 1
+        ? mutual
+        : QStringList();
 }
 
-bool QInstaller::isVerbose()
-{
-    return verb;
-}
-
+/*!
+    \internal
+*/
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
 {
     return os << qPrintable(string);
 }
 
+/*!
+    \internal
+*/
 QByteArray QInstaller::calculateHash(QIODevice *device, QCryptographicHash::Algorithm algo)
 {
     Q_ASSERT(device);
@@ -156,6 +175,9 @@ QByteArray QInstaller::calculateHash(QIODevice *device, QCryptographicHash::Algo
     return QByteArray(); // never reached
 }
 
+/*!
+    \internal
+*/
 QByteArray QInstaller::calculateHash(const QString &path, QCryptographicHash::Algorithm algo)
 {
     QFile file(path);
@@ -164,6 +186,9 @@ QByteArray QInstaller::calculateHash(const QString &path, QCryptographicHash::Al
     return calculateHash(&file, algo);
 }
 
+/*!
+    \internal
+*/
 QString QInstaller::replaceVariables(const QHash<QString, QString> &vars, const QString &str)
 {
     QString res;
@@ -184,6 +209,9 @@ QString QInstaller::replaceVariables(const QHash<QString, QString> &vars, const 
     return res;
 }
 
+/*!
+    \internal
+*/
 QString QInstaller::replaceWindowsEnvironmentVariables(const QString &str)
 {
     const QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -203,83 +231,6 @@ QString QInstaller::replaceWindowsEnvironmentVariables(const QString &str)
     }
     res += str.mid(pos);
     return res;
-}
-
-QInstaller::VerboseWriter::VerboseWriter()
-{
-    preFileBuffer.open(QIODevice::ReadWrite);
-    stream.setDevice(&preFileBuffer);
-    currentDateTimeAsString = QDateTime::currentDateTime().toString();
-}
-
-QInstaller::VerboseWriter::~VerboseWriter()
-{
-    if (preFileBuffer.isOpen()) {
-        PlainVerboseWriterOutput output;
-        (void)flush(&output);
-    }
-}
-
-bool QInstaller::VerboseWriter::flush(VerboseWriterOutput *output)
-{
-    stream.flush();
-    if (logFileName.isEmpty()) // binarycreator
-        return true;
-    if (!preFileBuffer.isOpen())
-        return true;
-    //if the installer installed nothing - there is no target directory - where the logfile can be saved
-    if (!QFileInfo(logFileName).absoluteDir().exists())
-        return true;
-
-    QString logInfo;
-    logInfo += QLatin1String("************************************* Invoked: ");
-    logInfo += currentDateTimeAsString;
-    logInfo += QLatin1String("\n");
-
-    QBuffer buffer;
-    buffer.open(QIODevice::WriteOnly);
-    buffer.write(logInfo.toLocal8Bit());
-    buffer.write(preFileBuffer.data());
-    buffer.close();
-
-    if (output->write(logFileName, QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text, buffer.data())) {
-        preFileBuffer.close();
-        stream.setDevice(nullptr);
-        return true;
-    }
-    return false;
-}
-
-void QInstaller::VerboseWriter::setFileName(const QString &fileName)
-{
-    logFileName = fileName;
-}
-
-
-Q_GLOBAL_STATIC(QInstaller::VerboseWriter, verboseWriter)
-
-QInstaller::VerboseWriter *QInstaller::VerboseWriter::instance()
-{
-    return verboseWriter();
-}
-
-void QInstaller::VerboseWriter::appendLine(const QString &msg)
-{
-    stream << msg << endl;
-}
-
-QInstaller::VerboseWriterOutput::~VerboseWriterOutput()
-{
-}
-
-bool QInstaller::PlainVerboseWriterOutput::write(const QString &fileName, QIODevice::OpenMode openMode, const QByteArray &data)
-{
-    QFile output(fileName);
-    if (output.open(openMode)) {
-        output.write(data);
-        return true;
-    }
-    return false;
 }
 
 #ifdef Q_OS_WIN
@@ -346,6 +297,9 @@ static QVector<Char*> qWinCmdLine(Char *cmdParam, int length, int &argc)
     return argv;
 }
 
+/*!
+    \internal
+*/
 QStringList QInstaller::parseCommandLineArgs(int argc, char **argv)
 {
     Q_UNUSED(argc)
@@ -410,12 +364,19 @@ static QString qt_create_commandline(const QString &program, const QStringList &
     return args;
 }
 
+/*!
+    \internal
+*/
 QString QInstaller::createCommandline(const QString &program, const QStringList &arguments)
 {
     return qt_create_commandline(program, arguments);
 }
 
-//copied from qsystemerror.cpp in Qt
+/*!
+    \internal
+
+    Copied from qsystemerror.cpp in Qt.
+*/
 QString QInstaller::windowsErrorString(int errorCode)
 {
     QString ret;
@@ -441,5 +402,3 @@ QString QInstaller::windowsErrorString(int errorCode)
 }
 
 #endif
-
-

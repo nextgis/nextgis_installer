@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -80,6 +80,7 @@ public:
 
     QString defaultButtonText(int wizardButton) const;
     void clickButton(int wizardButton, int delayInMs = 0);
+    void clickButton(const QString &objectName, int delayInMs = 0) const;
     bool isButtonEnabled(int wizardButton);
 
     void showSettingsButton(bool show);
@@ -107,11 +108,13 @@ public Q_SLOTS:
     void showFinishedPage();
     void setModified(bool value);
     void setMaxSize();
+    void updatePageListWidget();
 
 protected Q_SLOTS:
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardPageRemovalRequested(QWidget *widget);
-    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
+    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page,
+                                        int position);
     void wizardWidgetRemovalRequested(QWidget *widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
     void setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,
@@ -135,6 +138,7 @@ private:
     class Private;
     Private *const d;
     PackageManagerCore *m_core;
+    QListWidget *m_pageListWidget;
 };
 
 
@@ -148,13 +152,17 @@ public:
     explicit PackageManagerPage(PackageManagerCore *core);
     virtual ~PackageManagerPage() {}
 
-    virtual QPixmap logoPixmap() const;
     virtual QString productName() const;
-    virtual QPixmap watermarkPixmap() const;
-    virtual QPixmap bannerPixmap() const;
+    virtual QPixmap wizardPixmap(const QString &pixmapType) const;
 
     void setColoredTitle(const QString &title);
     void setColoredSubTitle(const QString &subTitle);
+
+    void setPageListTitle(const QString &title);
+    QString pageListTitle() const;
+
+    void setShowOnPageList(bool show);
+    bool showOnPageList() const;
 
     virtual bool isComplete() const;
     void setComplete(bool complete);
@@ -168,10 +176,12 @@ public:
 
     bool settingsButtonRequested() const { return m_needsSettingsButton; }
     void setSettingsButtonRequested(bool request) { m_needsSettingsButton = request; }
+    void removeCustomWidget(const QWidget *widget);
 
 signals:
     void entered();
     void left();
+    void showOnPageListChanged();
 
 protected:
     PackageManagerCore *packageManagerCore() const;
@@ -192,10 +202,13 @@ protected:
 private:
     bool m_complete;
     QString m_titleColor;
+    QString m_pageListTitle;
+    bool m_showOnPageList;
     bool m_needsSettingsButton;
 
     PackageManagerCore *m_core;
     QInstaller::Component *validatorComponent;
+    QMultiMap<int, QWidget*> m_customWidgets;
 
     friend class PackageManagerGui;
 };
@@ -237,6 +250,8 @@ private Q_SLOTS:
     void setPackageManager(bool value);
 
 private:
+    void initializePage();
+
     void entering();
     void leaving();
 
@@ -279,18 +294,15 @@ private Q_SLOTS:
     void currentItemChanged(QListWidgetItem *current);
 
 private:
-    void addLicenseItem(const QHash<QString, QPair<QString, QString> > &hash);
+    void createLicenseWidgets();
     void updateUi();
 
 private:
     QTextBrowser *m_textBrowser;
     QListWidget *m_licenseListWidget;
 
-    QRadioButton *m_acceptRadioButton;
-    QRadioButton *m_rejectRadioButton;
-
+    QCheckBox *m_acceptCheckBox;
     QLabel *m_acceptLabel;
-    QLabel *m_rejectLabel;
 };
 
 
@@ -352,8 +364,6 @@ private Q_SLOTS:
 
 private:
     QString targetDirWarning() const;
-    bool askQuestion(const QString &identifier, const QString &message);
-    bool failWithError(const QString &identifier, const QString &message);
 
 private:
     QLineEdit *m_lineEdit;
@@ -400,6 +410,9 @@ protected:
     void entering();
     void leaving();
 
+private Q_SLOTS:
+    void updatePageListTitle();
+
 private:
     QLabel *m_msgLabel;
     QTextBrowser* m_taskDetailsBrowser;
@@ -424,6 +437,7 @@ protected:
 
 public Q_SLOTS:
     void setTitleMessage(const QString& title);
+    void changeCurrentImage();
 
 Q_SIGNALS:
     void setAutomatedPageSwitchEnabled(bool request);
@@ -436,9 +450,12 @@ private Q_SLOTS:
     void uninstallationFinished();
 
     void toggleDetailsWereChanged();
+    void updatePageListTitle();
 
 private:
     PerformInstallationForm *m_performInstallationForm;
+    QTimer m_imageChangeTimer;
+    QString m_currentImage;
 };
 
 
