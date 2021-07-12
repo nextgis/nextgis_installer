@@ -11,6 +11,7 @@
     <InstallerApplicationIcon>nextgis-setup</InstallerApplicationIcon>
     <InstallerWindowIcon>nextgis-setup.png</InstallerWindowIcon>
     <WizardStyle>Mac</WizardStyle>
+    <WizardShowPageList>false</WizardShowPageList>
     <StartMenuDir>NextGIS</StartMenuDir>
     <TargetDir>@ApplicationsDir@/NextGIS</TargetDir>
     <MaintenanceToolName>nextgisupdater</MaintenanceToolName>
