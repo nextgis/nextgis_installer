@@ -1464,7 +1464,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>I accept the licenses.</source>
-        <translation>Я согласен(а) с лиценией.</translation>
+        <translation>Я согласен(а) с лицензией.</translation>
     </message>
 </context>
 <context>
