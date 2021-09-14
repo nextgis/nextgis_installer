@@ -61,7 +61,7 @@ repositories = [
     'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
     'lib_bzip2', 'py_pillow', 'lib_harfbuzz', 'lib_littlecms', 
     'lib_sentrynative', 'py_lxml', 'lib_xslt', 'nextgisqgis', 'manuscript', 
-    'formbuilder', 
+    'formbuilder', 'spatialite',
 ]
 
 repka_repositories = [
