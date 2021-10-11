@@ -52,15 +52,14 @@ connect_timeout = "11"
 max_time = "180"
 
 repositories = [
-    'lib_z', 'lib_openssl', 'lib_gif', 'lib_qhull', 'lib_freetype', 'lib_agg', 
-    'lib_expat', 'lib_jsonc', 'lib_opencad', 'lib_pq', 'lib_proj', 
+    'lib_z', 'lib_openssl', 'lib_gif', 'lib_qhull', 'lib_freetype', 'lib_agg',   
     'lib_lzma', 'lib_jbig', 'lib_szip', 'lib_xml2', 'lib_spatialite', 'lib_openjpeg', 
-    'lib_tiff', 'lib_geotiff', 'lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml', 
+    'lib_opencad', 'lib_pq','lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml', 
     'py_markupsafe', 'py_subprocess32', 'py_psycopg', 'py_spatialite', 'py_matplotlib',
     'lib_spatialindex', 'py_qt4', 'py_kiwisolver',
-    'lib_oci', 'py_shapely', 'lib_uriparser', 'lib_kml', 'py_proj',
+    'py_shapely', 'lib_uriparser', 'py_proj',
     'lib_bzip2', 'py_pillow', 'lib_harfbuzz', 'lib_littlecms', 
-    'lib_sentrynative', 'py_lxml', 'lib_xslt', 'nextgisqgis', 'manuscript', 
+    'py_lxml', 'lib_xslt', 'nextgisqgis', 'manuscript', 
     'formbuilder', 'spatialite',
 ]
 
@@ -84,6 +83,14 @@ repka_repositories = [
     {'package': 'lib_opencv', 'version': 'latest'},
     {'package': 'lib_ngstd', 'version': 'latest'},
     {'package': 'lib_geos', 'version': 'latest'},
+    {'package': 'lib_sentrynative', 'version': 'latest'},
+    {'package': 'lib_kml', 'version': 'latest'},
+    {'package': 'lib_oci', 'version': 'latest'},
+    {'package': 'lib_geotiff', 'version': 'latest'},
+    {'package': 'lib_tiff', 'version': 'latest'},
+    {'package': 'lib_proj', 'version': 'latest'},
+    {'package': 'lib_expat', 'version': 'latest'},
+    {'package': 'lib_jsonc', 'version': 'latest'},
 ]
 
 repositories_win = [
