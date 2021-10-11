@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Spatialite utilities</DisplayName>
+    <Description>Spatialite command line utilities</Description>
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+    <Script>script.qs</Script>
+    <Dependencies>com.nextgis.spatial.spatialite,com.nextgis.common.sqlite,com.nextgis.common.iconv,com.nextgis.common.expat,com.nextgis.common.xml2</Dependencies>
+</Package>
