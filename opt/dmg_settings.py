@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 import biplist
-import os.path
 
 appname = 'nextgis-setup.app'
 

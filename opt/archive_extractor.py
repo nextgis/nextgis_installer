@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 ################################################################################
 ##
@@ -13,7 +13,6 @@
 ################################################################################
 
 import os
-import sys
 import argparse
 import shutil
 import zipfile
@@ -37,7 +36,7 @@ for f in os.listdir(parse_dir):
 
 # 2. Create zip list
 for archive in archives:
-    print 'Process ' + archive
+    print('Process ' + archive)
 
     base_name = os.path.splitext(archive)[0]
     dir_path0 = os.path.join(parse_dir, base_name)
@@ -62,9 +61,9 @@ for archive in archives:
         zip_ref.extractall(parse_dir)
         zip_ref.close()
         os.remove(zip_path)
-        print 'Process ' + archive + ' successfully'
+        print('Process ' + archive + ' successfully')
     except:
-        print 'Process ' + archive + ' failed. Roll back'
+        print('Process ' + archive + ' failed. Roll back')
         # Roll back
         if os.path.exists(dir_path2):
             os.rename(dir_path2, dir_path1)

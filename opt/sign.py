@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 import datetime
 import json
-import urllib2, base64
-import os
+import base64
+import os, sys
+if sys.version_info[0] >= 3:
+    from urllib.request import Request, urlopen
+else:
+    from urllib2 import Request, urlopen
+
 
 def install_license(valid_user, valid_date, out_dir, sign_pwd):
     today = datetime.date.today()
@@ -17,12 +22,12 @@ def install_license(valid_user, valid_date, out_dir, sign_pwd):
     }
 
     url = 'https://s1.nextgis.com/api/sign'
-    req = urllib2.Request(url)
+    req = Request(url)
     if sign_pwd is not None:
         base64string = base64.b64encode(sign_pwd)
         req.add_header("Authorization", "Basic %s" % base64string)   
     req.add_header('Content-Type', 'application/json')
-    response = urllib2.urlopen(req, json.dumps(payload))
+    response = urlopen(req, json.dumps(payload))
     data = json.load(response)
     sign = data['sign']
 

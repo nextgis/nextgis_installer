@@ -41,7 +41,7 @@ class bcolors:
 
 def color_print(text, bold, color):
     if sys.platform == 'win32':
-        print text
+        print(text)
     else:
         out_text = ''
         if bold:
@@ -67,7 +67,7 @@ def color_print(text, bold, color):
         else:
             out_text += bcolors.OKGRAY
         out_text += text + bcolors.ENDC
-        print out_text
+        print(out_text)
 
 
 def parse_arguments():
@@ -84,7 +84,7 @@ def parse_arguments():
 
 
 def run(args):
-    print 'calling ' + string.join(args)
+    print('calling ' + string.join(args))
     subprocess.check_call(args)
 
 

@@ -141,7 +141,7 @@ class bcolors:
 
 def color_print(text, bold, color):
     if sys.platform == 'win32':
-        print text
+        print(text)
     else:
         out_text = ''
         if bold:
@@ -167,7 +167,7 @@ def color_print(text, bold, color):
         else:
             out_text += bcolors.OKGRAY
         out_text += text + bcolors.ENDC
-        print out_text
+        print(out_text)
 
 def parse_arguments():
     global args
@@ -216,8 +216,8 @@ def run_shell(args):
     output, err = p.communicate()
     rc = p.returncode
 
-    print 'o: ' + output
-    print 'e: ' + err
+    print('o: ' + output)
+    print('e: ' + err)
 
     if rc != 0:
         sys.exit('Failed to call')
@@ -720,7 +720,10 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
         build_dir = os.path.join(target_repo_dir, 'build')
         os.makedirs(build_dir)
         os.chdir( build_dir )
-        run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '..'))
+        if sys.version_info[0] >= 3:
+            run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '-DWITH_PYTHON3=ON', '..'))
+        else:
+            run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '..'))
         run(('cmake', '--build', '.', '--config', 'Release'))
         run(('cmake', '--build', '.', '--config', 'Release', '--target', 'install'))
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import xml.etree.ElementTree as ET
-import sys
 import os
 from distutils.version import LooseVersion
 import urllib
