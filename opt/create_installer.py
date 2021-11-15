@@ -12,7 +12,6 @@
 import argparse
 import os
 import shutil
-import string
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -201,7 +200,7 @@ def parse_arguments():
 
 
 def run(args):
-    print('calling {}'.format(string.join(args)))
+    print('calling {}'.format(" ".join(args)))
     try:
         subprocess.check_call(args)
     except subprocess.CalledProcessError as e:
@@ -209,7 +208,7 @@ def run(args):
         pass
 
 def run_shell(args):
-    print('calling {}'.format(string.join(args)))
+    print('calling {}'.format(" ".join(args)))
     # subprocess.check_call(args, shell=True)
 
     p = subprocess.Popen(args, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
