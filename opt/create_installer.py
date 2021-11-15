@@ -101,7 +101,7 @@ repka_repositories_win = [
 ]
 
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
-    'py_cycler', 'py_parsing', 'py_contextlib', 'py_raven', 'py_future',
+    'py_cycler', 'py_parsing', 'py_contextlib', 'py_future', # 'py_raven', <- send crashed via ngstd library
     'py_requests', 'py_pytz', 'py_nose', 'py_jinja', 'py_httplib', 'py_ows',
     'py_dateutil', 'py_pygments', 'py_six', 'py_urllib3', 'py_idna', 'py_chardet',
     'py_certifi', 'py_geojson', 'py_tqdm', 'py_beautifulsoup', 'py_geographiclib',
