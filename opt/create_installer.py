@@ -227,7 +227,7 @@ repo_id = 2
 compilers = {
     'mac' : 'Clang-9.0',
     'win32' : 'MSVC-19.12',
-    'win64' : 'MSVC-19.12-64bit',
+    'win64' : 'MSVC-19.29-64bit',
 }
 
 def get_packet_id(repo_id, packet_name):
