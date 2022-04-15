@@ -64,10 +64,10 @@ repositories = [
 ]
 
 repka_repositories = [
-    {'package': 'lib_qca', 'version': '2.2.0'},
-    {'package': 'lib_qwt', 'version': '6.1.3'},
-    {'package': 'lib_qscintilla', 'version': '2.10.4'},
-    {'package': 'py_sip', 'version': '4.19.8'},
+    {'package': 'lib_qca', 'version': 'latest'},
+    {'package': 'lib_qwt', 'version': 'latest'},
+    {'package': 'lib_qscintilla', 'version': 'latest'},
+    {'package': 'py_sip', 'version': 'latest'},
     {'package': 'mapinfo_connect', 'version': 'latest'},
     {'package': 'nextgisutilities', 'version': 'latest'},
     {'package': 'lib_sqlite', 'version': 'latest'},
