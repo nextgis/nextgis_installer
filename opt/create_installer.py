@@ -827,7 +827,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
 
     for repository in repka_repositories:
         url, version, date = get_path_from_repka(repository['package'], repository['version'], suffix)
-        run(('curl', '-L', url, '-o', out_zip, '-s'))
+        run(('curl', '-L', url, '-o', out_zip, '-s', '-k'))
 
 # 2. Extract archive
         color_print('Extract ' + out_zip, False, 'LGREEN')
