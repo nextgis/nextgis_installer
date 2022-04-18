@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Native library</DisplayName>
+    <Description>Native library</Description>
+    <Virtual>true</Virtual>
+</Package>

@@ -40,6 +40,13 @@
         <path src="bin/Qt5Network.dll" dst="bin"/>
         <path src="bin/Qt5Svg.dll" dst="bin"/>
         <path src="bin/Qt5Widgets.dll" dst="bin"/>
+        <path src="bin/Qt5Sql.dll" dst="bin"/>
+        <path src="bin/Qt5Xml.dll" dst="bin"/>
+        <path src="bin/Qt5Concurrent.dll" dst="bin"/>
+        <path src="bin/Qt5PrintSupport.dll" dst="bin"/>
+        <path src="bin/Qt5QuickWidgets.dll" dst="bin"/>
+        <path src="bin/Qt5Qml.dll" dst="bin"/>
+        <path src="bin/Qt5OpenGL.dll" dst="bin"/>
         <path src="bin/libGLESv2.dll" dst="bin"/>
         <path src="plugins/platforms" dst="lib/qt5/plugins/platforms"/>
         <path src="plugins/imageformats" dst="lib/qt5/plugins/imageformats"/>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_qtkeychain">
+    <mac>
+        <path src="Library/Frameworks/qtkeychain.framework" dst="Library/Frameworks/qtkeychain.framework"/>
+    </mac>
+    <win>
+        <path src="bin/*.dll" dst="bin"/>
+    </win>
+</Package>

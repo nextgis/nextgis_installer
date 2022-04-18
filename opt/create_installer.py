@@ -91,6 +91,8 @@ repka_repositories = [
     {'package': 'lib_proj', 'version': 'latest'},
     {'package': 'lib_expat', 'version': 'latest'},
     {'package': 'lib_jsonc', 'version': 'latest'},
+    {'package': 'lib_zip', 'version': 'latest'},
+    {'package': 'lib_qtkeychain', 'version': 'latest'},
 ]
 
 repositories_win = [
