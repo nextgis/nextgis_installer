@@ -204,8 +204,8 @@ def run(args):
     print('calling {}'.format(" ".join(args)))
     try:
         subprocess.check_call(args)
-    except subprocess.CalledProcessError as e:
-        print(e.output)
+    except Exception as e:
+        print(str(e))
         pass
 
 def run_shell(args):
