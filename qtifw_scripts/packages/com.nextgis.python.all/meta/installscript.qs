@@ -21,11 +21,11 @@ Component.prototype.createOperations = function()
     else if (installer.value("os") == "mac")
     {
         component.addOperation( "Mkdir",
-                                "@HomeDir@/Library/Python/2.7/lib/python/site-packages" );
+                                "@HomeDir@/Library/Python/3.6/lib/python/site-packages" );
         component.addOperation( "Delete",
-                                "@HomeDir@/Library/Python/2.7/lib/python/site-packages/NextGIS.pth" );
+                                "@HomeDir@/Library/Python/3.6/lib/python/site-packages/NextGIS.pth" );
         component.addOperation( "AppendFile",
-                                "@HomeDir@/Library/Python/2.7/lib/python/site-packages/NextGIS.pth",
-                                "@TargetDir@/Library/Python/2.7/site-packages\n@TargetDir@/Library/Python/2.7/site-packages/osgeo" );
+                                "@HomeDir@/Library/Python/3.6/lib/python/site-packages/NextGIS.pth",
+                                "@TargetDir@/Library/Python/3.6/site-packages\n@TargetDir@/Library/Python/3.6/site-packages/osgeo" );
     }
 }
