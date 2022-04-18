@@ -100,7 +100,7 @@ repositories_win = [
 ]
 
 repka_repositories_win = [
-    {'package': 'python', 'version': '3.6.7'},
+    {'package': 'python', 'version': '2.7.14'},
 ]
 
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
