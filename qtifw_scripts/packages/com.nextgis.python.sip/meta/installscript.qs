@@ -19,7 +19,6 @@ Component.prototype.createOperations = function()
     if (installer.value("os") == "win")
     {
         // fix paths in sipconfig.py
-        /*
         component.addOperation( "LineReplace",
                                 "@TargetDir@/lib/Python27/site-packages/sipconfig.py",
                                 "'default_mod_dir':",
@@ -52,7 +51,6 @@ Component.prototype.createOperations = function()
                                 "'sip_bin':",
                                 "    'sip_bin':    '@TargetDir@/bin/sip.exe',"
                             );
-        */
     }
     else {
         // fix paths in sipconfig.py
