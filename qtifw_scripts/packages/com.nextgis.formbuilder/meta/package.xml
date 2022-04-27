@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <Dependencies>com.nextgis.common.vc,com.nextgis.common.ngstd5</Dependencies>
+    <Dependencies>com.nextgis.common.vc,com.nextgis.common.ngstd</Dependencies>
     <DisplayName>Formbuilder</DisplayName>
     <Description>Forms builder for NextGIS Mobile</Description>
     <Default>true</Default>

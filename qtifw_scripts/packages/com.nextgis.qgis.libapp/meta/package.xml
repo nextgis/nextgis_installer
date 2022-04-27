@@ -3,5 +3,5 @@
     <DisplayName>App library</DisplayName>
     <Description>App library</Description>
     <Virtual>true</Virtual>
-    <Dependencies>com.nextgis.qgis.libgui,com.nextgis.common.ngstd5,com.nextgis.qgis.libnative</Dependencies>
+    <Dependencies>com.nextgis.qgis.libgui,com.nextgis.common.ngstd,com.nextgis.qgis.libnative</Dependencies>
 </Package>

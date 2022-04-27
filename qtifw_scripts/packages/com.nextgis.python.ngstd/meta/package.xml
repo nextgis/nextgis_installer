@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>PyNGSTD</DisplayName>
+    <Description>Python NextGIS Standard Qt5 module</Description>
+    <Dependencies>com.nextgis.python.all,com.nextgis.common.ngstd,com.nextgis.python.qt4</Dependencies>
+</Package>
