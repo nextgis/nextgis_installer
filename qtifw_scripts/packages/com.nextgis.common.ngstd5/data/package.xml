@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_ngstd">
     <mac>
-        <path src="Library/Frameworks/ngstd_core5.framework" dst="Library/Frameworks/ngstd_core5.framework"/>
-        <path src="Library/Frameworks/ngstd_framework5.framework" dst="Library/Frameworks/ngstd_framework5.framework"/>
+        <path src="Library/Frameworks/ngstd_core.framework" dst="Library/Frameworks/ngstd_core.framework"/>
+        <path src="Library/Frameworks/ngstd_framework.framework" dst="Library/Frameworks/ngstd_framework.framework"/>
     </mac>
     <win>
-        <path src="bin/*5.dll" dst="bin"/>
+        <path src="bin/*.dll" dst="bin"/>
 		<path src="share/translations/ngstd*.qm" dst="share/translations"/>
     </win>
 </Package>
