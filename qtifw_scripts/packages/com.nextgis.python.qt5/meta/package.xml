@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>PyQt5</DisplayName>
+    <Description>PyQt5 package</Description>
+    <Dependencies>com.nextgis.python.all,com.nextgis.common.qt.qt5</Dependencies>
+</Package>

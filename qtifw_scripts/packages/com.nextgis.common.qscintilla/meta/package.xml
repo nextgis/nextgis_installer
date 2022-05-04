@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>QScintilla</DisplayName>
     <Description>QScintilla Library</Description>
-    <Dependencies>com.nextgis.common.qt.qt4</Dependencies>
+    <Dependencies>com.nextgis.common.qt.qt5</Dependencies>
 </Package>

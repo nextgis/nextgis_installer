@@ -2,7 +2,7 @@
 <Package root="lib_qscintilla">
     <mac>
         <path src="Library/Frameworks/qscintilla.framework" dst="Library/Frameworks/qscintilla.framework"/>
-        <path src="Library/Translations/Qt4" dst="Library/Translations/Qt4"/>
+        <path src="Library/Translations/Qt5" dst="Library/Translations/Qt5"/>
     </mac>
     <win>
         <path src="bin/*.dll" dst="bin"/>

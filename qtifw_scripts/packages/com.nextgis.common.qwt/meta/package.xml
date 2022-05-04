@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>QWT</DisplayName>
     <Description>QWT Library</Description>
-    <Dependencies>com.nextgis.common.qt.qt4</Dependencies>
+    <Dependencies>com.nextgis.common.qt.qt5</Dependencies>
 </Package>

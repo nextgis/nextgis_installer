@@ -56,7 +56,7 @@ repositories = [
     'lib_lzma', 'lib_jbig', 'lib_szip', 'lib_xml2', 'lib_spatialite', 'lib_openjpeg', 
     'lib_opencad', 'lib_pq','lib_hdf4', 'lib_gsl', 'lib_yaml', 'py_yaml', 
     'py_markupsafe', 'py_subprocess32', 'py_psycopg', 'py_spatialite', 'py_matplotlib',
-    'lib_spatialindex', 'py_qt4', 'py_kiwisolver',
+    'lib_spatialindex', 'py_qt5', 'py_kiwisolver',
     'py_shapely', 'lib_uriparser', 'py_proj',
     'lib_bzip2', 'py_pillow', 'lib_harfbuzz', 'lib_littlecms', 
     'py_lxml', 'lib_xslt', 'nextgisqgis', 'manuscript', 
@@ -100,7 +100,7 @@ repositories_win = [
 ]
 
 repka_repositories_win = [
-    {'package': 'python', 'version': '2.7.14'},
+    {'package': 'python', 'version': 'latest'},
 ]
 
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',

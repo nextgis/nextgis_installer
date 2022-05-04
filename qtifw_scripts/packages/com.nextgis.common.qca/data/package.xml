@@ -2,10 +2,10 @@
 <Package root="lib_qca">
     <mac>
         <path src="Library/Frameworks/qca.framework" dst="Library/Frameworks/qca.framework"/>
-        <path src="Library/Plugins/Qt4/crypto" dst="Library/Plugins/Qt4/crypto"/>
+        <path src="Library/Plugins/Qt5/crypto" dst="Library/Plugins/Qt5/crypto"/>
     </mac>
     <win>
         <path src="bin/*.dll" dst="bin"/>
-        <path src="lib/qca/crypto/*.dll" dst="lib/qt4/plugins/crypto"/>
+        <path src="lib/qca/crypto/*.dll" dst="lib/qt5/plugins/crypto"/>
     </win>
 </Package>

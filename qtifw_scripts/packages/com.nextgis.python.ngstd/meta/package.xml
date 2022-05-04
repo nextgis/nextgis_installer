@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>PyNGSTD</DisplayName>
     <Description>Python NextGIS Standard Qt5 module</Description>
-    <Dependencies>com.nextgis.python.all,com.nextgis.common.ngstd,com.nextgis.python.qt4</Dependencies>
+    <Dependencies>com.nextgis.python.all,com.nextgis.common.ngstd,com.nextgis.python.qt5</Dependencies>
 </Package>

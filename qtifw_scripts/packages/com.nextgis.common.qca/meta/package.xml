@@ -2,6 +2,6 @@
 <Package>
     <DisplayName>QCA</DisplayName>
     <Description>QCA Library</Description>
-    <Dependencies>com.nextgis.common.openssl,com.nextgis.common.qt.qt4</Dependencies>
+    <Dependencies>com.nextgis.common.openssl,com.nextgis.common.qt.qt5</Dependencies>
     <Script>installscript.qs</Script>
 </Package>

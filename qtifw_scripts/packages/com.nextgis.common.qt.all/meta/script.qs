@@ -25,8 +25,6 @@ Component.prototype.createOperations = function()
                                 "@TargetDir@/bin/qt.conf",
 								"[Paths]\n" +
                                 "Prefix = " + strTargetDirRepl + "\n" +
-								"4/Translations = share/qt4/translations\n" +
-								"4/Plugins = lib/qt4/plugins\n" +
 								"Translations = share/qt5/translations\n" +
 								"Plugins = lib/qt5/plugins" );
     }
