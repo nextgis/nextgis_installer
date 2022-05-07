@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>PyQSci</DisplayName>
     <Description>PyQScintilla package</Description>
-    <Dependencies>com.nextgis.common.qscintilla,com.nextgis.python.qt4</Dependencies>
+    <Dependencies>com.nextgis.common.qscintilla,com.nextgis.python.qt5</Dependencies>
 </Package>
