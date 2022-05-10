@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="nextgisqgis">
     <mac>
-        <path src="Library/Python/2.7/site-packages/qgis" dst="Library/Python/2.7/site-packages/qgis"/>
+        <path src="Library/Python/3.8/site-packages/qgis" dst="Library/Python/3.8/site-packages/qgis"/>
     </mac>
     <win>
-        <path src="lib/Python27/site-packages/qgis" dst="lib/python27/site-packages/qgis"/>
+        <path src="lib/Python38/site-packages/qgis" dst="lib/python38/site-packages/qgis"/>
     </win>
 </Package>

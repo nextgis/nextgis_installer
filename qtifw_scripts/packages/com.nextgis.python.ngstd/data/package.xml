@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_ngstd">
     <mac>
-        <path src="Library/Python/3/site-packages/ngstd" dst="Library/Python/3.6/site-packages/ngstd"/>
+        <path src="Library/Python/3/site-packages/ngstd" dst="Library/Python/3.8/site-packages/ngstd"/>
     </mac>
     <win>
-        <path src="lib/Python3/site-packages/ngstd" dst="lib/python36/site-packages/ngstd"/>
+        <path src="lib/Python3/site-packages/ngstd" dst="lib/python38/site-packages/ngstd"/>
     </win>
 </Package>

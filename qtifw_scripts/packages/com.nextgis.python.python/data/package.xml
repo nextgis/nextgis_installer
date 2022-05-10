@@ -2,6 +2,6 @@
 <Package root="python">
     <win>
         <path src="bin" dst="bin"/>
-        <path src="lib" dst="lib"/>
+        <path src="lib" dst="lib/python38"/>
     </win>
 </Package>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_gdal">
     <mac>
-        <path src="Library/python3.6/site-packages/osgeo" dst="Library/Python/3.6/site-packages/osgeo"/>
+        <path src="Library/python3.6/site-packages/osgeo" dst="Library/Python/3.8/site-packages/osgeo"/>
         <path src="bin/*.py" dst="usr/bin/"/>
     </mac>
     <win>
-        <path src="lib/site-packages/osgeo" dst="lib/python36/site-packages/osgeo"/>
+        <path src="lib/site-packages/osgeo" dst="lib/python38/site-packages/osgeo"/>
         <path src="bin/*.py" dst="bin"/>
     </win>
 </Package>

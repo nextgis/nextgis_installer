@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="lib_qscintilla">
     <mac>
-        <path src="Library/Python/3/site-packages/PyQt5" dst="Library/Python/3.6/site-packages/PyQt5"/>
+        <path src="Library/Python/3/site-packages/PyQt5" dst="Library/Python/3.8/site-packages/PyQt5"/>
     </mac>
     <win>
-        <path src="lib/Python3/site-packages/PyQt5" dst="lib/python36/site-packages/PyQt5"/>
+        <path src="lib/Python3/site-packages/PyQt5" dst="lib/python38/site-packages/PyQt5"/>
     </win>
 </Package>
