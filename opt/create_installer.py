@@ -93,6 +93,7 @@ repka_repositories = [
     {'package': 'lib_jsonc', 'version': 'latest'},
     {'package': 'lib_zip', 'version': 'latest'},
     {'package': 'lib_qtkeychain', 'version': 'latest'},
+    {'package': 'py_qt5sip', 'version': 'latest'},
 ]
 
 repositories_win = [
