@@ -672,8 +672,18 @@ def prepare_win_redist(target_dir):
     shutil.copy(src_cmake, target_repo_dir)
 
     # Build and Install
+    create_opt = []
+    if args.win64:
+        create_opt.append('-G')
+        create_opt.append(generator)
+        create_opt.append('-A')
+        create_opt.append('x64')
+    else:
+        create_opt.append('-G')
+        create_opt.append(generator)
+
     os.chdir( target_repo_build_dir )
-    run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '-G', generator, '..'))
+    run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), create_opt, '..'))
     run(('cpack'))
     for out_zip in os.listdir(target_repo_build_dir):
         if out_zip.endswith(".zip"):
