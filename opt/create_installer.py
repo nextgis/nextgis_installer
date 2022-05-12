@@ -204,7 +204,7 @@ def parse_arguments():
 
 
 def run(args):
-    print('calling {}'.format(" ".join(args)))
+    print('calling {}'.format(" ".join(str(i) for i in args)))
     try:
         subprocess.check_call(args)
     except Exception as e:
