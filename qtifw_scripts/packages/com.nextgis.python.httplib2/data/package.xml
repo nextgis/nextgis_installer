@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_httplib">
     <mac>
-        <path src="inst/lib/python2.7/site-packages/httplib2" dst="Library/Python/2.7/site-packages/httplib2"/>
+        <path src="inst/lib/python3.8/site-packages/httplib2" dst="Library/Python/3.8/site-packages/httplib2"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/httplib2" dst="lib/python27/site-packages/httplib2"/>
+        <path src="inst/Lib/site-packages/httplib2" dst="lib/python38/site-packages/httplib2"/>
     </win>
 </Package>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_six">
     <mac>
-        <path src="inst/lib/python2.7/site-packages/six.*" dst="Library/Python/2.7/site-packages"/>
+        <path src="inst/lib/python3.8/site-packages/six.*" dst="Library/Python/3.8/site-packages"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/six.*" dst="lib/python27/site-packages"/>
+        <path src="inst/Lib/site-packages/six.*" dst="lib/python38/site-packages"/>
     </win>
 </Package>

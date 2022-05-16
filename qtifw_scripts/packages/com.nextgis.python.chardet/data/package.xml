@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_chardet">
     <mac>
-        <path src="inst/lib/python2.7/site-packages/chardet" dst="Library/Python/2.7/site-packages/chardet"/>
+        <path src="inst/lib/python3.8/site-packages/chardet" dst="Library/Python/3.8/site-packages/chardet"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/chardet" dst="lib/python27/site-packages/chardet"/>
+        <path src="inst/Lib/site-packages/chardet" dst="lib/python38/site-packages/chardet"/>
     </win>
 </Package>

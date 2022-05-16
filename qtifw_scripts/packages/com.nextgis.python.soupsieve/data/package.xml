@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_soupsieve">
     <mac>
-        <path src="inst/lib/python2.7/site-packages/soupsieve" dst="Library/Python/2.7/site-packages/soupsieve"/>
+        <path src="inst/lib/python3.8/site-packages/soupsieve" dst="Library/Python/3.8/site-packages/soupsieve"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/soupsieve" dst="lib/python27/site-packages/soupsieve"/>
+        <path src="inst/Lib/site-packages/soupsieve" dst="lib/python38/site-packages/soupsieve"/>
     </win>
 </Package>

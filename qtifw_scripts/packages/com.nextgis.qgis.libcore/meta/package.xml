@@ -3,5 +3,5 @@
     <DisplayName>Core library</DisplayName>
     <Description>Core library</Description>
     <Virtual>true</Virtual>
-    <Dependencies>com.nextgis.common.qt.qt4,com.nextgis.common.qt4.oci,com.nextgis.common.qt4.spatialite,com.nextgis.spatial.gdal,com.nextgis.spatial.geos,com.nextgis.common.qca,com.nextgis.common.qscintilla,com.nextgis.common.qwt,com.nextgis.common.expat,com.nextgis.spatial.proj,com.nextgis.common.sqlite,com.nextgis.spatial.spatialite,com.nextgis.spatial.spatialindex_c,com.nextgis.common.pq,com.nextgis.common.qtkeychain,com.nextgis.common.zip</Dependencies>
+    <Dependencies>com.nextgis.common.qt.qt5,com.nextgis.common.qt5.oci,com.nextgis.common.qt5.spatialite,com.nextgis.spatial.gdal,com.nextgis.spatial.geos,com.nextgis.common.qca,com.nextgis.common.qscintilla,com.nextgis.common.qwt,com.nextgis.common.expat,com.nextgis.spatial.proj,com.nextgis.common.sqlite,com.nextgis.spatial.spatialite,com.nextgis.spatial.spatialindex_c,com.nextgis.common.pq,com.nextgis.common.qtkeychain,com.nextgis.common.zip</Dependencies>
 </Package>

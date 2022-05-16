@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>Spatialite plugin</DisplayName>
     <Description>Spatialite connecton plugin</Description>
-    <Dependencies>com.nextgis.spatial.spatialite,com.nextgis.common.qt.qt4</Dependencies>
+    <Dependencies>com.nextgis.spatial.spatialite,com.nextgis.common.qt.qt5</Dependencies>
 </Package>

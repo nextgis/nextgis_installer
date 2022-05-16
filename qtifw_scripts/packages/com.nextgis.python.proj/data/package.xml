@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_proj">
     <mac>
-        <path src="Library/lib/python2.7/site-packages/pyproj/" dst="Library/Python/2.7/site-packages/pyproj"/>
+        <path src="Library/lib/python3.8/site-packages/pyproj/" dst="Library/Python/3.8/site-packages/pyproj"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/pyproj" dst="lib/python27/site-packages/pyproj"/>
+        <path src="Lib/site-packages/pyproj" dst="lib/python38/site-packages/pyproj"/>
     </win>
 </Package>

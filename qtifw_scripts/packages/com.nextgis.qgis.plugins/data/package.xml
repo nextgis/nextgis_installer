@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="nextgisqgis">
     <mac>
-        <path src="Library/Plugins/Qt4/ngqgis/*" dst="Library/Plugins/Qt4/ngqgis"/>
+        <path src="Library/Plugins/Qt5/ngqgis/*" dst="Library/Plugins/Qt5/ngqgis"/>
     </mac>
     <win>
         <path src="lib/ngqgis/plugins/*" dst="lib/ngqgis/plugins"/>

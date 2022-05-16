@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_psycopg">
     <mac>
-        <path src="Library/lib/python2.7/site-packages/psycopg2" dst="Library/Python/2.7/site-packages/psycopg2"/>
+        <path src="Library/lib/python3.8/site-packages/psycopg2" dst="Library/Python/3.8/site-packages/psycopg2"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/psycopg2" dst="lib/python27/site-packages/psycopg2"/>
+        <path src="Lib/site-packages/psycopg2" dst="lib/python38/site-packages/psycopg2"/>
     </win>
 </Package>

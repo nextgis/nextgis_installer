@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_subprocess32">
     <mac>
-        <path src="Library/lib/python2.7/site-packages/*.py" dst="Library/Python/2.7/site-packages/"/>
-        <path src="Library/lib/python2.7/site-packages/*.so" dst="Library/Python/2.7/site-packages/"/>
+        <path src="Library/lib/python3.8/site-packages/*.py" dst="Library/Python/3.8/site-packages/"/>
+        <path src="Library/lib/python3.8/site-packages/*.so" dst="Library/Python/3.8/site-packages/"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/*.py" dst="lib/python27/site-packages"/>
+        <path src="Lib/site-packages/*.py" dst="lib/python38/site-packages"/>
     </win>
 </Package>

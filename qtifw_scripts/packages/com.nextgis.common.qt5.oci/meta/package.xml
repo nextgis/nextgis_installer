@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>OCI plugin</DisplayName>
     <Description>Oracle connecton plugin</Description>
-    <Dependencies>com.nextgis.common.oci,com.nextgis.common.qt.qt4</Dependencies>
+    <Dependencies>com.nextgis.common.oci,com.nextgis.common.qt.qt5</Dependencies>
 </Package>
