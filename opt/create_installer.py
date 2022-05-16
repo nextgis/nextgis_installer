@@ -729,7 +729,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
     for repository in repositories_not_stored:
         color_print('Process ' + repository, True, 'LGREEN')
         target_repo_dir = os.path.join(target_dir, repository)
-        run(('git', 'clone', '--depth', '1', 'git://github.com/nextgis-borsch/{}.git'.format(repository), os.path.join(target_dir, repository) ))
+        run(('git', 'clone', '--depth', '1', 'https://github.com/nextgis-borsch/{}.git'.format(repository), os.path.join(target_dir, repository) ))
         build_dir = os.path.join(target_repo_dir, 'build')
         os.makedirs(build_dir)
         os.chdir( build_dir )
