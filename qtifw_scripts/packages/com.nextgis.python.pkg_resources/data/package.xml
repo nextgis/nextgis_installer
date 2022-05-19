@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_setuptools">
+    <mac>
+        <path src="inst/lib/python3.8/site-packages/pkg_resources" dst="Library/Python/3.8/site-packages/pkg_resources"/>
+    </mac>
+    <win>
+        <path src="inst/Lib/site-packages/pkg_resources" dst="lib/python38/site-packages/pkg_resources"/>
+    </win>
+</Package>

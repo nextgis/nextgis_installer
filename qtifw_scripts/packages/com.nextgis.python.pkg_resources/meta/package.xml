@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>pkg resources</DisplayName>
+    <Description>pkg resources package</Description>
+    <Dependencies>com.nextgis.python.all</Dependencies>
+</Package>
