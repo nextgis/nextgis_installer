@@ -394,7 +394,8 @@ def get_repository_path():
 
 
 def prepare_config():
-    os.makedirs(repo_new_config_path)
+    if not os.path.isdir(repo_new_config_path):
+        os.makedirs(repo_new_config_path)
     tree = ET.parse(os.path.join(repo_config_path, 'config.xml'))
     root = tree.getroot()
 
