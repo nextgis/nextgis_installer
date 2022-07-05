@@ -1006,9 +1006,13 @@ def create_installer_from_repository():
     if args.installer_name:
         installer_name = args.installer_name
 
+    repository_path = get_repository_path()
+    if '-dev' in installer_name:
+        repository_path += '-dev'
+
     # Hack as <InstallerApplicationIcon> in config.xml not working
     if sys.platform == 'darwin':
-        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '--repository', get_repository_path(), os.path.join(repo_target_path, 'nextgis-setup'), '--sign', mac_sign_identy))
+        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '--repository', repository_path, os.path.join(repo_target_path, 'nextgis-setup'), '--sign', mac_sign_identy))
 
         import dmgbuild
         icns_path = os.path.join(repo_target_path, 'nextgis-setup.app', 'Contents', 'Resources', 'nextgis-setup.icns' )
@@ -1031,7 +1035,7 @@ def create_installer_from_repository():
                  files=[os.path.join(repo_target_path, 'nextgis-setup.app')]),
             lookForHiDPI=False)
     else:
-        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '--repository', get_repository_path(), os.path.join(repo_target_path, installer_name) ))
+        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '--repository', repository_path, os.path.join(repo_target_path, installer_name) ))
 
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, installer_name), True, 'LMAGENTA')
 
