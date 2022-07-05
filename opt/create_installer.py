@@ -197,6 +197,7 @@ def parse_arguments():
     parser_prepare.add_argument('--sign_pwd', dest='sign_pwd', required=False, help='Authorisation for sign api')
 
     parser_create = subparsers.add_parser('create')
+    parser_create = subparsers.add_parser('create_from_repository')
 
     parser_update = subparsers.add_parser('update')
     parser_update.add_argument('--force', dest='packages', required=False, nargs='+', help='Force update specified packages even not any changes exists. If all specified force update all packages')
@@ -995,6 +996,44 @@ def create_installer():
 
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, installer_name), True, 'LMAGENTA')
 
+def create_installer_from_repository():
+    key_only = '--offline-only'
+    if args.network:
+        key_only = '--online-only'
+
+    installer_name = 'nextgis-setup'
+    if args.installer_name:
+        installer_name = args.installer_name
+
+    # Hack as <InstallerApplicationIcon> in config.xml not working
+    if sys.platform == 'darwin':
+        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '--repository', get_repository_path(), os.path.join(repo_target_path, 'nextgis-setup'), '--sign', mac_sign_identy))
+
+        import dmgbuild
+        icns_path = os.path.join(repo_target_path, 'nextgis-setup.app', 'Contents', 'Resources', 'nextgis-setup.icns' )
+        os.unlink(icns_path)
+        shutil.copy(os.path.join(repo_new_config_path, 'nextgis-setup.icns'), icns_path)
+
+        # Resign install application as there is some bug in binarycreator --sign
+        # run_shell('codesign --deep --force --verify --verbose --sign \"{}\" {}'.format(mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app')))
+
+        run(('codesign', '--deep', '--force',  '--verify', '--verbose', '--sign', mac_sign_identy, os.path.join(repo_target_path, 'nextgis-setup.app') ))
+
+        # Build dgm image file
+        color_print('Create DMG file ...', True, 'LMAGENTA')
+        dmgbuild.build_dmg(
+            os.path.join(repo_target_path, installer_name + '.dmg'),
+            'NextGIS Setup',
+            os.path.join(repo_root_dir, 'opt', 'dmg_settings.py'),
+            defines=dict(badge_icon=os.path.join(repo_new_config_path, 'nextgis-setup.icns'),
+                 background=os.path.join(repo_new_config_path, 'bk.png'),
+                 files=[os.path.join(repo_target_path, 'nextgis-setup.app')]),
+            lookForHiDPI=False)
+    else:
+        run((binarycreator_file, '-v', key_only, '-c', os.path.join(repo_new_config_path, 'config.xml'), '--repository', get_repository_path(), os.path.join(repo_target_path, installer_name) ))
+
+    color_print('DONE, installer is at ' + os.path.join(repo_target_path, installer_name), True, 'LMAGENTA')
+
 def update_installer():
     run((repogen_file, '--update-new-components', '-v', '-p', repo_new_packages_path, get_repository_path()))
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup'), True, 'LMAGENTA')
@@ -1005,6 +1044,9 @@ init()
 if args.command == 'create':
     update(None)
     create_installer()
+elif args.command == 'create_from_repository':
+    prepare_config()
+    create_installer_from_repository()
 elif args.command == 'prepare':
     download(args.ftp_user, args.ftp, args.source, args.qgis_plugins, args.valid_user, args.valid_date, args.sign_pwd)
     prepare()
