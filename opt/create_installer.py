@@ -685,7 +685,7 @@ def prepare_win_redist(target_dir):
         create_opt.append(generator)
 
     os.chdir( target_repo_build_dir )
-    run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), create_opt, '..'))
+    run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'),  '..') + tuple(create_opt))
     run(('cpack'))
     for out_zip in os.listdir(target_repo_build_dir):
         if out_zip.endswith(".zip"):
