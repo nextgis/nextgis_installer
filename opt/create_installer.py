@@ -125,12 +125,12 @@ repka_repositories = [
     {'package': 'spatialite', 'version': 'latest'},
 ]
 
-repositories_win = [
-    'lib_iconv', 'py_sci',
-]
+repositories_win = []
 
 repka_repositories_win = [
     {'package': 'python', 'version': 'latest'},
+    {'package': 'lib_iconv', 'version': 'latest'},
+    {'package': 'py_sci', 'version': 'latest'},
 ]
 
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
