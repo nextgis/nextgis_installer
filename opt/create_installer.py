@@ -296,7 +296,7 @@ def get_file_id(release, platform):
             return file['id']
     return -1    
 
-def get_path_from_repka(package, version, suffix):
+def get_path_from_repka(package, version, suffix, repo_id):
     packet_id = get_packet_id(repo_id, package)
     if packet_id == -1:
         return '', '0.0.0', ''
@@ -774,38 +774,6 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
     os.chdir( tmp_dir )
     out_zip = os.path.join(tmp_dir, 'package.zip')
 
-    # Try to get nextgis_update package
-    repository = 'nextgis_updater'
-    if ftp[-1:] != '/':
-        ftp += '/'
-    try:
-        if sys.platform == 'darwin':
-            suffix_u = 'mac'
-        elif sys.platform == 'win32':
-            suffix_u = 'win'
-        ftp_dir = repository + '_' + suffix_u
-        color_print('Download ' + ftp_dir + '/package.zip', True, 'LGREEN')
-        run(('curl', '-u', ftp_user, '--connect-timeout', connect_timeout, '--max-time', max_time, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
-
-# 2. Extract archive
-        color_print('Extract ' + out_zip, False, 'LGREEN')
-        run(('cmake', '-E', 'tar', 'xzf', out_zip))
-
-# 3. Move archive with new name to target_dir
-        target_repo_dir = os.path.join(target_dir, repository)
-        for o in os.listdir(tmp_dir):
-            archive_dir = os.path.join(tmp_dir,o)
-            if os.path.isdir(archive_dir):
-                shutil.move(archive_dir, target_repo_dir)
-                break
-
-# 4. Download version.str
-        if os.path.exists(target_repo_dir):
-            color_print('Download ' + ftp_dir + '/version.str', True, 'LGREEN')
-            run(('curl', '-u', ftp_user, '--connect-timeout', connect_timeout, '--max-time', max_time, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
-    except:
-        pass
-
     suffix = 'nix'
     if sys.platform == 'darwin':
         suffix = 'mac'
@@ -814,6 +782,28 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
             suffix = 'win64'
         else:
             suffix = 'win32'
+    
+# Get nextgis_update package
+    url, version, date = get_path_from_repka('updater', 'latest', suffix, 5)
+    run(('curl', '-L', url, '-o', out_zip, '-s', '-k'))
+    
+# 2. Extract archive
+    color_print('Extract ' + out_zip, False, 'LGREEN')
+    run(('cmake', '-E', 'tar', 'xzf', out_zip))
+
+# 3. Move archive with new name to target_dir
+    target_repo_dir = os.path.join(target_dir, repository)
+    for o in os.listdir(tmp_dir):
+        archive_dir = os.path.join(tmp_dir,o)
+        if os.path.isdir(archive_dir):
+            shutil.move(archive_dir, target_repo_dir)
+            break
+
+# 4. Create version.str
+    if os.path.exists(target_repo_dir):
+        f = open(os.path.join(target_repo_dir, 'version.str'), 'w')
+        f.write('{}\n{}\n'.format(version, date))
+        f.close()
 
     # Download and install already compiled repositories (i.e. lib)
     # 1. Get archive to tmp directory
@@ -870,7 +860,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
             run(('curl', '-u', ftp_user, '--connect-timeout', connect_timeout, '--max-time', max_time, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
 
     for repository in repka_repositories:
-        url, version, date = get_path_from_repka(repository['package'], repository['version'], suffix)
+        url, version, date = get_path_from_repka(repository['package'], repository['version'], suffix, repo_id)
         run(('curl', '-L', url, '-o', out_zip, '-s', '-k'))
 
 # 2. Extract archive
