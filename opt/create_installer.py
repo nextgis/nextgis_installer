@@ -51,8 +51,6 @@ mac_sign_identy = "Developer ID Application: NextGIS OOO (A65C694QW9)"
 connect_timeout = "11"
 max_time = "180"
 
-repositories = []
-
 repka_repositories = [
     {'package': 'lib_qca', 'version': 'latest'},
     {'package': 'lib_qwt', 'version': 'latest'},
@@ -124,8 +122,6 @@ repka_repositories = [
     {'package': 'formbuilder', 'version': 'latest'},
     {'package': 'spatialite', 'version': 'latest'},
 ]
-
-repositories_win = []
 
 repka_repositories_win = [
     {'package': 'python', 'version': 'latest'},
@@ -218,8 +214,6 @@ def parse_arguments():
 
     subparsers = parser.add_subparsers(help='command help', dest='command')
     parser_prepare = subparsers.add_parser('prepare')
-    parser_prepare.add_argument('--ftp_user', dest='ftp_user', required=False, help='FTP user name and password to fetch package.zip anv version.str files')
-    parser_prepare.add_argument('--ftp', dest='ftp', required=False, help='FTP address with directories to fetch package.zip anv version.str files')
     parser_prepare.add_argument('-p', dest='qgis_plugins', required=False, help='QGIS Additional python plugins to include into installer. Plugin names separeted by comma')
     parser_prepare.add_argument('-vd', dest='valid_date', required=False, help='Validity end date')
     parser_prepare.add_argument('-vu', dest='valid_user', required=False, help='Authorised user')
@@ -732,10 +726,7 @@ def delete_path(path_to_delete):
     color_print('Delete existing build dir ...', True, 'LRED')
     shutil.rmtree(path_to_delete, ignore_errors=True)
 
-def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pwd):
-    if ftp is None:
-        return
-
+def download(target_dir, plugins, valid_user, valid_date, sign_pwd):
     tmp_dir = os.path.join(os.getcwd(), 'tmp')
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
@@ -809,55 +800,7 @@ def download(ftp_user, ftp, target_dir, plugins, valid_user, valid_date, sign_pw
     # 1. Get archive to tmp directory
 
     if sys.platform == 'win32':
-        repositories.extend(repositories_win)
         repka_repositories.extend(repka_repositories_win)
-
-    for repository in repositories:
-        ftp_dir = repository + '_' + suffix
-        color_print('Download ' + ftp_dir + '/package.zip', True, 'LGREEN')
-        run(('curl', '-u', ftp_user, '--connect-timeout', connect_timeout, '--max-time', max_time, ftp + ftp_dir + '/package.zip', '-o', out_zip, '-s'))
-
-# 2. Extract archive
-        color_print('Extract ' + out_zip, False, 'LGREEN')
-        run(('cmake', '-E', 'tar', 'xzf', out_zip))
-
-# 3. Move archive with new name to target_dir
-        target_repo_dir = os.path.join(target_dir, repository)
-        for o in os.listdir(tmp_dir):
-            archive_dir = os.path.join(tmp_dir,o)
-            if os.path.isdir(archive_dir):
-                # Add additional plugins
-                if 'nextgisqgis' == repository:
-                    if plugins:
-                        import qgis
-                        plugin_list = plugins.split(',')
-                        if sys.platform == 'darwin':
-                            extract_path = os.path.join(archive_dir, 'Applications/qgis-ng.app/Contents/Resources/python/plugins')
-                        elif sys.platform == 'win32':
-                            extract_path = os.path.join(archive_dir, 'share\\ngqgis\\python\\plugins')
-                        qgis.install_plugins(plugin_list, extract_path)
-                    if valid_user and valid_date:
-                        import sign
-                        if sys.platform == 'darwin':
-                            license_path = os.path.join(archive_dir, 'usr/share')
-                        elif sys.platform == 'win32':
-                            license_path = os.path.join(archive_dir, 'share')
-                        extract_path = os.path.join(license_path, 'license')
-                        sign.install_license(valid_user, valid_date, extract_path, sign_pwd)
-                        ## Avatar
-                        avatar_path = os.path.join(extract_path, "avatar")
-                        urlretrieve("https://raw.githubusercontent.com/nextgis/lib_ngstd/master/res/enterprise_person.png", avatar_path)
-                        ## Public.key
-                        pk_path = os.path.join(extract_path, "public.key")
-                        urlretrieve("https://my.nextgis.com/api/v1/rsa_public_key", pk_path)
-
-                shutil.move(archive_dir, target_repo_dir)
-                break
-
-# 4. Download version.str
-        if os.path.exists(target_repo_dir):
-            color_print('Download ' + ftp_dir + '/version.str', True, 'LGREEN')
-            run(('curl', '-u', ftp_user, '--connect-timeout', connect_timeout, '--max-time', max_time, ftp + ftp_dir + '/version.str', '-o', os.path.join(target_repo_dir, 'version.str'), '-s'))
 
     for repository in repka_repositories:
         url, version, date = get_path_from_repka(repository['package'], repository['version'], suffix, repo_id)
@@ -1072,7 +1015,7 @@ elif args.command == 'create_from_repository':
     prepare_config()
     create_installer_from_repository()
 elif args.command == 'prepare':
-    download(args.ftp_user, args.ftp, args.source, args.qgis_plugins, args.valid_user, args.valid_date, args.sign_pwd)
+    download(args.source, args.qgis_plugins, args.valid_user, args.valid_date, args.sign_pwd)
     prepare()
 elif args.command == 'update':
     packages = []
