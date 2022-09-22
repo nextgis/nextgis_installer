@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_kiwisolver">
     <mac>
-        <path src="Library/lib/python3.8/site-packages/*.py" dst="Library/Python/3.8/site-packages/"/>
-        <path src="Library/lib/python3.8/site-packages/*.so" dst="Library/Python/3.8/site-packages/"/>
+        <path src="Library/lib/python3.8/site-packages/kiwisolver" dst="Library/Python/3.8/site-packages/kiwisolver"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/*.py" dst="lib/python38/site-packages"/>
-        <path src="Lib/site-packages/*.pyd" dst="lib/python38/site-packages"/>
+        <path src="Lib/site-packages/kiwisolver" dst="lib/python38/site-packages/kiwisolver"/>
     </win>
 </Package>
