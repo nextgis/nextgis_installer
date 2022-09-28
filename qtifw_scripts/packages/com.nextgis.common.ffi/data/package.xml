@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="lib_ffi">
+    <mac>
+        <path src="Library/Frameworks/ffi.framework" dst="Library/Frameworks/ffi.framework"/>
+    </mac>
+    <win>
+        <path src="bin/*.dll" dst="bin"/>
+    </win>
+</Package>
