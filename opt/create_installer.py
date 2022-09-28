@@ -121,6 +121,7 @@ repka_repositories = [
     {'package': 'manuscript', 'version': 'latest'},
     {'package': 'formbuilder', 'version': 'latest'},
     {'package': 'spatialite', 'version': 'latest'},
+    {'package': 'lib_ffi', 'version': 'latest'},
 ]
 
 repka_repositories_win = [
