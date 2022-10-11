@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_packaging">
     <mac>
-        <path src="inst/lib/python3.8/site-packages/packaging" dst="Library/Python/3.8/site-packages/packaging"/>
+        <path src="Library/lib/python3.8/site-packages/packaging/" dst="Library/Python/3.8/site-packages/packaging"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/packaging" dst="lib/python38/site-packages/packaging"/>
+        <path src="Lib/site-packages/packaging" dst="lib/python38/site-packages/packaging"/>
     </win>
 </Package>
