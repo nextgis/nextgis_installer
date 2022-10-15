@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_parsing">
     <mac>
-        <path src="inst/lib/python3.8/site-packages/*.py" dst="Library/Python/3.8/site-packages/"/>
+        <path src="inst/Lib/site-packages/pyparsing/" dst="Library/Python/3.8/site-packages/pyparsing"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/*.py" dst="lib/python38/site-packages/"/>
+        <path src="inst/Lib/site-packages/pyparsing/" dst="lib/python38/site-packages/pyparsing"/>
     </win>
 </Package>
