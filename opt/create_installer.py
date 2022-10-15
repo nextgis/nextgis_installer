@@ -130,6 +130,7 @@ repka_repositories_win = [
     {'package': 'lib_iconv', 'version': 'latest'},
     {'package': 'py_sci', 'version': 'latest'},
     {'package': 'lib_flang', 'version': 'latest'},
+    {'package': 'lib_openblas', 'version': 'latest'},
 ]
 
 repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',

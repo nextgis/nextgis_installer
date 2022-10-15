@@ -2,5 +2,5 @@
 <Package>
     <DisplayName>Scipy</DisplayName>
     <Description>Scipy package</Description>
-    <Dependencies>com.nextgis.python.numpy,com.nextgis.common.flang</Dependencies>
+    <Dependencies>com.nextgis.python.numpy,com.nextgis.common.flang,com.nextgis.common.openblas</Dependencies>
 </Package>
