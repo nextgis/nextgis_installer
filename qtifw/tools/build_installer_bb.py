@@ -89,20 +89,12 @@ def init():
     if sys.platform == 'win32':
         # find vcvars script
         vcvars_paths = [
-            'C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\Common7\\Tools',
-            'C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\Common7\\Tools',
-            'C:\\Program Files (x86)\\Microsoft Visual Studio 11.0\\Common7\\Tools',
-            'C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\Common7\\Tools',
-            'C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\Tools',
-            'C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools',
+            'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\\Auxiliary\\\Build\\',
         ]
 
         for vcvars_path in vcvars_paths:
-            if os.path.exists(vcvars_path + '\\VsDevCmd.bat'):
-                vcvars = '\"' + vcvars_path + '\\VsDevCmd.bat\" -arch=x86'
-                break
-            elif os.path.exists(vcvars_path + '\\vcvarsall.bat'):
-                vcvars = '\"' + vcvars_path + '\\vcvarsall.bat\" amd64_x86'
+            if os.path.exists(vcvars_path + '\\vcvarsall.bat'):
+                vcvars = '\"' + vcvars_path + '\\vcvarsall.bat\" x64'
                 break
 
 
