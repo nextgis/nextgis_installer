@@ -69,19 +69,19 @@ def init():
     qt_dir = os.path.dirname(os.path.dirname(root_dir))
     qt_dir = os.path.join(qt_dir, args.qt_dir)
     abs_qt_dir = os.path.abspath(qt_dir)
-    print 'abs_qt_dir: ' + abs_qt_dir
+    print('abs_qt_dir: ' + abs_qt_dir)
     for subdir in os.listdir(abs_qt_dir):
         test_path = os.path.join(abs_qt_dir, subdir, 'bin')
         if os.path.isdir(test_path):
             qmake = os.path.join(test_path, 'qmake')
             break
 
-    print 'qmake: ' + qmake
-    print 'source dir: ' + src_dir
-    print 'build dir: ' + build_dir
+    print('qmake: ' + qmake)
+    print('source dir: ' + src_dir)
+    print('build dir: ' + build_dir)
 
     if args.clean and os.path.exists(build_dir):
-        print 'delete existing build dir ...'
+        print('delete existing build dir ...')
         shutil.rmtree(build_dir)
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
@@ -110,11 +110,11 @@ def run(args):
     if sys.platform == 'win32' and vcvars is not None and vcvars != '':
         args = vcvars + ' && ' + args
 
-    print 'calling ' + args
+    print('calling ' + args)
     subprocess.check_call(args, shell=True)
 
 def build():
-    print 'building sources ... in ' + build_dir
+    print('building sources ... in ' + build_dir)
     os.chdir(build_dir)
     run('\"' + qmake + '\" CONFIG+=release \"' + src_dir + '\"')
     run(args.make)
@@ -124,7 +124,7 @@ def build():
         # run('mt.exe -manifest Hello.exe.manifest -outputresource: Hello.exe')
         test_path = os.path.join(os.getenv("USERPROFILE"), 'source', 'bin')
         if os.path.exists(test_path):
-            print 'It must not happen, but though qmake not honor DESTDIR, let\'s move directory there'
+            print('It must not happen, but though qmake not honor DESTDIR, let\'s move directory there')
             shutil.move(test_path, build_dir)
 
 parse_arguments()
