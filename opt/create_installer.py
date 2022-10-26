@@ -123,6 +123,7 @@ repka_repositories = [
     {'package': 'spatialite', 'version': 'latest'},
     {'package': 'lib_ffi', 'version': 'latest'},
     {'package': 'py_packaging', 'version': 'latest'},
+    {'package': 'py_plotly', 'version': 'latest'},
 ]
 
 repka_repositories_win = [
