@@ -3,5 +3,4 @@
     <DisplayName>3D library</DisplayName>
     <Description>3D library</Description>
     <Virtual>true</Virtual>
-    <Dependencies>com.nextgis.qgis.libapp</Dependencies>
 </Package>
