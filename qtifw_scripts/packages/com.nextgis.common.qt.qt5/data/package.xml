@@ -17,6 +17,12 @@
         <path src="lib/QtMacExtras.framework" dst="Library/Frameworks/QtMacExtras.framework"/>
         <path src="lib/QtPrintSupport.framework" dst="Library/Frameworks/QtPrintSupport.framework"/>
         <path src="lib/QtDBus.framework" dst="Library/Frameworks/QtDBus.framework"/>
+        <path src="lib/Qt53DCore.framework" dst="Library/Frameworks/Qt53DCore.framework"/>
+        <path src="lib/Qt53DExtras.framework" dst="Library/Frameworks/Qt53DExtras.framework"/>
+        <path src="lib/Qt53DInput.framework" dst="Library/Frameworks/Qt53DInput.framework"/>
+        <path src="lib/Qt53DLogic.framework" dst="Library/Frameworks/Qt53DLogic.framework"/>
+        <path src="lib/Qt53DRender.framework" dst="Library/Frameworks/Qt53DRender.framework"/>
+        <path src="lib/Qt5Gamepad.framework" dst="Library/Frameworks/Qt5Gamepad.framework"/>
 
         <path src="plugins/bearer/*.dylib" dst="Library/Plugins/Qt5/bearer"/>
         <path src="plugins/geometryloaders/*.dylib" dst="Library/Plugins/Qt5/geometryloaders"/>
@@ -25,6 +31,7 @@
         <path src="plugins/platforms/*.dylib" dst="Library/Plugins/Qt5/platforms"/>
         <path src="plugins/qmltooling/*.dylib" dst="Library/Plugins/Qt5/qmltooling"/>
         <path src="plugins/sqldrivers/*.dylib" dst="Library/Plugins/Qt5/sqldrivers"/>
+        <path src="plugins/renderers/*.dylib" dst="Library/Plugins/Qt5/renderers"/>
         <path src="translations/qt_*.qm" dst="Library/Translations/Qt5"/>
         <path src="translations/qt_help_*.qm" dst="Library/Translations/Qt5"/>
         <path src="translations/qtbase_*.qm" dst="Library/Translations/Qt5"/>
@@ -50,10 +57,17 @@
         <path src="bin/Qt5QmlModels.dll" dst="bin"/>
         <path src="bin/Qt5OpenGL.dll" dst="bin"/>
         <path src="bin/Qt5WinExtras.dll" dst="bin"/>
+        <path src="bin/Qt53DCore.dll" dst="bin"/>
+        <path src="bin/Qt53DExtras.dll" dst="bin"/>
+        <path src="bin/Qt53DInput.dll" dst="bin"/>
+        <path src="bin/Qt53DLogic.dll" dst="bin"/>
+        <path src="bin/Qt53DRender.dll" dst="bin"/>
+        <path src="bin/Qt5Gamepad.dll" dst="bin"/>
         <path src="bin/libGLESv2.dll" dst="bin"/>
         <path src="plugins/platforms" dst="lib/qt5/plugins/platforms"/>
         <path src="plugins/imageformats" dst="lib/qt5/plugins/imageformats"/>
         <path src="plugins/sqldrivers" dst="lib/qt5/plugins/sqldrivers"/>
+        <path src="plugins/renderers" dst="lib/qt5/plugins/renderers"/>
         <path src="translations/qt_*.qm" dst="share/qt5/translations"/>
         <path src="translations/qt_help_*.qm" dst="share/qt5/translations"/>
         <path src="translations/qtbase_*.qm" dst="share/qt5/translations"/>
