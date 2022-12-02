@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="nextgisqgis">
+    <mac>
+        <path src="Applications/qgis-ng.app/Contents/Frameworks/ngqgis_3d.framework" dst="Applications/qgis-ng.app/Contents/Frameworks/ngqgis_3d.framework"/>
+        <path src="Library/Frameworks/ngqgis_3d.framework" dst="Library/Frameworks/ngqgis_3d.framework"/>
+    </mac>
+    <win>
+        <path src="bin/ngqgis_3d.dll" dst="bin"/>
+    </win>
+</Package>
