@@ -224,8 +224,8 @@ def parse_arguments():
     parser_prepare.add_argument('-vu', dest='valid_user', required=False, help='Authorised user')
     parser_prepare.add_argument('--sign_pwd', dest='sign_pwd', required=False, help='Authorisation for sign api')
 
-    parser_create = subparsers.add_parser('create')
-    parser_create = subparsers.add_parser('create_from_repository')
+    _ = subparsers.add_parser('create')
+    _ = subparsers.add_parser('create_from_repository')
 
     parser_update = subparsers.add_parser('update')
     parser_update.add_argument('--force', dest='packages', required=False, nargs='+', help='Force update specified packages even not any changes exists. If all specified force update all packages')
@@ -392,9 +392,9 @@ def init():
 
 
     color_print('packages path: ' + packages_data_source_path, True, 'LCYAN')
-
-    versions_file_name = os.path.join(repo_root_dir, 'versions.pkl')
-    load_versions(versions_file_name)
+    if args.command != 'create_from_repository':
+        versions_file_name = os.path.join(repo_root_dir, 'versions.pkl')
+        load_versions(versions_file_name)
 
 def get_sources_dir_path(sources_root_dir):
     if args.source_ext:

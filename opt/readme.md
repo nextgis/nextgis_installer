@@ -99,3 +99,36 @@ packages to update (space is delimiter) or ``all`` to force all packages.
 # TODO
 
 Add create standalone installer option to ``Create installer`` force button dialog.
+
+## Manual update packages in installer
+
+1. Build all packages to destination OS
+
+    * lib_expat
+    * lib_geotiff
+    * lib_oci
+    * lib_openssl 
+    * lib_spatialite
+    * lib_gdal
+
+2. Get archives from rm.nextgis.com
+
+    * lib_expat
+    * lib_gdal
+
+3. Update files fix SHA1
+
+    Rename existed files in changed folders (i.e. com.nextgis.common.expat/2.4.1-9bin.7z -> com.nextgis.common.expat/2.4.7-1bin.7z)
+    Change Updates.xml:
+    <PackageUpdate>
+        <Name>com.nextgis.common.expat</Name>
+        <DisplayName>EXPAT</DisplayName>
+        <Description>EXPAT Library</Description>
+        <ReleaseDate>2021-11-06</ReleaseDate>
+    --> <Version>2.4.7-1</Version>
+    --> <UpdateFile OS="Any" UncompressedSize="154152" CompressedSize="53679"/>
+        <DownloadableArchives>bin.7z</DownloadableArchives>
+    --> <SHA1>3ccd775fee6178ff19d48c65ca85c0f63513af00</SHA1>
+    </PackageUpdate>
+
+    Use `python3 hash.py <path>` to get file hash and size in bytes.
