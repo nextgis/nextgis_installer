@@ -1035,4 +1035,6 @@ elif args.command == 'update':
     update_installer()
 else:
     exit('Unsupported command')
-save_versions(versions_file_name)
+
+if args.command != 'create_from_repository':
+    save_versions(versions_file_name)
