@@ -53,6 +53,7 @@
 #include "ng_copyonlyoperation.h"
 #ifdef Q_OS_WIN
 #include "ng_userpathwinenvironmentvariablesoperation.h"
+#include "ng_exportsystemcertificatesoperation.h"
 #endif
 
 #include "lib7z_facade.h"
@@ -111,6 +112,7 @@ void QInstaller::init()
     factory.registerUpdateOperation<NgCopyOnlyOperation>(QLatin1String("NgCopyOnly"));
     #ifdef Q_OS_WIN
     factory.registerUpdateOperation<NgUserPathWinEnvironmentVariableOperation>(QLatin1String("NgUserPathWinEnvironmentVariable"));
+    factory.registerUpdateOperation<NgExportSystemCertificatesOperation>(QLatin1String("NgExportSystemCertificates"));
     #endif
 
     FileDownloaderFactory::setFollowRedirects(true);

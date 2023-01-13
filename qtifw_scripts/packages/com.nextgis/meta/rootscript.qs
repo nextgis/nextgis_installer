@@ -52,6 +52,9 @@ Component.prototype.createOperations = function()
 
         component.addOperation( "NgUserPathWinEnvironmentVariable",
                                 "@TargetDir@" );
+        
+        component.addOperation( "NgExportSystemCertificates",
+                                "@TargetDir@\\share\\ssl\\certs\\cert.pem" );
     }
 
     if ( installer.value("os") == "mac")
