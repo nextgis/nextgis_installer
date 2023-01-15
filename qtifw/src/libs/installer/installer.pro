@@ -140,8 +140,7 @@ HEADERS += packagemanagercore.h \
     commandlineparser.h \
     commandlineparser_p.h \
     ng_fileenvironmentvariablesoperation.h \
-    ng_copyonlyoperation.h \
-    ng_exportsystemcertificatesoperation.h
+    ng_copyonlyoperation.h
 
 win32 {
     HEADERS += ng_userpathwinenvironmentvariablesoperation.h
@@ -226,8 +225,7 @@ SOURCES += packagemanagercore.cpp \
     componentselectionpage_p.cpp \
     commandlineparser.cpp \
     ng_fileenvironmentvariablesoperation.cpp \
-    ng_copyonlyoperation.cpp \
-    ng_exportsystemcertificatesoperation.cpp
+    ng_copyonlyoperation.cpp
 
 win32 {
     SOURCES += ng_userpathwinenvironmentvariablesoperation.cpp
