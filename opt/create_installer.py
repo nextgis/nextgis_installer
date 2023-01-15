@@ -290,8 +290,12 @@ def get_release(packet_id, tag):
     return None
 
 def get_file_id(release, platform):
+    package_filename = 'package.zip' #for updater
+    if platform != '':
+        package_filename = '{}.zip'.format(compilers[platform])
+
     for file in release['files']:
-        if file['name'].endswith('{}.zip'.format(compilers[platform])) and 'static' not in file['name']:
+        if file['name'].endswith(package_filename) and 'static' not in file['name']:
             return file['id']
     return -1    
 
@@ -781,7 +785,7 @@ def download(target_dir, plugins, valid_user, valid_date, sign_pwd):
     
 # Get nextgis_update package
     repository = 'nextgis_updater'
-    url, version, date = get_path_from_repka('updater', 'latest', suffix, 5)
+    url, version, date = get_path_from_repka('updater', 'latest', '', 5)
     run(('curl', '-L', url, '-o', out_zip, '-s', '-k'))
     color_print('nextgis_updater url: ' + url, True, 'LGREEN')
     
