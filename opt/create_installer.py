@@ -783,28 +783,29 @@ def download(target_dir, plugins, valid_user, valid_date, sign_pwd):
         else:
             suffix = 'win32'
     
-# Get nextgis_update package
-    repository = 'nextgis_updater'
-    url, version, date = get_path_from_repka('updater', 'latest', '', 5)
-    run(('curl', '-L', url, '-o', out_zip, '-s', '-k'))
-    
-# 2. Extract archive
-    color_print('Extract ' + out_zip, False, 'LGREEN')
-    run(('cmake', '-E', 'tar', 'xzf', out_zip))
+    if False: #TODO enable after fixing uploading updater to repka
+    # Get nextgis_update package
+        repository = 'nextgis_updater'
+        url, version, date = get_path_from_repka('updater', 'latest', '', 5)
+        run(('curl', '-L', url, '-o', out_zip, '-s', '-k'))
+        
+    # 2. Extract archive
+        color_print('Extract ' + out_zip, False, 'LGREEN')
+        run(('cmake', '-E', 'tar', 'xzf', out_zip))
 
-# 3. Move archive with new name to target_dir
-    target_repo_dir = os.path.join(target_dir, repository)
-    for o in os.listdir(tmp_dir):
-        archive_dir = os.path.join(tmp_dir,o)
-        if os.path.isdir(archive_dir):
-            shutil.move(archive_dir, target_repo_dir)
-            break
+    # 3. Move archive with new name to target_dir
+        target_repo_dir = os.path.join(target_dir, repository)
+        for o in os.listdir(tmp_dir):
+            archive_dir = os.path.join(tmp_dir,o)
+            if os.path.isdir(archive_dir):
+                shutil.move(archive_dir, target_repo_dir)
+                break
 
-# 4. Create version.str
-    if os.path.exists(target_repo_dir):
-        f = open(os.path.join(target_repo_dir, 'version.str'), 'w')
-        f.write('{}\n{}\n'.format(version, date))
-        f.close()
+    # 4. Create version.str
+        if os.path.exists(target_repo_dir):
+            f = open(os.path.join(target_repo_dir, 'version.str'), 'w')
+            f.write('{}\n{}\n'.format(version, date))
+            f.close()
 
     # Download and install already compiled repositories (i.e. lib)
     # 1. Get archive to tmp directory
