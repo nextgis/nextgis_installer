@@ -787,7 +787,6 @@ def download(target_dir, plugins, valid_user, valid_date, sign_pwd):
     repository = 'nextgis_updater'
     url, version, date = get_path_from_repka('updater', 'latest', '', 5)
     run(('curl', '-L', url, '-o', out_zip, '-s', '-k'))
-    color_print('nextgis_updater url: ' + url, True, 'LGREEN')
     
 # 2. Extract archive
     color_print('Extract ' + out_zip, False, 'LGREEN')
@@ -802,9 +801,7 @@ def download(target_dir, plugins, valid_user, valid_date, sign_pwd):
             break
 
 # 4. Create version.str
-    color_print('nextgis_updater target_repo_dir: ' + target_repo_dir, True, 'LGREEN')
     if os.path.exists(target_repo_dir):
-        color_print('save nextgis_updater version.str to ' + target_repo_dir, True, 'LGREEN')
         f = open(os.path.join(target_repo_dir, 'version.str'), 'w')
         f.write('{}\n{}\n'.format(version, date))
         f.close()
