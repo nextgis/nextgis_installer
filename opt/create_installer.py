@@ -797,6 +797,7 @@ def download(target_dir, plugins, valid_user, valid_date, sign_pwd):
 
 # 4. Create version.str
     if os.path.exists(target_repo_dir):
+        color_print('save version.str to ' + target_repo_dir, True, 'LGREEN')
         f = open(os.path.join(target_repo_dir, 'version.str'), 'w')
         f.write('{}\n{}\n'.format(version, date))
         f.close()
