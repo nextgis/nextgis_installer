@@ -780,6 +780,7 @@ def download(target_dir, plugins, valid_user, valid_date, sign_pwd):
             suffix = 'win32'
     
 # Get nextgis_update package
+    repository = 'nextgis_updater'
     url, version, date = get_path_from_repka('updater', 'latest', suffix, 5)
     run(('curl', '-L', url, '-o', out_zip, '-s', '-k'))
     
