@@ -5,6 +5,6 @@
     </mac>
     <win>
         <path src="bin/openssl*.dll" dst="bin"/>
-        <path src="share/ssl" dst="share/ssl"/>
+        <path src="share/ssl/*.cnf" dst="share/ssl"/>
     </win>
 </Package>

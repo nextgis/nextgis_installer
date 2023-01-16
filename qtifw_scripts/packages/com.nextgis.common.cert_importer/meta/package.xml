@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Certificates importer</DisplayName>
+    <Description>System certificates import utility</Description>
+    <Script>afterinstall.qs</Script>
+</Package>

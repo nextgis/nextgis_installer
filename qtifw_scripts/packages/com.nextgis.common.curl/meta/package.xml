@@ -2,6 +2,6 @@
 <Package>
     <DisplayName>CURL</DisplayName>
     <Description>CURL Library</Description>
-    <Dependencies>com.nextgis.common.openssl,com.nextgis.common.z</Dependencies>
+    <Dependencies>com.nextgis.common.openssl,com.nextgis.common.z,com.nextgis.common.cert_importer</Dependencies>
     <Script>installscript.qs</Script>
 </Package>
