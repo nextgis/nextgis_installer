@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>rapidfuzz</DisplayName>
+    <Description>rapidfuzz package</Description>
+    <Dependencies>com.nextgis.python.all</Dependencies>
+</Package>

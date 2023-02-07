@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_rapidfuzz">
+    <mac>
+        <path src="Library/lib/python3.8/site-packages/rapidfuzz/" dst="Library/Python/3.8/site-packages/rapidfuzz"/>
+    </mac>
+    <win>
+        <path src="Lib/site-packages/rapidfuzz" dst="lib/python38/site-packages/rapidfuzz"/>
+    </win>
+</Package>
