@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_levenshtein">
+    <mac>
+        <path src="Library/lib/python3.8/site-packages/Levenshtein/" dst="Library/Python/3.8/site-packages/Levenshtein"/>
+    </mac>
+    <win>
+        <path src="Lib/site-packages/Levenshtein" dst="lib/python38/site-packages/Levenshtein"/>
+    </win>
+</Package>

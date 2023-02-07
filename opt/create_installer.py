@@ -124,6 +124,8 @@ repka_repositories = [
     {'package': 'lib_ffi', 'version': 'latest'},
     {'package': 'py_packaging', 'version': 'latest'},
     {'package': 'py_plotly', 'version': 'latest'},
+    {'package': 'py_pandas', 'version': 'latest'},
+    {'package': 'py_levenshtein', 'version': 'latest'},
 ]
 
 repka_repositories_win = [

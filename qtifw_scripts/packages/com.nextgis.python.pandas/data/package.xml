@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_pandas">
+    <mac>
+        <path src="Library/lib/python3.8/site-packages/pandas/" dst="Library/Python/3.8/site-packages/pandas"/>
+    </mac>
+    <win>
+        <path src="Lib/site-packages/pandas" dst="lib/python38/site-packages/pandas"/>
+    </win>
+</Package>
