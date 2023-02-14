@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_tus">
+    <mac>
+        <path src="Library/lib/python3.8/site-packages/tusclient/" dst="Library/Python/3.8/site-packages/tusclient"/>
+    </mac>
+    <win>
+        <path src="Lib/site-packages/tusclient" dst="lib/python38/site-packages/tusclient"/>
+    </win>
+</Package>

@@ -127,6 +127,7 @@ repka_repositories = [
     {'package': 'py_pandas', 'version': 'latest'},
     {'package': 'py_levenshtein', 'version': 'latest'},
     {'package': 'py_rapidfuzz', 'version': 'latest'},
+    {'package': 'py_tus', 'version': 'latest'},
 ]
 
 repka_repositories_win = [
