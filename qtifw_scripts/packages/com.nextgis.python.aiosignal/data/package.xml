@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_aiosignal">
     <mac>
-        <path src="Library/lib/python3.8/site-packages/aiosignal/" dst="Library/Python/3.8/site-packages/aiosignal"/>
+        <path src="inst/lib/python3.8/site-packages/aiosignal/" dst="Library/Python/3.8/site-packages/aiosignal"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/aiosignal" dst="lib/python38/site-packages/aiosignal"/>
+        <path src="inst/Lib/site-packages/aiosignal" dst="lib/python38/site-packages/aiosignal"/>
     </win>
 </Package>

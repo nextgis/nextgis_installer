@@ -5,5 +5,6 @@
     </mac>
     <win>
         <path src="Lib/site-packages/charset_normalizer" dst="lib/python38/site-packages/charset_normalizer"/>
+        <path src="Scripts/" dst="bin"/>
     </win>
 </Package>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_async_timeout">
     <mac>
-        <path src="Library/lib/python3.8/site-packages/async_timeout/" dst="Library/Python/3.8/site-packages/async_timeout"/>
+        <path src="inst/lib/python3.8/site-packages/async_timeout/" dst="Library/Python/3.8/site-packages/async_timeout"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/async_timeout" dst="lib/python38/site-packages/async_timeout"/>
+        <path src="inst/Lib/site-packages/async_timeout" dst="lib/python38/site-packages/async_timeout"/>
     </win>
 </Package>
