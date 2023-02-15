@@ -128,6 +128,10 @@ repka_repositories = [
     {'package': 'py_levenshtein', 'version': 'latest'},
     {'package': 'py_rapidfuzz', 'version': 'latest'},
     {'package': 'py_tus', 'version': 'latest'},
+    {'package': 'py_frozenlist', 'version': 'latest'},
+    {'package': 'py_multidict', 'version': 'latest'},
+    {'package': 'py_yarl', 'version': 'latest'},
+    {'package': 'py_aiohttp', 'version': 'latest'},
 ]
 
 repka_repositories_win = [
@@ -144,7 +148,8 @@ repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
     'py_requests', 'py_pytz', 'py_nose', 'py_jinja', 'py_httplib', 'py_ows',
     'py_dateutil', 'py_pygments', 'py_six', 'py_urllib3', 'py_idna', 'py_chardet',
     'py_certifi', 'py_geojson', 'py_tqdm', 'py_beautifulsoup', 'py_geographiclib',
-    'py_soupsieve', 'py_setuptools',
+    'py_soupsieve', 'py_setuptools', 'py_tinydb', 'py_charset_normalizer', 'py_attrs',
+    'py_async_timeout', 'py_aiosignal',
 ]
 
 skip_osx_dependencies = ['com.nextgis.common.qt.all', 'com.nextgis.python.python',

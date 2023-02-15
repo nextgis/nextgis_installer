@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_charset_normalizer">
+    <mac>
+        <path src="Library/lib/python3.8/site-packages/charset_normalizer/" dst="Library/Python/3.8/site-packages/charset_normalizer"/>
+    </mac>
+    <win>
+        <path src="Lib/site-packages/charset_normalizer" dst="lib/python38/site-packages/charset_normalizer"/>
+    </win>
+</Package>

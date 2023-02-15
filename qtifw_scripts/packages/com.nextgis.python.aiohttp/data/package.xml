@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_aiohttp">
+    <mac>
+        <path src="Library/lib/python3.8/site-packages/aiohttp/" dst="Library/Python/3.8/site-packages/aiohttp"/>
+    </mac>
+    <win>
+        <path src="Lib/site-packages/aiohttp" dst="lib/python38/site-packages/aiohttp"/>
+    </win>
+</Package>

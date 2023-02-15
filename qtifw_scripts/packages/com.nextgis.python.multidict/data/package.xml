@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_multidict">
+    <mac>
+        <path src="Library/lib/python3.8/site-packages/multidict/" dst="Library/Python/3.8/site-packages/multidict"/>
+    </mac>
+    <win>
+        <path src="Lib/site-packages/multidict" dst="lib/python38/site-packages/multidict"/>
+    </win>
+</Package>

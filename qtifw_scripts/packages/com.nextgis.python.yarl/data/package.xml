@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_yarl">
+    <mac>
+        <path src="Library/lib/python3.8/site-packages/yarl/" dst="Library/Python/3.8/site-packages/yarl"/>
+    </mac>
+    <win>
+        <path src="Lib/site-packages/yarl" dst="lib/python38/site-packages/yarl"/>
+    </win>
+</Package>
