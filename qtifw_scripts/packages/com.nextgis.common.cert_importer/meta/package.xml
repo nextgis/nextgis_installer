@@ -2,6 +2,6 @@
 <Package>
     <DisplayName>Certificates importer</DisplayName>
     <Description>System certificates import utility</Description>
-    <Dependencies>com.nextgis.common.qt.qt5,com.nextgis.common.z,com.nextgis.common.vc</Dependencies>
+    <Dependencies>com.nextgis.common.qt.qt5,com.nextgis.common.z,com.nextgis.common.vc,com.nextgis.common.openssl</Dependencies>
     <Script>afterinstall.qs</Script>
 </Package>
