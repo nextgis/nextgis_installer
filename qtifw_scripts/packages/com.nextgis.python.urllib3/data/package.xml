@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_urllib3">
     <mac>
-        <path src="inst/lib/python3.8/site-packages/urllib3" dst="Library/Python/3.8/site-packages/urllib3"/>
+        <path src="inst/urllib3" dst="Library/Python/3.8/site-packages/urllib3"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/urllib3" dst="lib/python38/site-packages/urllib3"/>
+        <path src="inst/urllib3" dst="lib/python38/site-packages/urllib3"/>
     </win>
 </Package>
