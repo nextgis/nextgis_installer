@@ -19,6 +19,7 @@ import time
 import pickle
 import glob
 import json
+import ssl
 
 if sys.version_info[0] >= 3:
     from urllib.request import urlretrieve, urlopen
@@ -276,7 +277,7 @@ compilers = {
 def get_packet_id(repo_id, packet_name):
     url =  repka_endpoint + '/api/packet?repository={}&filter={}'.format(repo_id, packet_name)
     color_print('Check packet url: ' + url, False, 'OKGRAY')
-    response = urlopen(url)
+    response = urlopen(url, context = ssl._create_unverified_context())
     packets = json.loads(response.read())
     for packet in packets:
         if packet['name'] == packet_name: 
@@ -286,7 +287,7 @@ def get_packet_id(repo_id, packet_name):
 def get_release(packet_id, tag):
     url =  repka_endpoint + '/api/release?packet={}'.format(packet_id)
     color_print('Check release url: ' + url, False, 'OKGRAY')
-    response = urlopen(url)
+    response = urlopen(url, context = ssl._create_unverified_context())
     releases = json.loads(response.read())
     if releases is None:
         color_print('Release ID not found', False, 'LCYAN')
