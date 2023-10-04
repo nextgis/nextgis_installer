@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_attrs">
     <mac>
-        <path src="inst/lib/python3.8/site-packages/attrs/" dst="Library/Python/3.8/site-packages/attrs"/>
-        <path src="inst/lib/python3.8/site-packages/attr/" dst="Library/Python/3.8/site-packages/attr"/>
+        <path src="inst/attrs/" dst="Library/Python/3.8/site-packages/attrs"/>
+        <path src="inst/attr/" dst="Library/Python/3.8/site-packages/attr"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/attrs" dst="lib/python38/site-packages/attrs"/>
-        <path src="inst/Lib/site-packages/attr" dst="lib/python38/site-packages/attr"/>
+        <path src="inst/attrs" dst="lib/python38/site-packages/attrs"/>
+        <path src="inst/attr" dst="lib/python38/site-packages/attr"/>
     </win>
 </Package>

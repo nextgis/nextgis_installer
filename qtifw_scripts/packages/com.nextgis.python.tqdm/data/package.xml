@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_tqdm">
     <mac>
-        <path src="inst/lib/python3.8/site-packages/tqdm" dst="Library/Python/3.8/site-packages/tqdm"/>
-        <path src="inst/bin" dst="usr/bin/"/>
+        <path src="inst/tqdm" dst="Library/Python/3.8/site-packages/tqdm"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/tqdm" dst="lib/python38/site-packages/tqdm"/>
-        <path src="inst/Scripts" dst="bin"/>
+        <path src="inst/tqdm" dst="lib/python38/site-packages/tqdm"/>
     </win>
 </Package>

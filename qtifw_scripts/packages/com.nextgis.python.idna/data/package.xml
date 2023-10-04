@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_idna">
     <mac>
-        <path src="inst/lib/python3.8/site-packages/idna" dst="Library/Python/3.8/site-packages/idna"/>
+        <path src="inst/idna" dst="Library/Python/3.8/site-packages/idna"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/idna" dst="lib/python38/site-packages/idna"/>
+        <path src="inst/idna" dst="lib/python38/site-packages/idna"/>
     </win>
 </Package>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_tinydb">
     <mac>
-        <path src="inst/lib/python3.8/site-packages/tinydb/" dst="Library/Python/3.8/site-packages/tinydb"/>
+        <path src="inst/tinydb/" dst="Library/Python/3.8/site-packages/tinydb"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/tinydb" dst="lib/python38/site-packages/tinydb"/>
+        <path src="inst/tinydb" dst="lib/python38/site-packages/tinydb"/>
     </win>
 </Package>
