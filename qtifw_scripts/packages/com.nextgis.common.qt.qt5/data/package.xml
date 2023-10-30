@@ -32,6 +32,7 @@
         <path src="plugins/qmltooling/*.dylib" dst="Library/Plugins/Qt5/qmltooling"/>
         <path src="plugins/sqldrivers/*.dylib" dst="Library/Plugins/Qt5/sqldrivers"/>
         <path src="plugins/renderers/*.dylib" dst="Library/Plugins/Qt5/renderers"/>
+        <path src="plugins/printsupport/*.dylib" dst="Library/Plugins/Qt5/printsupport"/>
         <path src="translations/qt_*.qm" dst="Library/Translations/Qt5"/>
         <path src="translations/qt_help_*.qm" dst="Library/Translations/Qt5"/>
         <path src="translations/qtbase_*.qm" dst="Library/Translations/Qt5"/>
@@ -68,6 +69,7 @@
         <path src="plugins/imageformats" dst="lib/qt5/plugins/imageformats"/>
         <path src="plugins/sqldrivers" dst="lib/qt5/plugins/sqldrivers"/>
         <path src="plugins/renderers" dst="lib/qt5/plugins/renderers"/>
+        <path src="plugins/printsupport" dst="lib/qt5/plugins/printsupport"/>
         <path src="translations/qt_*.qm" dst="share/qt5/translations"/>
         <path src="translations/qt_help_*.qm" dst="share/qt5/translations"/>
         <path src="translations/qtbase_*.qm" dst="share/qt5/translations"/>
