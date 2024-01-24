@@ -16,6 +16,8 @@
         <path src="lib/QtXmlPatterns.framework" dst="Library/Frameworks/QtXmlPatterns.framework"/>
         <path src="lib/QtMacExtras.framework" dst="Library/Frameworks/QtMacExtras.framework"/>
         <path src="lib/QtPrintSupport.framework" dst="Library/Frameworks/QtPrintSupport.framework"/>
+        <path src="lib/QtMultimedia.framework" dst="Library/Frameworks/QtMultimedia.framework"/>
+        <path src="lib/QtMultimediaWidgets.framework" dst="Library/Frameworks/QtMultimediaWidgets.framework"/>
         <path src="lib/QtDBus.framework" dst="Library/Frameworks/QtDBus.framework"/>
         <path src="lib/Qt53DCore.framework" dst="Library/Frameworks/Qt53DCore.framework"/>
         <path src="lib/Qt53DExtras.framework" dst="Library/Frameworks/Qt53DExtras.framework"/>
@@ -52,6 +54,8 @@
         <path src="bin/Qt5Xml.dll" dst="bin"/>
         <path src="bin/Qt5Concurrent.dll" dst="bin"/>
         <path src="bin/Qt5PrintSupport.dll" dst="bin"/>
+        <path src="bin/Qt5Multimedia.dll" dst="bin"/>
+        <path src="bin/Qt5MultimediaWidgets.dll" dst="bin"/>
         <path src="bin/Qt5QuickWidgets.dll" dst="bin"/>
         <path src="bin/Qt5Quick.dll" dst="bin"/>
         <path src="bin/Qt5Qml.dll" dst="bin"/>
