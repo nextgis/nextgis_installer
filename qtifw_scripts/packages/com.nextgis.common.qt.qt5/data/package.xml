@@ -70,6 +70,7 @@
         <path src="bin/Qt5Gamepad.dll" dst="bin"/>
         <path src="bin/libGLESv2.dll" dst="bin"/>
         <path src="plugins/platforms" dst="lib/qt5/plugins/platforms"/>
+		<path src="plugins/iconengines" dst="lib/qt5/plugins/iconengines"/>
         <path src="plugins/imageformats" dst="lib/qt5/plugins/imageformats"/>
         <path src="plugins/sqldrivers" dst="lib/qt5/plugins/sqldrivers"/>
         <path src="plugins/renderers" dst="lib/qt5/plugins/renderers"/>
