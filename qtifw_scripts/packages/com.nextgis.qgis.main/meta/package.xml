@@ -8,7 +8,4 @@
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>
-    <Licenses>
-        <License name="Topographic fonts license" file="topographic_fonts_license.txt" />
-    </Licenses>
 </Package>

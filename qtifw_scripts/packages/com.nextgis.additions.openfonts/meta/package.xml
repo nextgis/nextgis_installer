@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>OpenSans fonts</DisplayName>
+    <Description>A set of free fonts: OpenSans, DejaVu and STIX fonts family</Description>
+    <Default>false</Default>
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+    <Script>script.qs</Script>
+	<Licenses>
+            <License name="OpenSans fonts license" file="OFL.txt" />
+            <License name="DejaVu fonts license" file="LICENSE_DEJAVU.txt" />
+            <License name="STIX fonts license" file="LICENSE_STIX.txt" />
+	</Licenses>
+</Package>

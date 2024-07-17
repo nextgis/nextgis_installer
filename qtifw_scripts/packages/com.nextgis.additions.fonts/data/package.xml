@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="fonts">
+    <mac>
+        <path src="Applications/qgis-ng.app/Contents/Resources/ngqgis/fonts/fonts" dst="Applications/qgis-ng.app/Contents/Resources/ngqgis/fonts"/>
+    </mac>
+    <win>
+        <path src="share/ngqgis/fonts/fonts" dst="share/ngqgis/fonts"/>
+    </win>
+</Package>

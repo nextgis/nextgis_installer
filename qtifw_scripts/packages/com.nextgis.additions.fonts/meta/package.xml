@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Topographic fonts</DisplayName>
+    <Description>A set of topographic fonts</Description>
+    <Default>false</Default>
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+    <Script>script.qs</Script>
+    <Licenses>
+        <License name="Topographic fonts license" file="topographic_fonts_license.txt" />
+    </Licenses>
+</Package>

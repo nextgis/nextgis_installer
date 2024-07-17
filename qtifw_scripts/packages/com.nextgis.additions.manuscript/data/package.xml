@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="manuscript">
+    <mac>
+        <path src="Applications/manuscript.app" dst="Applications/manuscript.app"/>
+    </mac>
+    <win>
+        <path src="bin/*.exe" dst="bin"/>
+        <path src="share/translations/*.qm" dst="share/translations"/>
+    </win>
+</Package>

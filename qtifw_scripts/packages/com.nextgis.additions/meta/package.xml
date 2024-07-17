@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Additional</DisplayName>
+    <Description>Additional resources</Description>
+    <Dependencies>com.nextgis.nextgis_updater</Dependencies>
+    <Default>false</Default>
+    <Dependencies></Dependencies>
+
+    <Translations>
+        <Translation>ru.qm</Translation>
+    </Translations>
+    <SortingPriority>99</SortingPriority>
+    <Script>script.qs</Script>
+</Package>
