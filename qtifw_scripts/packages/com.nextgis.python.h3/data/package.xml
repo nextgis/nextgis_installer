@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="py_h3">
+    <mac>
+        <path src="inst/lib/python3.8/site-packages/h3/" dst="Library/Python/3.8/site-packages/h3"/>
+    </mac>
+    <win>
+        <path src="inst/Lib/site-packages/h3" dst="lib/python38/site-packages/h3"/>
+    </win>
+</Package>

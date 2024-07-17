@@ -43,6 +43,7 @@ CMakeLists.txt.user
 
 # Other temp files
 *.lock
+.idea
 
 # Built and generated files in case of building repository and installer in the source code directory
 repository-free/

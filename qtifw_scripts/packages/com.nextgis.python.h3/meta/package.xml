@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>h3</DisplayName>
+    <Description>h3 package</Description>
+    <Dependencies>com.nextgis.python.all</Dependencies>
+</Package>
