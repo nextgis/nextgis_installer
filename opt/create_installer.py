@@ -119,7 +119,7 @@ repka_repositories = [
     {'package': 'py_lxml', 'version': 'latest'},
     {'package': 'lib_xslt', 'version': 'latest'},
     {'package': 'nextgisqgis', 'version': 'latest'},
-    {'package': 'manuscript', 'version': 'latest'},
+    # {'package': 'manuscript', 'version': 'latest'},
     {'package': 'formbuilder', 'version': 'latest'},
     {'package': 'spatialite', 'version': 'latest'},
     {'package': 'lib_ffi', 'version': 'latest'},
@@ -160,7 +160,7 @@ skip_osx_dependencies = ['com.nextgis.common.qt.all', 'com.nextgis.python.python
     'com.nextgis.python.sci',
 ]
 
-virtual_packages = ['com.nextgis.nextgis_updater', 'com.nextgis.python', 
+virtual_packages = ['com.nextgis.nextgis_updater', 'com.nextgis.python',
     'com.nextgis.common', 'com.nextgis.common.qt', 'com.nextgis.utils',
     'com.nextgis.spatial', 'com.nextgis.python.all', 'com.nextgis.utils.all'
 ]
@@ -281,7 +281,7 @@ def get_packet_id(repo_id, packet_name):
     response = urlopen(url, context = ssl._create_unverified_context())
     packets = json.loads(response.read())
     for packet in packets:
-        if packet['name'] == packet_name: 
+        if packet['name'] == packet_name:
             return packet['id']
     return -1
 
@@ -295,7 +295,7 @@ def get_release(packet_id, tag):
         return None
 
     for release in releases:
-        if tag in release['tags']: 
+        if tag in release['tags']:
             color_print('Release ID {} found'.format(release['id']), False, 'LCYAN')
             return release
 
@@ -310,7 +310,7 @@ def get_file_id(release, platform):
     for file in release['files']:
         if file['name'].endswith(package_filename) and 'static' not in file['name']:
             return file['id']
-    return -1    
+    return -1
 
 def get_path_from_repka(package, version, suffix, repo_id):
     packet_id = get_packet_id(repo_id, package)
@@ -327,7 +327,7 @@ def get_path_from_repka(package, version, suffix, repo_id):
     if file_id == -1:
         return '', '0.0.0', ''
 
-    package_ver = '' 
+    package_ver = ''
     for tag in release['tags']:
         if tag != 'latest':
             package_ver = tag
@@ -795,13 +795,13 @@ def download(target_dir, plugins, valid_user, valid_date, sign_pwd):
             suffix = 'win64'
         else:
             suffix = 'win32'
-    
+
     if False: #TODO enable after fixing uploading updater to repka
     # Get nextgis_update package
         repository = 'nextgis_updater'
         url, version, date = get_path_from_repka('updater', 'latest', '', 5)
         run(('curl', '-L', url, '-o', out_zip, '-s', '-k'))
-        
+
     # 2. Extract archive
         color_print('Extract ' + out_zip, False, 'LGREEN')
         run(('cmake', '-E', 'tar', 'xzf', out_zip))
