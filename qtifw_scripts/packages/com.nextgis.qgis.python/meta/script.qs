@@ -20,10 +20,7 @@ onUpdateFinished = function()
     if ( installer.value("os") == "win")
     {
         var qtilesDir = installer.value("TargetDir") + "/share/ngqgis/python/plugins/qtiles";
-        if (installer.fileExists(qtilesDir))
-        {
-            installer.execute("cmd", ["/c", "rd /s /q \"" + qtilesDir + "\""]);
-        }
+        installer.execute("cmd", ["/c", "if exist \"" + qtilesDir + "\" rd /s /q \"" + qtilesDir + "\""]);
     }
     else if ( installer.value("os") == "mac")
     {
