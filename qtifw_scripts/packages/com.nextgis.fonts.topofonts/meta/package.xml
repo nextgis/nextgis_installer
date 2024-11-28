@@ -10,4 +10,5 @@
     <Licenses>
         <License name="Topographic fonts license" file="topographic_fonts_license.txt" />
     </Licenses>
+    <Replaces>com.nextgis.additions.fonts</Replaces>
 </Package>

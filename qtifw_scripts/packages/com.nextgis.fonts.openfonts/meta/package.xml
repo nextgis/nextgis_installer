@@ -12,4 +12,5 @@
             <License name="DejaVu fonts license" file="LICENSE_DEJAVU.txt" />
             <License name="STIX fonts license" file="LICENSE_STIX.txt" />
 	</Licenses>
+    <Replaces>com.nextgis.additions.openfonts</Replaces>
 </Package>
