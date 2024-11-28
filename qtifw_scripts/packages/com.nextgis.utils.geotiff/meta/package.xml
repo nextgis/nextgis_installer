@@ -2,6 +2,7 @@
 <Package>
     <DisplayName>GeoTIFF utilities</DisplayName>
     <Description>GeoTIFF command line utilities</Description>
+    <Default>true</Default>
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

@@ -2,6 +2,7 @@
 <Package>
     <DisplayName>Proj utilities</DisplayName>
     <Description>Proj command line utilities</Description>
+    <Default>true</Default>
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

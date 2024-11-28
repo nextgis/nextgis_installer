@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>QGIS documentation (English)</DisplayName>
     <Description>QGIS documentation (English)</Description>
-    <Default>false</Default>
+    <Default>true</Default>
     <Script>afterinstall.qs</Script>
     <Translations>
         <Translation>ru.qm</Translation>

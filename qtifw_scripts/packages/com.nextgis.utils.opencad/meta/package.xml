@@ -2,6 +2,7 @@
 <Package>
     <DisplayName>OpenCAD utilities</DisplayName>
     <Description>OpenCAD command line utilities</Description>
+    <Default>true</Default>
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

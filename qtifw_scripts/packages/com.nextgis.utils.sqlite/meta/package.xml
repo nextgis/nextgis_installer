@@ -2,6 +2,7 @@
 <Package>
     <DisplayName>SQLite3 utilities</DisplayName>
     <Description>SQLite3 command line utilities</Description>
+    <Default>true</Default>
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

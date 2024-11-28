@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>OpenSans fonts</DisplayName>
     <Description>A set of free fonts: OpenSans, DejaVu and STIX fonts family</Description>
-    <Default>false</Default>
+    <Default>true</Default>
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

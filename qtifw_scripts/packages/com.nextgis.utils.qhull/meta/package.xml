@@ -2,6 +2,7 @@
 <Package>
     <DisplayName>QHULL utilities</DisplayName>
     <Description>QHULL command line utilities</Description>
+    <Default>true</Default>
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

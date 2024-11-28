@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>Topographic fonts</DisplayName>
     <Description>A set of topographic fonts</Description>
-    <Default>false</Default>
+    <Default>true</Default>
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>

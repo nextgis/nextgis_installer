@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>QGIS documentation (Russian)</DisplayName>
     <Description>QGIS documentation (Russian)</Description>
-    <Default>false</Default>
+    <Default>true</Default>
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>
