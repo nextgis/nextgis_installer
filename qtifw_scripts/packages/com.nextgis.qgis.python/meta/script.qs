@@ -2,6 +2,7 @@
 function Component()
 {
     component.loaded.connect(this, Component.prototype.componentLoaded);
+    installer.updateFinished.connect(this, onUpdateFinished);
 }
 
 Component.prototype.componentLoaded = function ()
@@ -10,14 +11,12 @@ Component.prototype.componentLoaded = function ()
     component.setValue("Description",qsTranslate("script","QGIS python"));
 }
 
-Component.prototype.createOperations = function()
+onUpdateFinished = function()
 {
-    component.createOperations();
-
-    if (!installer.isUpdater())
-    {
+    if (!installer.isUpdater() || installer.status != QInstaller.Success) {
         return;
     }
+
     if ( installer.value("os") == "win")
     {
         var qtilesDir = installer.value("TargetDir") + "/share/ngqgis/python/plugins/qtiles";
