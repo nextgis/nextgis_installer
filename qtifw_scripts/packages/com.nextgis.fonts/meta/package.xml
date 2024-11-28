@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>Additional</DisplayName>
-    <Description>Additional resources</Description>
+    <DisplayName>Fonts</DisplayName>
+    <Description>Additional fonts</Description>
     <Dependencies>com.nextgis.nextgis_updater</Dependencies>
-    <Default>false</Default>
+    <Default>true</Default>
     <Dependencies></Dependencies>
 
     <Translations>
