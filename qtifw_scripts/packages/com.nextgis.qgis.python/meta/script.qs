@@ -13,7 +13,7 @@ Component.prototype.createOperations = function()
 {
     component.createOperations();
 
-    if (installer.isUpdater() && systemInfo.productType === "windows")
+    if (systemInfo.productType === "windows")
     {
         var targetDir = installer.value("TargetDir")
         var qtilesDir = (targetDir + "/share/ngqgis/python/plugins/qtiles").replace(/\//g, "\\");
