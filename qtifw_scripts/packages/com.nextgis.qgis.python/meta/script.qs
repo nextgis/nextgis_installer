@@ -1,8 +1,6 @@
-
 function Component()
 {
     component.loaded.connect(this, Component.prototype.componentLoaded);
-    installer.updateFinished.connect(this, onUpdateFinished);
 }
 
 Component.prototype.componentLoaded = function ()
@@ -11,20 +9,14 @@ Component.prototype.componentLoaded = function ()
     component.setValue("Description",qsTranslate("script","QGIS python"));
 }
 
-onUpdateFinished = function()
+Component.prototype.createOperations = function()
 {
-    if (!installer.isUpdater() || installer.status != QInstaller.Success) {
-        return;
-    }
+    component.createOperations();
 
-    if ( installer.value("os") == "win")
+    if (installer.isUpdater() && systemInfo.productType === "windows")
     {
-        var qtilesDir = installer.value("TargetDir") + "/share/ngqgis/python/plugins/qtiles";
-        installer.execute("cmd", ["/c", "if exist \"" + qtilesDir + "\" rd /s /q \"" + qtilesDir + "\""]);
-    }
-    else if ( installer.value("os") == "mac")
-    {
-        var qtilesDir = installer.value("TargetDir") + "/Applications/qgis-ng.app/Contents/Resources/python/plugins/qtiles";
-        // TODO
+        var targetDir = installer.value("TargetDir")
+        var qtilesDir = (targetDir + "/share/ngqgis/python/plugins/qtiles").replace(/\//g, "\\");
+        component.addOperation("Execute", "cmd", "/c", "if exist", qtilesDir, "rd", "/s", "/q", qtilesDir);
     }
 }
