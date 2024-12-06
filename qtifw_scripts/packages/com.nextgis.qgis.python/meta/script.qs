@@ -15,8 +15,10 @@ Component.prototype.createOperations = function()
 
     if (systemInfo.productType === "windows")
     {
-        var targetDir = installer.value("TargetDir")
-        var qtilesDir = (targetDir + "/share/ngqgis/python/plugins/qtiles").replace(/\//g, "\\");
-        component.addOperation("Execute", "cmd", "/c", "if exist", qtilesDir, "rd", "/s", "/q", qtilesDir);
+        var qtilesDir = installer.value("TargetDir") + "/share/ngqgis/python/plugins/qtiles";
+        if (installer.fileExists(qtilesDir))
+        {
+            component.addOperation("Execute", "cmd", "/c", "rd", "/s", "/q", qtilesDir);
+        }
     }
 }
