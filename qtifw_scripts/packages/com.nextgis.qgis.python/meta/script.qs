@@ -1,3 +1,11 @@
+var Dir = new function () {
+    this.toNativeSparator = function (path) {
+        if (systemInfo.productType === "windows")
+            return path.replace(/\//g, '\\');
+        return path;
+    }
+};
+
 function Component()
 {
     component.loaded.connect(this, Component.prototype.componentLoaded);
@@ -15,7 +23,9 @@ Component.prototype.createOperations = function()
 
     if (systemInfo.productType === "windows")
     {
-        var qtilesDir = installer.value("TargetDir") + "/share/ngqgis/python/plugins/qtiles";
+        var targetDir = Dir.toNativeSparator(installer.value("TargetDir"));
+        var qtilesDir = targetDir + "\\share\\ngqgis\\python\\plugins\\qtiles";
+
         if (installer.fileExists(qtilesDir))
         {
             component.addOperation("Execute", "cmd", "/c", "rd", "/s", "/q", qtilesDir);
