@@ -4,7 +4,7 @@
     <Description>Main QGIS application</Description>
     <Default>true</Default>
     <Script>afterinstall.qs</Script>
-    <Dependencies>com.nextgis.qgis.libapp,com.nextgis.utils.gdal,com.nextgis.common.vc</Dependencies>    
+    <Dependencies>com.nextgis.qgis.libapp,com.nextgis.utils.gdal,com.nextgis.common.vc,com.nextgis.fonts</Dependencies>    
     <Translations>
         <Translation>ru.qm</Translation>
     </Translations>
