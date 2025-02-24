@@ -2,8 +2,9 @@
 <Package>
     <DisplayName>Fonts</DisplayName>
     <Description>Additional fonts</Description>
+    <Dependencies>com.nextgis.nextgis_updater</Dependencies>
     <Default>true</Default>
-    <Dependencies>com.nextgis.fonts.openfonts,com.nextgis.fonts.topofonts</Dependencies>
+    <Dependencies></Dependencies>
 
     <Translations>
         <Translation>ru.qm</Translation>

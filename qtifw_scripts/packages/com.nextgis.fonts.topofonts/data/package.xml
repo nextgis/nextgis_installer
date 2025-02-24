@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Package root="fonts">
+<Package root="nextgisqgis">
     <mac>
-        <path src="Applications/qgis-ng.app/Contents/Resources/ngqgis/fonts/fonts" dst="Applications/qgis-ng.app/Contents/Resources/ngqgis/fonts"/>
+		<path src="Applications/qgis-ng.app/Contents/Resources/ngqgis/fonts/topofonts" dst="Applications/qgis-ng.app/Contents/Resources/ngqgis/fonts/topofonts"/>
     </mac>
     <win>
-        <path src="share/ngqgis/fonts/fonts" dst="share/ngqgis/fonts"/>
+		<path src="share/ngqgis/resources/fonts/topofonts" dst="share/ngqgis/resources/fonts/topofonts"/>
     </win>
 </Package>
