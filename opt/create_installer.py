@@ -146,13 +146,36 @@ repka_repositories_win = [
     {'package': 'cert_importer', 'version': 'latest'},
 ]
 
-repositories_not_stored = ['py_exifread', 'py_functools_lru_cache',
-    'py_cycler', 'py_parsing', 'py_contextlib', 'py_future', # 'py_raven', <- send crashed via ngstd library
-    'py_requests', 'py_pytz', 'py_nose', 'py_jinja', 'py_httplib', 'py_ows',
-    'py_dateutil', 'py_pygments', 'py_six', 'py_urllib3', 'py_idna', 'py_chardet',
-    'py_certifi', 'py_geojson', 'py_tqdm', 'py_beautifulsoup', 'py_geographiclib',
-    'py_soupsieve', 'py_setuptools', 'py_tinydb', 'py_attrs',
-    'py_async_timeout', 'py_aiosignal',
+repositories_not_stored = [
+    {'package': 'py_exifread', 'version': 'latest'},
+    {'package': 'py_functools_lru_cache', 'version': 'latest'},
+    {'package': 'py_cycler', 'version': 'latest'},
+    {'package': 'py_parsing', 'version': 'latest'},
+    {'package': 'py_contextlib', 'version': 'latest'},
+    {'package': 'py_future', 'version': 'latest'},
+    {'package': 'py_requests', 'version': 'latest'},
+    {'package': 'py_pytz', 'version': 'latest'},
+    {'package': 'py_nose', 'version': 'latest'},
+    {'package': 'py_jinja', 'version': 'latest'},
+    {'package': 'py_httplib', 'version': 'latest'},
+    {'package': 'py_ows', 'version': 'latest'},
+    {'package': 'py_dateutil', 'version': 'latest'},
+    {'package': 'py_pygments', 'version': 'latest'},
+    {'package': 'py_six', 'version': 'latest'},
+    {'package': 'py_urllib3', 'version': '2.2.3'},
+    {'package': 'py_idna', 'version': 'latest'},
+    {'package': 'py_chardet', 'version': 'latest'},
+    {'package': 'py_certifi', 'version': 'latest'},
+    {'package': 'py_geojson', 'version': 'latest'},
+    {'package': 'py_tqdm', 'version': 'latest'},
+    {'package': 'py_beautifulsoup', 'version': 'latest'},
+    {'package': 'py_geographiclib', 'version': 'latest'},
+    {'package': 'py_soupsieve', 'version': 'latest'},
+    {'package': 'py_setuptools', 'version': 'latest'},
+    {'package': 'py_tinydb', 'version': 'latest'},
+    {'package': 'py_attrs', 'version': 'latest'},
+    {'package': 'py_async_timeout', 'version': 'latest'},
+    {'package': 'py_aiosignal', 'version': 'latest'},
 ]
 
 skip_osx_dependencies = ['com.nextgis.common.qt.all', 'com.nextgis.python.python',
@@ -771,16 +794,22 @@ def download(target_dir, plugins, valid_user, valid_date, sign_pwd):
 
     # Download and install not compile repositories (i.e. py)
     for repository in repositories_not_stored:
-        color_print('Process ' + repository, True, 'LGREEN')
-        target_repo_dir = os.path.join(target_dir, repository)
-        run(('git', 'clone', '--depth', '1', 'https://github.com/nextgis-borsch/{}.git'.format(repository), os.path.join(target_dir, repository) ))
+        package = repository['package']
+        version_max = repository['version']
+        color_print('Process ' + package, True, 'LGREEN')
+        target_repo_dir = os.path.join(target_dir, package)        
+        run(('git', 'clone', '--depth', '1', 'https://github.com/nextgis-borsch/{}.git'.format(package), os.path.join(target_dir, package) ))
         build_dir = os.path.join(target_repo_dir, 'build')
         os.makedirs(build_dir)
         os.chdir( build_dir )
+
+        config_params = ['cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '..']
         if sys.version_info[0] >= 3:
-            run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '-DWITH_PYTHON3=ON', '..'))
-        else:
-            run(('cmake', '-DCMAKE_BUILD_TYPE=Release', '-DSKIP_DEFAULTS=ON', '-DCMAKE_INSTALL_PREFIX=' + os.path.join(target_repo_dir,'inst'), '..'))
+            config_params += ['-DWITH_PYTHON3=ON']
+        if version_max != 'latest':
+            config_params += [f'-DVERSION_MAX={version_max}']
+
+        run(config_params)
         run(('cmake', '--build', '.', '--config', 'Release'))
         run(('cmake', '--build', '.', '--config', 'Release', '--target', 'install'))
 
