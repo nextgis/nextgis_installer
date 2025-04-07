@@ -171,7 +171,7 @@ repositories_not_stored = [
     {'package': 'py_beautifulsoup', 'version': 'latest'},
     {'package': 'py_geographiclib', 'version': 'latest'},
     {'package': 'py_soupsieve', 'version': 'latest'},
-    {'package': 'py_setuptools', 'version': 'latest'},
+    {'package': 'py_setuptools', 'version': '75.3.1'},
     {'package': 'py_tinydb', 'version': 'latest'},
     {'package': 'py_attrs', 'version': 'latest'},
     {'package': 'py_async_timeout', 'version': 'latest'},
