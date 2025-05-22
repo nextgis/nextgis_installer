@@ -16,3 +16,9 @@ Controller.prototype.ComponentSelectionPageCallback = function()
         widget.ComponentDescriptionLabel.setWordWrap(true);
     }
 }
+
+Controller.prototype.FinishedPageCallback = function()
+{
+    gui.setWizardPageButtonText(QInstaller.InstallationFinished, buttons.CommitButton, "Debug");
+    buttons.CommitButton.hide();
+}
