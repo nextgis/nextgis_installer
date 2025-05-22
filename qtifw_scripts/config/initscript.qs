@@ -16,3 +16,20 @@ Controller.prototype.ComponentSelectionPageCallback = function()
         widget.ComponentDescriptionLabel.setWordWrap(true);
     }
 }
+
+function Component()
+{
+	var page = gui.pageByObjectName("FinishedPage");
+	page.entered.connect(Component.prototype.finishPageEntered);
+}
+
+Component.prototype.finishPageEntered = function()
+{
+	gui.setWizardPageButtonText(QInstaller.InstallationFinished, buttons.CommitButton, "Debug");
+    buttons.CommitButton.hide();
+}
+
+Controller.prototype.FinishedPageCallback = function()
+{
+    gui.pageById(QInstaller.Finished).showRestartRequired = false;
+}
