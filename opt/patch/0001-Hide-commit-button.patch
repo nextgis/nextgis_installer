@@ -1,0 +1,24 @@
+From 5da3835d9279937a45d06bfe73d0006b16b46356 Mon Sep 17 00:00:00 2001
+From: 0xbeef <x514ckw4r3@gmail.com>
+Date: Thu, 22 May 2025 13:12:00 +0300
+Subject: [PATCH] Hide commit button
+
+---
+ qtifw/src/libs/installer/packagemanagergui.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/qtifw/src/libs/installer/packagemanagergui.cpp b/qtifw/src/libs/installer/packagemanagergui.cpp
+index af00cae..a15a4ac 100644
+--- a/qtifw/src/libs/installer/packagemanagergui.cpp
++++ b/qtifw/src/libs/installer/packagemanagergui.cpp
+@@ -2956,6 +2956,7 @@ void FinishedPage::entering()
+     }
+ 
+     gui()->updateButtonLayout();
++    gui()->button(QWizard::CommitButton)->hide();
+ 
+     if (m_commitButton) {
+         disconnect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
+-- 
+2.46.1.windows.1
+

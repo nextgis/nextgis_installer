@@ -2956,6 +2956,7 @@ void FinishedPage::entering()
     }
 
     gui()->updateButtonLayout();
+    gui()->button(QWizard::CommitButton)->hide();
 
     if (m_commitButton) {
         disconnect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
