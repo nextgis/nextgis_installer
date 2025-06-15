@@ -42,6 +42,7 @@
 #include <QDateTime>
 #include <QNetworkProxyFactory>
 #include <QProcess>
+#include <QRegularExpressionMatch>
 
 #include <iostream>
 
@@ -56,6 +57,26 @@
 #define BUILDDATE "Build date: " __DATE__
 #define SHA "Installer Framework SHA1: " QUOTE(_GIT_SHA1_)
 static const char PLACEHOLDER[32] = "MY_InstallerCreateDateTime_MY";
+
+// Splits a command line string into arguments, respecting quoted substrings.
+// Handles arguments with spaces inside double quotes and escaped characters.
+QStringList splitCommandLine(const QString& line)
+{
+    QStringList result;
+    QRegularExpression re(QStringLiteral(R"((?:"((?:[^"\\]|\\.)*)"|(\S+)))"));
+
+    QRegularExpressionMatchIterator i = re.globalMatch(line);
+    while (i.hasNext())
+	{
+        QRegularExpressionMatch match = i.next();
+        if (match.captured(1).isEmpty())
+            result << match.captured(2);
+        else
+            result << match.captured(1);
+    }
+    return result;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -311,12 +332,7 @@ int main(int argc, char *argv[])
 
                 if (parser.isSet(QLatin1String(CommandLineOptions::scLaunchOptions)))
                 {
-                    QString launchOption = parser.value(QLatin1String(CommandLineOptions::scLaunchOptions));
-                    if (launchOption.startsWith(QLatin1String("\"")))
-                        launchOption.remove(0,1);
-                    if (launchOption.endsWith(QLatin1String("\"")))
-                        launchOption.remove(launchOption.size()-1,1);
-                    launchOptions = launchOption.split(QLatin1String(" "));
+                    launchOptions = splitCommandLine(parser.value(QLatin1String(CommandLineOptions::scLaunchOptions)));
                 }
 
                 std::cout << "Starting " << launchPath.toUtf8().data()
