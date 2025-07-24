@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package root="py_functools_lru_cache">
-    <mac>
-        <path src="inst/backports/" dst="Library/Python/3.8/site-packages/backports"/>
-    </mac>
-    <win>
-        <path src="inst/backports" dst="lib/python38/site-packages/backports"/>
-    </win>
-</Package>

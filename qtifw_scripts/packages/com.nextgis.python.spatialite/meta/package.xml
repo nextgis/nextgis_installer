@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>PySpatialite</DisplayName>
-    <Description>PySpatialite package</Description>
-    <Dependencies>com.nextgis.python.all,com.nextgis.spatial.spatialite</Dependencies>
-</Package>
