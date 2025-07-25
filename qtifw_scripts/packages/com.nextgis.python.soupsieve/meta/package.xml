@@ -2,5 +2,4 @@
 <Package>
     <DisplayName>Soup Sieve</DisplayName>
     <Description>Soup Sieve package</Description>
-    <Dependencies>com.nextgis.python.functools_lru_cache</Dependencies>
 </Package>
