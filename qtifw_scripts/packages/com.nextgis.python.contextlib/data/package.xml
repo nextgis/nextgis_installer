@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_contextlib">
     <mac>
-        <path src="inst/lib/python3.8/site-packages/*.py" dst="Library/Python/3.8/site-packages/"/>
+        <path src="inst/lib/python3.8/site-packages/contextlib2" dst="Library/Python/3.8/site-packages/contextlib2"/>
         <path src="inst/bin" dst="usr/bin/"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/*.py" dst="lib/python38/site-packages/"/>
+        <path src="inst/Lib/site-packages/contextlib2" dst="lib/python38/site-packages/contextlib2"/>
     </win>
 </Package>
