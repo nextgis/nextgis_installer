@@ -63,7 +63,7 @@ static const char PLACEHOLDER[32] = "MY_InstallerCreateDateTime_MY";
 QStringList splitCommandLine(const QString& line)
 {
     QStringList result;
-    QRegularExpression re(QStringLiteral(R"((?:"((?:[^"\\]|\\.)*)"|(\S+)))"));
+    QRegularExpression re(QString::fromLocal8Bit(R"delim((?:"((?:[^"\\]|\\.)*)"|(\S+)))delim"));
 
     QRegularExpressionMatchIterator i = re.globalMatch(line);
     while (i.hasNext())
