@@ -130,7 +130,7 @@ repka_repositories = [
     {'package': 'py_frozenlist', 'version': 'latest'},
     {'package': 'py_multidict', 'version': 'latest'},
     {'package': 'py_yarl', 'version': 'latest'},
-    {'package': 'py_aiohttp', 'version': 'latest'},
+    {'package': 'py_aiohttp', 'version': '3.10.11'},
     {'package': 'py_charset_normalizer', 'version': 'latest'},
     {'package': 'py_h3', 'version': 'latest'},
 ]
