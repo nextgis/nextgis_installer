@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>typing_extensions</DisplayName>
+    <Description>typing_extensions package</Description>
+    <Dependencies>com.nextgis.python.all</Dependencies>
+</Package>
