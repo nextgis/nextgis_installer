@@ -174,6 +174,7 @@ repositories_not_stored = [
     {'package': 'py_async_timeout', 'version': '1.3.2'},
     {'package': 'py_aiosignal', 'version': '1.3.1'},
     {'package': 'py_typing_extensions', 'version': 'latest'},
+    {'package': 'py_propcache', 'version': '0.2.0'},
 ]
 
 skip_osx_dependencies = ['com.nextgis.common.qt.all', 'com.nextgis.python.python',
