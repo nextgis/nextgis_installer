@@ -3,9 +3,11 @@
     <mac>
         <path src="inst/setuptools" dst="Library/Python/3.8/site-packages/setuptools"/>
 		<path src="inst/_distutils_hack" dst="Library/Python/3.8/site-packages/_distutils_hack"/>
+        <path src="inst/setuptools.egg-info" dst="lib/python38/site-packages/setuptools.egg-info"/>
     </mac>
     <win>
         <path src="inst/setuptools" dst="lib/python38/site-packages/setuptools"/>
-		<path src="inst/_distutils_hack" dst="lib/python38/site-packages/_distutils_hack"/>
+        <path src="inst/_distutils_hack" dst="lib/python38/site-packages/_distutils_hack"/>
+        <path src="inst/setuptools.egg-info" dst="lib/python38/site-packages/setuptools.egg-info"/>
     </win>
 </Package>
