@@ -2,8 +2,10 @@
 <Package root="py_h3">
     <mac>
         <path src="h3" dst="Library/Python/3.8/site-packages/h3"/>
+        <path src="h3.egg-info" dst="lib/python38/site-packages/h3.egg-info"/>
     </mac>
     <win>
         <path src="h3" dst="lib/python38/site-packages/h3"/>
+        <path src="h3.egg-info" dst="lib/python38/site-packages/h3.egg-info"/>  
     </win>
 </Package>
