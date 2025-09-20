@@ -132,7 +132,7 @@ repka_repositories = [
     {'package': 'py_yarl', 'version': '1.15.2'},
     {'package': 'py_aiohttp', 'version': '3.10.11'},
     {'package': 'py_charset_normalizer', 'version': 'latest'},
-    {'package': 'py_h3', 'version': '3.7.7'},
+    {'package': 'py_h3', 'version': '4.3.1'},
 ]
 
 repka_repositories_win = [
