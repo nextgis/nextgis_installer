@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_packaging">
     <mac>
-        <path src="Library/lib/python3.8/site-packages/packaging/" dst="Library/Python/3.8/site-packages/packaging"/>
+        <path src="packaging" dst="Library/Python/3.8/site-packages/packaging"/>
+        <path src="packaging-25.0.dist-info" dst="Library/Python/3.8/site-packages/packaging-25.0.dist-info"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/packaging" dst="lib/python38/site-packages/packaging"/>
+        <path src="packaging" dst="lib/python38/site-packages/packaging"/>
+        <path src="packaging-25.0.dist-info" dst="lib/python38/site-packages/packaging-25.0.dist-info"/>
     </win>
 </Package>

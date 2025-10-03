@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_multidict">
     <mac>
-        <path src="Library/lib/python3.8/site-packages/multidict/" dst="Library/Python/3.8/site-packages/multidict"/>
+        <path src="multidict/" dst="Library/Python/3.8/site-packages/multidict"/>
+        <path src="multidict-6.1.0.dist-info/" dst="Library/Python/3.8/site-packages/multidict-6.1.0.dist-info"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/multidict" dst="lib/python38/site-packages/multidict"/>
+        <path src="multidict" dst="lib/python38/site-packages/multidict"/>
+        <path src="multidict-6.1.0.dist-info" dst="lib/python38/site-packages/multidict-6.1.0.dist-info"/>
     </win>
 </Package>

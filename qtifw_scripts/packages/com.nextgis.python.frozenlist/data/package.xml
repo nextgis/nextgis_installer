@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_frozenlist">
     <mac>
-        <path src="Library/lib/python3.8/site-packages/frozenlist/" dst="Library/Python/3.8/site-packages/frozenlist"/>
+        <path src="frozenlist/" dst="Library/Python/3.8/site-packages/frozenlist"/>
+        <path src="frozenlist-1.6.0.dist-info/" dst="Library/Python/3.8/site-packages/frozenlist-1.6.0.dist-info"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/frozenlist" dst="lib/python38/site-packages/frozenlist"/>
+        <path src="frozenlist" dst="lib/python38/site-packages/frozenlist"/>
+        <path src="frozenlist-1.6.0.dist-info" dst="lib/python38/site-packages/frozenlist-1.6.0.dist-info"/>
     </win>
 </Package>
