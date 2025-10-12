@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_plotly">
     <mac>
-        <path src="Library/lib/python3.8/site-packages/plotly/" dst="Library/Python/3.8/site-packages/plotly"/>
-        <path src="Library/lib/python3.8/site-packages/_plotly_future_/" dst="Library/Python/3.8/site-packages/_plotly_future_"/>
-        <path src="Library/lib/python3.8/site-packages/_plotly_utils/" dst="Library/Python/3.8/site-packages/_plotly_utils"/>
+        <path src="plotly/" dst="Library/Python/3.8/site-packages/plotly"/>
+        <path src="plotly-6.3.0.dist-info/" dst="Library/Python/3.8/site-packages/plotly-6.3.0.dist-info"/>
+        <path src="_plotly_utils/" dst="Library/Python/3.8/site-packages/_plotly_utils"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/plotly" dst="lib/python38/site-packages/plotly"/>
-        <path src="Lib/site-packages/_plotly_future_" dst="lib/python38/site-packages/_plotly_future_"/>
-        <path src="Lib/site-packages/_plotly_utils" dst="lib/python38/site-packages/_plotly_utils"/>
+        <path src="plotly" dst="lib/python38/site-packages/plotly"/>
+        <path src="plotly-6.3.0.dist-info" dst="lib/python38/site-packages/plotly-6.3.0.dist-info"/>
+        <path src="_plotly_utils" dst="lib/python38/site-packages/_plotly_utils"/>
     </win>
 </Package>
