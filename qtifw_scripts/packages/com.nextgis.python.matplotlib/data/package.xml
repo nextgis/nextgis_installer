@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_matplotlib">
     <mac>
-        <path src="Library/lib/python3.8/site-packages/matplotlib/" dst="Library/Python/3.8/site-packages/matplotlib"/>
-        <path src="Library/lib/python3.8/site-packages/mpl_toolkits/" dst="Library/Python/3.8/site-packages/mpl_toolkits"/>
-        <path src="Library/lib/python3.8/site-packages/*.py" dst="Library/Python/3.8/site-packages/"/>
-        <path src="Library/lib/python3.8/site-packages/*.pth" dst="Library/Python/3.8/site-packages/"/>
+        <path src="Library/lib/python3.8/site-packages/" dst="Library/Python/3.8/site-packages/"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/matplotlib" dst="lib/python38/site-packages/matplotlib"/>
-        <path src="Lib/site-packages/mpl_toolkits" dst="lib/python38/site-packages/mpl_toolkits"/>
-        <path src="Lib/site-packages/*.py" dst="lib/python38/site-packages/"/>
-        <path src="Lib/site-packages/*.pth" dst="lib/python38/site-packages/"/>
+        <path src="Lib/site-packages/" dst="lib/python38/site-packages/"/>
     </win>
 </Package>

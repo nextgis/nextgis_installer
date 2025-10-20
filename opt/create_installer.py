@@ -103,7 +103,7 @@ repka_repositories = [
     {'package': 'py_yaml', 'version': '6.0.2'},
     {'package': 'py_markupsafe', 'version': '2.1.5'},
     {'package': 'py_psycopg', 'version': '2.9.10'},
-    {'package': 'py_matplotlib', 'version': 'latest'},
+    {'package': 'py_matplotlib', 'version': '3.7.5'},
     {'package': 'lib_spatialindex', 'version': 'latest'},
     {'package': 'py_qt5', 'version': 'latest'},
     {'package': 'py_kiwisolver', 'version': '1.4.7'},
