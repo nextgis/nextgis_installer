@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_lxml">
     <mac>
-        <path src="Library/lib/python3.8/site-packages/lxml/" dst="Library/Python/3.8/site-packages/lxml"/>
+        <path src="Library/lib/python3.8/site-packages//" dst="Library/Python/3.8/site-packages/"/>
     </mac>
     <win>
-        <path src="Lib/site-packages/lxml" dst="lib/python38/site-packages/lxml"/>
+        <path src="Lib/site-packages/" dst="lib/python38/site-packages/"/>
     </win>
 </Package>

@@ -114,7 +114,7 @@ repka_repositories = [
     {'package': 'py_pillow', 'version': '10.4.0'},
     {'package': 'lib_harfbuzz', 'version': 'latest'},
     {'package': 'lib_littlecms', 'version': 'latest'},
-    {'package': 'py_lxml', 'version': 'latest'},
+    {'package': 'py_lxml', 'version': '5.4.0'},
     {'package': 'lib_xslt', 'version': 'latest'},
     {'package': 'nextgisqgis', 'version': 'latest'},
     # {'package': 'manuscript', 'version': 'latest'},
@@ -133,6 +133,7 @@ repka_repositories = [
     {'package': 'py_aiohttp', 'version': '3.10.11'},
     {'package': 'py_charset_normalizer', 'version': '3.4.3'},
     {'package': 'py_h3', 'version': '4.3.1'},
+    {'package': 'py_versioneer', 'version': '0.29'},
 ]
 
 repka_repositories_win = [
@@ -175,7 +176,6 @@ repositories_not_stored = [
     {'package': 'py_aiosignal', 'version': '1.3.1'},
     {'package': 'py_typing_extensions', 'version': 'latest'},
     {'package': 'py_propcache', 'version': '0.2.0'},
-    {'package': 'py_versioneer', 'version': 'latest'},
 ]
 
 skip_osx_dependencies = ['com.nextgis.common.qt.all', 'com.nextgis.python.python',
