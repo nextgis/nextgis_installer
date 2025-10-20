@@ -123,7 +123,7 @@ repka_repositories = [
     {'package': 'lib_ffi', 'version': 'latest'},
     {'package': 'py_packaging', 'version': '25.0'},
     {'package': 'py_plotly', 'version': '6.3.0'},
-    {'package': 'py_pandas', 'version': 'latest'},
+    {'package': 'py_pandas', 'version': '2.0.3'},
     {'package': 'py_levenshtein', 'version': '0.25.1'},
     {'package': 'py_rapidfuzz', 'version': '3.9.7'},
     {'package': 'py_tus', 'version': '1.1.0'},
