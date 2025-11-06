@@ -109,7 +109,7 @@ repka_repositories = [
     {'package': 'py_kiwisolver', 'version': '1.4.7'},
     {'package': 'py_shapely', 'version': '1.8.4'},
     {'package': 'lib_uriparser', 'version': 'latest'},
-    {'package': 'py_proj', 'version': 'latest'},
+    {'package': 'py_proj', 'version': '3.5.0'},
     {'package': 'lib_bzip2', 'version': 'latest'},
     {'package': 'py_pillow', 'version': '10.4.0'},
     {'package': 'lib_harfbuzz', 'version': 'latest'},
