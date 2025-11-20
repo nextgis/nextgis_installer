@@ -207,6 +207,8 @@ class bcolors:
     LCYAN='\033[1;36m'
     WHITE='\033[1;37m'
 
+def log(msg):
+    print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}", flush=True)
 
 def color_print(text, bold, color):
     if sys.platform == 'win32':
@@ -1058,6 +1060,7 @@ def update_installer():
     run((repogen_file, '--update-new-components', '-v', '-p', repo_new_packages_path, get_repository_path()))
     color_print('DONE, installer is at ' + os.path.join(repo_target_path, 'nextgis-setup'), True, 'LMAGENTA')
 
+log("=== create_installer.py STARTED ===")
 
 parse_arguments()
 init()
@@ -1086,3 +1089,5 @@ else:
 
 if args.command != 'create_from_repository':
     save_versions(versions_file_name)
+
+log("=== create_installer.py FINISHED ===")
