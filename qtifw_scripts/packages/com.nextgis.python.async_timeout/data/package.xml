@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_async_timeout">
     <mac>
-        <path src="inst/lib/python3.8/site-packages/async_timeout/" dst="Library/Python/3.8/site-packages/async_timeout"/>
+        <path src="inst/async_timeout/" dst="Library/Python/3.8/site-packages/async_timeout"/>
+        <path src="inst/async_timeout-5.0.1.dist-info/" dst="Library/Python/3.8/site-packages/async_timeout-5.0.1.dist-info"/>
     </mac>
     <win>
-        <path src="inst/Lib/site-packages/async_timeout" dst="lib/python38/site-packages/async_timeout"/>
+        <path src="inst/async_timeout" dst="lib/python38/site-packages/async_timeout"/>
+        <path src="inst/async_timeout-5.0.1.dist-info" dst="lib/python38/site-packages/async_timeout-5.0.1.dist-info"/>
     </win>
 </Package>
