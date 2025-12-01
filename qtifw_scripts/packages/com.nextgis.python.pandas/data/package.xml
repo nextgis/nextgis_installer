@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package root="py_pandas">
     <mac>
-        <path src="inst/" dst="Library/Python/3.8/site-packages/"/>
+        <path src="pandas" dst="Library/Python/3.8/site-packages/pandas"/>
+        <path src="pandas-2.0.3.dist-info" dst="Library/Python/3.8/site-packages/pandas-2.0.3.dist-info"/>
     </mac>
     <win>
-        <path src="inst/" dst="lib/python38/site-packages/"/>
+        <path src="pandas" dst="lib/python38/site-packages/pandas"/>
+        <path src="pandas-2.0.3.dist-info" dst="lib/python38/site-packages/pandas-2.0.3.dist-info"/>
     </win>
 </Package>
