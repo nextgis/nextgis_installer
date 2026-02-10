@@ -97,6 +97,7 @@ repka_repositories = [
     {'package': 'lib_openjpeg', 'version': 'latest'},
     {'package': 'lib_opencad', 'version': 'latest'},
     {'package': 'lib_pq', 'version': 'latest'},
+    {'package': 'gdal_sxf_plugin', 'version': 'latest'},
     {'package': 'lib_hdf4', 'version': 'latest'},
     {'package': 'lib_gsl', 'version': 'latest'},
     {'package': 'lib_yaml', 'version': 'latest'},
