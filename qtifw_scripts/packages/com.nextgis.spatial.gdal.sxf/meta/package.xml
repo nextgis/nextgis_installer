@@ -2,5 +2,4 @@
 <Package>
     <DisplayName>GDAL SXF driver</DisplayName>
     <Description>SXF OGR driver plugin for GDAL</Description>
-    <Dependencies>com.nextgis.spatial.gdal</Dependencies>
 </Package>
