@@ -530,10 +530,12 @@ def copyFiles(tag, sources_root_dir, data_path):
                 if not os.path.exists(dst_path_full):
                     os.makedirs(dst_path_full)
 
-                if src_path_full.find('*'):
-                    # Copy by wildcard.
+                if '*' in src_path_full:
                     for copy_file in glob.glob(src_path_full):
-                        shutil.copy(copy_file, dst_path_full)
+                        if os.path.isdir(copy_file):
+                            shutil.copytree(copy_file, os.path.join(dst_path_full, os.path.basename(copy_file)), symlinks=True)
+                        else:
+                            shutil.copy(copy_file, dst_path_full)
                 else:
                     if os.path.exists(src_path_full):
                         shutil.copy(src_path_full, dst_path_full)
