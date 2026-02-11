@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package root="gdal_sxf_plugin">
+    <mac>
+        <path src="Library/Frameworks/gdal.framework/Resources/gdalplugins/ogr_SXF.so" dst="Library/Frameworks/gdal.framework/Resources/gdalplugins"/>
+    </mac>
+    <win>
+        <path src="bin/gdalplugins/ogr_SXF.dll" dst="bin/gdalplugins"/>
+    </win>
+</Package>
